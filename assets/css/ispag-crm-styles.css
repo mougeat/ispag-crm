@@ -1,0 +1,516 @@
+/* -------------------------------------------------------------------------- */
+/* --- 1. VARIABLES GLOBALES (ISPAG) --- */
+/* -------------------------------------------------------------------------- */
+/*
+:root {
+    
+    --ispag-red: #d90400; 
+    --ispag-btn-grey: #ccc;
+    --ispag-blue: #0073aa; 
+    --ispag-orange: #ff9900;
+    
+    
+    --ispag-success-color: #28a745;
+    --ispag-danger-color: #dc3545;
+} */
+
+/* -------------------------------------------------------------------------- */
+/* --- 2. BOUTONS ISPAG --- */
+/* -------------------------------------------------------------------------- */
+
+.ispag-btn {
+    background-color: var(--ispag-red);
+    color: white;
+    padding: 6px 12px;
+    margin-right: 3px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+    text-decoration: none; 
+    display: inline-block;
+    text-align: center;
+    line-height: 1.2; 
+}
+
+.ispag-btn:hover { background-color: #7a0000; color: #fff; }
+.ispag-btn:active { background-color: #5c0000; color: #fff; }
+
+/* Boutons de remplissage (Solid) */
+.ispag-btn-grey { border: 1px solid var(--ispag-btn-grey); background-color: var(--ispag-btn-grey); color: white;}
+.ispag-btn-secondary { border: 1px solid var(--ispag-blue); background-color: var(--ispag-blue); color: white;}
+.ispag-btn-warning { border: 1px solid var(--ispag-orange); background-color: var(--ispag-orange); color: white;}
+.ispag-btn-danger { border: 1px solid var(--ispag-red); background-color: var(--ispag-red); color: white;}
+
+/* Boutons Outlined */
+.ispag-btn-red-outlined { border: 1px solid var(--ispag-red); background-color: transparent; color: var(--ispag-red);}
+.ispag-btn-grey-outlined { border: 1px solid var(--ispag-btn-grey); background-color: transparent; color: #555;} 
+.ispag-btn-secondary-outlined { border: 1px solid var(--ispag-blue); background-color: transparent; color: var(--ispag-blue);}
+.ispag-btn-warning-outlined { border: 1px solid var(--ispag-orange); background-color: transparent; color: var(--ispag-orange);}
+.ispag-btn-danger-outlined { border: 1px solid var(--ispag-red); background-color: transparent; color: var(--ispag-red);}
+
+/* Effets Hover pour les boutons Outlined */
+.ispag-btn-red-outlined:hover { background-color: var(--ispag-red); color: white; }
+.ispag-btn-grey-outlined:hover { background-color: var(--ispag-btn-grey); color: white; }
+.ispag-btn-secondary-outlined:hover { background-color: var(--ispag-blue); color: white; }
+.ispag-btn-warning-outlined:hover { background-color: var(--ispag-orange); color: white; }
+.ispag-btn-danger-outlined:hover { background-color: var(--ispag-red); color: white; }
+
+
+/* -------------------------------------------------------------------------- */
+/* --- 3. MISE EN PAGE LISTE ET FILTRES --- */
+/* -------------------------------------------------------------------------- */
+
+.ispag-contact-list-container { 
+    max-width: 100%; 
+    overflow-x: auto; 
+    font-family: sans-serif; 
+    font-size: 14px;
+}
+
+h3 {
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Barre de filtres et d'actions groupées */
+.ispag-filter-bar, .ispag-bulk-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; 
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.ispag-filter-bar select, 
+.ispag-filter-bar input[type="text"], 
+.ispag-bulk-actions select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-width: 120px; 
+    box-shadow: none; 
+    line-height: 1.2;
+}
+
+/* -------------------------------------------------------------------------- */
+/* --- 4. TABLEAU --- */
+/* -------------------------------------------------------------------------- */
+
+.ispag-contact-list-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-bottom: 20px; 
+}
+
+.ispag-contact-list-table th, 
+.ispag-contact-list-table td { 
+    border: 1px solid #e0e0e0; 
+    padding: 12px; 
+    text-align: left; 
+    vertical-align: middle; 
+}
+
+.ispag-contact-list-table th { 
+    background-color: #f7f7f7; 
+    font-weight: 600; 
+    color: #333; 
+    text-transform: uppercase; 
+    font-size: 0.9em; 
+}
+
+.ispag-contact-list-table tr:nth-child(even) { 
+    background-color: #fafafa; 
+}
+
+.ispag-contact-list-table tr:hover { 
+    background-color: #f1f8ff; 
+}
+
+/* Liens de tri (Entêtes de colonnes) */
+.ispag-sort-link {
+    display: inline-block;
+    color: #333;
+    text-decoration: none;
+    padding-right: 15px;
+    position: relative;
+}
+.ispag-sort-link:hover { color: var(--ispag-blue); }
+
+
+/* -------------------------------------------------------------------------- */
+/* --- 5. ÉLÉMENTS SPÉCIFIQUES (Badges et Propriétaire) --- */
+/* -------------------------------------------------------------------------- */
+
+.ispag-owner-name { 
+    font-weight: 500; 
+    color: #0073aa; 
+}
+
+.ispag-status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.8em; 
+    font-weight: bold;
+    text-transform: capitalize;
+    white-space: nowrap;
+    min-width: 80px; 
+    text-align: center;
+}
+
+/* -------------------------------------------------------------------------- */
+/* --- 6. ALERTES ET MESSAGES (pour bulk_result) --- */
+/* -------------------------------------------------------------------------- */
+
+.ispag-alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.ispag-alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.ispag-alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* --- 7. ÉDITION EN LIGNE ET DÉTAILS DU CONTACT --- */
+/* -------------------------------------------------------------------------- */
+
+/* Conteneur principal du champ éditable */
+.ispag-editable-field {
+    cursor: pointer;
+    position: relative;
+    display: inline-flex; 
+    align-items: center;
+    padding-right: 25px; 
+    transition: background-color 0.1s ease;
+    border: 1px solid transparent; 
+    margin-right: 15px; 
+    border-radius: 4px;
+    min-height: 25px; 
+}
+
+/* Effet visuel au survol pour indiquer que c'est éditable */
+.ispag-editable-field:hover {
+    background-color: #f0f0f0;
+    border-color: #e0e0e0;
+}
+
+/* Icône de crayon */
+.ispag-editable-field .edit-icon {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8em;
+    color: #999;
+    opacity: 0; 
+    transition: opacity 0.2s ease;
+}
+
+.ispag-editable-field:hover .edit-icon {
+    opacity: 1; 
+}
+
+/* Masquer l'icône de crayon lorsque le champ est en mode édition ou chargement */
+.ispag-editable-field.editing .edit-icon,
+.ispag-editable-field.loading .edit-icon {
+    display: none;
+}
+
+/* Styles pour les champs de saisie en mode édition */
+.ispag-editable-field.editing {
+    background-color: transparent;
+    padding-right: 5px; 
+    border: 1px solid transparent; 
+}
+
+.ispag-edit-input,
+.ispag-edit-select {
+    font-size: 1em; 
+    padding: 3px 6px;
+    border: 1px solid var(--ispag-blue); 
+    border-radius: 4px;
+    outline: none;
+    box-shadow: 0 0 0 1px rgba(0, 115, 170, 0.5);
+    min-width: 150px;
+    box-sizing: border-box; 
+}
+
+.ispag-edit-input[type="number"] {
+    max-width: 100px;
+}
+
+/* Textearea en mode édition */
+.ispag-editable-field.editing textarea.ispag-edit-input {
+    width: 100%;
+    min-height: 80px;
+}
+
+/* État de chargement pendant l'enregistrement */
+.ispag-editable-field.loading {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 100px; 
+    padding: 4px 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #dcdcdc;
+}
+
+/* Ajustement des Badges pour l'édition en ligne */
+.ispag-status-badge {
+    margin-right: 0 !important; 
+    min-width: 80px; 
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* --- 8. Navigation par onglets (Corrigé pour masquage forcé) --- */
+/* -------------------------------------------------------------------------- */
+
+.ispag-tabs-navigation {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 15px;
+    padding: 0 10px;
+}
+
+.ispag-tab-btn {
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    margin-right: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease-in-out;
+}
+
+.ispag-tab-btn:hover {
+    color: #007bff;
+}
+
+.ispag-tab-btn.active {
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+    font-weight: 600;
+}
+
+.ispag-tabs-content {
+    padding: 0 10px;
+}
+
+/* 🟥 RÈGLE DE MASQUAGE FORCÉ 🟥 */
+/* Cible TOUS les .ispag-tab-pane à l'intérieur de .ispag-tabs-content */
+/* Le !important garantit que le panneau est masqué, sauf s'il est actif. */
+.ispag-tabs-content .ispag-tab-pane {
+    display: none !important; 
+}
+
+/* 🟢 RÈGLE D'AFFICHAGE FORCÉ 🟢 */
+/* Cible le panneau ACTIF à l'intérieur de .ispag-tabs-content */
+/* Le !important annule la règle de masquage ci-dessus pour le panneau sélectionné. */
+.ispag-tabs-content .ispag-tab-pane.active {
+    display: block !important; 
+}
+
+
+/* Onglets */
+.ispag-modal-tabs {
+    display: flex;
+    border-bottom: 1px solid #eee;
+}
+
+.ispag-tab-modal {
+    flex-grow: 1;
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+    background: #f8f8f8;
+    border: none;
+    border-right: 1px solid #eee;
+    color: #555;
+    font-weight: 500;
+}
+
+.ispag-tab-modal.active {
+    background: #fff;
+    border-bottom: 2px solid #007bff;
+    color: #007bff;
+}
+
+/* Corps et Liste de contacts */
+.ispag-modal-body {
+    padding: 20px;
+}
+
+.ispag-tab-modal-pane:not(.active) {
+    display: none;
+}
+
+#tab-add-existing {
+    /* Styles pour la barre de recherche et le bouton */
+    display: flex;
+    flex-direction: column;
+}
+
+#contact-search-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.contact-list-container {
+    margin: 10px 0;
+    /* Styles pour le conteneur de liste */
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dotted #eee;
+}
+
+.contact-item input[type="checkbox"] {
+    margin-right: 10px;
+    /* Style pour ressembler au checkmark de l'image */
+}
+
+.contact-info-icon {
+    margin-left: auto;
+    color: #007bff;
+    cursor: help;
+    font-style: normal;
+}
+
+/* Footer */
+.ispag-modal-footer {
+    padding: 15px 20px;
+    text-align: right;
+    border-top: 1px solid #eee;
+}
+
+
+/* Styles généraux du tableau pour un look CRM */
+.ispag-dashboard-style th,
+.ispag-dashboard-style td {
+    padding: 10px 12px;
+    vertical-align: middle;
+}
+
+/* Style des entités (pour ressembler aux liens HubSpot/ISPAG) */
+.ispag-dashboard-style td a {
+    font-weight: 500;
+    color: #444; /* Couleur de texte plus foncée */
+    text-decoration: none;
+    border-bottom: 1px dashed #ccc;
+}
+.ispag-dashboard-style td a:hover {
+    color: #0073aa;
+    border-bottom-style: solid;
+}
+
+/* Style de la colonne Due Date */
+.ispag-dashboard-style .column-due-date {
+    width: 15%;
+    font-weight: 600;
+}
+
+/* Styles d'urgence */
+.ispag-dashboard-style .is-today {
+    color: orange;
+}
+.ispag-dashboard-style .is-overdue {
+    color: #cc3333; /* Rouge foncé */
+    font-weight: bold;
+}
+
+/* Styles des actions */
+.ispag-dashboard-style .column-actions {
+    width: 20%;
+}
+.ispag-btn {
+    margin-right: 5px;
+}
+/* Styles pour la nouvelle colonne Reminder */
+.ispag-dashboard-style .column-reminder-date {
+    width: 12%;
+    font-size: 0.9em;
+}
+
+/* Rappel imminent (dans les prochaines 24h) */
+.ispag-dashboard-style .is-imminent {
+    color: #0073aa; /* Bleu standard WordPress pour attirer l'attention */
+    font-weight: 500;
+}
+
+/* Rappel passé (si la notification a été manquée) */
+.ispag-dashboard-style .is-passed {
+    color: #ffb848; /* Jaune/Orange, moins critique que "Overdue" */
+    font-weight: 500;
+}
+/* Rend la souris en forme de main (pointer) au survol des lignes de tâches */
+.ispag-task-list tbody tr:hover {
+    cursor: pointer; /* Indique qu'un élément est interactif (cliquable) */
+    background-color: #f5f5f5; /* Optionnel : ajoute un léger surlignage de la ligne */
+}
+
+/* Optionnel : Assurez-vous que le curseur par défaut est maintenu sur les boutons d'action */
+.ispag-task-list tbody tr td button,
+.ispag-task-list tbody tr th input[type="checkbox"] {
+    cursor: default; 
+}
+
+
+
+.company-initials-avatar {
+    /* Dimensions et forme */
+    width: 26px;
+    height: 26px;
+    border-radius: 50%; /* Pour un cercle */
+    
+    /* Centrage du texte */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Style du texte */
+    font-size: 11px;
+    font-weight: bold;
+    color: #fff; /* Texte blanc */
+    
+    /* Couleur d'arrière-plan (changez cette couleur selon vos préférences) */
+    background-color: #6c757d; /* Gris foncé par défaut */
+    
+    /* Espacement à droite si vous avez besoin de plus d'espace */
+    margin-right: 5px; 
+    
+    /* Retrait des espaces réservés */
+    flex-shrink: 0;
+}
+
+/* Optionnel : Amélioration visuelle pour les liens */
+.ispag-card strong a {
+    text-decoration: none; /* Enlève le soulignement si vous n'en voulez pas */
+}
+
+

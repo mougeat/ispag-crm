@@ -1,0 +1,227 @@
+/* ==========================================================================
+   1. STRUCTURE & OVERLAY (MODAL)
+   ========================================================================== */
+
+.ispag-modal {
+    display: none; 
+    position: fixed;
+    z-index: 999999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(3px);
+    
+    /* Centrage parfait via Flex */
+    align-items: center; 
+    justify-content: center;
+}
+
+.ispag-modal.active {
+    display: flex; /* Activé par le JS */
+}
+
+.ispag-modal .ispag-modal-content {
+    background-color: #fff;
+    margin: 0; 
+    width: 95% !important; 
+    max-width: 1250px !important; 
+    height: 90vh; 
+    position: relative; 
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: ispagSlideIn 0.3s ease-out;
+}
+
+@keyframes ispagSlideIn {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Header déplaçable */
+.ispag-modal-header {
+    cursor: move;
+    background: #f8f9fa;
+    padding: 15px 25px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.ispag-modal-header h2 { 
+    margin: 0; 
+    font-size: 1.25rem; 
+    color: #23282d; 
+}
+
+
+/* ==========================================================================
+   2. LAYOUT ÉDITEUR (70/30)
+   ========================================================================== */
+
+.ispag-template-editor-layout {
+    display: flex;
+    flex: 1;
+    height: calc(90vh - 130px); /* Ajusté pour Header/Footer */
+    overflow: hidden;
+}
+
+.ispag-editor-main {
+    flex: 7; 
+    padding: 30px;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+    background: #fff;
+}
+
+.ispag-editor-sidebar {
+    flex: 3; 
+    padding: 25px;
+    background: #f9f9f9;
+    overflow-y: auto;
+}
+
+/* ==========================================================================
+   3. FORMULAIRE & INPUTS
+   ========================================================================== */
+
+.ispag-form-group { 
+    margin-bottom: 20px; 
+    display: flex; 
+    flex-direction: column; 
+}
+
+.ispag-form-group label { 
+    font-weight: 700; 
+    margin-bottom: 8px; 
+    color: #333; 
+}
+
+.ispag-form-group input[type="text"], 
+.ispag-form-group select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Zone d'édition ContentEditable */
+.ispag-editor-content {
+    width: 100%;
+    min-height: 450px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 15px;
+    background: #fff;
+    overflow-y: auto;
+    line-height: 1.6;
+    outline: none;
+    font-size: 14px;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    transition: border-color 0.2s;
+}
+
+.ispag-editor-content:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+}
+
+/* ==========================================================================
+   4. VARIABLES & BADGES
+   ========================================================================== */
+
+/* Barres de badges au-dessus de l'éditeur */
+.ispag-variable-pills {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    background: #f0f4f8;
+    padding: 12px;
+    border-radius: 4px;
+    border: 1px dashed #2271b1;
+}
+
+/* Badge cliquable (Source) */
+.ispag-variable-badge {
+    display: inline-flex;
+    align-items: center;
+    background-color: #fff;
+    color: #2c3e50;
+    border: 1px solid #d1d9e4;
+    border-radius: 4px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ispag-variable-badge:hover {
+    background-color: #2271b1;
+    color: #fff;
+}
+
+/* Badge inséré (Cible dans l'éditeur) */
+.ispag-editor-content [data-variable] {
+    display: inline-block;
+    background-color: #e7f3ff;
+    color: #2271b1;
+    border: 1px solid #adc6ff;
+    border-radius: 4px;
+    padding: 0 8px;
+    margin: 0 2px;
+    font-weight: 600;
+    font-size: 0.95em;
+    user-select: all;
+}
+
+/* ==========================================================================
+   5. FOOTER & TABLEAU
+   ========================================================================== */
+
+.ispag-modal-footer {
+    padding: 15px 25px;
+    background: #f8f9fa;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    align-items: center;
+}
+
+#tpl-status-msg { 
+    margin-right: auto; 
+    font-weight: 600; 
+    font-size: 13px;
+}
+
+/* Dashboard List Table */
+.ispag-template-list-wrapper { 
+    margin-top: 20px; 
+    background: #fff; 
+    border-radius: 4px; 
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+}
+
+.ispag-template-list-wrapper table thead th { 
+    background: #f8f9fa; 
+    font-weight: 700; 
+    padding: 12px; 
+}
+
+.ispag-template-list-wrapper .column-primary a { 
+    color: #800000; /* Ton rouge ISPAG */
+    font-weight: 700; 
+    text-decoration: none; 
+}
+
+.ispag-template-list-wrapper .column-primary a:hover { 
+    text-decoration: underline; 
+}

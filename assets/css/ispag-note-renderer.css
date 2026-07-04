@@ -1,0 +1,75 @@
+/* Container de la liste */
+.ispag-attachments-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* La liste déroulante au survol */
+.ispag-attachments-list {
+    display: none;
+    position: absolute;
+    top: 100%;      /* S'ouvre sous le texte "26 Attachements" */
+    right: 0;       /* ALIGNEMENT À DROITE pour éviter de sortir de l'écran */
+    background: #ffffff;
+    min-width: 280px;
+    max-width: 350px;
+    max-height: 400px; /* HAUTEUR MAX pour gérer les grandes listes */
+    overflow-y: auto;  /* SCROLLBAR interne si trop de fichiers */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    z-index: 9999;     /* PASSE AU DESSUS DE TOUT */
+    list-style: none;
+    padding: 8px 0;
+    margin: 5px 0 0 0;
+    border-radius: 4px;
+    border: 1px solid #ccd0d4;
+}
+
+/* Affichage au survol */
+.ispag-attachments-dropdown:hover .ispag-attachments-list {
+    display: block;
+}
+
+/* Style des items de la liste */
+.ispag-attachments-list li {
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.ispag-attachments-list li:last-child {
+    border-bottom: none;
+}
+
+.ispag-attachments-list li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    color: #2271b1;
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 1.4;
+    transition: background 0.2s;
+}
+
+.ispag-attachments-list li a:hover {
+    background-color: #f6f7f7;
+    color: #135e96;
+}
+
+/* Icône dans la liste */
+.ispag-attachments-list .dashicons {
+    font-size: 18px;
+    color: #646970;
+}
+
+/* Petit triangle au dessus de la liste (optionnel pour le look) */
+.ispag-attachments-list::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    right: 15px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #ccd0d4;
+}

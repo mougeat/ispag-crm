@@ -1,0 +1,376 @@
+/* -------------------------------------------------------------------------- */
+/* --- 1. VARIABLES GLOBALES (ISPAG) --- */
+/* -------------------------------------------------------------------------- */
+
+/* :root {
+    
+    --ispag-color-primary: #990000; 
+    --ispag-color-text-dark: #333;
+    --ispag-color-text-medium: #555;
+    --ispag-color-text-light: #777;
+    --ispag-color-border-light: #e0e0e0;
+    --ispag-color-border-lighter: #f0f0f0;
+    --ispag-color-background: #fff;
+    --ispag-color-profile-pic: #f76839; 
+} */
+ 
+
+/* -------------------------------------------------------------------------- */
+/* --- 2. STRUCTURE ET MISE EN PAGE PRINCIPALE --- */
+/* -------------------------------------------------------------------------- */
+
+.ispag-detail-container { 
+    /* Utilisation de la flexbox pour un layout à colonnes */
+    display: flex; 
+    gap: 20px; /* Espace entre les colonnes */
+    /* max-width: 1200px;  */
+    margin: 20px auto; /* Centrage et marge extérieure */
+    font-family: Arial, sans-serif;
+}
+
+
+/* Styles de carte/bloc d'information */
+.ispag-card { 
+    background: var(--ispag-color-background); 
+    border: 1px solid var(--ispag-color-border-light); 
+    border-radius: 8px; 
+    padding: 15px; 
+    margin-bottom: 20px; 
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Légère ombre */
+}
+.ispag-card:hover{
+    border-color: #d1d9e2; /* Bordure légèrement plus foncée au survol */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Style des titres de section à l'intérieur des cartes */
+.ispag-card h5 { 
+    border-bottom: 1px solid #eee; /* Ligne de séparation */
+    padding-bottom: 10px; 
+    font-weight: 600; 
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--ispag-color-text-dark);
+}
+
+/* Gestion du responsive pour les petits écrans */
+@media (max-width: 992px) {
+    .ispag-detail-container {
+        /* Passe en mode colonne sur les petits écrans */
+        flex-direction: column; 
+        gap: 0;
+    }
+    .ispag-left-panel, .ispag-right-panel {
+        /* Les colonnes prennent toute la largeur disponible */
+        flex: 1 1 100%;
+    }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* --- 3. EN-TÊTE ET AVATAR --- */
+/* -------------------------------------------------------------------------- */
+
+.ispag-header-card { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px; 
+}
+/* Style de base pour les initiales (le conteneur par défaut) */
+.ispag-profile-pic { 
+    width: 60px; 
+    height: 60px; 
+    /* Ces propriétés sont actives par défaut pour afficher le rond orange et centrer les initiales */
+    border-radius: 50%; 
+    background: var(--ispag-color-profile-pic); 
+    color: var(--ispag-color-background); 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    font-size: 24px; 
+    font-weight: bold; 
+    flex-shrink: 0; 
+}
+.ispag-company-icon-container {
+    width: 30px; 
+    height: 30px; 
+    /* Ces propriétés sont actives par défaut pour afficher le rond orange et centrer les initiales */
+    border-radius: 50%; 
+    background: var(--ispag-color-profile-pic); 
+    color: var(--ispag-color-background); 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    font-size: 24px; 
+    font-weight: bold; 
+    flex-shrink: 0; 
+}
+/* ---------------------------------------------------------------- */
+/* STYLE SPÉCIFIQUE LORSQU'UN FAVICON EST PRÉSENT */
+/* ---------------------------------------------------------------- */
+
+/* 1. Rétablir le style du conteneur .ispag-profile-pic */
+.ispag-profile-pic.has-favicon {
+    /* Supprimer le fond et la bordure ronde pour afficher l'icône sur fond transparent/blanc */
+    background: none; /* Supprime le fond orange */
+    border-radius: 0; /* Supprime le bord rond si vous voulez des coins carrés */
+    /* On garde les dimensions (width: 60px; height: 60px;) du style de base */
+}
+
+/* 2. Styliser l'image elle-même pour qu'elle remplisse le conteneur */
+.ispag-profile-pic.has-favicon .favicon-img {
+    /* S'assurer que l'image ne dépasse pas la taille du conteneur (60x60) */
+    max-width: 100%; 
+    max-height: 100%; 
+    /* S'assurer que l'image elle-même n'a pas de bordure ronde si elle n'en a pas besoin */
+    border-radius: 0; 
+    /* Si vous voulez que l'image remplisse 60x60 même si elle est plus petite : */
+    /* width: 100%;
+    /* height: 100%; */ 
+}
+.ispag-header-info h4 { 
+    margin: 0; 
+    font-size: 18px; 
+    color: var(--ispag-color-text-dark); 
+}
+.ispag-header-info p { 
+    margin: 0; 
+    font-size: 13px; 
+    color: var(--ispag-color-text-light); 
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* --- 4. LISTE D'INFORMATIONS CLÉS (Définition List) --- */
+/* -------------------------------------------------------------------------- */
+
+.ispag-key-info-list { 
+    list-style: none; 
+    padding: 0; 
+}
+.ispag-key-info-list dt, 
+.ispag-key-info-list dd { 
+    display: flex; /* Utilisé pour aligner les éléments sur la ligne */
+    justify-content: space-between; 
+    padding: 8px 0; 
+    border-bottom: 1px dotted var(--ispag-color-border-lighter); 
+    margin: 0; 
+    font-size: 14px; 
+}
+.ispag-key-info-list dt { 
+    font-weight: 500; 
+    color: var(--ispag-color-text-medium); 
+}
+.ispag-key-info-list dd { 
+    font-weight: 400; 
+    text-align: right; 
+    /* max-width: 60%; /* Pour éviter les dépassements si le contenu est trop long */
+    /* Permet le positionnement de l'icône d'édition dans le DD */
+    position: relative; 
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* --- 5. BADGES (Statut, Phase) --- */
+/* -------------------------------------------------------------------------- */
+
+.ispag-status-badge { 
+    display: inline-block; 
+    padding: 3px 8px; 
+    border-radius: 12px; 
+    font-size: 0.8em; 
+    font-weight: bold; 
+    text-transform: capitalize; 
+    line-height: 1.2; /* Assure un bon alignement vertical dans <dd> */
+    white-space: nowrap; /* Empêche la coupure du texte */
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* --- 6. ÉDITION EN LIGNE (INLINE EDIT) --- */
+/* -------------------------------------------------------------------------- */
+
+.ispag-editable-field {
+    /* Pointeur pour indiquer que le champ est cliquable */
+    cursor: pointer; 
+    /* Souligne légèrement ou change l'arrière-plan au survol */
+    transition: background-color 0.2s;
+    border-radius: 3px;
+    /* Pour aligner l'icône d'édition à droite du texte */
+    display: flex;
+    justify-content: flex-end; 
+    align-items: center;
+    gap: 5px; /* Espace entre le texte/select et l'icône */
+    min-height: 18px; /* Assure une hauteur minimale pour l'édition */
+    box-sizing: border-box;
+}
+
+.ispag-editable-field:hover {
+    background-color: #f8f8f8;
+}
+
+/* Style de l'icône de crayon */
+.ispag-editable-field .edit-icon {
+    font-size: 10px; /* Taille plus petite pour l'icône */
+    opacity: 0; /* Masqué par défaut */
+    color: var(--ispag-color-primary);
+    transition: opacity 0.2s;
+    flex-shrink: 0; /* Empêche le rétrécissement */
+}
+
+/* Afficher l'icône au survol du champ éditable */
+.ispag-editable-field:hover .edit-icon {
+    opacity: 1;
+}
+
+/* Styles pour les champs d'édition (Input/Select) */
+.ispag-edit-input, 
+.ispag-edit-select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 3px 6px;
+    border: 1px solid var(--ispag-color-primary); /* Bordure bleue en mode édition */
+    border-radius: 3px;
+    font-size: 14px; 
+    height: 28px; /* Hauteur cohérente */
+}
+
+/* Le mode édition masque la valeur affichée et l'icône */
+.ispag-editable-field.editing {
+    background-color: transparent;
+    cursor: default;
+    /* Cache l'icône pendant l'édition */
+}
+
+/* Le champ de l'en-tête nécessite une adaptation de taille */
+.ispag-header-info .ispag-editable-field {
+    font-size: 13px;
+    color: var(--ispag-color-text-light);
+    justify-content: flex-start;
+    padding: 0;
+}
+.ispag-header-info .ispag-editable-field:hover {
+    background-color: transparent;
+}
+.ispag-header-info .ispag-edit-input {
+    font-size: 13px;
+    padding: 1px 4px;
+    height: auto;
+}
+.ispag-header-info .edit-icon {
+    font-size: 8px; 
+    opacity: 0.5;
+}
+
+
+/* État de chargement */
+.ispag-editable-field.loading {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* --- 7. CARTES DE DROITE (Company, Transactions, Tickets) --- */
+/* -------------------------------------------------------------------------- */
+
+/* Titres avec boutons d'action (+ Add) */
+.ispag-company-card h5,
+.ispag-transactions-card h5,
+.ispag-tickets-card h5 {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+}
+
+/* Style de l'action '+ Add' */
+.ispag-right-panel h5 span {
+    font-size: 12px; 
+    color: var(--ispag-color-primary); 
+    cursor: pointer;
+}
+
+/* Style de l'entreprise (Nom en bleu) */
+.ispag-company-card strong { 
+    color: var(--ispag-color-primary);
+}
+
+/* Boutons secondaires (Show related...) */
+.ispag-right-panel button, 
+.ispag-button-link {
+    background: none !important; 
+    color: var(--ispag-color-text-dark) !important; 
+    border: 1px solid #ccc !important; 
+    padding: 5px 10px !important; 
+    border-radius: 4px !important; 
+    font-size: 12px !important; 
+    cursor: pointer !important; 
+    text-decoration: none !important; 
+    text-align: center !important; 
+    transition: background-color 0.2s;
+    width: 100%; /* Remplir toute la largeur de la carte */
+    box-sizing: border-box; /* Inclure padding et border dans la largeur */
+}
+
+.ispag-right-panel button:hover, 
+.ispag-button-link:hover {
+    background-color: #f0f0f0 !important; 
+    color: #000 !important;
+}
+
+/* Liste des transactions */
+.ispag-transactions-list {
+    margin-bottom: 10px;
+}
+
+
+
+.ispag-transaction-item { 
+    padding: 10px 0; 
+    border-bottom: 1px solid var(--ispag-color-border-lighter); 
+}
+.ispag-full-transaction-item { 
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    
+    padding: 10px 0; 
+    border-bottom: 1px solid var(--ispag-color-border-lighter); 
+}
+.ispag-full-transaction-item:hover {
+    border-color: #d1d9e2; /* Bordure légèrement plus foncée au survol */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.ispag-transaction-item:last-child, .ispag-full-transaction-item:last-child { 
+    border-bottom: none; 
+}
+.ispag-transaction-item h6, .ispag-full-transaction-item h6 { 
+    margin: 0 0 5px 0; 
+    font-size: 14px; 
+    color: var(--ispag-color-primary); 
+    font-weight: 600; 
+    cursor: pointer; 
+}
+.ispag-transaction-item p, .ispag-full-transaction-item p { 
+    margin: 0; 
+    font-size: 12px; 
+    color: var(--ispag-color-text-medium); 
+    line-height: 1.5; 
+}
+.ispag-transaction-item h6 a, .ispag-full-transaction-item h6 a {
+    color: inherit;
+    text-decoration: none;
+}
+.ispag-transaction-item h6 a:hover, .ispag-full-transaction-item h6 a:hover {
+    text-decoration: underline;
+}
+
+/* Mise en page des champs dans le contenu principal */
+.ispag-main-content > .ispag-card > div:last-of-type {
+    /* Styles pour la grille de 'Profil de contact' */
+    font-size: 14px;
+}
+.ispag-main-content > .ispag-card > div:last-of-type p {
+    margin: 5px 0 10px 0;
+    color: var(--ispag-color-text-medium);
+}
