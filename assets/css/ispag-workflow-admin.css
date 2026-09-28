@@ -1,0 +1,151 @@
+.ispag-field-group {
+    margin-bottom: 15px;
+}
+
+.ispag-field-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.ispag-field-group input[type="text"],
+.ispag-field-group select,
+.ispag-field-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.ispag-field-group textarea {
+    height: 100px;
+}
+
+.ispag-workflow-step,
+.ispag-workflow-trigger {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 3px;
+    background: #f9f9f9;
+}
+
+.ispag-workflow-step button,
+.ispag-workflow-trigger button {
+    margin-top: 10px;
+    background: #ff0000;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#ispag-add-step,
+#ispag-add-trigger {
+    margin-top: 10px;
+    background: #2271b1;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.ispag-workflow-step hr,
+.ispag-workflow-trigger hr {
+    margin: 15px 0;
+    border: 0;
+    border-top: 1px solid #ddd;
+}
+
+.ispag-in-sequence-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    background: #2271b1;
+    color: #fff;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* =============================================
+   STYLES POUR LA PAGE DES SÉQUENCES ACTIVES
+   ============================================= */
+
+.ispag-workflow-admin-filters {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+}
+
+.ispag-workflow-admin-filters select,
+.ispag-workflow-admin-filters button {
+    margin-right: 10px;
+}
+
+.ispag-workflow-table {
+    margin-top: 20px;
+}
+
+.ispag-workflow-table th,
+.ispag-workflow-table td {
+    padding: 12px;
+}
+
+.ispag-workflow-table th {
+    background: #f5f5f5;
+    font-weight: bold;
+}
+
+.ispag-workflow-table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.ispag-workflow-table tr:hover {
+    background: #f0f0f0;
+}
+
+.ispag-status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.ispag-status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.ispag-status-running {
+    background: #d4edda;
+    color: #155724;
+}
+
+.ispag-status-completed {
+    background: #c3e6cb;
+    color: #155724;
+}
+
+.ispag-status-interrupted {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.ispag-view-execution {
+    background: #2271b1;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.ispag-view-execution:hover {
+    background: #1a5f8a;
+}

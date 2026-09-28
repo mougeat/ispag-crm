@@ -1,0 +1,28 @@
+Etat de la base
+1 => En travail
+2 => Imprimé
+3 => Envoyé par mail
+4 => Facturé
+5 => ????
+6 => Payé partiellement
+7 => Payé en totalité
+8 => Terminé
+9 => Ajourné
+10 => Interropue / Annulée
+11 => In accomplissement
+
+Etat
+0 => Ouvert
+1 => Gagné
+2 => Perdu
+
+Motif de rejet
+1 => Prix trop élevé
+2 => Date problème
+3 => Insatisfait du dernier ordre
+4 => Attribué aux concurrents
+5 => Projet ne se réalise pas
+6 => Décision politique
+7 => Remplacé par offre
+8 => Client n'a pas reçu l'ordre
+9 => Attribué aux groupes interne

@@ -1,0 +1,94 @@
+.ispag-whatsapp-panel {
+	display: flex;
+	flex-direction: column;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	background: #fff;
+	max-width: 480px;
+	height: 480px;
+}
+
+.ispag-whatsapp-header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 14px;
+	background: #075e54;
+	color: #fff;
+	border-radius: 6px 6px 0 0;
+	font-weight: 600;
+}
+
+.ispag-whatsapp-header .ispag-whatsapp-phone {
+	margin-left: auto;
+	font-weight: 400;
+	font-size: 12px;
+	opacity: 0.85;
+}
+
+.ispag-whatsapp-messages {
+	flex: 1;
+	overflow-y: auto;
+	padding: 12px;
+	background: #e5ddd5;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.ispag-whatsapp-empty {
+	text-align: center;
+	color: #888;
+	font-size: 13px;
+	margin-top: 20px;
+}
+
+.ispag-whatsapp-bubble {
+	max-width: 75%;
+	padding: 6px 10px;
+	border-radius: 8px;
+	font-size: 13px;
+	line-height: 1.4;
+	word-wrap: break-word;
+}
+
+.ispag-whatsapp-bubble.is-incoming {
+	align-self: flex-start;
+	background: #fff;
+}
+
+.ispag-whatsapp-bubble.is-outgoing {
+	align-self: flex-end;
+	background: #dcf8c6;
+}
+
+.ispag-whatsapp-bubble-time {
+	font-size: 10px;
+	color: #999;
+	margin-top: 2px;
+	text-align: right;
+}
+
+.ispag-whatsapp-composer {
+	display: flex;
+	gap: 8px;
+	padding: 10px;
+	border-top: 1px solid #dcdcde;
+	background: #f0f0f1;
+}
+
+.ispag-whatsapp-composer textarea {
+	flex: 1;
+	resize: none;
+	border-radius: 4px;
+	border: 1px solid #c3c4c7;
+	padding: 6px 8px;
+	font-size: 13px;
+}
+
+.ispag-whatsapp-status {
+	padding: 4px 10px;
+	font-size: 12px;
+	color: #d63638;
+	min-height: 18px;
+}
