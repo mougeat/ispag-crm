@@ -103,6 +103,14 @@ ISPAG_GitHub_Updater::plugin(__FILE__, 'mougeat/ispag-crm');
 register_activation_hook(__FILE__, ['ISPAG_CRM_Installer', 'install']);
 ISPAG_CRM_Installer::init();
 
+// ISPAG_Logger est fourni par un autre plugin ISPAG ; classe de secours chargée seulement s'il est absent
+add_action('plugins_loaded', function () {
+    spl_autoload_register(function ($class) {
+        if ($class === 'ISPAG_Logger') require_once ISPAG_CRM_PLUGIN_DIR . 'install/fallback-logger.php';
+    });
+}, 1);
+
+
 // Les pages du CRM sont des modèles de page du thème (créées par le thème). Le plugin, lui, ajoute des adresses
 // /deal/, /contact/, /company/ qui donnent une 404 tant que les permaliens ne sont pas rafraîchis.
 require_once ISPAG_CRM_PLUGIN_DIR . 'classes/class-ispag-page-installer.php';
