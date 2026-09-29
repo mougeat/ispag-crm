@@ -1000,7 +1000,7 @@ class ISPAG_Notifications_Manager
         if (!empty($url))
         {
             $full_url = (strpos($url, 'http') === 0) ? $url : home_url() . ltrim($url, '/');
-            $message .= "\n\n🌐 <a href='" . esc_url($full_url) . "'>Voir les détails</a>";
+            $message .= "\n\n🌐 <a href='" . esc_url($full_url) . "'>View details</a>";
             $logger->log_user_action('notifications_manager', 'url_added_to_message', ['url' => $full_url], 0);
         }
 
@@ -1416,7 +1416,7 @@ class ISPAG_Notifications_Manager
         ], $user_id);
 
         $logger->log_user_action('notifications_manager', 'save_user_preferences_ajax_complete', [], $user_id);
-        wp_send_json_success(['message' => 'Préférences enregistrées avec succès.']);
+        wp_send_json_success(['message' => 'Preferences saved successfully.']);
     }
 
     /**
@@ -1542,7 +1542,7 @@ class ISPAG_Notifications_Manager
         if ($user_id === 0 || !$notif_id)
         {
             $logger->log('notifications_manager', 'ERROR: Invalid user_id or notification_id', $user_id, ['notif_id' => $notif_id]);
-            wp_send_json_error(['message' => 'Requête invalide.']);
+            wp_send_json_error(['message' => 'Invalid request.']);
         }
 
         $logger->log_user_action('notifications_manager', 'notification_id_received', ['notif_id' => $notif_id], $user_id);

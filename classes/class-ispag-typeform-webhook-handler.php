@@ -84,7 +84,7 @@ class ISPAG_Typeform_Webhook_Handler {
         $note_data = new stdClass();
         $note_data->contact_id    = $user->ID;
         $note_data->activity_type = 'SURVEY_RESPONSE';
-        $note_data->title         = 'Enquête satisfaction : ' . ($form_response['definition']['title'] ?? 'Typeform');
+        $note_data->title         = 'Satisfaction survey: ' . ($form_response['definition']['title'] ?? 'Typeform');
         $note_data->content       = $this->format_answers_for_crm( $form_response );
         $note_data->date_time     = current_time( 'mysql' );
 
@@ -121,7 +121,7 @@ class ISPAG_Typeform_Webhook_Handler {
      * Formate toutes les questions/réponses pour le contenu de la note
      */
     private function format_answers_for_crm( $form_response ) {
-        $output = "Résultats du questionnaire :\n\n";
+        $output = "Questionnaire results:\n\n";
         $questions = [];
         
         // On mappe les IDs de questions aux titres

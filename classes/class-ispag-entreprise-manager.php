@@ -138,11 +138,11 @@ class ISPAG_Entreprise_Manager {
                             <td>
                                 <a href="<?php echo admin_url('admin.php?page='.$this->menu_slug.'&action=edit&id='.$company->Id); ?>">Modifier</a> | 
                                 <a href="<?php echo wp_nonce_url(admin_url('admin.php?page='.$this->menu_slug.'&action=delete&id='.$company->Id), 'delete_entreprise_'.$company->Id); ?>" 
-                                   class="submitdelete" style="color:red;" onclick="return confirm('Supprimer définitivement ?');">Supprimer</a>
+                                   class="submitdelete" style="color:red;" onclick="return confirm('Delete permanently?');">Supprimer</a>
                             </td>
                         </tr>
                     <?php endforeach; else : ?>
-                        <tr><td colspan="6">Aucune entreprise trouvée.</td></tr>
+                        <tr><td colspan="6">No company found.</td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>
@@ -188,7 +188,7 @@ class ISPAG_Entreprise_Manager {
                     <tr>
                         <th><label>Viag ID</label></th>
                         <td><input name="viag_id" type="number" value="<?php echo $company ? esc_attr($company->viag_id) : ''; ?>" class="small-text">
-                            <?php if (!$company) : ?><p class="description">Laisser vide : un identifiant provisoire (90001 et plus) est attribué automatiquement.</p><?php endif; ?></td>
+                            <?php if (!$company) : ?><p class="description">Leave empty: a temporary ID (90001 and above) is assigned automatically.</p><?php endif; ?></td>
                     </tr>
                     <tr>
                         <th><label>Type</label></th>

@@ -425,7 +425,7 @@ jQuery(document).ready(function($) {
     $(document).on('click', '#ispag-apply-template', function(e) {
         e.preventDefault();
         const templateId = $('#ispag-note-template-select').val();
-        if (!templateId) return alert("Sélectionnez un template.");
+        if (!templateId) return alert("Select a template.");
 
         const editor = tinymce.get('note-text-area');
         let currentContent = editor ? editor.getContent() : noteTextArea.val();
@@ -726,7 +726,7 @@ jQuery(document).ready(function($) {
 $(document).on('click', '#ispag-apply-article-template', function(e) {
     e.preventDefault();
     const templateId = $('#ispag-article-template-select').val();
-    if (!templateId) return alert("Veuillez sélectionner un template.");
+    if (!templateId) return alert("Please select a template.");
 
     // Ciblage direct de notre textarea pour le commentaire de la cuve
     const textArea = $('#tank-open-comment');
@@ -753,7 +753,7 @@ $(document).on('click', '#ispag-apply-article-template', function(e) {
                 const contentBody = response.data.content || "";
                 textArea.val(contentBody);
             } else {
-                alert("Erreur lors de la récupération du template.");
+                alert("Error while retrieving the template.");
             }
         },
         complete: () => $(this).prop('disabled', false).text(ispagNoteData.textApply || 'Appliquer')

@@ -34,7 +34,7 @@
                 if (selectedFiles.length === 1) {
                     $fileName.text(selectedFiles[0].name);
                 } else {
-                    $fileName.text(selectedFiles.length + ' fichiers sélectionnés');
+                    $fileName.text(selectedFiles.length + ' files selected');
                 }
 
                 $preview.prop('hidden', false);

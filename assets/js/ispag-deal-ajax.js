@@ -44,7 +44,7 @@ window.executeBulkAjax = function(ids, stageKey, contactDate, reason) { // Ajout
             if(r.success) {
                 location.reload(); 
             } else {
-                alert("Error during update groupée");
+                alert("Error during bulk update");
             }
         },
         error: function() {

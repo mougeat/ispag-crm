@@ -100,7 +100,7 @@ class ISPAG_Crm_Company_Repository {
                 'html' => $html_content
             ));
         } else {
-            wp_send_json_error(array('message' => 'Aucune entreprise trouvée.'));
+            wp_send_json_error(array('message' => 'No company found.'));
         }
     }
 
@@ -113,7 +113,7 @@ class ISPAG_Crm_Company_Repository {
         $datas = $this->get_companies_data_from_db($hubspot_deal_id);
 
         if (empty($datas['companies'])) {
-            return '<p class="ispag-no-company">Aucune entreprise associée.</p>';
+            return '<p class="ispag-no-company">No associated company.</p>';
         }
 
         ob_start();
@@ -1149,14 +1149,14 @@ class ISPAG_Crm_Company_Repository {
         $attachment_id = isset($_POST['attachment_id']) ? absint($_POST['attachment_id']) : 0;
 
         if (!$company_id || !$attachment_id) {
-            wp_send_json_error(['message' => 'Données manquantes (ID entreprise ou média).']);
+            wp_send_json_error(['message' => 'Missing data (company ID or media).']);
         }
 
         // 3. Récupération de l'URL du média WordPress
         $favicon_url = wp_get_attachment_url($attachment_id);
 
         if (!$favicon_url) {
-            wp_send_json_error(['message' => 'Impossible de récupérer l\'URL du média sélectionné.']);
+            wp_send_json_error(['message' => 'Unable to retrieve the URL of the selected media.']);
         }
 
         // 4. Mise à jour de la table personnalisée ISPAG
@@ -1176,7 +1176,7 @@ class ISPAG_Crm_Company_Repository {
         // Si l'URL était déjà la même, il renvoie 0, ce qui n'est pas une erreur.
         if ($updated !== false) {
             wp_send_json_success([
-                'message'       => 'Favicon mis à jour avec succès.',
+                'message'       => 'Favicon updated successfully.',
                 'url'           => $favicon_url
             ]);
         } else {

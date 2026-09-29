@@ -22,9 +22,9 @@ class ISPAG_Crm_Contact_Modal {
         $deleted = delete_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, $company_id );
 
         if ( $deleted ) {
-            wp_send_json_success( array( 'message' => 'Association retirée.' ) );
+            wp_send_json_success( array( 'message' => 'Association removed.' ) );
         } else {
-            wp_send_json_error( array( 'message' => 'Échec de la suppression.' ) );
+            wp_send_json_error( array( 'message' => 'Deletion failed.' ) );
         }
         wp_die();
     }
@@ -177,7 +177,7 @@ class ISPAG_Crm_Contact_Modal {
         // 2. Vérification des données critiques
         if ( ! $company_id && empty( $contact_ids) && empty($deal_id) && empty($deal_group_ref) ) {
             // error_log("[ISPAG ERROR] Données incomplètes : CompanyID=$company_id, deal_group_ref=$deal_group_ref, deal_id=$deal_id, ContactsCount=" . count($contact_ids));
-            wp_send_json_error( array( 'message' => 'Données incomplètes (ID Société, Contacts ou deal).' ) );
+            wp_send_json_error( array( 'message' => 'Incomplete data (Company ID, Contacts or deal).' ) );
         }
 
         $table_deals = ISPAG_Crm_Deal_Constants::TABLE_NAME;
@@ -265,7 +265,7 @@ class ISPAG_Crm_Contact_Modal {
         }
 
         // error_log("[ISPAG DEBUG] --- Fin Association Contact ---");
-        wp_send_json_success( array( 'message' => 'Liaison effectuée avec succès.' ) );
+        wp_send_json_success( array( 'message' => 'Link created successfully.' ) );
     }
 }
 endif;

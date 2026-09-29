@@ -284,7 +284,7 @@ class ISPAG_Note_Ajax_Handler {
 
         if ( $result === false ) {
             $logger->log_error( 'note_ajax', 'Database error during note/activity save.', ['db_error' => $wpdb->last_error, 'data' => $data_to_save], $current_user_id );
-            wp_send_json_error( array( 'message' => 'Erreur base de données.' ) );
+            wp_send_json_error( array( 'message' => 'Database error.' ) );
         }
 
         $logger->log_user_action( 'note_ajax', "save_{$action_type}", ['activity_id' => $activity_id], $current_user_id );

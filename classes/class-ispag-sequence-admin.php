@@ -24,7 +24,7 @@ class ISPAG_Sequence_Admin {
     public function add_menu() {
         add_submenu_page(
             'ispag-entreprises',       // Slug du menu parent
-            'Séquences CRM',           // Titre de la page
+            'CRM sequences',           // Titre de la page
             'Séquences',               // Titre du menu
             'manage_options',          // Capacité requise
             'ispag-sequences',         // Slug de ce sous-menu
@@ -88,14 +88,14 @@ class ISPAG_Sequence_Admin {
 
         ?>
         <div class="wrap">
-            <h1 class="wp-heading-inline">Séquences de vente</h1>
-            <a href="?page=ispag-sequences&action=new" class="page-title-action">Ajouter une séquence</a>
+            <h1 class="wp-heading-inline">Sales sequences</h1>
+            <a href="?page=ispag-sequences&action=new" class="page-title-action">Add sequence</a>
             <hr class="wp-header-end">
 
             <table class="wp-list-table widefat fixed striped" style="margin-top:20px;">
                 <thead>
                     <tr>
-                        <th class="manage-column column-primary">Nom de la séquence</th>
+                        <th class="manage-column column-primary">Sequence name</th>
                         <th class="manage-column">Description</th>
                         <th class="manage-column">Contacts Actifs</th>
                         <th class="manage-column">Statut</th>
@@ -123,7 +123,7 @@ class ISPAG_Sequence_Admin {
                             </td>
                         </tr>
                     <?php endforeach; else : ?>
-                        <tr><td colspan="5">Aucune séquence trouvée. <a href="?page=ispag-sequences&action=new">Créez-en une !</a></td></tr>
+                        <tr><td colspan="5">No sequence found. <a href="?page=ispag-sequences&action=new">Create one!</a></td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>
@@ -172,7 +172,7 @@ class ISPAG_Sequence_Admin {
         $sequence_data = $_POST['sequence'] ?? null;
 
         if (!$sequence_data || empty($sequence_data['name'])) {
-            wp_send_json_error(['message' => 'Données de séquence invalides']);
+            wp_send_json_error(['message' => 'Invalid sequence data']);
         }
 
         $repository = new ISPAG_Sequence_Repository();
@@ -180,7 +180,7 @@ class ISPAG_Sequence_Admin {
 
         if ($sequence_id) {
             wp_send_json_success([
-                'message' => 'Séquence enregistrée !',
+                'message' => 'Sequence saved!',
                 'id'      => $sequence_id
             ]);
         } else {
@@ -199,7 +199,7 @@ class ISPAG_Sequence_Admin {
         
         $repo = new ISPAG_Sequence_Repository();
         if ($repo->enroll($contact_id, $sequence_id)) {
-            wp_send_json_success('Contact inscrit avec succès !');
+            wp_send_json_success('Contact enrolled successfully!');
         } else {
             wp_send_json_error('Erreur lors de l\'inscription.');
         }
@@ -216,7 +216,7 @@ class ISPAG_Sequence_Admin {
         if ($results) {
             wp_send_json_success($results);
         } else {
-            wp_send_json_error('Aucune séquence trouvée.');
+            wp_send_json_error('No sequence found.');
         }
     }
 

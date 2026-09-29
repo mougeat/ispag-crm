@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
             source = 'project';
         } else {
             console.error('Erreur: ID d\'entité non trouvé.');
-            alert('Erreur: L\'ID de l\'entité est manquant.');
+            alert('Error: The entity ID is missing.');
             exitEditMode(field);
             return;
         }
@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!entityId) {
             console.error('Erreur: Entity ID non trouvé.');
-            alert('Erreur: L\'ID de l\'entité est manquant.');
+            alert('Error: The entity ID is missing.');
             exitEditMode(field);
             return;
         }
@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 field.classList.remove('editing');
                 field.dataset.originalContent = field.innerHTML; 
             } else {
-                const errorMessage = data.data && data.data.message ? data.data.message : 'Échec de la sauvegarde.';
+                const errorMessage = data.data && data.data.message ? data.data.message : 'Save failed.';
                 console.error('Save error:', errorMessage);
                 field.innerHTML = `<span style="color: #dc3545;">Erreur: ${errorMessage}</span>`;
                 setTimeout(() => exitEditMode(field), 2000); 
@@ -431,7 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderContactList(response.data.contacts, resultsContainer);
                     countElement.text(response.data.count + ' Contacts');
                 } else {
-                    resultsContainer.html('<p>Aucun contact trouvé.</p>');
+                    resultsContainer.html('<p>No contact found.</p>');
                     countElement.text('0 Contact');
                 }
             },
@@ -444,7 +444,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderContactList(contacts, container) {
         let html = '';
         if (contacts.length === 0) {
-            container.html('<p>Aucun contact non associé trouvé.</p>');
+            container.html('<p>No unassociated contact found.</p>');
             return;
         }
 
@@ -469,7 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).get();
 
         if (selectedIds.length === 0) {
-            alert('Veuillez sélectionner au moins un contact.');
+            alert('Please select at least one contact.');
             return;
         }
 
@@ -506,7 +506,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         e.stopPropagation();
 
-        if (!confirm("Êtes-vous sûr de vouloir retirer cette association ?")) {
+        if (!confirm("Are you sure you want to remove this association?")) {
             return;
         }
 
@@ -694,7 +694,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.success) {
                 let html = '';
                 if (response.data.contacts.length === 0) {
-                    html = '<p>Aucun contact trouvé.</p>';
+                    html = '<p>No contact found.</p>';
                 } else {
                     response.data.contacts.forEach(function(contact) {
                         html += `
@@ -707,7 +707,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
                 container.html(html);
-                $('.results-count').text(response.data.count + ' Contacts trouvés');
+                $('.results-count').text(response.data.count + ' Contacts found');
             }
         });
     }
@@ -730,7 +730,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isNaN(companyId)) {
             console.error("ISPAG : ID Société invalide ou manquant dans la modal.");
-            alert("Erreur : ID de société introuvable.");
+            alert("Error: Company ID not found.");
             return;
         }
 
@@ -748,7 +748,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).get();
 
         if (selectedIds.length === 0) {
-            alert('Veuillez sélectionner au moins un contact.');
+            alert('Please select at least one contact.');
             return;
         }
 
@@ -850,7 +850,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 } else {
                     if (!append) {
-                        resultsContainer.html('<p>Aucune entreprise trouvée.</p>');
+                        resultsContainer.html('<p>No company found.</p>');
                         loadMoreBtn.hide();
                     } else {
                         loadMoreBtn.hide();
@@ -866,7 +866,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).get();
 
         if (selectedIds.length === 0) {
-            alert('Veuillez sélectionner au moins une entreprise.');
+            alert('Please select at least one company.');
             return;
         }
         

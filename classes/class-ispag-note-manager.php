@@ -215,7 +215,7 @@ class ISPAG_Note_Manager {
 
         // 1. Vérification de sécurité (Nonce)
         if ( ! check_ajax_referer( 'ispag_crm_nonce', 'security', false ) ) {
-            wp_send_json_error( array( 'message' => 'Nonce de sécurité invalide.' ) );
+            wp_send_json_error( array( 'message' => 'Invalid security nonce.' ) );
             wp_die();
         }
         
@@ -285,7 +285,7 @@ class ISPAG_Note_Manager {
         // // 1. Vérification de sécurité (Nonce)
         // if ( ! check_ajax_referer( 'ispag_note_nonce', 'security', false ) ) {
         //     error_log('[ISPAG AJAX ERROR] Nonce de sécurité invalide pour ispag_search_contacts.');
-        //     wp_send_json_error( array( 'message' => 'Nonce de sécurité invalide.' ) );
+        //     wp_send_json_error( array( 'message' => 'Invalid security nonce.' ) );
         //     wp_die();
         // }
         
@@ -377,7 +377,7 @@ class ISPAG_Note_Manager {
     
         // 1. Vérification du Nonce (la cause probable du 403)
         if ( ! check_ajax_referer( 'ispag_crm_nonce', 'security', false ) ) {
-            wp_send_json_error( 'Session expirée, veuillez rafraîchir la page.' );
+            wp_send_json_error( 'Session expired, please refresh the page.' );
         }
 
         $table_deals = self::TABLE_DEALS;
@@ -588,7 +588,7 @@ class ISPAG_Note_Manager {
 
         // Validation simple des données reçues
         if ( empty( $note_data->contact_id ) || empty( $note_data->content ) ) {
-            return new WP_Error( 'data_missing', 'Données de contact ou contenu manquant pour la création de la note.' );
+            return new WP_Error( 'data_missing', 'Missing contact data or content for note creation.' );
         }
 
         // --- Préparation des données pour l'insertion ---
@@ -634,7 +634,7 @@ class ISPAG_Note_Manager {
 
         if ( $inserted === false ) {
             // Échec de l'insertion SQL
-            return new WP_Error( 'db_insert_failed', 'Erreur de base de données lors de l\'enregistrement de la note.', [ 'db_error' => $wpdb->last_error ] );
+            return new WP_Error( 'db_insert_failed', 'Database error while saving the note.', [ 'db_error' => $wpdb->last_error ] );
         }
 
         // Succès : retourne l'ID de la ligne insérée

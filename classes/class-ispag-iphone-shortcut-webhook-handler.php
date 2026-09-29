@@ -155,7 +155,7 @@ class ISPAG_Iphone_Shortcut_Webhook_Handler {
             return new WP_REST_Response( [ 'message' => 'Erreur enregistrement note.' ], 500 );
         }
 
-        return new WP_REST_Response( [ 'message' => 'Note enregistrée', 'id' => $result ], 200 );
+        return new WP_REST_Response( [ 'message' => 'Note saved', 'id' => $result ], 200 );
     }
 
     /**
@@ -216,7 +216,7 @@ class ISPAG_Iphone_Shortcut_Webhook_Handler {
             return $users[0];
         }
 
-        $this->_log( "Aucun contact trouvé pour les variantes de téléphone testées." );
+        $this->_log( "No contact found pour les variantes de téléphone testées." );
         return 0;
     }
     

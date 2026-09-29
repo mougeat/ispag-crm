@@ -94,8 +94,8 @@ class ISPAG_Cron_Contact_Health {
                     'contact_id'   => $user->ID,
                     'user_id'      => self::DEFAULT_MANAGER_ID, 
                     'type'         => 'ASSIGNMENT_REQUIRED',
-                    'title'        => '⚠️ Attribution requise : ' . $user->display_name,
-                    'content'      => "Le contact **{$user->display_name}** est en phase qualifiée mais n'a pas de responsable.",
+                    'title'        => '⚠️ Assignment required: ' . $user->display_name,
+                    'content'      => "Le contact **{$user->display_name}** is in the qualified phase but has no owner.",
                     'is_task'      => 1,
                     'is_completed' => 0,
                     'created_at'   => current_time('mysql')
@@ -155,7 +155,7 @@ class ISPAG_Cron_Contact_Health {
 
                 if (!$existing_task) {
                     $display_last = ($last_contact_ts > 0) ? date_i18n(get_option('date_format'), $last_contact_ts) : "jamais";
-                    $prio = !empty($contact->priority_level) ? $contact->priority_level : 'Non définie'; 
+                    $prio = !empty($contact->priority_level) ? $contact->priority_level : 'Not defined'; 
 
                     // Récupération de l'ID entreprise (on prend la première si multi-sociétés)
                     $linked_company_id = 0;

@@ -25,7 +25,7 @@ jQuery(document).ready(function($) {
             security: ispag_ajax.nonce // Utilise l'objet global défini dans ispag-crm.php
         }, function(response) {
             if (response.success) {
-                let options = '<option value="">-- Choisir une séquence --</option>';
+                let options = '<option value="">-- Choose a sequence --</option>';
                 response.data.forEach(function(seq) {
                     options += `<option value="${seq.id}">${seq.name}</option>`;
                 });
@@ -39,7 +39,7 @@ jQuery(document).ready(function($) {
     // 2. ACTION DU BOUTON START
     $('#confirm-enroll').on('click', function() {
         const sequenceId = $('#select-sequence-id').val();
-        if (!sequenceId) return alert('Veuillez sélectionner une séquence.');
+        if (!sequenceId) return alert('Please select a sequence.');
 
         const $btn = $(this);
         $btn.attr('disabled', true).text('Lancement...');

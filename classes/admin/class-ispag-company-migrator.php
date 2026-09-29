@@ -115,7 +115,7 @@ class ISPAG_Company_Migrator {
             <?php else : ?>
                 <p class="description">
                     <?php _e( 'Please review the matches below. Matches with a low distance (0 or 1) are more reliable.', 'ispag-crm' ); ?>
-                    <br>**Attention :** Les lignes cochées appliqueront le `viag_id` **ET** mettront à jour le nom du fournisseur pour qu'il corresponde au Nom de la Société.
+                    <br>**Warning:** Checked rows will apply the `viag_id` **AND** update the supplier name to match the company name.
                 </p>
 
                 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
@@ -308,7 +308,7 @@ class ISPAG_Company_Migrator {
 
         $this->log_and_exit( 
             sprintf( 
-                'Recherche terminée : %d correspondances stockées pour validation. Temps : %s secondes.', 
+                'Search completed: %d matches stored for validation. Time: %s seconds.', 
                 $matches_found, 
                 $execution_time 
             ), 
@@ -383,7 +383,7 @@ class ISPAG_Company_Migrator {
 
         $this->log_and_exit( 
             sprintf( 
-                '%d fournisseurs mis à jour (viag_id et Nom).', 
+                '%d suppliers updated (viag_id and name).', 
                 $applied_count 
             ), 
             'success',

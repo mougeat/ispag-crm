@@ -200,14 +200,14 @@ class ISPAG_Company_Registry_Sync {
         // Colonne gauche : nom CRM + bouton ignorer
         $out .= "<td style='vertical-align:top;width:220px;padding-top:12px;'>";
         $out .= "<strong>" . esc_html($co->company_name) . "</strong>";
-        $out .= "<br><button class='button do-skip' data-id='{$vid}' style='margin-top:10px;color:#b32d2e;border-color:#b32d2e;'>✖ Aucun résultat</button>";
+        $out .= "<br><button class='button do-skip' data-id='{$vid}' style='margin-top:10px;color:#b32d2e;border-color:#b32d2e;'>✖ No result</button>";
         $out .= "</td>";
 
         // Colonne droite : cartes Zefix
         $out .= "<td style='padding:8px 0;'>";
 
         foreach ($choices as $c) {
-            $badge     = $c['status'] === 'active' ? '🟢 Active' : '🔴 Radiée';
+            $badge     = $c['status'] === 'active' ? '🟢 Active' : '🔴 Deregistered';
             $uid       = esc_html($c['uid']);
             $co_name   = esc_html($c['name']);
             $town      = esc_html($c['town']);
@@ -279,7 +279,7 @@ class ISPAG_Company_Registry_Sync {
 
         if (empty($results)) {
             $wpdb->update($this->table_name, ['uid_status' => 'not_found'], ['viag_id' => $company->viag_id]);
-            return "❓ Non trouvé";
+            return "❓ Not found";
         }
 
         if (count($results) === 1) {
@@ -477,19 +477,19 @@ LIMIT 10';
         $debug_url    = admin_url('admin.php?page=ispag-uid-validation&ispag_uid_scan=1&debug_network=1');
 
         echo '<div class="wrap"><h1>Maintenance Registre du Commerce</h1>';
-        echo '<p style="color:#666;margin-top:0;">Source : <a href="https://lindas.admin.ch" target="_blank">LINDAS / Zefix Linked Data</a> — sans authentification, mis à jour quotidiennement.</p>';
+        echo '<p style="color:#666;margin-top:0;">Source: <a href="https://lindas.admin.ch" target="_blank">LINDAS / Zefix Linked Data</a> — sans authentification, mis à jour quotidiennement.</p>';
 
-        if (isset($_GET['cron_started'])) echo '<div class="notice notice-success"><p>✅ Scan démarré — traitement en arrière-plan toutes les minutes.</p></div>';
-        if (isset($_GET['cron_stopped'])) echo '<div class="notice notice-warning"><p>⏹ Scan arrêté.</p></div>';
+        if (isset($_GET['cron_started'])) echo '<div class="notice notice-success"><p>✅ Scan started — background processing every minute.</p></div>';
+        if (isset($_GET['cron_stopped'])) echo '<div class="notice notice-warning"><p>⏹ Scan stopped.</p></div>';
 
         // Boutons
         echo '<div style="display:flex;gap:10px;align-items:center;margin-bottom:20px;">';
         if (!$cron_running) {
-            echo '<a href="' . esc_url($start_url) . '" class="button button-primary">▶ Démarrer le scan</a>';
+            echo '<a href="' . esc_url($start_url) . '" class="button button-primary">▶ Start scan</a>';
         } else {
-            echo '<a href="' . esc_url($stop_url) . '" class="button button-secondary">⏹ Arrêter le scan</a>';
+            echo '<a href="' . esc_url($stop_url) . '" class="button button-secondary">⏹ Stop scan</a>';
         }
-        echo '<a href="' . esc_url($debug_url) . '" class="button">🔍 Diagnostic réseau</a>';
+        echo '<a href="' . esc_url($debug_url) . '" class="button">🔍 Network diagnostics</a>';
         echo '</div>';
 
         // Dashboard live
@@ -499,10 +499,10 @@ LIMIT 10';
         echo '<span id="ispag-cron-badge"></span>';
         echo '</div>';
         echo '<div style="display:flex;gap:24px;font-size:14px;flex-wrap:wrap;">';
-        echo '<span>🟢 Liés : <strong id="ispag-done">…</strong></span>';
+        echo '<span>🟢 Linked: <strong id="ispag-done">…</strong></span>';
         echo '<span>⏳ En attente : <strong id="ispag-pending">…</strong></span>';
-        echo '<span>⚠️ Homonymes : <strong id="ispag-homonyms">…</strong></span>';
-        echo '<span>❓ Non trouvés : <strong id="ispag-not-found">…</strong></span>';
+        echo '<span>⚠️ Homonyms: <strong id="ispag-homonyms">…</strong></span>';
+        echo '<span>❓ Not found: <strong id="ispag-not-found">…</strong></span>';
         echo '<span>❌ Erreurs : <strong id="ispag-errors">…</strong></span>';
         echo '</div>';
         echo '<small id="ispag-next-tick" style="color:#888;margin-top:8px;display:block;"></small>';
@@ -510,20 +510,20 @@ LIMIT 10';
 
         if ($manual_review_count > 0) {
             echo '<div class="notice notice-warning"><p>';
-            echo '⚠️ <strong>' . $manual_review_count . ' société(s)</strong> marquées <code>manual_review</code> (noms corrompus ou trop longs).';
+            echo '⚠️ <strong>' . $manual_review_count . ' company(ies)</strong> marked <code>manual_review</code> (corrupted or too long names).';
             echo ' Corrigez-les en BDD : <code>WHERE uid_status = \'manual_review\'</code>';
             echo '</p></div>';
         }
 
         // Tableau des homonymes
         echo '<h2 id="ispag-homonyms-title" style="margin-top:10px;">';
-        echo 'Homonymes à valider' . ($pending ? ' (' . count($pending) . ')' : '');
+        echo 'Homonyms to validate' . ($pending ? ' (' . count($pending) . ')' : '');
         echo '</h2>';
 
         if ($pending) {
             echo '<table class="widefat" style="margin-top:8px;border-collapse:collapse;">';
             echo '<thead><tr>';
-            echo '<th style="width:220px;">Société CRM</th>';
+            echo '<th style="width:220px;">CRM company</th>';
             echo '<th>Correspondances Zefix</th>';
             echo '</tr></thead>';
             echo '<tbody id="ispag-homonyms-table">';
@@ -576,7 +576,7 @@ LIMIT 10';
 
                     $('#ispag-cron-badge').html(d.cron_running
                         ? '<span style="color:#00a32a;font-weight:bold;font-size:12px;">● EN COURS</span>'
-                        : '<span style="color:#999;font-size:12px;">● Arrêté</span>'
+                        : '<span style="color:#999;font-size:12px;">● Stopped</span>'
                     );
                     $('#ispag-next-tick').text(
                         d.cron_running && d.next_tick ? 'Prochain batch dans : ' + d.next_tick : ''
@@ -587,7 +587,7 @@ LIMIT 10';
                         prevHomonyms = d.homonyms;
                         $('#ispag-homonyms').text(d.homonyms);
                         $('#ispag-homonyms-title').text(
-                            d.homonyms > 0 ? 'Homonymes à valider (' + d.homonyms + ')' : 'Homonymes à valider'
+                            d.homonyms > 0 ? 'Homonyms to validate (' + d.homonyms + ')' : 'Homonyms to validate'
                         );
                         refreshHomonyms();
                     } else {
@@ -664,7 +664,7 @@ LIMIT 10';
                             updateHomonymCount(-1);
                         });
                     } else {
-                        btn.prop('disabled', false).text('✖ Aucun résultat');
+                        btn.prop('disabled', false).text('✖ No result');
                     }
                 });
             });
@@ -700,8 +700,8 @@ LIMIT 10';
                 $('#ispag-homonyms').text(prevHomonyms);
                 $('#ispag-homonyms-title').text(
                     prevHomonyms > 0
-                        ? 'Homonymes à valider (' + prevHomonyms + ')'
-                        : 'Homonymes à valider'
+                        ? 'Homonyms to validate (' + prevHomonyms + ')'
+                        : 'Homonyms to validate'
                 );
                 if (prevHomonyms === 0) {
                     $('#ispag-no-homonyms').show().text('Aucune validation manuelle en attente.');
@@ -724,7 +724,7 @@ LIMIT 10';
 
     private function run_network_diagnostics() {
         echo "<div style='background:#1d2327;color:#f0f0f1;padding:30px;font-family:monospace;font-size:13px;'>";
-        echo "<h2 style='color:#72aee6;'>🔍 Diagnostic réseau SPARQL / LINDAS</h2>";
+        echo "<h2 style='color:#72aee6;'>🔍 Network diagnostics SPARQL / LINDAS</h2>";
 
         $tests = [
             'Test google.com'      => 'https://www.google.com',
@@ -839,7 +839,7 @@ WHERE {
         }
 
         if (!$choice || empty($choice['uid'])) {
-            wp_send_json_error(['message' => 'Données invalides — reçu : ' . esc_html(substr($raw, 0, 200))], 400);
+            wp_send_json_error(['message' => 'Invalid data — received: ' . esc_html(substr($raw, 0, 200))], 400);
             return;
         }
 

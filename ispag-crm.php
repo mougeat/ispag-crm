@@ -593,12 +593,12 @@ add_action('admin_head', function() {
                             'assigned_at'    => current_time('mysql')
                         ]);
                         $updates++;
-                        echo "🔹 Contact ID $contact_id : <span style='color:#00ff00;'>Mis à jour</span><br>";
+                        echo "🔹 Contact ID $contact_id : <span style='color:#00ff00;'>Updated</span><br>";
                     }
                 }
             }
 
-            echo "<p style='color:#72aee6;'>✅ Fin du lot. $updates modifications effectuées.</p>";
+            echo "<p style='color:#72aee6;'>✅ End of batch. $updates changes made.</p>";
 
             // 3. Redirection automatique vers le lot suivant
             $next = $offset + 1;
@@ -607,8 +607,8 @@ add_action('admin_head', function() {
 
         } else {
             echo "<div style='background:#46b450; padding:20px; color:#fff;'>";
-            echo "<h2>🏁 Terminé !</h2>";
-            echo "Tous les contacts ont été alignés sur les propriétaires de leurs entreprises.";
+            echo "<h2>🏁 Done!</h2>";
+            echo "All contacts have been aligned with the owners of their companies.";
             echo "</div><br><a href='".admin_url()."' style='color:#72aee6;'>Retour au CRM</a>";
         }
 

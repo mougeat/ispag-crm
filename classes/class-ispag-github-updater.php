@@ -332,10 +332,10 @@ class ISPAG_GitHub_Updater {
         }
         delete_transient($this->cache_key());
     }
-    // ------------------------------------------------------------------ diagnostic (Outils → Mises à jour ISPAG)
+    // ------------------------------------------------------------------ diagnostic (Outils → Updates ISPAG)
 
     public static function admin_menu() {
-        add_management_page('Mises à jour ISPAG', 'Mises à jour ISPAG', 'manage_options', 'ispag-updates', [self::class, 'render_admin']);
+        add_management_page('Updates ISPAG', 'Updates ISPAG', 'manage_options', 'ispag-updates', [self::class, 'render_admin']);
     }
 
     private static function hint($code, $error) {
@@ -352,7 +352,7 @@ class ISPAG_GitHub_Updater {
         $no  = '<span style="color:#b42318;font-weight:600;">non</span>';
         $configured = self::is_configured();
 
-        echo '<div class="wrap"><h1>Mises à jour ISPAG</h1>';
+        echo '<div class="wrap"><h1>Updates ISPAG</h1>';
         echo '<p>Mise à jour automatique des plugins et du thème ISPAG depuis une branche GitHub. Cet écran indique ce qui fonctionne et ce qui bloque.</p>';
 
         // --- 1. configuration
@@ -364,7 +364,7 @@ class ISPAG_GitHub_Updater {
         $cron_off = defined('DISABLE_WP_CRON') && DISABLE_WP_CRON;
         printf('<tr><td>Tâches planifiées WordPress (WP-Cron) actives</td><td>%s%s</td></tr>', $cron_off ? $no : $yes, $cron_off ? ' — DISABLE_WP_CRON est à true : la vérification automatique ne se déclenche pas, seul le bouton ci-dessous fonctionne' : '');
         $updater_off = defined('AUTOMATIC_UPDATER_DISABLED') && AUTOMATIC_UPDATER_DISABLED;
-        printf('<tr><td>Mises à jour automatiques de WordPress autorisées</td><td>%s%s</td></tr>', $updater_off ? $no : $yes, $updater_off ? ' — AUTOMATIC_UPDATER_DISABLED est à true : rien ne s\'installera automatiquement' : '');
+        printf('<tr><td>Updates automatiques de WordPress autorisées</td><td>%s%s</td></tr>', $updater_off ? $no : $yes, $updater_off ? ' — AUTOMATIC_UPDATER_DISABLED est à true : rien ne s\'installera automatiquement' : '');
         $next = wp_next_scheduled(self::CRON_HOOK); $last = (int) get_option('ispag_gh_last_poll', 0);
         printf('<tr><td>Prochaine vérification planifiée</td><td>%s</td></tr>', $next ? esc_html(wp_date('d.m.Y H:i:s', $next)) . ' (toutes les 15 min, si le site est visité)' : ($configured ? 'pas encore planifiée (elle le sera à la prochaine visite du site)' : '—'));
         printf('<tr><td>Dernière vérification automatique</td><td>%s</td></tr>', $last ? esc_html(wp_date('d.m.Y H:i:s', $last)) : 'jamais');
@@ -390,7 +390,7 @@ define(\'ISPAG_UPDATE_BRANCH\', \'claude/eager-galileo-tcm8l8\');</pre></div></d
 
         echo '<h2>2. Vérification GitHub</h2>';
         echo '<form method="post">'; wp_nonce_field('ispag_check_now');
-        echo '<p><input type="submit" name="ispag_check_now" class="button button-primary" value="Vérifier maintenant"> <span class="description">Interroge GitHub pour chaque plugin et le thème, et rafraîchit la page Mises à jour de WordPress.</span></p></form>';
+        echo '<p><input type="submit" name="ispag_check_now" class="button button-primary" value="Vérifier maintenant"> <span class="description">Interroge GitHub pour chaque plugin et le thème, et rafraîchit la page Updates de WordPress.</span></p></form>';
 
         echo '<table class="widefat striped" style="max-width:1100px"><thead><tr><th>Élément</th><th>Dépôt</th><th>Commit sur GitHub</th><th>Commit installé</th><th>État</th></tr></thead><tbody>';
         $rows = $results !== null ? $results : array_map(function ($i) { return $i->describe() + ['sha' => null]; }, self::$instances);
@@ -405,7 +405,7 @@ define(\'ISPAG_UPDATE_BRANCH\', \'claude/eager-galileo-tcm8l8\');</pre></div></d
         }
         echo '</tbody></table>';
         if ($results !== null) {
-            echo '<p style="margin-top:14px">Étape suivante : <a href="' . esc_url(admin_url('update-core.php')) . '">Tableau de bord → Mises à jour</a> pour installer, ou <a href="' . esc_url(admin_url('plugins.php')) . '">la page Extensions</a> pour voir « Mises à jour automatiques activées ».</p>';
+            echo '<p style="margin-top:14px">Next step : <a href="' . esc_url(admin_url('update-core.php')) . '">Tableau de bord → Updates</a> pour installer, ou <a href="' . esc_url(admin_url('plugins.php')) . '">la page Extensions</a> pour voir « Updates automatiques activées ».</p>';
         }
         echo '</div>';
     }

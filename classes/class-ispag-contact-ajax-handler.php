@@ -73,7 +73,7 @@ class ISPAG_Contact_Ajax_Handler {
         if ( $old_value === $new_value ) {
             // On s'assure de renvoyer le succès pour que le JS puisse quitter le mode édition.
             wp_send_json_success( array( 
-                'message' => 'Valeur inchangée. Aucune sauvegarde effectuée.',
+                'message' => 'Value unchanged. Nothing saved.',
                 'new_value' => $new_value 
             ) );
         }
@@ -205,10 +205,10 @@ class ISPAG_Contact_Ajax_Handler {
                         
                     } else {
                         // Échec de la mise à jour (devrait être rare car déjà géré par l'ancienne/nouvelle valeur)
-                        wp_send_json_error( array( 'message' => 'Échec de la mise à jour de la meta (billing_phone).' ) );
+                        wp_send_json_error( array( 'message' => 'Failed to update the meta (billing_phone).' ) );
                     }
                 } else {
-                    wp_send_json_error( array( 'message' => 'Format de téléphone invalide après nettoyage.' ) );
+                    wp_send_json_error( array( 'message' => 'Invalid phone format after cleaning.' ) );
                 }
                 break;
             case self::META_USER_ROLE:
@@ -280,7 +280,7 @@ class ISPAG_Contact_Ajax_Handler {
                     $response_data['display_value'] = esc_html( $new_value );
                     
                 } else {
-                    wp_send_json_error( array( 'message' => 'Échec de la mise à jour de la meta Fonction (problème de DB ou valeur inchangée).' ) );
+                    wp_send_json_error( array( 'message' => 'Failed to update the Function meta (DB issue or unchanged value).' ) );
                 }
                 
                 break;
@@ -296,7 +296,7 @@ class ISPAG_Contact_Ajax_Handler {
                     $response_data['display_value'] = esc_html( $new_value );
                     
                 } else {
-                    wp_send_json_error( array( 'message' => 'Échec de la mise à jour de la meta Fonction (problème de DB ou valeur inchangée).' ) );
+                    wp_send_json_error( array( 'message' => 'Failed to update the Function meta (DB issue or unchanged value).' ) );
                 }
                 
                 break;
@@ -325,7 +325,7 @@ class ISPAG_Contact_Ajax_Handler {
                         $response_data['display_value'] = esc_html( $company_data->Fournisseur );
                         
                     } else {
-                        wp_send_json_error( array( 'message' => 'Échec de la mise à jour de la meta COMPANY (problème de DB ou valeur inchangée).' ) );
+                        wp_send_json_error( array( 'message' => 'Failed to update the COMPANY meta (DB issue or unchanged value).' ) );
                     }
                     
                 } else {
@@ -335,7 +335,7 @@ class ISPAG_Contact_Ajax_Handler {
                 break;
             case self::META_OWNER:
                 // error_log("META_OWNER  ---\n", 3, $log_file);
-                // La valeur doit être un ID d'utilisateur (ou 0 pour "Aucun propriétaire")
+                // La valeur doit être un ID d'utilisateur (ou 0 pour "No owner")
                 $owner_id_to_save = absint( $new_value );
                 
                 // 1. Récupérer la map des propriétaires (y compris ceux de 'get_all_owners' + ID 0)
@@ -351,8 +351,8 @@ class ISPAG_Contact_Ajax_Handler {
                     // La clé devient l'ID de l'utilisateur (1, 512, 1477, etc.)
                     $validation_map[$owner_object->ID] = $owner_object;
                 }
-                // 3. Ajouter l'option "Aucun propriétaire" (ID 0) manuellement pour la validation.
-                $validation_map[0] = (object)['display_name' => '— Aucun propriétaire —'];
+                // 3. Ajouter l'option "No owner" (ID 0) manuellement pour la validation.
+                $validation_map[0] = (object)['display_name' => '— No owner —'];
 
                 // error_log("Owners Validation Map (ID => Object) " . print_r($validation_map, true) . " ---", 3, $log_file);
     
@@ -372,12 +372,12 @@ class ISPAG_Contact_Ajax_Handler {
                         $response_data['display_value'] = esc_html( $owner_data->display_name );
                         
                     } else {
-                        wp_send_json_error( array( 'message' => 'Échec de la mise à jour de la meta (problème de DB ou valeur inchangée).' ) );
+                        wp_send_json_error( array( 'message' => 'Failed to update the meta (DB issue or unchanged value).' ) );
                     }
                     
                 } else {
                     // ID non trouvé dans la liste des propriétaires valides.
-                    wp_send_json_error( array( 'message' => 'ID de propriétaire inconnu ou invalide.' ) );
+                    wp_send_json_error( array( 'message' => 'Unknown or invalid owner ID.' ) );
                 }
                 
                 break;
@@ -471,7 +471,7 @@ class ISPAG_Contact_Ajax_Handler {
                     
                     // Si la valeur est vide, on renvoie le placeholder pour le JS
                     if ( empty( $new_value ) ) {
-                        $placeholder = ( $field_name === 'first_name' ) ? 'Prénom' : 'Nom';
+                        $placeholder = ( $field_name === 'first_name' ) ? 'First name' : 'Last name';
                         $response_data['display_value'] = '<span class="ispag-placeholder">' . $placeholder . '</span>';
                     } else {
                         $response_data['display_value'] = esc_html( $new_value );
@@ -510,7 +510,7 @@ class ISPAG_Contact_Ajax_Handler {
                 'new_value' => $new_value
             ) ) );
         } else {
-            wp_send_json_error( array( 'message' => 'Échec de la mise à jour du champ. La valeur est peut-être inchangée ou invalide.' ) );
+            wp_send_json_error( array( 'message' => 'Failed to update the field. The value may be unchanged or invalid.' ) );
         }
         // error_log("--- FIN EXECUTION  ajax_save_contact_field : " . date('Y-m-d H:i:s') . " ---\n", 3, $log_file);
         
@@ -668,7 +668,7 @@ class ISPAG_Contact_Ajax_Handler {
         // 1. Sécurité
         if ( ! check_ajax_referer('ispag_new_contact_nonce', 'nonce', false) ) {
             // error_log('ISPAG CRM: Échec du nonce');
-            wp_send_json_error(['message' => 'Sécurité : Nonce invalide']);
+            wp_send_json_error(['message' => 'Security: Invalid nonce']);
         }
         
         // 2. Récupération des données (Attention aux noms dans $_POST)
@@ -723,12 +723,12 @@ class ISPAG_Contact_Ajax_Handler {
             $redirect_url = home_url("/contact/{$contact_id}/");
 
             wp_send_json_success([
-                'message'      => 'Contact créé avec succès',
+                'message'      => 'Contact created successfully',
                 'redirect_url' => $redirect_url
             ]);
         } else {
             // error_log('ISPAG CRM: Erreur SQL lors de l\'insert');
-            wp_send_json_error(['message' => 'Erreur lors de la création en base de données']);
+            wp_send_json_error(['message' => 'Error while creating in the database']);
         }
     }
     /**
@@ -839,7 +839,7 @@ class ISPAG_Contact_Ajax_Handler {
         update_user_meta($user_id, 'wp_user_avatar', $attachment_id);
 
         if ($updated !== false || get_user_meta($user_id, $meta_avatar, true) == $attachment_id) {
-            wp_send_json_success(['message' => 'Avatar mis à jour avec succès.']);
+            wp_send_json_success(['message' => 'Avatar updated successfully.']);
         } else {
             wp_send_json_error(['message' => 'Error while updating the database.']);
         }

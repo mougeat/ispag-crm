@@ -18,11 +18,11 @@ class ISPAG_Company_Importer {
         'company_name'    => 'Nom de l\'entreprise',
         'compagny_domain' => 'Domaine (ex: entreprise.ch)', 
         'is_active'       => 'Statut Actif (VRAI/FAUX)',
-        'city'            => 'Ville / Localité',
+        'city'            => 'City / Locality',
         'phone'           => 'Téléphone',
         'email'           => 'Email',
         'address'         => 'Adresse (Rue)',
-        'address_2'       => 'Adresse 2 (Complément)',
+        'address_2'       => 'Address 2 (Additional)',
         'postal_code'     => 'Code Postal (PLZ)',
     );
 
@@ -68,7 +68,7 @@ class ISPAG_Company_Importer {
         check_admin_referer( 'ispag_upload_company_csv' );
 
         if ( empty( $_FILES['csv_file']['tmp_name'] ) ) {
-            wp_die( 'Veuillez sélectionner un fichier.' );
+            wp_die( 'Please select a file.' );
         }
 
         $delimiter = sanitize_text_field( $_POST['csv_delimiter'] ?: ';' );
@@ -98,9 +98,9 @@ class ISPAG_Company_Importer {
                 <?php wp_nonce_field( 'ispag_upload_company_csv' ); ?>
                 <table class="form-table">
                     <tr><th>Fichier CSV</th><td><input type="file" name="csv_file" accept=".csv" required /></td></tr>
-                    <tr><th>Délimiteur</th><td><input type="text" name="csv_delimiter" value=";" style="width:40px" /></td></tr>
+                    <tr><th>Delimiter</th><td><input type="text" name="csv_delimiter" value=";" style="width:40px" /></td></tr>
                 </table>
-                <?php submit_button( 'Étape suivante' ); ?>
+                <?php submit_button( 'Next step' ); ?>
             </form>
         </div>
         <?php
@@ -345,10 +345,10 @@ class ISPAG_Company_Importer {
         <div class="wrap">
             <h1>Statut de l'Import Entreprises CSV</h1>
             <div class="card" style="background: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                <h2>Tâche : <?php echo esc_html( $task_id ); ?></h2>
+                <h2>Task: <?php echo esc_html( $task_id ); ?></h2>
                 <p><strong>Statut :</strong> <?php echo esc_html( ucfirst( $status ) ); ?></p>
                 <p><strong>Fichier :</strong> <?php echo esc_html( basename( $task_data['file_path'] ) ); ?></p>
-                <p><strong>Début :</strong> <?php echo esc_html( $task_data['start_time'] ); ?></p>
+                <p><strong>Start:</strong> <?php echo esc_html( $task_data['start_time'] ); ?></p>
                 <?php if ( isset( $task_data['end_time'] ) ) : ?>
                     <p><strong>Fin :</strong> <?php echo esc_html( $task_data['end_time'] ); ?></p>
                 <?php endif; ?>
@@ -365,7 +365,7 @@ class ISPAG_Company_Importer {
                             </div>
                         </div>
                         <p style="margin: 0;">
-                            Progression : <?php echo esc_html( $progress['processed_rows'] ); ?> / <?php echo esc_html( $progress['total_rows'] ); ?> lignes
+                            Progress: <?php echo esc_html( $progress['processed_rows'] ); ?> / <?php echo esc_html( $progress['total_rows'] ); ?> lignes
                             (<?php echo esc_html( round( min( 100, ( $progress['processed_rows'] / max( 1, $progress['total_rows'] ) ) * 100 ), 1 ) ); ?>%)
                         </p>
                     </div>
@@ -373,7 +373,7 @@ class ISPAG_Company_Importer {
 
                 <div style="margin-top: 20px;">
                     <p><strong>Insertions :</strong> <?php echo esc_html( $progress['insert_count'] ); ?></p>
-                    <p><strong>Mises à jour :</strong> <?php echo esc_html( $progress['update_count'] ); ?></p>
+                    <p><strong>Updates:</strong> <?php echo esc_html( $progress['update_count'] ); ?></p>
                 </div>
 
                 <?php if ( $status === 'failed' && isset( $task_data['error'] ) ) : ?>
@@ -385,7 +385,7 @@ class ISPAG_Company_Importer {
                 <?php if ( $status === 'pending' || $status === 'processing' ) : ?>
                     <p style="margin-top: 20px;">
                         <button id="ispag-refresh-status" class="button button-secondary" data-task-id="<?php echo esc_attr( $task_id ); ?>">
-                            Rafraîchir le statut
+                            Refresh status
                         </button>
                     </p>
                     <p style="margin-top: 10px; color: #666; font-style: italic;">
@@ -410,7 +410,7 @@ class ISPAG_Company_Importer {
                         task_id: taskId,
                     },
                     beforeSend: function() {
-                        $('#ispag-refresh-status').prop('disabled', true).text('Rafraîchissement...');
+                        $('#ispag-refresh-status').prop('disabled', true).text('Refreshing...');
                     },
                     success: function(response) {
                         if (response.success) {
@@ -419,10 +419,10 @@ class ISPAG_Company_Importer {
                             const percentage = Math.min(100, (progress.processed_rows / Math.max(1, progress.total_rows)) * 100);
 
                             progressBar.css('width', percentage + '%');
-                            progressText.html('Progression : ' + progress.processed_rows + ' / ' + progress.total_rows + ' lignes (' + percentage.toFixed(1) + '%)');
+                            progressText.html('Progress: ' + progress.processed_rows + ' / ' + progress.total_rows + ' lignes (' + percentage.toFixed(1) + '%)');
 
                             $('p:contains("Insertions")').html('<strong>Insertions :</strong> ' + progress.insert_count);
-                            $('p:contains("Mises à jour")').html('<strong>Mises à jour :</strong> ' + progress.update_count);
+                            $('p:contains("Updates")').html('<strong>Updates:</strong> ' + progress.update_count);
                             $('p:contains("Statut")').html('<strong>Statut :</strong> ' + data.status.charAt(0).toUpperCase() + data.status.slice(1));
 
                             if (data.status === 'completed') {
@@ -430,7 +430,7 @@ class ISPAG_Company_Importer {
                                 $('#ispag-refresh-status').hide();
                                 $('p:contains("Vous pouvez fermer")').hide();
                             } else if (data.status === 'failed') {
-                                $('p:contains("Statut")').html('<strong>Statut :</strong> Échoué');
+                                $('p:contains("Statut")').html('<strong>Status:</strong> Failed');
                                 $('.notice-error').html('<p><strong>Erreur :</strong> ' + data.error + '</p>').show();
                                 $('#ispag-refresh-status').hide();
                                 $('p:contains("Vous pouvez fermer")').hide();
@@ -438,7 +438,7 @@ class ISPAG_Company_Importer {
                         }
                     },
                     complete: function() {
-                        $('#ispag-refresh-status').prop('disabled', false).text('Rafraîchir le statut');
+                        $('#ispag-refresh-status').prop('disabled', false).text('Refresh status');
                     }
                 });
             });
@@ -468,7 +468,7 @@ class ISPAG_Company_Importer {
                 'L\'importation du fichier CSV des entreprises s\'est déroulée avec succès.<br>
                 - Lignes traitées : %1$d<br>
                 - Créations : %2$d<br>
-                - Mises à jour : %3$d<br>
+                - Updates : %3$d<br>
                 - Fichier : %4$s<br>
                 - ID Tâche : %5$s',
                 $row_count,
@@ -483,7 +483,7 @@ class ISPAG_Company_Importer {
                 'L\'importation du fichier CSV des entreprises a échoué.<br>
                 - Lignes traitées : %1$d<br>
                 - Créations : %2$d<br>
-                - Mises à jour : %3$d<br>
+                - Updates : %3$d<br>
                 - Fichier : %4$s<br>
                 - ID Tâche : %5$s<br>
                 - Erreur : %6$s',

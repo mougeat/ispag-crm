@@ -312,12 +312,12 @@ class ISPAG_Company_Detail_Shortcode {
 
     private function get_display_html( $field_name, $value ) {
         $default_style = 'background-color: #cccccc; color: #333333;';
-        $display_label = esc_html($value) ?: 'Non défini';
+        $display_label = esc_html($value) ?: 'Not defined';
 
         switch ($field_name) {
             case self::META_COMPANY_TYPE:
                 $options_map = self::get_company_type_options(); // ['prospect' => 'Prospect', ...]
-                $display_label = $options_map[$value] ?? 'Non défini';
+                $display_label = $options_map[$value] ?? 'Not defined';
                 // On peut définir une couleur spécifique si on le souhaite
                 break;
             case self::META_COMPANY_OWNER:
@@ -665,7 +665,7 @@ class ISPAG_Company_Detail_Shortcode {
             $note_manager = new ISPAG_Contact_Note_Manager(); // Instanciation pour l'exemple
             return $note_manager->render_activity_tab( $company_id, 'company' );
         }
-        return '<p>Erreur: ISPAG_Contact_Note_Manager n\'est pas accessible pour afficher les activités.</p>';
+        return '<p>Error: ISPAG_Contact_Note_Manager is not accessible to display activities.</p>';
     }
 
     /**
@@ -711,7 +711,7 @@ class ISPAG_Company_Detail_Shortcode {
                                         echo '<div class="contact-tag" data-id="' . absint( $contact->ID ) . '">' . esc_html( $contact->display_name ) . ' <span class="remove-contact">×</span></div>';
                                     }
                                 } else {
-                                    echo '<p>Aucun contact actuellement lié.</p>';
+                                    echo '<p>No contact currently linked.</p>';
                                 }
                                 ?>
                             </div>
@@ -836,7 +836,7 @@ class ISPAG_Company_Detail_Shortcode {
 
         $company_owner_id = isset($company->OwnerID) ? absint($company->OwnerID) : 0;
         $owners_lookup = $this->get_all_owners();
-        $owner_name = isset($owners_lookup[$company_owner_id]) ? esc_html($owners_lookup[$company_owner_id]->display_name) : 'Aucun propriétaire';
+        $owner_name = isset($owners_lookup[$company_owner_id]) ? esc_html($owners_lookup[$company_owner_id]->display_name) : 'No owner';
         
         $associated_contacts_list = $this->get_associated_contacts( $company_id, 5 ); 
         $associated_contacts_list_full = $this->get_associated_contacts( $company_id, 999 ); 

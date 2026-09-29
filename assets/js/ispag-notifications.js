@@ -433,7 +433,7 @@ jQuery(document).ready(function($) {
             if (isFormModified) {
                 if (typeof ispagConfirm === 'function') {
                     ispagConfirm(
-                        "Vous avez des modifications non enregistrées. Voulez-vous vraiment quitter sans sauvegarder ?",
+                        "You have unsaved changes. Do you really want to leave without saving?",
                         {
                             labelOk: "Oui, quitter",
                             labelCancel: "Non, rester",
@@ -447,7 +447,7 @@ jQuery(document).ready(function($) {
                     });
                 } else {
                     // Fallback si ispagConfirm n'est pas défini
-                    if (confirm("Vous avez des modifications non enregistrées. Voulez-vous vraiment quitter sans sauvegarder ?")) {
+                    if (confirm("You have unsaved changes. Do you really want to leave without saving?")) {
                         $('#ispag-notification-settings-modal').removeClass('active').hide();
                         isFormModified = false;
                     }
@@ -512,7 +512,7 @@ jQuery(document).ready(function($) {
                     isFormModified = false;
                     $('#ispag-notification-settings-modal').removeClass('active').hide();
                     showNotificationMessage(
-                        ispag_texts?.settings_saved || "Préférences enregistrées avec succès !",
+                        ispag_texts?.settings_saved || "Preferences saved successfully!",
                         'success'
                     );
                 } else {
@@ -524,7 +524,7 @@ jQuery(document).ready(function($) {
             },
             error: function() {
                 showNotificationMessage(
-                    ispag_texts?.connection_error || "Erreur de connexion. Veuillez réessayer.",
+                    ispag_texts?.connection_error || "Connection error. Please try again.",
                     'error'
                 );
             },

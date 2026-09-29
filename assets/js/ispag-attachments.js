@@ -54,7 +54,7 @@ jQuery(document).ready(function($) {
                             }
                         } else {
                             console.warn('ISPAG Debug - Réponse AJAX en échec :', response);
-                            var errorMsg = (response.data && response.data.message) ? response.data.message : 'Aucun attachement trouvé.';
+                            var errorMsg = (response.data && response.data.message) ? response.data.message : 'No attachment found.';
                             $card.html('<p class="error" style="padding: 10px; color: #666;">' + errorMsg + '</p>');
                         }
                     },

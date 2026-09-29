@@ -84,14 +84,14 @@ class ISPAG_Contact_Detail_Shortcode {
         if ( $deleted ) {
             wp_send_json_success( array( 
                 'message' => sprintf( 
-                    'Association de l\'entreprise ID %d retirée du contact ID %d.', 
+                    'Association of company ID %d removed from contact ID %d.', 
                     $company_id, 
                     $contact_id 
                 ) 
             ) );
         } else {
             // Cela peut signifier que la méta n'existait pas ou qu'une erreur de base de données s'est produite
-            wp_send_json_error( array( 'message' => 'Échec de la suppression de l\'association. L\'entrée n\'existait peut-être pas.' ) );
+            wp_send_json_error( array( 'message' => 'Failed to remove the association. The entry may not have existed.' ) );
         }
 
         wp_die();
@@ -361,7 +361,7 @@ class ISPAG_Contact_Detail_Shortcode {
             $note_manager = new ISPAG_Contact_Note_Manager(); // Instanciation pour l'exemple
             return $note_manager->render_activity_tab( $contact_id, 'contact' );
         }
-        return '<p>Erreur: ISPAG_Contact_Note_Manager n\'est pas accessible pour afficher les activités.</p>';
+        return '<p>Error: ISPAG_Contact_Note_Manager is not accessible to display activities.</p>';
     }
     
 
@@ -443,7 +443,7 @@ class ISPAG_Contact_Detail_Shortcode {
                                         echo '<div class="company-tag" data-id="' . absint( $company->ID ) . '">' . esc_html( $company->display_name ) . ' <span class="remove-company">×</span></div>';
                                     }
                                 } else {
-                                    echo '<p>Aucune entreprise actuellement lié.</p>';
+                                    echo '<p>No company currently linked.</p>';
                                 }
                                 ?>
                             </div>
@@ -757,9 +757,9 @@ class ISPAG_Contact_Detail_Shortcode {
             // La clé devient l'ID de l'utilisateur (1, 512, 1477, etc.)
             $owners_lookup[$owner_object->ID] = $owner_object;
         }
-        // 3. Ajouter l'option "Aucun propriétaire" (ID 0) manuellement pour la validation.
-        $validation_map[0] = (object)['display_name' => '— Aucun propriétaire —'];
-        $owner_name = isset($owners_lookup[$owner_id]) ? esc_html($owners_lookup[$owner_id]->display_name) : 'Aucun propriétaire';
+        // 3. Ajouter l'option "No owner" (ID 0) manuellement pour la validation.
+        $validation_map[0] = (object)['display_name' => '— No owner —'];
+        $owner_name = isset($owners_lookup[$owner_id]) ? esc_html($owners_lookup[$owner_id]->display_name) : 'No owner';
         
         // Attribut data-options pour le sélecteur Owner
         $owner_options_map = [];
@@ -883,7 +883,7 @@ class ISPAG_Contact_Detail_Shortcode {
         }
 
         // 3. Déterminer le texte à afficher
-        $status_text = ( $is_ignored == '1' ) ? 'Oui (Ignoré)' : 'Non (Suivi Actif)';
+        $status_text = ( $is_ignored == '1' ) ? 'Yes (Ignored)' : 'No (Actively tracked)';
         
         // --- Début de la sortie HTML ---
         ob_start();

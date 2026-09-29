@@ -56,8 +56,8 @@ class ISPAG_Mailgun_Webhook_Handler {
 
         // LOG DES PARAMÈTRES CLÉS
         $this->_log( 'Headers essentiels :', [
-            'sender' => $params['sender'] ?? 'NON DÉFINI',
-            'To'     => $params['To'] ?? 'NON DÉFINI',
+            'sender' => $params['sender'] ?? 'NOT DEFINED',
+            'To'     => $params['To'] ?? 'NOT DEFINED',
             'subject'=> $params['subject'] ?? 'SANS OBJET'
         ]);
 

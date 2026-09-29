@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' || $_SERVER['REQUEST_METHOD'] === 'OPTI
     header('Access-Control-Allow-Headers: Authorization, Content-Type');
     echo json_encode([
         "status" => "ok",
-        "message" => "Connecteur MCP ISPAG Planning Commercial est opérationnel",
+        "message" => "ISPAG Sales Planning MCP connector is operational",
         "version" => "1.0.0"
     ]);
     exit;
@@ -95,14 +95,14 @@ require_once($wp_load_path);
 
 // Vérifier que la constante CRM_MCP_API_KEY est définie
 if (!defined('CRM_MCP_API_KEY')) {
-    log_message("Erreur: CRM_MCP_API_KEY n'est pas définie dans wp-config.php");
+    log_message("Erreur: CRM_MCP_API_KEY is not defined in wp-config.php");
     header('Content-Type: application/json');
     http_response_code(500);
     die(json_encode([
         "jsonrpc" => "2.0",
         "error" => [
             "code" => -32002,
-            "message" => "La clé CRM_MCP_API_KEY n'est pas définie dans wp-config.php"
+            "message" => "La clé CRM_MCP_API_KEY is not defined in wp-config.php"
         ]
     ]));
 }
@@ -128,7 +128,7 @@ if ($received_key !== CRM_MCP_API_KEY) {
         "jsonrpc" => "2.0",
         "error" => [
             "code" => -32600,
-            "message" => "Access denied - Clé invalide"
+            "message" => "Access denied - Invalid key"
         ]
     ]));
 }
@@ -145,7 +145,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
         "jsonrpc" => "2.0",
         "error" => [
             "code" => -32700,
-            "message" => "Requête JSON invalide"
+            "message" => "Invalid JSON request"
         ]
     ]));
 }
@@ -288,14 +288,14 @@ switch ($method) {
 
     default:
         // Méthode non supportée
-        log_message("Erreur: Méthode non supportée: " . $method);
+        log_message("Erreur: Unsupported method: " . $method);
         header('Content-Type: application/json');
         echo json_encode([
             "jsonrpc" => "2.0",
             "id" => $id,
             "error" => [
                 "code" => -32601,
-                "message" => "Méthode non supportée: " . $method
+                "message" => "Unsupported method: " . $method
             ]
         ]);
         break;

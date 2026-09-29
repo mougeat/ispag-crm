@@ -96,7 +96,7 @@ jQuery(document).ready(function($) {
     });
 
     $(document).on('click', '.remove-step', function() {
-        if (!confirm('Supprimer cette étape ?')) return;
+        if (!confirm('Delete this step?')) return;
         const editorId = $(this).closest('.sequence-step').find('.step-content-editor').attr('id');
         if (typeof tinymce !== 'undefined' && tinymce.get(editorId)) {
             tinymce.get(editorId).remove();
@@ -172,7 +172,7 @@ jQuery(document).ready(function($) {
         };
 
         if(!data.sequence.name) {
-            alert('Donne un nom à ta séquence !');
+            alert('Give your sequence a name!');
             return;
         }
 

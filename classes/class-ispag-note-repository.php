@@ -405,7 +405,7 @@ class ISPAG_Note_Repository {
             wp_send_json_success( $task_data );
             
         } else {
-            wp_send_json_error( array( 'message' => 'Tâche non trouvée.' ) );
+            wp_send_json_error( array( 'message' => 'Task not found.' ) );
         }
     }
     /**

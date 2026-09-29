@@ -26,7 +26,7 @@ jQuery(document).ready(function($) {
                         $card.html(response.data.html);
                     } else {
                         console.warn('ISPAG JS : Erreur ou HTML vide renvoyé pour les contacts :', response);
-                        var errorMsg = (response.data && response.data.message) ? response.data.message : 'Aucun contact trouvé.';
+                        var errorMsg = (response.data && response.data.message) ? response.data.message : 'No contact found.';
                         $card.html('<p class="error" style="padding: 10px; color: #666;">' + errorMsg + '</p>');
                     }
                 },

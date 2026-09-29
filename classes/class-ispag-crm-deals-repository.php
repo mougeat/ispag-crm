@@ -968,7 +968,7 @@ class ISPAG_Crm_Deals_Repository {
 
         // Contrôle des autorisations
         if (!current_user_can('manage_order')) {
-            ISPAG_Workflow_Logger::warning("Droits insuffisants pour mettre à jour le stage");
+            ISPAG_Workflow_Logger::warning("Insufficient rights to update the stage");
             wp_send_json_error(['message' => 'Droits insuffisants']);
         }
 
@@ -982,7 +982,7 @@ class ISPAG_Crm_Deals_Repository {
                 "Données manquantes pour mettre à jour le stage via AJAX",
                 ['has_deal_id' => !empty($deal_id), 'has_new_stage' => !empty($new_stage_key)]
             );
-            wp_send_json_error(['message' => 'Données manquantes ou invalides']);
+            wp_send_json_error(['message' => 'Missing or invalid data']);
         }
 
         // Appel de la logique métier
@@ -1040,10 +1040,10 @@ class ISPAG_Crm_Deals_Repository {
 
         if (!$this->update_deal_stage($group_ref, $new_stage_key, $reason)) {
             ISPAG_Workflow_Logger::error(
-                "Échec de la mise à jour du stage pour group_ref: {$group_ref}",
+                "Stage update failed pour group_ref: {$group_ref}",
                 ['group_ref' => $group_ref, 'new_stage_key' => $new_stage_key]
             );
-            return new WP_Error('update_failed', 'Échec de la mise à jour du stage');
+            return new WP_Error('update_failed', 'Stage update failed');
         }
 
         ISPAG_Workflow_Logger::info(
@@ -1121,7 +1121,7 @@ class ISPAG_Crm_Deals_Repository {
         $user_id      = get_current_user_id();
 
         if (empty($ids)) {
-            wp_send_json_error(['message' => 'Aucun projet sélectionné']);
+            wp_send_json_error(['message' => 'No project selected']);
         }
 
         $success_count = 0;

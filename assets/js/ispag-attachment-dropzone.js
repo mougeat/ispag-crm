@@ -49,9 +49,9 @@ jQuery(function ($) {
 
             if (hasNonFileData) {
                 alert(
-                    "Impossible de récupérer ce fichier directement depuis Outlook.\n\n" +
+                    "Unable to retrieve this file directly from Outlook.\n\n" +
                     "Faites d'abord glisser le mail vers votre Bureau (ou utilisez « Enregistrer sous »), " +
-                    "puis déposez le fichier .eml/.msg obtenu ici."
+                    "then drop the resulting .eml/.msg file here."
                 );
             }
             return;

@@ -102,7 +102,7 @@ class ISPAG_Cron_Task_Reminder {
         }
 
         // --- 3. Gestion du DEAL (PROJET) ---
-        $project_name = "Projet non lié";
+        $project_name = "Unlinked project";
         $project_link = $this->get_app_url('deals/');
         if ( ! empty( $task->deal_id ) ) {
             $d_ids = explode( ',', $task->deal_id );
@@ -126,8 +126,8 @@ class ISPAG_Cron_Task_Reminder {
         );
 
         // Textes pour la cloche CRM et le Push
-        $push_title = "Rappel Tâche : " . $task->title;
-        $push_body  = "Échéance : " . $due_date_formatted . " | " . $task->content;
+        $push_title = "Task reminder: " . $task->title;
+        $push_body  = "Due: " . $due_date_formatted . " | " . $task->content;
         
         $sent_success = false;
 

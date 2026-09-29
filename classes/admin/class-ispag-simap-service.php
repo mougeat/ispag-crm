@@ -69,12 +69,12 @@ if ( ! class_exists( 'ISPAG_Simap_Service' ) ) {
             if (isset($_POST['launch_simap_sync'])) {
                 check_admin_referer('ispag_simap_action', 'simap_nonce');
                 $this->sync_adjudications();
-                echo '<div class="updated"><p>Synchronisation terminée avec succès.</p></div>';
+                echo '<div class="updated"><p>Synchronization completed successfully.</p></div>';
             }
 
             if (isset($_POST['clear_simap_logs'])) {
                 file_put_contents(self::$log_file, '');
-                echo '<div class="updated"><p>Logs effacés.</p></div>';
+                echo '<div class="updated"><p>Logs cleared.</p></div>';
             }
 
             ?>

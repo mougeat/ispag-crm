@@ -146,9 +146,9 @@ class ISPAG_Contact_Manager {
             return array(
                 array('key' => 'new', 'label' => 'Nouveau', 'order' => 10, 'bg' => '#3498db', 'text' => '#ffffff'),
                 array('key' => 'in_progress', 'label' => 'En cours', 'order' => 20, 'bg' => '#f39c12', 'text' => '#ffffff'),
-                array('key' => 'connected', 'label' => 'Connecté', 'order' => 30, 'bg' => '#2ecc71', 'text' => '#ffffff'),
-                array('key' => 'awaiting_response', 'label' => 'En attente de réponse', 'order' => 40, 'bg' => '#e67e22', 'text' => '#ffffff'),
-                array('key' => 'unqualified', 'label' => 'Non qualifié', 'order' => 90, 'bg' => '#e74c3c', 'text' => '#ffffff'),
+                array('key' => 'connected', 'label' => 'Connected', 'order' => 30, 'bg' => '#2ecc71', 'text' => '#ffffff'),
+                array('key' => 'awaiting_response', 'label' => 'Awaiting response', 'order' => 40, 'bg' => '#e67e22', 'text' => '#ffffff'),
+                array('key' => 'unqualified', 'label' => 'Unqualified', 'order' => 90, 'bg' => '#e74c3c', 'text' => '#ffffff'),
             );
         }
         // Supposons que cette méthode dans ISPAG_Status_Manager retourne les données complètes
@@ -1381,7 +1381,7 @@ class ISPAG_Contact_Manager {
                     'format'  => '', // On laisse WordPress décider si c'est un '?' ou un '&'
                     'current' => $paged,
                     'total'   => $num_pages,
-                    'prev_text' => '&laquo; Précédent',
+                    'prev_text' => '&laquo; Previous',
                     'next_text' => 'Suivant &raquo;',
                     'type' => 'list', 
                 ) );
@@ -1612,7 +1612,7 @@ class ISPAG_Contact_Manager {
                     'format'  => '', // On laisse WordPress décider si c'est un '?' ou un '&'
                     'current' => $paged,
                     'total'   => $num_pages,
-                    'prev_text' => '&laquo; Précédent',
+                    'prev_text' => '&laquo; Previous',
                     'next_text' => 'Suivant &raquo;',
                     'type' => 'list', 
                 ) );

@@ -152,7 +152,7 @@ class ISPAG_Crm_Gemini {
 
         if (empty($raw_ai_text)) {
             // error_log("[GEMINI ERROR] Texte vide reçu de Gemini.", 3, self::$log_file);
-            return ['summary' => 'Aucune donnée générée.', 'actions' => ''];
+            return ['summary' => 'No data generated.', 'actions' => ''];
         }
 
         // 3. Nettoyage du texte (Gemini entoure souvent le JSON de ```json ... ```)
@@ -182,7 +182,7 @@ class ISPAG_Crm_Gemini {
         }
 
         return [
-            'summary' => $ai_data['summary_html'] ?? 'Résumé indisponible.',
+            'summary' => $ai_data['summary_html'] ?? 'Summary unavailable.',
             'actions' => $actions_html,
             'dna'     => $ai_data['client_dna'] ?? null // Optionnel : pour usage futur
         ];

@@ -102,7 +102,7 @@ class ISPAG_OneSignal_Handler {
     // Dans votre classe ISPAG_OneSignal_Handler
     public static function send_welcome_notification($user_id) {
         $title = "Bienvenue sur ISPAG !";
-        $content = "Merci de vous être abonné à nos notifications. Vous recevrez désormais nos dernières actualités.";
+        $content = "Thank you for subscribing to our notifications. You will now receive our latest news.";
         $url = home_url();
 
         return self::send_os_push_notification($user_id, $title, $content, $url);

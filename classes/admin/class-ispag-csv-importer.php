@@ -139,7 +139,7 @@ class ISPAG_CSV_Importer
                         <td><input type="file" name="csv_file" accept=".csv" required></td>
                     </tr>
                     <tr>
-                        <th scope="row">Délimiteur</th>
+                        <th scope="row">Delimiter</th>
                         <td>
                             <select name="delimiter">
                                 <option value=";">Point-virgule (;)</option>
@@ -149,7 +149,7 @@ class ISPAG_CSV_Importer
                         </td>
                     </tr>
                 </table>
-                <?php submit_button('Téléverser et Configurer le Mappage'); ?>
+                <?php submit_button('Upload and configure mapping'); ?>
             </form>
         </div>
         <?php
@@ -161,11 +161,11 @@ class ISPAG_CSV_Importer
     public function handle_project_csv_upload()
     {
         if (!isset($_POST['ispag_csv_nonce']) || !wp_verify_nonce($_POST['ispag_csv_nonce'], 'ispag_csv_upload')) {
-            wp_die('Sécurité échouée');
+            wp_die('Security check failed');
         }
 
         if (empty($_FILES['csv_file']['tmp_name'])) {
-            wp_die('Veuillez sélectionner un fichier.');
+            wp_die('Please select a file.');
         }
 
         $upload = wp_handle_upload($_FILES['csv_file'], array('test_form' => false));
@@ -218,7 +218,7 @@ class ISPAG_CSV_Importer
 
         ?>
         <div class="wrap">
-            <h1>Étape 2 : Mappage des colonnes</h1>
+            <h1>Step 2: Column mapping</h1>
             <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
                 <input type="hidden" name="action" value="<?php echo esc_attr($this->mapping_action); ?>">
                 <input type="hidden" name="file_path" value="<?php echo esc_attr($file_path); ?>">
@@ -227,7 +227,7 @@ class ISPAG_CSV_Importer
                 <table class="widefat striped">
                     <thead>
                         <tr>
-                            <th>Champ Base de Données</th>
+                            <th>Database field</th>
                             <th>Colonne CSV</th>
                         </tr>
                     </thead>
@@ -376,10 +376,10 @@ class ISPAG_CSV_Importer
         <div class="wrap">
             <h1>Statut de l'Import CSV</h1>
             <div class="card" style="background: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                <h2>Tâche : <?php echo esc_html($task_id); ?></h2>
+                <h2>Task: <?php echo esc_html($task_id); ?></h2>
                 <p><strong>Statut :</strong> <?php echo esc_html(ucfirst($status)); ?></p>
                 <p><strong>Fichier :</strong> <?php echo esc_html(basename($task_data['file_path'])); ?></p>
-                <p><strong>Début :</strong> <?php echo esc_html($task_data['start_time']); ?></p>
+                <p><strong>Start:</strong> <?php echo esc_html($task_data['start_time']); ?></p>
                 <?php if (isset($task_data['end_time'])) : ?>
                     <p><strong>Fin :</strong> <?php echo esc_html($task_data['end_time']); ?></p>
                 <?php endif; ?>
@@ -397,7 +397,7 @@ class ISPAG_CSV_Importer
                             </div>
                         </div>
                         <p style="margin: 0;">
-                            Progression : <?php echo esc_html($progress['processed_rows']); ?> / <?php echo esc_html($progress['total_rows']); ?> lignes
+                            Progress: <?php echo esc_html($progress['processed_rows']); ?> / <?php echo esc_html($progress['total_rows']); ?> lignes
                             (<?php echo esc_html(min(100, ($progress['processed_rows'] / max(1, $progress['total_rows'])) * 100)); ?>%)
                         </p>
                     </div>
@@ -405,7 +405,7 @@ class ISPAG_CSV_Importer
 
                 <div style="margin-top: 20px;">
                     <p><strong>Insertions :</strong> <?php echo esc_html($progress['insert_count']); ?></p>
-                    <p><strong>Mises à jour :</strong> <?php echo esc_html($progress['update_count']); ?></p>
+                    <p><strong>Updates:</strong> <?php echo esc_html($progress['update_count']); ?></p>
                 </div>
 
                 <?php if ($status === 'failed' && isset($task_data['error'])) : ?>
@@ -446,7 +446,7 @@ class ISPAG_CSV_Importer
                         nonce: '<?php echo wp_create_nonce("ispag_csv_upload"); ?>'
                     },
                     beforeSend: function() {
-                        $('#ispag-refresh-status').prop('disabled', true).text('Rafraîchissement...');
+                        $('#ispag-refresh-status').prop('disabled', true).text('Refreshing...');
                     },
                     success: function(response) {
                         if (response.success) {
@@ -459,12 +459,12 @@ class ISPAG_CSV_Importer
 
                             // Mettre à jour le texte de progression
                             progressText.html(
-                                'Progression : ' + progress.processed_rows + ' / ' + progress.total_rows + ' lignes (' + percentage.toFixed(1) + '%)'
+                                'Progress: ' + progress.processed_rows + ' / ' + progress.total_rows + ' lignes (' + percentage.toFixed(1) + '%)'
                             );
 
                             // Mettre à jour les compteurs
                             $('p:contains("Insertions")').html('<strong>Insertions :</strong> ' + progress.insert_count);
-                            $('p:contains("Mises à jour")').html('<strong>Mises à jour :</strong> ' + progress.update_count);
+                            $('p:contains("Updates")').html('<strong>Updates:</strong> ' + progress.update_count);
 
                             // Mettre à jour le statut
                             $('p:contains("Statut")').html('<strong>Statut :</strong> ' + data.status.charAt(0).toUpperCase() + data.status.slice(1));
@@ -474,7 +474,7 @@ class ISPAG_CSV_Importer
                                 $('#ispag-refresh-status').hide();
                                 $('p:contains("Vous pouvez fermer")').hide();
                             } else if (data.status === 'failed') {
-                                $('p:contains("Statut")').html('<strong>Statut :</strong> Échoué');
+                                $('p:contains("Statut")').html('<strong>Status:</strong> Failed');
                                 $('.notice-error').html('<p><strong>Erreur :</strong> ' + data.error + '</p>').show();
                                 $('#ispag-refresh-status').hide();
                                 $('p:contains("Vous pouvez fermer")').hide();
@@ -487,7 +487,7 @@ class ISPAG_CSV_Importer
                         alert('Network error : ' + xhr.responseText);
                     },
                     complete: function() {
-                        $('#ispag-refresh-status').prop('disabled', false).text('Rafraîchir le statut');
+                        $('#ispag-refresh-status').prop('disabled', false).text('Refresh status');
                     }
                 });
             });
@@ -644,7 +644,7 @@ class ISPAG_CSV_Importer
                             );
                         } else {
                             ISPAG_Workflow_Logger::error(
-                                "Échec de l'insertion dans la table {$this->target_table}",
+                                "Insert failed in table {$this->target_table}",
                                 ['db_data' => $db_data, 'error' => $this->wpdb->last_error]
                             );
                         }

@@ -143,7 +143,7 @@ class ISPAG_Brevo_Webhook_Handler
 
         // Création de la Note CRM
         $activity_content = sprintf(
-            "Événement Brevo : %s. Objet du mail : %s.",
+            "Brevo event: %s. Email subject: %s.",
             $event,
             $subject
         );

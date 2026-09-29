@@ -74,7 +74,7 @@
 					$status.text('');
 					refreshConversation();
 				} else {
-					$status.text('Erreur : ' + (response.data && response.data.message ? response.data.message : 'échec de l\'envoi'));
+					$status.text('Erreur : ' + (response.data && response.data.message ? response.data.message : 'sending failed'));
 				}
 			}).fail(function () {
 				$status.text('Network error lors de l\'envoi.');

@@ -147,7 +147,7 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if(response.success) {
-                    $('#folder-status-msg').text('Dossier créé !').css('color', 'green');
+                    $('#folder-status-msg').text('Folder created!').css('color', 'green');
                     setTimeout(() => { location.reload(); }, 600);
                 } else {
                     $('#folder-status-msg').text(response.data).css('color', 'red');

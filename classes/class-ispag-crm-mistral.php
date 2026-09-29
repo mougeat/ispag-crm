@@ -160,7 +160,7 @@ class ISPAG_Crm_Mistral
         {
             self::log("ERREUR: Contenu vide reçu de l'IA.");
             self::$logger->log('crm_mistral', 'ERROR: Empty AI response', $user_id);
-            return ['summary' => 'L\'IA n\'a renvoyé aucune donnée.', 'actions' => ''];
+            return ['summary' => 'The AI returned no data.', 'actions' => ''];
         }
 
         // Nettoyage agressif du JSON
@@ -193,7 +193,7 @@ class ISPAG_Crm_Mistral
             $error_msg = json_last_error_msg();
             self::log("ERREUR JSON: " . $error_msg, "Texte tenté: " . $cleaned);
             self::$logger->log('crm_mistral', 'ERROR: JSON_DECODE_FAILED - ' . $error_msg, $user_id, ['cleaned_text' => substr($cleaned, 0, 200)]);
-            return ['summary' => 'Erreur de formatage des données IA.', 'actions' => ''];
+            return ['summary' => 'AI data formatting error.', 'actions' => ''];
         }
 
         self::$logger->log_user_action('crm_mistral', 'json_decoded_successfully', [], $user_id);
@@ -216,7 +216,7 @@ class ISPAG_Crm_Mistral
             self::$logger->log_user_action('crm_mistral', 'actions_formatted', ['count' => count($ai_data['actions'])], $user_id);
         }
 
-        $summary = $ai_data['summary_html'] ?? 'Résumé indisponible';
+        $summary = $ai_data['summary_html'] ?? 'Summary unavailable';
         if (!empty($ai_data['alert']))
         {
             $summary = '<div class="ispag-ai-alert">⚠️ ' . esc_html($ai_data['alert']) . '</div>' . $summary;

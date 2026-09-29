@@ -78,7 +78,7 @@ class ISPAG_Notifications_Renderer {
 
         $current_user_id = get_current_user_id();
         if ($current_user_id === 0) {
-            wp_send_json_error(['message' => 'Utilisateur non connecté.']);
+            wp_send_json_error(['message' => 'User not logged in.']);
         }
 
         $available_types = ISPAG_Notifications_Manager::get_available_notification_types();
@@ -285,7 +285,7 @@ class ISPAG_Notifications_Renderer {
 
         $current_user_id = get_current_user_id();
         if ($current_user_id === 0) {
-            wp_send_json_error(['message' => 'Utilisateur non connecté.']);
+            wp_send_json_error(['message' => 'User not logged in.']);
         }
 
         // Sauvegarder les préférences de canaux
@@ -499,7 +499,7 @@ class ISPAG_Notifications_Renderer {
 
         $current_user_id = get_current_user_id();
         if ($current_user_id === 0) {
-            wp_send_json_error(['message' => 'Utilisateur non connecté.']);
+            wp_send_json_error(['message' => 'User not logged in.']);
         }
 
         $tab = isset($_POST['tab']) ? sanitize_text_field($_POST['tab']) : 'unread';
@@ -583,7 +583,7 @@ class ISPAG_Notifications_Renderer {
 
         $current_user_id = get_current_user_id();
         if ($current_user_id === 0) {
-            wp_send_json_error(['message' => 'Utilisateur non connecté.']);
+            wp_send_json_error(['message' => 'User not logged in.']);
         }
 
         global $wpdb;
@@ -624,7 +624,7 @@ class ISPAG_Notifications_Renderer {
 
         $current_user_id = get_current_user_id();
         if ($current_user_id === 0) {
-            wp_send_json_error(['message' => 'Utilisateur non connecté.']);
+            wp_send_json_error(['message' => 'User not logged in.']);
         }
 
         $count = self::get_unread_notification_count($current_user_id);

@@ -39,7 +39,7 @@ class ISPAG_Crm_Company_Modal {
         $current_meta = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, true );
         
         if ( empty( $current_meta ) ) {
-            wp_send_json_error( array( 'message' => 'Aucune association trouvée pour ce contact.' ) );
+            wp_send_json_error( array( 'message' => 'No association found for this contact.' ) );
         }
 
         // 2. Transformer en tableau et nettoyer
@@ -48,7 +48,7 @@ class ISPAG_Crm_Company_Modal {
 
         // 3. Vérifier si l'ID est présent avant de tenter la suppression
         if ( ! in_array( (string)$company_id, $existing_ids ) ) {
-            wp_send_json_error( array( 'message' => 'Cette entreprise n\'est pas associée à ce contact.' ) );
+            wp_send_json_error( array( 'message' => 'This company is not associated with this contact.' ) );
         }
 
         // 4. Supprimer l'ID spécifique de la liste
@@ -67,7 +67,7 @@ class ISPAG_Crm_Company_Modal {
         if ( false !== $result ) {
             wp_send_json_success( array( 
                 'message' => sprintf( 
-                    'Association de l\'entreprise ID %d retirée avec succès.', 
+                    'Association of company ID %d removed successfully.', 
                     $company_id
                 ) 
             ) );

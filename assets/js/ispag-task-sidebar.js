@@ -146,7 +146,7 @@
                     $sidebarBody.html(response.data.html);
                     $sidebarHeader.html(response.data.header);
                 } else {
-                    $sidebarBody.html('<p class="ispag-error">Erreur lors du chargement des pièces jointes.</p>');
+                    $sidebarBody.html('<p class="ispag-error">Error while loading attachments.</p>');
                     
                 }
             },

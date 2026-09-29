@@ -339,8 +339,8 @@ class ISPAG_Baikal_Sync
         </style>";
         
         echo "<div class='header'>
-                <h1>🚀 Synchro Baïkal par lots : Cyril & Claudio</h1>
-                <p id='stats'>Préparation...</p>
+                <h1>🚀 Baïkal batch sync: Cyril & Claudio</h1>
+                <p id='stats'>Preparing...</p>
                 <div id='progress-bar'><div id='progress-fill'></div></div>
               </div>
               <div id='log-container'></div>";
@@ -359,7 +359,7 @@ class ISPAG_Baikal_Sync
 
         async function processBatch() {
             if (currentIndex >= total) {
-                statsEl.innerHTML = 'Synchro terminée avec succès ! 🎉';
+                statsEl.innerHTML = 'Sync completed successfully! 🎉';
                 fillEl.style.width = '100%';
                 let finishDiv = document.createElement('div');
                 finishDiv.style.marginTop = '30px';
@@ -369,7 +369,7 @@ class ISPAG_Baikal_Sync
             }
 
             let chunk = contactIds.slice(currentIndex, currentIndex + batchSize);
-            statsEl.innerHTML = `Progression : \${currentIndex} / \${total} contacts traités...`;
+            statsEl.innerHTML = `Progress: \${currentIndex} / \${total} contacts processed...`;
             let percent = (currentIndex / total) * 100;
             fillEl.style.width = percent + '%';
 
@@ -395,7 +395,7 @@ class ISPAG_Baikal_Sync
                 } else {
                     let div = document.createElement('div');
                     div.className = 'log-entry error';
-                    div.innerHTML = '❌ Erreur serveur : ' + (result.data?.message || 'Réponse invalide');
+                    div.innerHTML = '❌ Erreur serveur : ' + (result.data?.message || 'Invalid response');
                     containerEl.appendChild(div);
                 }
             } catch (e) {
@@ -411,7 +411,7 @@ class ISPAG_Baikal_Sync
         }
 
         if (total === 0) {
-            statsEl.innerHTML = '⚠️ Aucun contact actif trouvé pour " . self::DEPARTMENT_KEY . ".';
+            statsEl.innerHTML = '⚠️ No active contact found for " . self::DEPARTMENT_KEY . ".';
         } else {
             processBatch();
         }

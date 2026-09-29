@@ -134,7 +134,7 @@ if (!class_exists('ISPAG_Variable_Replacer')) {
          */
         private static function get_contact_data($contact_id) {
             $contact = get_userdata($contact_id);
-            ISPAG_Workflow_Logger::debug("Contact récupéré: " . ($contact ? "ID={$contact->ID}" : "Aucun contact trouvé"));
+            ISPAG_Workflow_Logger::debug("Contact récupéré: " . ($contact ? "ID={$contact->ID}" : "No contact found"));
             return $contact;
         }
 
