@@ -95,6 +95,10 @@ spl_autoload_register(function($class) {
 // 3. ACTIVATION DU PLUGIN
 // ----------------------------------------------------------------------------
 
+// Schéma de base de données : créé à l'activation, et re-vérifié à chaque chargement si la version change
+register_activation_hook(__FILE__, ['ISPAG_CRM_Installer', 'install']);
+ISPAG_CRM_Installer::init();
+
 // 2. Enregistrer le hook d'activation (s'exécute uniquement au clic sur "Activer")
 register_activation_hook(__FILE__, ['ISPAG_Notifications_Manager', 'activate']);
 
@@ -106,21 +110,8 @@ function ispag_crm_activate() {
     global $wpdb;
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-    $table_fournisseurs = $wpdb->prefix . 'achats_fournisseurs';
-    $charset_collate    = $wpdb->get_charset_collate();
-
-    $sql_fournisseurs = "CREATE TABLE $table_fournisseurs (
-        Id INT NOT NULL AUTO_INCREMENT,
-        isSupplier INT NOT NULL DEFAULT 0,
-        isIngenieur INT NOT NULL DEFAULT 0,
-        Fournisseur TEXT NOT NULL,
-        compagnyDomain TEXT NOT NULL,
-        Mail TEXT NOT NULL,
-        PRIMARY KEY (Id),
-        KEY compagnyDomain_idx (compagnyDomain(100))
-    ) $charset_collate;";
-
-    dbDelta( $sql_fournisseurs );
+    // La table achats_fournisseurs est maintenant créée par ISPAG_CRM_Installer (install/schema.php).
+    ISPAG_CRM_Installer::install();
 
     if ( class_exists( 'ISPAG_Status_Manager' ) ) {
         ISPAG_Status_Manager::insert_initial_data();
