@@ -103,12 +103,14 @@ ISPAG_GitHub_Updater::plugin(__FILE__, 'mougeat/ispag-crm');
 register_activation_hook(__FILE__, ['ISPAG_CRM_Installer', 'install']);
 ISPAG_CRM_Installer::init();
 
-// ISPAG_Logger est fourni par un autre plugin ISPAG ; classe de secours chargée seulement s'il est absent
-add_action('plugins_loaded', function () {
-    spl_autoload_register(function ($class) {
-        if ($class === 'ISPAG_Logger') require_once ISPAG_CRM_PLUGIN_DIR . 'install/fallback-logger.php';
-    });
-}, 1);
+// ISPAG_Logger : le vrai (classes/class-ispag-logger.php d'ISPAG Project Manager, s'il est présent) passe en premier ;
+// sinon classe de secours. Enregistré dès le chargement : l'activation du plugin utilise déjà le logger.
+spl_autoload_register(function ($class) {
+    if ($class !== 'ISPAG_Logger') return;
+    $real = defined('ISPAG_PROJECT_MANAGER_DIR') ? ISPAG_PROJECT_MANAGER_DIR . 'classes/class-ispag-logger.php' : '';
+    if ($real && is_readable($real)) { require_once $real; return; }
+    require_once ISPAG_CRM_PLUGIN_DIR . 'install/fallback-logger.php';
+});
 
 
 // Les pages du CRM sont des modèles de page du thème (créées par le thème). Le plugin, lui, ajoute des adresses

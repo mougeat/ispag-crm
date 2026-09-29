@@ -1,4 +1,3 @@
-
 <?php 
 
 // Fichier : includes/crm/class-ispag-crm-deal-constants.php
