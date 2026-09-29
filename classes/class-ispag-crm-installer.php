@@ -55,6 +55,9 @@ class ISPAG_CRM_Installer {
                 error_log('[ISPAG CRM] Création de la table ' . $wpdb->prefix . $name . ' impossible : ' . $wpdb->last_error);
             }
         }
+        if (!self::seed()) {
+            $ok = false;
+        }
         $wpdb->suppress_errors($suppress);
 
         self::grant_default_caps();
@@ -62,6 +65,32 @@ class ISPAG_CRM_Installer {
         // On ne mémorise la version que si tout est passé : sinon on réessaie à la requête suivante.
         if ($ok) {
             update_option(self::OPTION, self::DB_VERSION);
+        }
+        return $ok;
+    }
+
+    /**
+     * Valeurs initiales des tables de référence (install/seeds.php : ['table_sans_prefixe' => [ [colonne => valeur, …], … ]]).
+     * Une table n'est remplie QUE si elle est vide : sur un site existant (production), rien n'est jamais ajouté ni modifié.
+     */
+    private static function seed() {
+        global $wpdb;
+        $file = dirname(__DIR__) . '/install/seeds.php';
+        if (!is_readable($file)) {
+            return true;
+        }
+        $ok = true;
+        foreach ((array) require $file as $name => $rows) {
+            $table = $wpdb->prefix . $name;
+            if ((int) $wpdb->get_var("SELECT COUNT(*) FROM `{$table}`") > 0) {
+                continue;
+            }
+            foreach ($rows as $row) {
+                if ($wpdb->insert($table, $row) === false) {
+                    $ok = false;
+                    error_log('[ISPAG CRM] Valeur initiale refusée dans ' . $table . ' : ' . $wpdb->last_error);
+                }
+            }
         }
         return $ok;
     }
