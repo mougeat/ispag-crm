@@ -64,7 +64,7 @@ class ISPAG_Company_Importer {
     }
 
     public function handle_company_csv_upload() {
-        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Accès refusé' );
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Access denied' );
         check_admin_referer( 'ispag_upload_company_csv' );
 
         if ( empty( $_FILES['csv_file']['tmp_name'] ) ) {
@@ -163,7 +163,7 @@ class ISPAG_Company_Importer {
     }
 
     public function start_async_csv_import() {
-        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Accès refusé' );
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Access denied' );
         check_admin_referer( 'ispag_map_company_csv' );
 
         $user_id   = get_current_user_id();
@@ -310,7 +310,7 @@ class ISPAG_Company_Importer {
 
         $task_data = get_transient( 'ispag_company_import_' . $task_id );
         if ( $task_data === false ) {
-            wp_send_json_error( 'Tâche introuvable ou expirée.' );
+            wp_send_json_error( 'Task not found or expired.' );
         }
 
         wp_send_json_success([
@@ -330,7 +330,7 @@ class ISPAG_Company_Importer {
     private function display_import_status( $task_id ) {
         $task_data = get_transient( 'ispag_company_import_' . $task_id );
         if ( ! $task_data ) {
-            echo '<div class="error"><p>Tâche introuvable ou expirée.</p></div>';
+            echo '<div class="error"><p>Task not found or expired.</p></div>';
             return;
         }
 
@@ -463,7 +463,7 @@ class ISPAG_Company_Importer {
         }
 
         if ( $success ) {
-            $title   = esc_html( __( '✅ Import d\'entreprises terminé', 'ispag-crm' ) );
+            $title   = esc_html( __( '✅ Company import completed', 'ispag-crm' ) );
             $message = sprintf(
                 'L\'importation du fichier CSV des entreprises s\'est déroulée avec succès.<br>
                 - Lignes traitées : %1$d<br>
@@ -478,7 +478,7 @@ class ISPAG_Company_Importer {
                 $task_id
             );
         } else {
-            $title   = esc_html( __( '❌ Échec de l\'import d\'entreprises', 'ispag-crm' ) );
+            $title   = esc_html( __( '❌ Company import failed', 'ispag-crm' ) );
             $message = sprintf(
                 'L\'importation du fichier CSV des entreprises a échoué.<br>
                 - Lignes traitées : %1$d<br>

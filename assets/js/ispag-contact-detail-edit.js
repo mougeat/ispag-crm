@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const defaultOption = document.createElement('option');
             defaultOption.value = '';
-            defaultOption.textContent = 'Sélectionner...';
+            defaultOption.textContent = 'Select...';
             inputElement.appendChild(defaultOption);
 
             for (const [value, dataObject] of Object.entries(optionsMap)) {
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => {
             field.classList.remove('loading');
-            console.error('Erreur réseau ou Fetch:', error);
+            console.error('Network error ou Fetch:', error);
             field.innerHTML = '<span style="color: #dc3545;">Erreur de connexion.</span>';
             setTimeout(() => exitEditMode(field), 2000);
         });
@@ -773,7 +773,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             },
             error: function() {
-                alert('Erreur réseau lors de la liaison.');
+                alert('Network error lors de la liaison.');
                 btn.prop('disabled', false).text('Sauvegarder');
             }
         });

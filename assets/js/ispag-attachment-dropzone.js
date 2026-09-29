@@ -158,7 +158,7 @@ jQuery(function ($) {
                 }
             },
             error: function () {
-                alert('Erreur réseau lors de l\'upload.');
+                alert('Network error lors de l\'upload.');
             },
             complete: function () {
                 pendingDropFile = null;

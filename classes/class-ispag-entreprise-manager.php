@@ -224,7 +224,7 @@ class ISPAG_Entreprise_Manager {
         $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
         // Droit de créer / de modifier (l'ancien contrôle manage_options refusait les rôles qui voient pourtant le menu)
         if (!current_user_can($id > 0 ? 'edit_company' : 'add_company') && !current_user_can('manage_options')) {
-            wp_die('Accès refusé');
+            wp_die('Access denied');
         }
         $back = function ($msg) {
             wp_safe_redirect(admin_url('admin.php?page=' . $this->menu_slug . '&message=' . $msg));

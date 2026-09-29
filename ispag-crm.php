@@ -393,7 +393,7 @@ add_filter('wp_authenticate_user', function($user) {
     if (is_wp_error($user)) return $user;
     $status = get_user_meta($user->ID, 'ispag_account_status', true);
     if ($status === 'disabled') {
-        return new WP_Error('disabled_account', __('Votre compte ISPAG a été suspendu.', 'ispag-crm'));
+        return new WP_Error('disabled_account', __('Your ISPAG account has been suspended.', 'ispag-crm'));
     }
     return $user;
 }, 10, 1);

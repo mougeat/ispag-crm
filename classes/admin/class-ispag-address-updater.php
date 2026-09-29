@@ -84,13 +84,13 @@ class ISPAG_Address_Updater {
     public function render_migration_page() {
         ?>
         <div class="wrap">
-            <h1><?php _e( 'Mise à Jour des Adresses Fournisseur via Migration DB', 'ispag-crm' ); ?></h1>
+            <h1><?php _e( 'Supplier address update via DB migration', 'ispag-crm' ); ?></h1>
             <hr>
             
             <?php $this->display_admin_message( $this->migration_page_slug ); ?>
 
             <p class="description">
-                <?php _e( "Cette action va parcourir la table source **`{$this->source_table}`** et mettre à jour les informations correspondantes dans la table fournisseur **`{$this->fournisseurs_table}`** et ses **méta-données** en se basant sur la colonne **`viag_id`**.", 'ispag-crm' ); ?>
+                <?php _e( "This action will go through the source table **`{$this->source_table}`** and update the matching information in the supplier table **`{$this->fournisseurs_table}`** and its **metadata**, based on the **`viag_id`** column.", 'ispag-crm' ); ?>
             </p>
             <p class="description">
                 **ATTENTION :** Cette opération est immédiate et irréversible.
@@ -100,7 +100,7 @@ class ISPAG_Address_Updater {
                 <input type="hidden" name="action" value="<?php echo esc_attr($this->migration_action); ?>">
                 <?php wp_nonce_field( $this->migration_action . '_nonce' ); ?>
                 
-                <?php submit_button( __( 'Lancer la Migration des Adresses', 'ispag-crm' ), 'primary large', 'start_db_migration', true, ['onclick' => "return confirm('Êtes-vous sûr de vouloir lancer la migration ?')"] ); ?>
+                <?php submit_button( __( 'Start address migration', 'ispag-crm' ), 'primary large', 'start_db_migration', true, ['onclick' => "return confirm('Êtes-vous sûr de vouloir lancer la migration ?')"] ); ?>
             </form>
         </div>
         <?php
@@ -116,7 +116,7 @@ class ISPAG_Address_Updater {
     public function handle_database_migration() {
         
         if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], $this->migration_action . '_nonce' ) || ! current_user_can( 'manage_options' ) ) {
-            wp_die( __( 'Erreur de sécurité. Nonce invalide.', 'ispag-crm' ) );
+            wp_die( __( 'Security error. Invalid nonce.', 'ispag-crm' ) );
         }
         
         $updated_count = 0;

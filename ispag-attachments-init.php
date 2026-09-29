@@ -40,7 +40,7 @@ function ispag_handle_get_all_attachments() {
     $entityId   = intval($_POST['entity_id'] ?? 0);
 
     if (!$entityType || !$entityId) {
-        wp_send_json_error(['message' => 'Paramètres invalides']);
+        wp_send_json_error(['message' => 'Invalid parameters']);
     }
 
     $repository = new ISPAG_Attachments_Repository($wpdb);

@@ -126,7 +126,7 @@ class ISPAG_Crm_Mistral
             $error_message = $response->get_error_message();
             self::log("ERREUR WP_REMOTE: " . $error_message);
             self::$logger->log('crm_mistral', 'ERROR: WP_REMOTE_REQUEST_FAILED - ' . $error_message, $user_id);
-            return ['summary' => 'Erreur réseau.', 'actions' => ''];
+            return ['summary' => 'Network error.', 'actions' => ''];
         }
 
         $body_raw = wp_remote_retrieve_body($response);

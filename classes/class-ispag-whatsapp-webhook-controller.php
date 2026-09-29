@@ -43,7 +43,7 @@ class ISPAG_Whatsapp_Webhook_Controller {
 		$params = $request->get_json_params();
 
 		if ( empty( $params['phone'] ) || empty( $params['id'] ) ) {
-			return new WP_REST_Response( array( 'error' => 'Paramètres manquants (phone, id).' ), 400 );
+			return new WP_REST_Response( array( 'error' => 'Missing parameters (phone, id).' ), 400 );
 		}
 
 		$repository = new ISPAG_Whatsapp_Repository();

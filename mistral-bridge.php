@@ -128,7 +128,7 @@ if ($received_key !== CRM_MCP_API_KEY) {
         "jsonrpc" => "2.0",
         "error" => [
             "code" => -32600,
-            "message" => "Accès refusé - Clé invalide"
+            "message" => "Access denied - Clé invalide"
         ]
     ]));
 }

@@ -337,7 +337,7 @@ class ISPAG_CSV_Importer
 
         $task_data = get_transient('ispag_csv_import_' . $task_id);
         if ($task_data === false) {
-            wp_send_json_error('Tâche introuvable ou expirée.');
+            wp_send_json_error('Task not found or expired.');
         }
 
         wp_send_json_success([
@@ -360,7 +360,7 @@ class ISPAG_CSV_Importer
     private function display_import_status($task_id) {
         $task_data = get_transient('ispag_csv_import_' . $task_id);
         if (!$task_data) {
-            echo '<div class="error"><p>Tâche introuvable ou expirée.</p></div>';
+            echo '<div class="error"><p>Task not found or expired.</p></div>';
             return;
         }
 
@@ -420,7 +420,7 @@ class ISPAG_CSV_Importer
                             id="ispag-refresh-status"
                             class="button button-secondary"
                             data-task-id="<?php echo esc_attr($task_id); ?>">
-                            <?php _e('Rafraîchir le statut', 'creation-reservoir'); ?>
+                            <?php _e('Refresh status', 'creation-reservoir'); ?>
                         </button>
                     </p>
                     <p style="margin-top: 10px; color: #666; font-style: italic;">
@@ -484,7 +484,7 @@ class ISPAG_CSV_Importer
                         }
                     },
                     error: function(xhr) {
-                        alert('Erreur réseau : ' + xhr.responseText);
+                        alert('Network error : ' + xhr.responseText);
                     },
                     complete: function() {
                         $('#ispag-refresh-status').prop('disabled', false).text('Rafraîchir le statut');

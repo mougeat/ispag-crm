@@ -814,7 +814,7 @@ WHERE {
     public function ajax_confirm_uid() {
         check_ajax_referer('ispag_confirm_uid', 'nonce');
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Accès refusé'], 403);
+            wp_send_json_error(['message' => 'Access denied'], 403);
         }
 
         global $wpdb;

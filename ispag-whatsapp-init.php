@@ -101,7 +101,7 @@ function ispag_whatsapp_render_settings_page() {
 					</td>
 				</tr>
 				<tr>
-					<th scope="row"><label for="ispag_whatsapp_bridge_api_key"><?php esc_html_e( 'Clé API du bridge', 'ispag-crm' ); ?></label></th>
+					<th scope="row"><label for="ispag_whatsapp_bridge_api_key"><?php esc_html_e( 'Bridge API key', 'ispag-crm' ); ?></label></th>
 					<td>
 						<input type="text" id="ispag_whatsapp_bridge_api_key" name="ispag_whatsapp_bridge_api_key"
 							   value="<?php echo esc_attr( get_option( 'ispag_whatsapp_bridge_api_key', '' ) ); ?>"

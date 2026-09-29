@@ -166,7 +166,7 @@ class ISPAG_Sequence_Admin {
         check_ajax_referer('ispag_crm_nonce', 'security');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Permission refusée']);
+            wp_send_json_error(['message' => 'Permission denied']);
         }
 
         $sequence_data = $_POST['sequence'] ?? null;

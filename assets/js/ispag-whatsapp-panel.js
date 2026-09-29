@@ -77,7 +77,7 @@
 					$status.text('Erreur : ' + (response.data && response.data.message ? response.data.message : 'échec de l\'envoi'));
 				}
 			}).fail(function () {
-				$status.text('Erreur réseau lors de l\'envoi.');
+				$status.text('Network error lors de l\'envoi.');
 			}).always(function () {
 				$sendBtn.prop('disabled', false);
 			});

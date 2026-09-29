@@ -32,7 +32,7 @@ class ISPAG_Attachments_Uploader {
         // error_log('handleUpload ARTICLE ID : ' . $article_id);
 
         if (!in_array($entityType, array_merge(self::ENTITY_TYPES_ACHATS, self::ENTITY_TYPES_NOTES), true)) {
-            return ['success' => false, 'message' => __('Type d\'entité invalide.', 'ispag-crm')];
+            return ['success' => false, 'message' => __('Invalid entity type.', 'ispag-crm')];
         }
 
         $docType = $this->docTypesRepo->findBySlug($docTypeSlug);

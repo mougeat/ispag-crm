@@ -1196,7 +1196,7 @@ class ISPAG_Crm_Contacts_Repository {
         $formatted = array();
         foreach ( $owners_array as $id => $display_name ) {
             // On évite d'ajouter l'option vide "Not assigned" dans le mapping 
-            // car le JS ajoute déjà un "Sélectionner..." par défaut
+            // car le JS ajoute déjà un "Select..." par défaut
             if ( $id === '' ) continue;
 
             $formatted[] = $id . ':' . $display_name;
@@ -1658,16 +1658,16 @@ class ISPAG_Crm_Contacts_Repository {
     public function ispag_add_account_status_field($user) {
         $status = get_user_meta($user->ID, ISPAG_Crm_Contact_Constants::ACCOUNT_STATUS, true);
         ?>
-        <h3><?php _e("Paramètres ISPAG", "ispag"); ?></h3>
+        <h3><?php _e("ISPAG settings", "ispag"); ?></h3>
         <table class="form-table">
             <tr>
-                <th><label for="ispag_account_status"><?php _e("Statut du compte"); ?></label></th>
+                <th><label for="ispag_account_status"><?php _e("Account status"); ?></label></th>
                 <td>
                     <select name="ispag_account_status" id="ispag_account_status">
                         <option value="active" <?php selected($status, 'active'); ?>><?php _e("✅ Actif"); ?></option>
-                        <option value="disabled" <?php selected($status, 'disabled'); ?>><?php _e("🚫 Désactivé (Accès bloqué)"); ?></option>
+                        <option value="disabled" <?php selected($status, 'disabled'); ?>><?php _e("🚫 Disabled (access blocked)"); ?></option>
                     </select>
-                    <p class="description"><?php _e("Si désactivé, l'utilisateur ne pourra plus se connecter au CRM."); ?></p>
+                    <p class="description"><?php _e("If disabled, the user will no longer be able to log in to the CRM."); ?></p>
                 </td>
             </tr>
         </table>
@@ -1698,17 +1698,17 @@ class ISPAG_Crm_Contacts_Repository {
 
         <table class="form-table">
             <tr>
-                <th><label for="{ispag_user_department}"><?php _e("Département / Succursale"); ?></label></th>
+                <th><label for="{ispag_user_department}"><?php _e("Department / Branch"); ?></label></th>
                 <td>
                     <select name="ispag_user_department" id="ispag_user_department">
-                        <option value=""><?php _e(" Sélectionner un département "); ?></option>
+                        <option value=""><?php _e(" Select a department "); ?></option>
                         <?php foreach ( $departments as $id => $label ) : ?>
                             <option value="<?php echo esc_attr( $id ); ?>" <?php selected( $current_dept, $id ); ?>>
                                 <?php echo esc_html( $label ); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <p class="description"><?php _e("Définit le contexte par défaut de cet utilisateur pour l'attribution des entreprises."); ?></p>
+                    <p class="description"><?php _e("Sets this user's default context for company assignment."); ?></p>
                 </td>
             </tr>
         </table>
@@ -1791,7 +1791,7 @@ class ISPAG_Crm_Contacts_Repository {
         );
 
         if ( false === $result ) {
-            wp_send_json_error( array( 'message' => 'Erreur lors de la mise à jour de la base de données.' ) );
+            wp_send_json_error( array( 'message' => 'Error while updating the database.' ) );
         }
 
         wp_send_json_success( array( 'message' => 'Contact dissocié du deal avec succès.' ) );

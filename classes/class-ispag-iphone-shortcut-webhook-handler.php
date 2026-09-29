@@ -44,7 +44,7 @@ class ISPAG_Iphone_Shortcut_Webhook_Handler {
         
         if ( empty( $received_secret ) || $received_secret !== ISPAG_CRM_SHORTCUT_SECRET ) {
             $this->_log( 'ERREUR DE SÉCURITÉ : Secret invalide ou manquant.' );
-            return new WP_Error( 'shortcut_auth_fail', 'Non autorisé', [ 'status' => 401 ] );
+            return new WP_Error( 'shortcut_auth_fail', 'Not authorized', [ 'status' => 401 ] );
         }
 
         return true;

@@ -98,7 +98,7 @@ class ISPAG_Page_Installer {
                     'post_content' => $page['content'] ?? '',
                 ], true);
                 if (is_wp_error($id) || !$id) {
-                    $out['errors'][$slug] = is_wp_error($id) ? $id->get_error_message() : 'échec de wp_insert_post';
+                    $out['errors'][$slug] = is_wp_error($id) ? $id->get_error_message() : 'wp_insert_post failed';
                     continue;
                 }
                 update_post_meta($id, self::KEY_META, $page['key']);
@@ -160,15 +160,15 @@ class ISPAG_Page_Installer {
         if (!empty($_POST['ispag_create_pages']) && check_admin_referer('ispag_create_pages')) {
             $r = self::create_missing();
             self::schedule_flush();
-            $notice = sprintf('<div class="notice notice-success"><p>%d page(s) créée(s).%s</p></div>', count($r['created']),
+            $notice = sprintf('<div class="notice notice-success"><p>%d page(s) created.%s</p></div>', count($r['created']),
                 $r['errors'] ? ' Erreurs : ' . esc_html(implode(' ; ', array_map(function ($s, $m) { return "$s ($m)"; }, array_keys($r['errors']), $r['errors']))) : '');
         }
         echo '<div class="wrap"><h1>Pages ISPAG</h1>' . $notice;
-        echo '<p>Pages nécessaires aux plugins et au thème ISPAG. Le bouton ne crée que les pages manquantes ; les pages existantes ne sont jamais modifiées.</p>';
-        echo '<table class="widefat striped" style="max-width:900px"><thead><tr><th>Source</th><th>Adresse</th><th>Titre</th><th>État</th></tr></thead><tbody>';
+        echo '<p>Pages required by the ISPAG plugins and theme. The button only creates missing pages; existing pages are never modified.</p>';
+        echo '<table class="widefat striped" style="max-width:900px"><thead><tr><th>Source</th><th>Address</th><th>Title</th><th>Status</th></tr></thead><tbody>';
         foreach (self::$registry as $name => $pages) {
             foreach ($pages as $page) {
-                if ($reason = self::skip_reason($page)) { $state = 'Ignorée — ' . $reason; }
+                if ($reason = self::skip_reason($page)) { $state = 'Skipped — ' . $reason; }
                 elseif ($id = self::find($page)) { $state = 'Existe (#' . $id . ')'; }
                 else { $state = '<strong>Manquante</strong>'; }
                 printf('<tr><td>%s</td><td>/%s/</td><td>%s</td><td>%s</td></tr>', esc_html($name), esc_html($page['slug']), esc_html($page['title']), $state);
@@ -176,7 +176,7 @@ class ISPAG_Page_Installer {
         }
         echo '</tbody></table><form method="post" style="margin-top:16px">';
         wp_nonce_field('ispag_create_pages');
-        echo '<input type="submit" name="ispag_create_pages" class="button button-primary" value="Créer les pages manquantes"></form></div>';
+        echo '<input type="submit" name="ispag_create_pages" class="button button-primary" value="Create missing pages"></form></div>';
     }
 }
 

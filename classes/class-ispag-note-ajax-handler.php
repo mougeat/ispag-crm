@@ -266,7 +266,7 @@ class ISPAG_Note_Ajax_Handler {
             $data_to_save['notified_at'] = null; 
             $data_to_save['updated_at'] = current_time( 'mysql' );; 
             $result = $wpdb->update( $table_name, $data_to_save, array( 'id' => $activity_id ) );
-            $message = __( 'Activité mise à jour.', 'ispag-crm' );
+            $message = __( 'Activity updated.', 'ispag-crm' );
 
             if ( $result !== false ) {
                 $logger->log_db_change( 'note_ajax', $table_name, 'UPDATE', ['activity_id' => $activity_id, 'data' => $data_to_save], $current_user_id );

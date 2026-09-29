@@ -55,7 +55,7 @@ class ISPAG_Cron_Task_Reminder {
         if ( ! $user ) return;
 
         // --- 1. Gestion du CONTACT ---
-        $contact_name = "Non spécifié";
+        $contact_name = "Not specified";
         $contact_link = $this->get_app_url('contacts/');
         if ( ! empty( $task->contact_id ) ) {
             $c_ids = explode( ',', $task->contact_id );
@@ -66,7 +66,7 @@ class ISPAG_Cron_Task_Reminder {
         }
 
         // --- 2. Gestion de l'ENTREPRISE ---
-        $company_name = "Non spécifiée";
+        $company_name = "Not specifiede";
         $company_link = $this->get_app_url('companies/');
         if ( ! empty( $task->company_id ) ) {
             $co_ids = explode( ',', $task->company_id );

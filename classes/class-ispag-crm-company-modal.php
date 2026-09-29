@@ -72,7 +72,7 @@ class ISPAG_Crm_Company_Modal {
                 ) 
             ) );
         } else {
-            wp_send_json_error( array( 'message' => 'Erreur lors de la mise à jour de l\'association.' ) );
+            wp_send_json_error( array( 'message' => 'Error during update de l\'association.' ) );
         }
 
         wp_die();

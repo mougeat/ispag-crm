@@ -459,7 +459,7 @@ class ISPAG_Contact_Detail_Shortcode {
                     </div>
 
                     <div id="tab-create-new" class="ispag-tab-modal-pane">
-                        <p><?php _e( 'Formulaire de création d\'entreprise...', 'ispag-crm' ); ?></p>
+                        <p><?php _e( 'Company creation form...', 'ispag-crm' ); ?></p>
                     </div>
                 </div>
 
@@ -864,7 +864,7 @@ class ISPAG_Contact_Detail_Shortcode {
         // 4. Récupérer le rôle principal actuel de l'utilisateur (Logique inchangée)
         $user_info = get_userdata($contact_id);
         $current_role_key = 'none';
-        $user_role_display = __('Non défini', 'ispag-crm');
+        $user_role_display = __('Not defined', 'ispag-crm');
 
         if ($user_info && !empty($user_info->roles)) {
             $current_role_key = array_shift($user_info->roles);

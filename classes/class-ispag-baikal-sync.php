@@ -401,7 +401,7 @@ class ISPAG_Baikal_Sync
             } catch (e) {
                 let div = document.createElement('div');
                 div.className = 'log-entry error';
-                div.innerHTML = '❌ Erreur réseau / JS : ' + e.message;
+                div.innerHTML = '❌ Network error / JS : ' + e.message;
                 containerEl.appendChild(div);
             }
 
@@ -427,7 +427,7 @@ class ISPAG_Baikal_Sync
 
         $ids = isset($_POST['ids']) ? json_decode(stripslashes($_POST['ids']), true) : [];
         if (empty($ids) || !is_array($ids)) {
-            wp_send_json_error(['message' => 'Aucun ID reçu ou format invalide.']);
+            wp_send_json_error(['message' => 'No ID received ou format invalide.']);
         }
 
         $logs = [];$repo = new ISPAG_Crm_Contacts_Repository();

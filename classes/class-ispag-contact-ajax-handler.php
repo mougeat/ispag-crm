@@ -52,7 +52,7 @@ class ISPAG_Contact_Ajax_Handler {
         // error_log('new_value ' . $new_value . " ---\n", 3, $log_file);
 
         if ( $contact_id === 0 || empty( $field_name ) ) {
-            wp_send_json_error( array( 'message' => 'Paramètres invalides (ID ou nom de champ manquant).' ) );
+            wp_send_json_error( array( 'message' => 'Invalid parameters (ID ou nom de champ manquant).' ) );
         }
 
         $old_value = '';
@@ -482,7 +482,7 @@ class ISPAG_Contact_Ajax_Handler {
                     $response_data['full_display_name'] = $updated_user->display_name;
                     
                 } else {
-                    wp_send_json_error( array( 'message' => 'Erreur lors de la mise à jour : ' . $result->get_error_message() ) );
+                    wp_send_json_error( array( 'message' => 'Error during update: ' . $result->get_error_message() ) );
                 }
                 break;
             default:
@@ -841,7 +841,7 @@ class ISPAG_Contact_Ajax_Handler {
         if ($updated !== false || get_user_meta($user_id, $meta_avatar, true) == $attachment_id) {
             wp_send_json_success(['message' => 'Avatar mis à jour avec succès.']);
         } else {
-            wp_send_json_error(['message' => 'Erreur lors de la mise à jour en base de données.']);
+            wp_send_json_error(['message' => 'Error while updating the database.']);
         }
     }
 }

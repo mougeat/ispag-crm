@@ -151,7 +151,7 @@
                 }
             },
             error: function() {
-                $sidebarBody.html('<p class="ispag-error">Une erreur réseau est survenue.</p>');
+                $sidebarBody.html('<p class="ispag-error">A network error occurred.</p>');
             }
         });
     }

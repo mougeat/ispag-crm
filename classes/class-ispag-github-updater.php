@@ -341,7 +341,7 @@ class ISPAG_GitHub_Updater {
     private static function hint($code, $error) {
         if ($code === 0)   return 'Le serveur ne peut pas joindre GitHub (' . $error . '). Vérifiez que l\'hébergement autorise les connexions sortantes HTTPS.';
         if ($code === 401) return 'Jeton refusé par GitHub : il est invalide, expiré ou mal copié dans wp-config.php.';
-        if ($code === 403) return 'Accès refusé (ou limite de requêtes atteinte) : le jeton n\'a pas le droit « Contents : lecture » sur ce dépôt.';
+        if ($code === 403) return 'Access denied (ou limite de requêtes atteinte) : le jeton n\'a pas le droit « Contents : lecture » sur ce dépôt.';
         if ($code === 404) return 'Dépôt ou branche introuvable : le jeton n\'a pas accès à ce dépôt, ou la branche « ' . (defined('ISPAG_UPDATE_BRANCH') ? ISPAG_UPDATE_BRANCH : '') . ' » n\'existe pas.';
         return 'Réponse inattendue de GitHub.';
     }

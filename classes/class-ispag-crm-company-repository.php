@@ -1056,7 +1056,7 @@ class ISPAG_Crm_Company_Repository {
 
             // 3. Cas par défaut (Nom, Email, etc.)
             default:
-                $display_label = ! empty( $value ) ? $value : __( 'Non défini', 'ispag-crm' );
+                $display_label = ! empty( $value ) ? $value : __( 'Not defined', 'ispag-crm' );
                 break;
         }
         
@@ -1181,7 +1181,7 @@ class ISPAG_Crm_Company_Repository {
             ]);
         } else {
             wp_send_json_error([
-                'message'  => 'Erreur lors de la mise à jour en base de données.',
+                'message'  => 'Error while updating the database.',
                 'db_error' => $wpdb->last_error // Pour le debug si besoin
             ]);
         }

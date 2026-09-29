@@ -123,7 +123,7 @@ class ISPAG_Crm_Deal_Model {
     //  */
     // private function _enrich_model_for_display() {
     //     // Fallbacks par défaut
-    //     $this->stage_label = __('Non défini', 'ispag-crm');
+    //     $this->stage_label = __('Not defined', 'ispag-crm');
     //     $this->stage_color = '#cccccc'; 
     //     $this->project_db_status_label = __('Status Inconnu', 'ispag-crm');
 

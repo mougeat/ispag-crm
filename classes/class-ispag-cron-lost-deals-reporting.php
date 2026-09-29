@@ -91,7 +91,7 @@ class ISPAG_Cron_Lost_Deals_Reporting {
                     'PROJECT_CLOSING_DATE' => date_i18n( get_option( 'date_format' ), strtotime( $d->closing_date ) ),
                     'PROJECT_OFFER_NUM'    => esc_html( $d->offer_num ),
                     'PROJECT_STATE'        => esc_html( $d->current_stage_key ),
-                    'PROJECT_REASON'       => !empty($d->reason_for_rejection) ? esc_html( $d->reason_for_rejection ) : 'Non spécifiée', // La nouvelle variable
+                    'PROJECT_REASON'       => !empty($d->reason_for_rejection) ? esc_html( $d->reason_for_rejection ) : 'Not specifiede', // La nouvelle variable
                     'PROJECT_LINK'         => trailingslashit( get_home_url() . '/deal/' . $d->deal_id )
                 ];
             }

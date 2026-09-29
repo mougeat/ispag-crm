@@ -21,7 +21,7 @@ jQuery(document).ready(function($) {
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    $card.html('<p class="error" style="padding: 10px; color: #e74c3c;">Erreur lors du chargement des données.</p>');
+                    $card.html('<p class="error" style="padding: 10px; color: #e74c3c;">Error while loading data.</p>');
                 }
             });
         }

@@ -75,8 +75,8 @@ class ISPAG_Company_Migrator {
         // Page 1 : Lancement de la Migration
         add_submenu_page(
             $this->menu_parent_slug, 
-            __( '1. Lancer la Migration', 'ispag-crm' ),
-            __( '1. Lancer la Migration', 'ispag-crm' ),
+            __( '1. Start migration', 'ispag-crm' ),
+            __( '1. Start migration', 'ispag-crm' ),
             'manage_options',
             $this->migration_page_slug,
             array( $this, 'render_migration_page' )
@@ -85,8 +85,8 @@ class ISPAG_Company_Migrator {
         // Page 2 : Validation des Correspondances
         add_submenu_page(
             $this->menu_parent_slug, 
-            __( '2. Valider les IDs', 'ispag-crm' ),
-            __( '2. Valider les IDs', 'ispag-crm' ),
+            __( '2. Validate IDs', 'ispag-crm' ),
+            __( '2. Validate IDs', 'ispag-crm' ),
             'manage_options',
             $this->validation_page_slug,
             array( $this, 'render_validation_page' )
@@ -105,16 +105,16 @@ class ISPAG_Company_Migrator {
         
         ?>
         <div class="wrap">
-            <h1><?php _e( 'Validation des Correspondances de Migration', 'ispag-crm' ); ?></h1>
+            <h1><?php _e( 'Migration match validation', 'ispag-crm' ); ?></h1>
             <hr>
             
             <?php $this->display_admin_message(); ?>
 
             <?php if ( empty( $matches ) ) : ?>
-                <div class="notice notice-success"><p><?php _e( 'Aucune nouvelle correspondance à valider. Lancez la migration d\'abord.', 'ispag-crm' ); ?></p></div>
+                <div class="notice notice-success"><p><?php _e( 'No new match to validate. Start the migration first.', 'ispag-crm' ); ?></p></div>
             <?php else : ?>
                 <p class="description">
-                    <?php _e( 'Veuillez examiner les correspondances ci-dessous. Les correspondances avec une faible distance (0 ou 1) sont plus fiables.', 'ispag-crm' ); ?>
+                    <?php _e( 'Please review the matches below. Matches with a low distance (0 or 1) are more reliable.', 'ispag-crm' ); ?>
                     <br>**Attention :** Les lignes cochées appliqueront le `viag_id` **ET** mettront à jour le nom du fournisseur pour qu'il corresponde au Nom de la Société.
                 </p>
 
@@ -126,10 +126,10 @@ class ISPAG_Company_Migrator {
                         <thead>
                             <tr>
                                 <th style="width: 50px;"><input type="checkbox" id="select-all"></th>
-                                <th><?php _e( 'Fournisseur (Nom Actuel)', 'ispag-crm' ); ?></th>
-                                <th><?php _e( 'Société (Nom Cible)', 'ispag-crm' ); ?></th>
+                                <th><?php _e( 'Supplier (current name)', 'ispag-crm' ); ?></th>
+                                <th><?php _e( 'Company (target name)', 'ispag-crm' ); ?></th>
                                 <th><?php _e( 'viag_id (Cible)', 'ispag-crm' ); ?></th>
-                                <th><?php _e( 'Distance (Fiabilité)', 'ispag-crm' ); ?></th>
+                                <th><?php _e( 'Distance (reliability)', 'ispag-crm' ); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -156,7 +156,7 @@ class ISPAG_Company_Migrator {
                         }
                     </script>
                     
-                    <?php submit_button( __( 'Valider et Appliquer les Correspondances Sélectionnées', 'ispag-crm' ), 'primary large', 'validate_matches' ); ?>
+                    <?php submit_button( __( 'Validate and apply selected matches', 'ispag-crm' ), 'primary large', 'validate_matches' ); ?>
                 </form>
 
             <?php endif; ?>
@@ -168,13 +168,13 @@ class ISPAG_Company_Migrator {
         // ... (Pas de changement ici) ...
         ?>
         <div class="wrap">
-            <h1><?php _e( 'Lancement de la Migration des IDs Viag Fournisseurs', 'ispag-crm' ); ?></h1>
+            <h1><?php _e( 'Starting the Viag supplier ID migration', 'ispag-crm' ); ?></h1>
             <hr>
             
             <?php $this->display_admin_message(); ?>
 
             <p class="description">
-                <?php _e( "Cette opération lance le processus de recherche floue (Fuzzy Match) uniquement sur le Nom de l'entreprise. Les résultats seront stockés dans une table temporaire pour la validation.", 'ispag-crm' ); ?>
+                <?php _e( "This operation starts the fuzzy match process on the company name only. Results will be stored in a temporary table for validation.", 'ispag-crm' ); ?>
                 <br>**ATTENTION :** Cette étape ne met pas à jour la table des fournisseurs. Vous devez passer à l'étape **"2. Valider les IDs"** pour appliquer les changements.
             </p>
 
@@ -183,7 +183,7 @@ class ISPAG_Company_Migrator {
                 echo '<input type="hidden" name="action" value="' . esc_attr($this->migration_action) . '">';
                 wp_nonce_field( $this->migration_action . '_nonce' ); 
                 
-                submit_button( __( 'Démarrer la Recherche de Correspondances', 'ispag-crm' ), 'primary large', 'run_migration', true, ['onclick' => 'return confirm("' . esc_js(__('Êtes-vous sûr de vouloir lancer la recherche de correspondances ?', 'ispag-crm')) . '")'] ); 
+                submit_button( __( 'Start match search', 'ispag-crm' ), 'primary large', 'run_migration', true, ['onclick' => 'return confirm("' . esc_js(__('Are you sure you want to start the match search?', 'ispag-crm')) . '")'] ); 
                 ?>
             </form>
         </div>
@@ -207,7 +207,7 @@ class ISPAG_Company_Migrator {
 
     public function handle_migration_trigger() {
         if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], $this->migration_action . '_nonce' ) || ! current_user_can( 'manage_options' ) ) {
-            $this->log_and_exit( 'Erreur de sécurité. Nonce invalide.', 'error', $this->migration_page_slug );
+            $this->log_and_exit( 'Security error. Nonce invalide.', 'error', $this->migration_page_slug );
         }
         
         $this->execute_name_fuzzy_match();
@@ -328,7 +328,7 @@ class ISPAG_Company_Migrator {
         global $wpdb;
 
         if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], $this->validation_action . '_nonce' ) || ! current_user_can( 'manage_options' ) ) {
-            $this->log_and_exit( 'Erreur de sécurité. Nonce invalide.', 'error', $this->validation_page_slug );
+            $this->log_and_exit( 'Security error. Nonce invalide.', 'error', $this->validation_page_slug );
         }
 
         $match_ids = isset( $_POST['match_ids'] ) ? array_map( 'absint', (array) $_POST['match_ids'] ) : [];

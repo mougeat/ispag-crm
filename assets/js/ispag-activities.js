@@ -48,7 +48,7 @@ jQuery(function ($) {
         })
         .fail(function (xhr) {
             // console.error('[ISPAG Activity Tracker] échec AJAX :', xhr.status, xhr.responseText);
-            $pane.html('<p class="ispag-error-message">Erreur réseau.</p>');
+            $pane.html('<p class="ispag-error-message">Network error.</p>');
         })
         .always(function() {
             $pane.removeData('loading');
