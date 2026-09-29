@@ -217,25 +217,6 @@ class ISPAG_Entreprise_Manager {
         <?php
     }
 
-    /** Prochain viag_id provisoire (plage 90000-99999, même convention que la création d'un contact). */
-    private function next_provisional_viag_id() {
-        global $wpdb;
-        $last = $wpdb->get_var("SELECT MAX(viag_id) FROM {$this->table_name} WHERE viag_id >= 90000 AND viag_id < 100000");
-        return $last ? (int) $last + 1 : 90001;
-    }
-
-    /** Écrit une méta d'entreprise dans la table ispag_companies_meta (met à jour la ligne existante, sinon l'ajoute). */
-    private function save_company_meta($company_id, $key, $value) {
-        global $wpdb;
-        $meta_table = $wpdb->prefix . 'ispag_companies_meta';
-        $meta_id = $wpdb->get_var($wpdb->prepare("SELECT meta_id FROM {$meta_table} WHERE company_id = %d AND meta_key = %s ORDER BY meta_id DESC LIMIT 1", $company_id, $key));
-        if ($meta_id) {
-            $wpdb->update($meta_table, array('meta_value' => $value), array('meta_id' => $meta_id));
-        } else {
-            $wpdb->insert($meta_table, array('company_id' => $company_id, 'meta_key' => $key, 'meta_value' => $value));
-        }
-    }
-
     public function handle_form_submissions() {
         check_admin_referer('ispag_entreprise_nonce');
 
@@ -245,50 +226,42 @@ class ISPAG_Entreprise_Manager {
         if (!current_user_can($id > 0 ? 'edit_company' : 'add_company') && !current_user_can('manage_options')) {
             wp_die('Accès refusé');
         }
-        $back = function ($msg, $extra = '') {
-            wp_safe_redirect(admin_url('admin.php?page=' . $this->menu_slug . '&message=' . $msg . $extra));
+        $back = function ($msg) {
+            wp_safe_redirect(admin_url('admin.php?page=' . $this->menu_slug . '&message=' . $msg));
             exit;
         };
 
-        $name   = sanitize_text_field(wp_unslash(isset($_POST['company_name']) ? $_POST['company_name'] : ''));
-        $domain = sanitize_text_field(wp_unslash(isset($_POST['compagny_domain']) ? $_POST['compagny_domain'] : ''));
-        $city   = sanitize_text_field(wp_unslash(isset($_POST['ville_meta']) ? $_POST['ville_meta'] : ''));
-        $viag_id = isset($_POST['viag_id']) ? absint($_POST['viag_id']) : 0;
-        if ($name === '') $back('error_name');
+        if ($id === 0) {
+            // Création : logique partagée avec le panneau de la page publique
+            $result = ISPAG_Crm_Company_Creator::create(array(
+                'company_name'    => isset($_POST['company_name']) ? $_POST['company_name'] : '',
+                'compagny_domain' => isset($_POST['compagny_domain']) ? $_POST['compagny_domain'] : '',
+                'city'            => isset($_POST['ville_meta']) ? $_POST['ville_meta'] : '',
+                'viag_id'         => isset($_POST['viag_id']) ? $_POST['viag_id'] : 0,
+                'isSupplier'      => isset($_POST['isSupplier']) ? 1 : 0,
+                'isIngenieur'     => isset($_POST['isIngenieur']) ? 1 : 0,
+                'is_active'       => isset($_POST['is_active']) ? $_POST['is_active'] : 1,
+            ));
+            $map = array('created' => 'added', 'exists' => 'exists', 'error_name' => 'error_name', 'error_email' => 'error_db', 'error_db' => 'error_db');
+            $back($map[$result['status']]);
+        }
 
+        // Modification
+        $name = sanitize_text_field(wp_unslash(isset($_POST['company_name']) ? $_POST['company_name'] : ''));
+        if ($name === '') $back('error_name');
+        $city = sanitize_text_field(wp_unslash(isset($_POST['ville_meta']) ? $_POST['ville_meta'] : ''));
         $data = array(
             'company_name'    => $name,
-            'compagny_domain' => $domain,
-            'city'            => $city,
+            'compagny_domain' => ISPAG_Crm_Company_Creator::normalize_domain(wp_unslash(isset($_POST['compagny_domain']) ? $_POST['compagny_domain'] : '')),
             'isSupplier'      => isset($_POST['isSupplier']) ? 1 : 0,
             'isIngenieur'     => isset($_POST['isIngenieur']) ? 1 : 0,
             'is_active'       => isset($_POST['is_active']) ? absint($_POST['is_active']) : 1,
         );
-
-        if ($id > 0) {
-            if ($viag_id > 0) $data['viag_id'] = $viag_id;
-            $wpdb->update($this->table_name, $data, array('Id' => $id));
-            $msg = 'updated';
-        } else {
-            // Pas de doublon : même domaine, ou même viag_id
-            $dup = $wpdb->get_var($wpdb->prepare(
-                "SELECT Id FROM {$this->table_name} WHERE (%d > 0 AND viag_id = %d) OR (%s <> '' AND compagny_domain = %s) LIMIT 1",
-                $viag_id, $viag_id, $domain, $domain
-            ));
-            if ($dup) $back('exists');
-
-            $data['viag_id']    = $viag_id > 0 ? $viag_id : $this->next_provisional_viag_id();
-            $data['created_at'] = current_time('mysql');
-            if ($wpdb->insert($this->table_name, $data) === false) $back('error_db');
-            $id  = $wpdb->insert_id;
-            $msg = 'added';
-        }
-
-        // Ville : le CRM la lit selon l'écran dans la colonne city, dans ispag_companies_meta ou dans les postmeta
-        $this->save_company_meta($id, self::META_COMPANY_CITY, $city);
-        update_post_meta($id, self::META_COMPANY_CITY, $city);
-
-        $back($msg);
+        $viag_id = isset($_POST['viag_id']) ? absint($_POST['viag_id']) : 0;
+        if ($viag_id > 0) $data['viag_id'] = $viag_id;
+        $wpdb->update($this->table_name, $data, array('Id' => $id));
+        ISPAG_Crm_Company_Creator::save_city($id, $city);
+        $back('updated');
     }
 
     public function handle_delete($id) {
