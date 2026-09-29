@@ -103,6 +103,11 @@ ISPAG_GitHub_Updater::plugin(__FILE__, 'mougeat/ispag-crm');
 register_activation_hook(__FILE__, ['ISPAG_CRM_Installer', 'install']);
 ISPAG_CRM_Installer::init();
 
+// Les pages du CRM sont des modèles de page du thème (créées par le thème). Le plugin, lui, ajoute des adresses
+// /deal/, /contact/, /company/ qui donnent une 404 tant que les permaliens ne sont pas rafraîchis.
+require_once ISPAG_CRM_PLUGIN_DIR . 'classes/class-ispag-page-installer.php';
+register_activation_hook(__FILE__, ['ISPAG_Page_Installer', 'schedule_flush']);
+
 // 2. Enregistrer le hook d'activation (s'exécute uniquement au clic sur "Activer")
 register_activation_hook(__FILE__, ['ISPAG_Notifications_Manager', 'activate']);
 
