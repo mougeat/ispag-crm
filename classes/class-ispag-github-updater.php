@@ -39,6 +39,11 @@ class ISPAG_GitHub_Updater {
     private $repo;      // 'mougeat/ispag-achats'
     private $pending_sha = ''; // SHA du ZIP en cours de téléchargement
 
+    /** Base de l'API GitHub (modifiable par ISPAG_GITHUB_API_BASE : tests ou GitHub Enterprise). */
+    public static function api_base() {
+        return defined('ISPAG_GITHUB_API_BASE') && ISPAG_GITHUB_API_BASE ? rtrim(ISPAG_GITHUB_API_BASE, '/') : 'https://api.github.com';
+    }
+
     public static function is_configured() {
         return defined('ISPAG_GITHUB_TOKEN') && ISPAG_GITHUB_TOKEN !== ''
             && defined('ISPAG_UPDATE_BRANCH') && ISPAG_UPDATE_BRANCH !== '';
@@ -107,6 +112,24 @@ class ISPAG_GitHub_Updater {
         ];
     }
 
+    /** Interroge GitHub : dernier commit de la branche. @return array ['sha'=>string, 'code'=>int, 'error'=>string] */
+    private function fetch_head() {
+        $path = '/repos/' . $this->repo . '/commits/' . implode('/', array_map('rawurlencode', explode('/', $this->branch())));
+        $res  = wp_remote_get(self::api_base() . $path, ['timeout' => 10, 'headers' => $this->api_headers('application/vnd.github.sha')]);
+        if (is_wp_error($res)) {
+            return ['sha' => '', 'code' => 0, 'error' => $res->get_error_message()];
+        }
+        $code = (int) wp_remote_retrieve_response_code($res);
+        $body = trim(wp_remote_retrieve_body($res));
+        if ($code === 200 && preg_match('/^[0-9a-f]{40}$/', $body)) {
+            return ['sha' => $body, 'code' => 200, 'error' => ''];
+        }
+        $msg = '';
+        $json = json_decode($body, true);
+        if (is_array($json) && !empty($json['message'])) $msg = (string) $json['message'];
+        return ['sha' => '', 'code' => $code, 'error' => $msg !== '' ? $msg : 'réponse inattendue'];
+    }
+
     /** SHA du dernier commit de la branche (mémorisé 5 min ; 'force-check' de WP contourne le cache). */
     private function remote_sha($force = false) {
         if (!$force && !empty($_GET['force-check'])) $force = true;
@@ -114,18 +137,29 @@ class ISPAG_GitHub_Updater {
             $cached = get_transient($this->cache_key());
             if ($cached !== false) return $cached === 'ERR' ? '' : $cached;
         }
-        $path = '/repos/' . $this->repo . '/commits/' . implode('/', array_map('rawurlencode', explode('/', $this->branch())));
-        $res  = wp_remote_get('https://api.github.com' . $path, ['timeout' => 10, 'headers' => $this->api_headers('application/vnd.github.sha')]);
-        $code = is_wp_error($res) ? 0 : (int) wp_remote_retrieve_response_code($res);
-        $body = is_wp_error($res) ? '' : trim(wp_remote_retrieve_body($res));
-        if ($code === 200 && preg_match('/^[0-9a-f]{40}$/', $body)) {
-            set_transient($this->cache_key(), $body, self::CACHE_TTL);
-            return $body;
+        $head = $this->fetch_head();
+        if ($head['sha'] !== '') {
+            set_transient($this->cache_key(), $head['sha'], self::CACHE_TTL);
+            return $head['sha'];
         }
-        error_log(sprintf('[ISPAG Updater] %s@%s : réponse GitHub inattendue (HTTP %s) %s', $this->repo, $this->branch(), $code,
-            is_wp_error($res) ? $res->get_error_message() : ''));
+        error_log(sprintf('[ISPAG Updater] %s@%s : réponse GitHub inattendue (HTTP %s) %s', $this->repo, $this->branch(), $head['code'], $head['error']));
         set_transient($this->cache_key(), 'ERR', self::CACHE_TTL); // évite de marteler l'API en cas d'erreur
         return '';
+    }
+
+    /** Pour l'écran de diagnostic : vérification immédiate (sans cache) + état installé. */
+    public function diagnose() {
+        $head = $this->fetch_head();
+        delete_transient($this->cache_key());
+        if ($head['sha'] !== '') set_transient($this->cache_key(), $head['sha'], self::CACHE_TTL);
+        return $head + [
+            'type' => $this->type, 'slug' => $this->slug, 'repo' => $this->repo, 'branch' => $this->branch(),
+            'installed' => $this->installed_sha(),
+        ];
+    }
+
+    public function describe() {
+        return ['type' => $this->type, 'slug' => $this->slug, 'repo' => $this->repo, 'basename' => $this->basename, 'installed' => $this->installed_sha()];
     }
 
     private function current_version() {
@@ -152,7 +186,7 @@ class ISPAG_GitHub_Updater {
             'slug'        => $this->slug,
             'new_version' => $version . '+' . substr($sha, 0, 7),
             'url'         => 'https://github.com/' . $this->repo . '/tree/' . $this->branch(),
-            'package'     => 'https://api.github.com/repos/' . $this->repo . '/zipball/' . $sha,
+            'package'     => self::api_base() . '/repos/' . $this->repo . '/zipball/' . $sha,
         ];
         if ($this->type === 'plugin') {
             $item['plugin'] = $this->basename;
@@ -179,7 +213,7 @@ class ISPAG_GitHub_Updater {
             'slug'          => $this->slug,
             'version'       => $this->current_version() . '+' . substr($sha, 0, 7),
             'homepage'      => 'https://github.com/' . $this->repo,
-            'download_link' => $sha ? 'https://api.github.com/repos/' . $this->repo . '/zipball/' . $sha : '',
+            'download_link' => $sha ? self::api_base() . '/repos/' . $this->repo . '/zipball/' . $sha : '',
             'sections'      => ['description' => 'Branche suivie : ' . esc_html($this->branch()) . ' (' . esc_html($this->repo) . ').'],
         ];
     }
@@ -195,9 +229,11 @@ class ISPAG_GitHub_Updater {
 
     /** Détecte un nouveau commit et déclenche le circuit normal de WordPress (qui installe si l'auto-update est actif). */
     public static function poll() {
+        update_option('ispag_gh_last_poll', time(), false);
         $needs = false;
         foreach (self::$instances as $i) {
-            if ($i->has_update(true)) { $needs = true; break; }
+            // pas de break : chaque élément doit rafraîchir son commit distant, sinon les suivants partent sur un commit périmé
+            if ($i->has_update(true)) $needs = true;
         }
         if (!$needs) return;
         delete_site_transient('update_plugins');
@@ -264,7 +300,7 @@ class ISPAG_GitHub_Updater {
 
     /** Ajoute le jeton uniquement pour le téléchargement du ZIP de CE dépôt. */
     public function authorize_download($args, $url) {
-        if (strpos($url, 'https://api.github.com/repos/' . $this->repo . '/zipball/') === 0) {
+        if (strpos($url, self::api_base() . '/repos/' . $this->repo . '/zipball/') === 0) {
             $args['headers'] = array_merge($args['headers'] ?? [], $this->api_headers());
         }
         return $args;
@@ -272,7 +308,7 @@ class ISPAG_GitHub_Updater {
 
     /** Relève le SHA épinglé dans l'URL du ZIP : c'est lui qui sera installé, même si la branche avance entre-temps. */
     public function note_package($reply, $package, $upgrader = null, $hook_extra = []) {
-        $prefix = 'https://api.github.com/repos/' . $this->repo . '/zipball/';
+        $prefix = self::api_base() . '/repos/' . $this->repo . '/zipball/';
         if (is_string($package) && strpos($package, $prefix) === 0) {
             $sha = substr($package, strlen($prefix));
             if (preg_match('/^[0-9a-f]{40}$/', $sha)) $this->pending_sha = $sha;
@@ -283,7 +319,11 @@ class ISPAG_GitHub_Updater {
     /** Mémorise le SHA réellement installé (celui du ZIP, épinglé dans l'URL du package). */
     public function remember_installed($upgrader, $options) {
         if (($options['action'] ?? '') !== 'update' || ($options['type'] ?? '') !== $this->type) return;
-        $list = ($this->type === 'plugin') ? (array) ($options['plugins'] ?? []) : (array) ($options['themes'] ?? []);
+        // Selon le circuit (mise à jour manuelle/groupée ou installation automatique), WordPress transmet une liste
+        // ('plugins' / 'themes') ou un seul élément ('plugin' / 'theme') : on accepte les deux.
+        $key  = $this->type === 'plugin' ? 'plugin' : 'theme';
+        $list = (array) ($options[$key . 's'] ?? []);
+        if (!empty($options[$key]) && is_string($options[$key])) $list[] = $options[$key];
         if (!in_array($this->basename, $list, true)) return;
 
         if ($this->pending_sha !== '') {
@@ -292,6 +332,87 @@ class ISPAG_GitHub_Updater {
         }
         delete_transient($this->cache_key());
     }
+    // ------------------------------------------------------------------ diagnostic (Outils → Mises à jour ISPAG)
+
+    public static function admin_menu() {
+        add_management_page('Mises à jour ISPAG', 'Mises à jour ISPAG', 'manage_options', 'ispag-updates', [self::class, 'render_admin']);
+    }
+
+    private static function hint($code, $error) {
+        if ($code === 0)   return 'Le serveur ne peut pas joindre GitHub (' . $error . '). Vérifiez que l\'hébergement autorise les connexions sortantes HTTPS.';
+        if ($code === 401) return 'Jeton refusé par GitHub : il est invalide, expiré ou mal copié dans wp-config.php.';
+        if ($code === 403) return 'Accès refusé (ou limite de requêtes atteinte) : le jeton n\'a pas le droit « Contents : lecture » sur ce dépôt.';
+        if ($code === 404) return 'Dépôt ou branche introuvable : le jeton n\'a pas accès à ce dépôt, ou la branche « ' . (defined('ISPAG_UPDATE_BRANCH') ? ISPAG_UPDATE_BRANCH : '') . ' » n\'existe pas.';
+        return 'Réponse inattendue de GitHub.';
+    }
+
+    public static function render_admin() {
+        if (!current_user_can('manage_options')) return;
+        $yes = '<span style="color:#1a7f37;font-weight:600;">oui</span>';
+        $no  = '<span style="color:#b42318;font-weight:600;">non</span>';
+        $configured = self::is_configured();
+
+        echo '<div class="wrap"><h1>Mises à jour ISPAG</h1>';
+        echo '<p>Mise à jour automatique des plugins et du thème ISPAG depuis une branche GitHub. Cet écran indique ce qui fonctionne et ce qui bloque.</p>';
+
+        // --- 1. configuration
+        echo '<h2>1. Configuration (wp-config.php)</h2><table class="widefat striped" style="max-width:900px"><tbody>';
+        $token = defined('ISPAG_GITHUB_TOKEN') ? (string) ISPAG_GITHUB_TOKEN : '';
+        printf('<tr><td>ISPAG_GITHUB_TOKEN défini</td><td>%s%s</td></tr>', $token !== '' ? $yes : $no, $token !== '' ? ' — ' . esc_html(substr($token, 0, 11)) . '… (' . strlen($token) . ' caractères)' : '');
+        printf('<tr><td>ISPAG_UPDATE_BRANCH défini</td><td>%s%s</td></tr>', defined('ISPAG_UPDATE_BRANCH') && ISPAG_UPDATE_BRANCH !== '' ? $yes : $no, defined('ISPAG_UPDATE_BRANCH') && ISPAG_UPDATE_BRANCH !== '' ? ' — ' . esc_html(ISPAG_UPDATE_BRANCH) : '');
+        printf('<tr><td>Installation automatique</td><td>%s</td></tr>', defined('ISPAG_GITHUB_AUTO_UPDATE') && !ISPAG_GITHUB_AUTO_UPDATE ? 'désactivée (ISPAG_GITHUB_AUTO_UPDATE = false) : les mises à jour sont proposées mais à valider à la main' : 'activée');
+        $cron_off = defined('DISABLE_WP_CRON') && DISABLE_WP_CRON;
+        printf('<tr><td>Tâches planifiées WordPress (WP-Cron) actives</td><td>%s%s</td></tr>', $cron_off ? $no : $yes, $cron_off ? ' — DISABLE_WP_CRON est à true : la vérification automatique ne se déclenche pas, seul le bouton ci-dessous fonctionne' : '');
+        $updater_off = defined('AUTOMATIC_UPDATER_DISABLED') && AUTOMATIC_UPDATER_DISABLED;
+        printf('<tr><td>Mises à jour automatiques de WordPress autorisées</td><td>%s%s</td></tr>', $updater_off ? $no : $yes, $updater_off ? ' — AUTOMATIC_UPDATER_DISABLED est à true : rien ne s\'installera automatiquement' : '');
+        $next = wp_next_scheduled(self::CRON_HOOK); $last = (int) get_option('ispag_gh_last_poll', 0);
+        printf('<tr><td>Prochaine vérification planifiée</td><td>%s</td></tr>', $next ? esc_html(wp_date('d.m.Y H:i:s', $next)) . ' (toutes les 15 min, si le site est visité)' : ($configured ? 'pas encore planifiée (elle le sera à la prochaine visite du site)' : '—'));
+        printf('<tr><td>Dernière vérification automatique</td><td>%s</td></tr>', $last ? esc_html(wp_date('d.m.Y H:i:s', $last)) : 'jamais');
+        echo '</tbody></table>';
+
+        if (!$configured) {
+            echo '<div class="notice notice-warning inline" style="max-width:900px"><p><strong>L\'updater est inactif</strong> : il manque au moins une des deux constantes. Ajoutez dans <code>wp-config.php</code>, <em>avant</em> la ligne « That\'s all, stop editing! » :</p>';
+            echo '<pre style="background:#f6f7f7;padding:10px;overflow:auto">define(\'ISPAG_GITHUB_TOKEN\', \'github_pat_...\');
+define(\'ISPAG_UPDATE_BRANCH\', \'claude/eager-galileo-tcm8l8\');</pre></div></div>';
+            return;
+        }
+
+        // --- 2. vérification
+        $results = null;
+        if (!empty($_POST['ispag_check_now']) && check_admin_referer('ispag_check_now')) {
+            $results = [];
+            foreach (self::$instances as $i) $results[] = $i->diagnose();
+            // Rafraîchit aussi les tableaux de mises à jour de WordPress (c'est ce qui fait apparaître l'option d'auto-update)
+            delete_site_transient('update_plugins'); delete_site_transient('update_themes');
+            if (function_exists('wp_update_plugins')) wp_update_plugins();
+            if (function_exists('wp_update_themes'))  wp_update_themes();
+        }
+
+        echo '<h2>2. Vérification GitHub</h2>';
+        echo '<form method="post">'; wp_nonce_field('ispag_check_now');
+        echo '<p><input type="submit" name="ispag_check_now" class="button button-primary" value="Vérifier maintenant"> <span class="description">Interroge GitHub pour chaque plugin et le thème, et rafraîchit la page Mises à jour de WordPress.</span></p></form>';
+
+        echo '<table class="widefat striped" style="max-width:1100px"><thead><tr><th>Élément</th><th>Dépôt</th><th>Commit sur GitHub</th><th>Commit installé</th><th>État</th></tr></thead><tbody>';
+        $rows = $results !== null ? $results : array_map(function ($i) { return $i->describe() + ['sha' => null]; }, self::$instances);
+        foreach ($rows as $r) {
+            $inst = $r['installed'] !== '' ? substr($r['installed'], 0, 7) : '—';
+            if ($r['sha'] === null)      { $state = 'Cliquez sur « Vérifier maintenant »'; $remote = '—'; }
+            elseif ($r['sha'] === '')    { $state = '<strong style="color:#b42318">Erreur ' . (int) $r['code'] . '</strong> — ' . esc_html(self::hint($r['code'], $r['error'])) . '<br><small>GitHub : ' . esc_html($r['error']) . '</small>'; $remote = '—'; }
+            elseif ($r['sha'] === $r['installed']) { $state = '<span style="color:#1a7f37;font-weight:600">À jour</span>'; $remote = substr($r['sha'], 0, 7); }
+            else { $state = '<span style="color:#b26200;font-weight:600">Mise à jour disponible</span>' . ($r['installed'] === '' ? ' <small>(premier passage : le commit installé n\'est pas encore connu)</small>' : ''); $remote = substr($r['sha'], 0, 7); }
+            printf('<tr><td>%s <code>%s</code></td><td>%s</td><td><code>%s</code></td><td><code>%s</code></td><td>%s</td></tr>',
+                $r['type'] === 'theme' ? 'Thème' : 'Plugin', esc_html($r['slug']), esc_html($r['repo']), esc_html($remote), esc_html($inst), $state);
+        }
+        echo '</tbody></table>';
+        if ($results !== null) {
+            echo '<p style="margin-top:14px">Étape suivante : <a href="' . esc_url(admin_url('update-core.php')) . '">Tableau de bord → Mises à jour</a> pour installer, ou <a href="' . esc_url(admin_url('plugins.php')) . '">la page Extensions</a> pour voir « Mises à jour automatiques activées ».</p>';
+        }
+        echo '</div>';
+    }
+
 }
+
+
+add_action('admin_menu', ['ISPAG_GitHub_Updater', 'admin_menu']);
 
 }
