@@ -17,11 +17,18 @@ defined('ABSPATH') || exit;
  */
 class ISPAG_CRM_Installer {
 
-    const DB_VERSION = '1.0.0';
+    const DB_VERSION = '1.1.0';
     const OPTION     = 'ispag_crm_db_version';
 
     /** Droits utilisés par ce plugin (voir grant_default_caps()). */
     const CAPS = ['manage_order', 'edit_supplier_order', 'read_orders'];
+
+    /**
+     * Droits du menu « CRM ISPAG » (liste des entreprises, Add Company). Rien ne les crée : sans eux le menu est invisible
+     * et « Add Company » répond 403. Donnés à l'administrateur dans tous les cas, y compris sur un site déjà installé :
+     * les actions correspondantes exigent déjà manage_options, donc cela n'ouvre rien de plus à un administrateur.
+     */
+    const ADMIN_EXTRA_CAPS = ['edit_company', 'add_company'];
 
     public static function init() {
         add_action('plugins_loaded', [self::class, 'maybe_install'], 5);
@@ -66,11 +73,19 @@ class ISPAG_CRM_Installer {
      */
     private static function grant_default_caps() {
         $admin = get_role('administrator');
-        if (!$admin || $admin->has_cap('manage_order')) {
+        if (!$admin) {
             return;
         }
-        foreach (self::CAPS as $cap) {
-            $admin->add_cap($cap);
+        // Site neuf uniquement (aucun droit ISPAG encore) : les droits généraux.
+        if (!$admin->has_cap('manage_order')) {
+            foreach (self::CAPS as $cap) {
+                $admin->add_cap($cap);
+            }
+        }
+        foreach (self::ADMIN_EXTRA_CAPS as $cap) {
+            if (!$admin->has_cap($cap)) {
+                $admin->add_cap($cap);
+            }
         }
     }
 }

@@ -24,6 +24,22 @@ class ISPAG_Entreprise_Manager {
         add_submenu_page($this->menu_slug, __('Add Company', 'ispag-crm'), __('Add Company', 'ispag-crm'), 'add_company', $this->add_slug, array($this, 'render_entreprise_form'));
     }
 
+    /** Message de retour après une action (le formulaire redirige avec ?message=…). */
+    private function render_notice() {
+        $messages = array(
+            'added'      => array('success', __('Company created.', 'ispag-crm')),
+            'updated'    => array('success', __('Company updated.', 'ispag-crm')),
+            'deleted'    => array('success', __('Company deleted.', 'ispag-crm')),
+            'exists'     => array('warning', __('A company with this domain or Viag ID already exists: nothing was created.', 'ispag-crm')),
+            'error_name' => array('error',   __('The company name is required.', 'ispag-crm')),
+            'error_db'   => array('error',   __('The company could not be saved.', 'ispag-crm')),
+        );
+        $key = isset($_GET['message']) ? sanitize_key($_GET['message']) : '';
+        if (isset($messages[$key])) {
+            printf('<div class="notice notice-%s is-dismissible"><p>%s</p></div>', esc_attr($messages[$key][0]), esc_html($messages[$key][1]));
+        }
+    }
+
     public function render_entreprises_page() {
         $id     = isset($_GET['id']) ? absint($_GET['id']) : 0;
         $action = isset($_GET['action']) ? sanitize_text_field($_GET['action']) : 'list';
@@ -33,6 +49,7 @@ class ISPAG_Entreprise_Manager {
         } elseif ('delete' === $action && $id > 0) {
             $this->handle_delete($id);
         } else {
+            $this->render_notice();
             $this->render_list_view();
         }
     }
@@ -165,12 +182,13 @@ class ISPAG_Entreprise_Manager {
                         <td><input name="company_name" type="text" value="<?php echo $company ? esc_attr($company->company_name) : ''; ?>" class="regular-text" required></td>
                     </tr>
                     <tr>
-                        <th><label>Ville (Post Meta)</label></th>
+                        <th><label>Ville</label></th>
                         <td><input name="ville_meta" type="text" value="<?php echo esc_attr($city); ?>" class="regular-text" placeholder="Saisir la ville"></td>
                     </tr>
                     <tr>
                         <th><label>Viag ID</label></th>
-                        <td><input name="viag_id" type="number" value="<?php echo $company ? esc_attr($company->viag_id) : ''; ?>" class="small-text"></td>
+                        <td><input name="viag_id" type="number" value="<?php echo $company ? esc_attr($company->viag_id) : ''; ?>" class="small-text">
+                            <?php if (!$company) : ?><p class="description">Laisser vide : un identifiant provisoire (90001 et plus) est attribué automatiquement.</p><?php endif; ?></td>
                     </tr>
                     <tr>
                         <th><label>Type</label></th>
@@ -199,38 +217,78 @@ class ISPAG_Entreprise_Manager {
         <?php
     }
 
+    /** Prochain viag_id provisoire (plage 90000-99999, même convention que la création d'un contact). */
+    private function next_provisional_viag_id() {
+        global $wpdb;
+        $last = $wpdb->get_var("SELECT MAX(viag_id) FROM {$this->table_name} WHERE viag_id >= 90000 AND viag_id < 100000");
+        return $last ? (int) $last + 1 : 90001;
+    }
+
+    /** Écrit une méta d'entreprise dans la table ispag_companies_meta (met à jour la ligne existante, sinon l'ajoute). */
+    private function save_company_meta($company_id, $key, $value) {
+        global $wpdb;
+        $meta_table = $wpdb->prefix . 'ispag_companies_meta';
+        $meta_id = $wpdb->get_var($wpdb->prepare("SELECT meta_id FROM {$meta_table} WHERE company_id = %d AND meta_key = %s ORDER BY meta_id DESC LIMIT 1", $company_id, $key));
+        if ($meta_id) {
+            $wpdb->update($meta_table, array('meta_value' => $value), array('meta_id' => $meta_id));
+        } else {
+            $wpdb->insert($meta_table, array('company_id' => $company_id, 'meta_key' => $key, 'meta_value' => $value));
+        }
+    }
+
     public function handle_form_submissions() {
         check_admin_referer('ispag_entreprise_nonce');
-        if (!current_user_can('manage_options')) wp_die('Accès refusé');
 
         global $wpdb;
         $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
-        
+        // Droit de créer / de modifier (l'ancien contrôle manage_options refusait les rôles qui voient pourtant le menu)
+        if (!current_user_can($id > 0 ? 'edit_company' : 'add_company') && !current_user_can('manage_options')) {
+            wp_die('Accès refusé');
+        }
+        $back = function ($msg, $extra = '') {
+            wp_safe_redirect(admin_url('admin.php?page=' . $this->menu_slug . '&message=' . $msg . $extra));
+            exit;
+        };
+
+        $name   = sanitize_text_field(wp_unslash(isset($_POST['company_name']) ? $_POST['company_name'] : ''));
+        $domain = sanitize_text_field(wp_unslash(isset($_POST['compagny_domain']) ? $_POST['compagny_domain'] : ''));
+        $city   = sanitize_text_field(wp_unslash(isset($_POST['ville_meta']) ? $_POST['ville_meta'] : ''));
+        $viag_id = isset($_POST['viag_id']) ? absint($_POST['viag_id']) : 0;
+        if ($name === '') $back('error_name');
+
         $data = array(
-            'company_name'    => sanitize_text_field($_POST['company_name']),
-            'compagny_domain' => sanitize_text_field($_POST['compagny_domain']),
-            'viag_id'         => absint($_POST['viag_id']),
+            'company_name'    => $name,
+            'compagny_domain' => $domain,
+            'city'            => $city,
             'isSupplier'      => isset($_POST['isSupplier']) ? 1 : 0,
             'isIngenieur'     => isset($_POST['isIngenieur']) ? 1 : 0,
             'is_active'       => isset($_POST['is_active']) ? absint($_POST['is_active']) : 1,
         );
 
         if ($id > 0) {
+            if ($viag_id > 0) $data['viag_id'] = $viag_id;
             $wpdb->update($this->table_name, $data, array('Id' => $id));
             $msg = 'updated';
         } else {
-            $wpdb->insert($this->table_name, $data);
-            $id = $wpdb->insert_id; // On récupère l'ID pour le meta
+            // Pas de doublon : même domaine, ou même viag_id
+            $dup = $wpdb->get_var($wpdb->prepare(
+                "SELECT Id FROM {$this->table_name} WHERE (%d > 0 AND viag_id = %d) OR (%s <> '' AND compagny_domain = %s) LIMIT 1",
+                $viag_id, $viag_id, $domain, $domain
+            ));
+            if ($dup) $back('exists');
+
+            $data['viag_id']    = $viag_id > 0 ? $viag_id : $this->next_provisional_viag_id();
+            $data['created_at'] = current_time('mysql');
+            if ($wpdb->insert($this->table_name, $data) === false) $back('error_db');
+            $id  = $wpdb->insert_id;
             $msg = 'added';
         }
 
-        // Sauvegarde de la ville dans les postmeta (lié à l'ID de la company)
-        if (isset($_POST['ville_meta'])) {
-            update_post_meta($id, self::META_COMPANY_CITY, sanitize_text_field($_POST['ville_meta']));
-        }
+        // Ville : le CRM la lit selon l'écran dans la colonne city, dans ispag_companies_meta ou dans les postmeta
+        $this->save_company_meta($id, self::META_COMPANY_CITY, $city);
+        update_post_meta($id, self::META_COMPANY_CITY, $city);
 
-        wp_safe_redirect(admin_url('admin.php?page=' . $this->menu_slug . '&message=' . $msg));
-        exit;
+        $back($msg);
     }
 
     public function handle_delete($id) {
