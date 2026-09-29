@@ -12,6 +12,7 @@ class ISPAG_Cron_Task_Reminder {
     public function __construct() {
         global $wpdb;
         $this->wpdb = $wpdb;
+        $this->app_base_url = untrailingslashit(get_site_url()); // adresse du site courant (plus celle de la production)
 
         // On lie l'action du CRON WordPress à notre méthode
         add_action( 'ispag_fifteen_minute_cron_event', array( $this, 'check_and_send_reminders' ) );
