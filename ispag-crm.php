@@ -10,6 +10,18 @@ if (!defined('ABSPATH')) {
     die;
 }
 
+/**
+ * Traductions désactivées pour l'instant : tous les textes de base sont en anglais.
+ * Empêche aussi le chargement de fichiers .mo posés ailleurs (wp-content/languages/plugins/…).
+ * Pour réactiver plus tard : add_filter('ispag_disable_translations', '__return_false');
+ */
+add_filter('override_load_textdomain', function ($override, $domain) {
+    if (in_array($domain, ['creation-reservoir', 'ispag-crm', 'ispag'], true) && apply_filters('ispag_disable_translations', true)) {
+        return true;
+    }
+    return $override;
+}, 10, 2);
+
 // ----------------------------------------------------------------------------
 // 1. CONSTANTES ET ENVIRONNEMENT
 // ----------------------------------------------------------------------------
