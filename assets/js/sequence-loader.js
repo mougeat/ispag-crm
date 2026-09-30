@@ -16,7 +16,7 @@ jQuery(document).ready(function($) {
         if ($modal.length === 0) return console.error("Modal introuvable");
 
         $('#display-contact-name').text(contactName);
-        $select.html('<option value="">Chargement...</option>');
+        $select.html('<option value="">Loading...</option>');
         $modal.fadeIn();
 
         // APPEL AJAX POUR LES SEQUENCES
@@ -31,7 +31,7 @@ jQuery(document).ready(function($) {
                 });
                 $select.html(options);
             } else {
-                $select.html('<option value="">Erreur de chargement</option>');
+                $select.html('<option value="">Loading error</option>');
             }
         });
     });
@@ -55,7 +55,7 @@ jQuery(document).ready(function($) {
                 alert(response.data);
                 $('#modal-enroll-sequence').fadeOut();
             } else {
-                alert('Erreur : ' + response.data);
+                alert('Error: ' + response.data);
             }
             $btn.attr('disabled', false).text('Start');
         });

@@ -25,14 +25,14 @@ jQuery(document).ready(function($) {
                         // console.log('ISPAG JS : Succès ! Injection du HTML des contacts dans la carte.');
                         $card.html(response.data.html);
                     } else {
-                        console.warn('ISPAG JS : Erreur ou HTML vide renvoyé pour les contacts :', response);
+                        console.warn('ISPAG JS : Error ou HTML vide renvoyé pour les contacts :', response);
                         var errorMsg = (response.data && response.data.message) ? response.data.message : 'No contact found.';
                         $card.html('<p class="error" style="padding: 10px; color: #666;">' + errorMsg + '</p>');
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    console.error('ISPAG JS : Erreur AJAX contacts :', textStatus, errorThrown);
-                    $card.html('<p class="error" style="padding: 10px; color: #e74c3c;">Erreur lors du chargement des contacts.</p>');
+                    console.error('ISPAG JS : Error AJAX contacts :', textStatus, errorThrown);
+                    $card.html('<p class="error" style="padding: 10px; color: #e74c3c;">Error while loading contacts.</p>');
                 }
             });
         } else {

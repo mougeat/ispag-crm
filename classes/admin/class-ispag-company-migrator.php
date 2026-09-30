@@ -346,7 +346,7 @@ class ISPAG_Company_Migrator {
         );
 
         if ( empty( $matches_to_apply ) ) {
-             $this->log_and_exit( 'Erreur : Aucune correspondance trouvée dans la table temporaire pour les IDs sélectionnés.', 'error', $this->validation_page_slug );
+             $this->log_and_exit( 'Error: Aucune correspondance trouvée dans la table temporaire pour les IDs sélectionnés.', 'error', $this->validation_page_slug );
         }
 
         // 2. Construire la requête de mise à jour en masse (viag_id ET Nom)

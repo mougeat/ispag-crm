@@ -621,7 +621,7 @@ add_action('admin_head', function() {
             echo "<div style='background:#46b450; padding:20px; color:#fff;'>";
             echo "<h2>🏁 Done!</h2>";
             echo "All contacts have been aligned with the owners of their companies.";
-            echo "</div><br><a href='".admin_url()."' style='color:#72aee6;'>Retour au CRM</a>";
+            echo "</div><br><a href='".admin_url()."' style='color:#72aee6;'>Back to CRM</a>";
         }
 
         echo "</div>";

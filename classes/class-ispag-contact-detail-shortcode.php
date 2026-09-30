@@ -67,7 +67,7 @@ class ISPAG_Contact_Detail_Shortcode {
     public function ajax_remove_company_association() {
         // Sécurité: Vérification du Nonce et des permissions
         // if ( ! check_ajax_referer( 'ispag_security_nonce', 'security', false ) || ! current_user_can( 'edit_users' ) ) {
-        //     wp_send_json_error( array( 'message' => 'Erreur de sécurité ou permissions insuffisantes.' ) );
+        //     wp_send_json_error( array( 'message' => 'Error de sécurité ou permissions insuffisantes.' ) );
         // }
 
         $contact_id = absint( filter_input( INPUT_POST, 'contact_id', FILTER_VALIDATE_INT ) );
@@ -764,7 +764,7 @@ class ISPAG_Contact_Detail_Shortcode {
         // Attribut data-options pour le sélecteur Owner
         $owner_options_map = [];
         // --- AJOUTER L'OPTION 0 EN PREMIER POUR GARANTIR LA DÉSÉLECTION ---
-        $owner_options_map[0] = (object)['label' => '— Aucun —'];
+        $owner_options_map[0] = (object)['label' => '— None —'];
         if (isset($owners_lookup[0])) {
             $owner_options_map[$owners_lookup[0]->ID] = (object)['label' => $owners_lookup[0]->display_name];
         }

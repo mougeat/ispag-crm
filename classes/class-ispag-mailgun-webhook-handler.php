@@ -136,7 +136,7 @@ class ISPAG_Mailgun_Webhook_Handler {
 
         if ( ! $client_user ) {
              $this->_log( 'ÉCHEC : Aucun utilisateur WordPress trouvé pour l\'email : ' . $client_to );
-             return new WP_REST_Response( [ 'message' => 'Client inconnu dans la base' ], 200 );
+             return new WP_REST_Response( [ 'message' => 'Customer unknown in the database' ], 200 );
         }
 
         // 5. CRÉATION DE LA NOTE
@@ -159,7 +159,7 @@ class ISPAG_Mailgun_Webhook_Handler {
 
         if ( is_wp_error( $result ) ) {
             $this->_log( 'ERREUR lors de create_note : ' . $result->get_error_message() );
-            return new WP_REST_Response( [ 'message' => 'Erreur SQL' ], 500 );
+            return new WP_REST_Response( [ 'message' => 'SQL error' ], 500 );
         }
 
         $this->_log( '--- FIN DE TRAITEMENT (Note ID: '.$result.') ---' );

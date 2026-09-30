@@ -170,7 +170,7 @@ class ISPAG_Contact_Ajax_Handler {
                         $success = true;
                         $response_data['display_value'] = esc_html( $new_value );
                     } else {
-                        wp_send_json_error( array( 'message' => 'Erreur WP: ' . implode(', ', $result->get_error_messages()) ) );
+                        wp_send_json_error( array( 'message' => 'WP error: ' . implode(', ', $result->get_error_messages()) ) );
                     }
                 } else {
                     wp_send_json_error( array( 'message' => 'Format d\'email invalide.' ) );
@@ -259,7 +259,7 @@ class ISPAG_Contact_Ajax_Handler {
                         $response_data['display_value'] = esc_html( $role_display_name );
                         
                     } else {
-                        // Erreur de sauvegarde
+                        // Error de sauvegarde
                         wp_send_json_error( array( 'message' => 'Error updating role : ' . $result->get_error_message() ) );
                     }
                     
@@ -683,7 +683,7 @@ class ISPAG_Contact_Ajax_Handler {
         // error_log("ISPAG CRM: Tentative pour $email ($first_name $last_name)");
 
         if (empty($email)) {
-            wp_send_json_error(['message' => 'L\'email est obligatoire']);
+            wp_send_json_error(['message' => 'The email is required']);
         }
 
         // 3. Logique d'entreprise
@@ -727,7 +727,7 @@ class ISPAG_Contact_Ajax_Handler {
                 'redirect_url' => $redirect_url
             ]);
         } else {
-            // error_log('ISPAG CRM: Erreur SQL lors de l\'insert');
+            // error_log('ISPAG CRM: SQL error lors de l\'insert');
             wp_send_json_error(['message' => 'Error while creating in the database']);
         }
     }
@@ -778,7 +778,7 @@ class ISPAG_Contact_Ajax_Handler {
         $result = $wpdb->insert($table_companies, $insert_data);
 
         if ($result === false) {
-            // error_log("ISPAG CRM: Erreur SQL lors de la création de l'entreprise : " . $wpdb->last_error);
+            // error_log("ISPAG CRM: SQL error lors de la création de l'entreprise : " . $wpdb->last_error);
             return 0;
         }
 

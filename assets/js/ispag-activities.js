@@ -43,7 +43,7 @@ jQuery(function ($) {
                 $pane.html(response.data.html);
                 $pane.data('loaded', true);
             } else {
-                $pane.html('<p class="ispag-error-message">' + (response.data.message || 'Erreur.') + '</p>');
+                $pane.html('<p class="ispag-error-message">' + (response.data.message || 'Error.') + '</p>');
             }
         })
         .fail(function (xhr) {

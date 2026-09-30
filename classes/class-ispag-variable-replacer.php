@@ -125,7 +125,7 @@ if (!class_exists('ISPAG_Variable_Replacer')) {
             $deal = $wpdb->get_row(
                 $wpdb->prepare("SELECT * FROM {$table_name} WHERE deal_group_ref = %s", $group_ref)
             );
-            ISPAG_Workflow_Logger::debug("Deal récupéré: " . ($deal ? "ID={$deal->id}" : "Aucun deal trouvé"));
+            ISPAG_Workflow_Logger::debug("Deal récupéré: " . ($deal ? "ID={$deal->id}" : "No deal found"));
             return $deal;
         }
 
@@ -147,7 +147,7 @@ if (!class_exists('ISPAG_Variable_Replacer')) {
             $company = $wpdb->get_row(
                 $wpdb->prepare("SELECT * FROM {$table_name} WHERE id = %d", $company_id)
             );
-            ISPAG_Workflow_Logger::debug("Entreprise récupérée: " . ($company ? "ID={$company->id}" : "Aucune entreprise trouvée"));
+            ISPAG_Workflow_Logger::debug("Entreprise récupérée: " . ($company ? "ID={$company->id}" : "No company found"));
             return $company;
         }
     }

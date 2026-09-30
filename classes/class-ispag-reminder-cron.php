@@ -332,7 +332,7 @@ class ISPAG_Reminder_Cron {
     //     self::log_data_to_file("Nombre de deals trouvés : " . count($deals));
         
     //     if ( empty( $deals ) ) {
-    //         self::log_data_to_file("Sortie : Aucun deal trouvé.");
+    //         self::log_data_to_file("Sortie : No deal found.");
     //         return;
     //     }
 

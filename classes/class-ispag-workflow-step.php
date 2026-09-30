@@ -207,7 +207,7 @@ if (!class_exists('ISPAG_Workflow_Step')) {
                 );
 
                 if (!$deal) {
-                    ISPAG_Workflow_Logger::error("Aucun deal trouvé avec group_ref: {$group_ref}");
+                    ISPAG_Workflow_Logger::error("No deal found avec group_ref: {$group_ref}");
                     return;
                 }
                 else{
@@ -275,7 +275,7 @@ if (!class_exists('ISPAG_Workflow_Step')) {
                 );
             } catch (Error $e) {
                 ISPAG_Workflow_Logger::error(
-                    "Erreur fatale dans ISPAG_Task_Step::execute: " . $e->getMessage(),
+                    "Error fatale dans ISPAG_Task_Step::execute: " . $e->getMessage(),
                     ['error' => $e->getTraceAsString()]
                 );
             }

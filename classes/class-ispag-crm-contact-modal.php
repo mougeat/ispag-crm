@@ -217,7 +217,7 @@ class ISPAG_Crm_Contact_Modal {
                     }
                 }
             } else {
-                // error_log("[ISPAG WARNING] Aucun deal trouvé en base pour la REF: $deal_group_ref");
+                // error_log("[ISPAG WARNING] No deal found en base pour la REF: $deal_group_ref");
             }
         } elseif(! empty($deal_id)){
             $existing_deals = $wpdb->get_results( $wpdb->prepare(

@@ -348,12 +348,12 @@
                         });
                     } else {
                         console.error('[attachments] delete error', response);
-                        alert((response.data && response.data.message) || 'Erreur lors de la suppression.');
+                        alert((response.data && response.data.message) || 'Error while deleting.');
                     }
                 },
                 error: function(xhr) {
                     console.error('[attachments] delete AJAX error', xhr.status, xhr.responseText);
-                    alert('Erreur lors de la suppression.');
+                    alert('Error while deleting.');
                 },
             });
         });

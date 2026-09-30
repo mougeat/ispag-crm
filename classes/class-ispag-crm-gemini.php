@@ -29,8 +29,8 @@ class ISPAG_Crm_Gemini {
     public static function get_gemini_infos($name, $contact_function, $prepared_data, $type = 'contact'){
         
         if (empty(self::$api_key)) {
-            // error_log("[GEMINI get_gemini_infos] Erreur : Clé API manquante.", 3, self::$log_file);
-            return ['summary' => 'Erreur de configuration API', 'actions' => ''];
+            // error_log("[GEMINI get_gemini_infos] Error: Clé API manquante.", 3, self::$log_file);
+            return ['summary' => 'Error de configuration API', 'actions' => ''];
         }
 
         // error_log("[GEMINI get_gemini_infos] STARTING get_gemini_infos \n", 3, self::$log_file);
@@ -130,7 +130,7 @@ class ISPAG_Crm_Gemini {
 
         if (is_wp_error($response)) {
             // error_log("[GEMINI ERROR] WP_Error: " . $response->get_error_message(), 3, self::$log_file);
-            return ['summary' => 'Erreur de connexion API.', 'actions' => ''];
+            return ['summary' => 'Error de connexion API.', 'actions' => ''];
         }
 
         $response_code = wp_remote_retrieve_response_code($response);
@@ -166,7 +166,7 @@ class ISPAG_Crm_Gemini {
             // Fallback : si le JSON échoue, on tente de sauver les meubles avec ton ancien explode
             return [
                 'summary' => $raw_ai_text, 
-                'actions' => 'Erreur de formatage JSON.'
+                'actions' => 'Error de formatage JSON.'
             ];
         }
 

@@ -216,7 +216,7 @@ class ISPAG_Baikal_Sync
         ]);
 
         if (is_wp_error($response)) {
-            $this->logger->log_error($this->log_file, "Erreur GET distant contact {$contact_id} pour [{$baikal_user}]", [
+            $this->logger->log_error($this->log_file, "Error GET distant contact {$contact_id} pour [{$baikal_user}]", [
                 'error' => $response->get_error_message()
             ], get_current_user_id());
             return null;
@@ -287,7 +287,7 @@ class ISPAG_Baikal_Sync
         ]);
 
         if (is_wp_error($response)) {
-            $this->logger->log_error($this->log_file, "Erreur PUSH [{$user}] pour le contact {$id}", [
+            $this->logger->log_error($this->log_file, "Error PUSH [{$user}] pour le contact {$id}", [
                 'error' => $response->get_error_message()
             ], get_current_user_id());
             return false;
@@ -363,7 +363,7 @@ class ISPAG_Baikal_Sync
                 fillEl.style.width = '100%';
                 let finishDiv = document.createElement('div');
                 finishDiv.style.marginTop = '30px';
-                finishDiv.innerHTML = '<a href=\"" . admin_url() . "\" style=\"display:inline-block; background:#2271b1; color:white; padding:10px 20px; text-decoration:none; border-radius:3px;\">Retour au CRM</a>';
+                finishDiv.innerHTML = '<a href=\"" . admin_url() . "\" style=\"display:inline-block; background:#2271b1; color:white; padding:10px 20px; text-decoration:none; border-radius:3px;\">Back to CRM</a>';
                 containerEl.appendChild(finishDiv);
                 return;
             }
@@ -395,7 +395,7 @@ class ISPAG_Baikal_Sync
                 } else {
                     let div = document.createElement('div');
                     div.className = 'log-entry error';
-                    div.innerHTML = '❌ Erreur serveur : ' + (result.data?.message || 'Invalid response');
+                    div.innerHTML = '❌ Server error : ' + (result.data?.message || 'Invalid response');
                     containerEl.appendChild(div);
                 }
             } catch (e) {
@@ -482,7 +482,7 @@ class ISPAG_Baikal_Sync
         ]);
 
         if (is_wp_error($response)) {
-            $this->logger->log_error($this->log_file, "Erreur PROPFIND pour l'utilisateur [{$user}]", [
+            $this->logger->log_error($this->log_file, "Error PROPFIND pour l'utilisateur [{$user}]", [
                 'error' => $response->get_error_message()
             ], get_current_user_id());
             return;
@@ -497,7 +497,7 @@ class ISPAG_Baikal_Sync
 
         $xml = simplexml_load_string(wp_remote_retrieve_body($response));
         if ($xml === false) {
-            $this->logger->log_error($this->log_file, "Erreur parsing XML PROPFIND pour [{$user}]", [], get_current_user_id());
+            $this->logger->log_error($this->log_file, "Error parsing XML PROPFIND pour [{$user}]", [], get_current_user_id());
             return;
         }
 

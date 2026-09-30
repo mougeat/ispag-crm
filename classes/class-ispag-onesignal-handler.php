@@ -101,7 +101,7 @@ class ISPAG_OneSignal_Handler {
 
     // Dans votre classe ISPAG_OneSignal_Handler
     public static function send_welcome_notification($user_id) {
-        $title = "Bienvenue sur ISPAG !";
+        $title = "Welcome to ISPAG!";
         $content = "Thank you for subscribing to our notifications. You will now receive our latest news.";
         $url = home_url();
 
@@ -124,7 +124,7 @@ class ISPAG_OneSignal_Handler {
         $api_key = defined('CRM_ONE_SIGNAL_API_KEY') ? CRM_ONE_SIGNAL_API_KEY : getenv('CRM_ONE_SIGNAL_API_KEY');
 
         if (empty($app_id) || empty($api_key)) {
-            self::log_event("Erreur API : Credentials manquants.");
+            self::log_event("Error API : Credentials manquants.");
             return false;
         }
 

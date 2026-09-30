@@ -170,7 +170,7 @@ class ISPAG_Cron_Contact_Health {
                         'user_id'      => $contact->crm_owner_id, 
                         'type'         => 'HEALTH_REMINDER',
                         'title'        => '⏳ Relance : ' . $contact->display_name . ' (Prio ' . $prio . ')',
-                        'content'      => "Alerte Santé ISPAG : Aucun contact réel détecté depuis le **{$display_last}**. Délai de {$days}j dépassé.",
+                        'content'      => "ISPAG health alert: no real contact detected since **{$display_last}**. {$days}-day limit exceeded.",
                         'is_task'      => 1,
                         'is_completed' => 0,
                         'due_date'     => date('Y-m-d H:i:s', strtotime('+3 days')),

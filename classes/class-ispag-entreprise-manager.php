@@ -170,7 +170,7 @@ class ISPAG_Entreprise_Manager {
         }
         ?>
         <div class="wrap">
-            <h1><?php echo $id > 0 ? 'Modifier : ' . esc_html($company->company_name) : 'Ajouter une entreprise'; ?></h1>
+            <h1><?php echo $id > 0 ? 'Edit: ' . esc_html($company->company_name) : 'Add a company'; ?></h1>
             <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
                 <?php wp_nonce_field('ispag_entreprise_nonce'); ?>
                 <input type="hidden" name="action" value="ispag_save_entreprise">

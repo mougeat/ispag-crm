@@ -161,7 +161,7 @@ class ISPAG_Page_Installer {
             $r = self::create_missing();
             self::schedule_flush();
             $notice = sprintf('<div class="notice notice-success"><p>%d page(s) created.%s</p></div>', count($r['created']),
-                $r['errors'] ? ' Erreurs : ' . esc_html(implode(' ; ', array_map(function ($s, $m) { return "$s ($m)"; }, array_keys($r['errors']), $r['errors']))) : '');
+                $r['errors'] ? ' Errors : ' . esc_html(implode(' ; ', array_map(function ($s, $m) { return "$s ($m)"; }, array_keys($r['errors']), $r['errors']))) : '');
         }
         echo '<div class="wrap"><h1>Pages ISPAG</h1>' . $notice;
         echo '<p>Pages required by the ISPAG plugins and theme. The button only creates missing pages; existing pages are never modified.</p>';

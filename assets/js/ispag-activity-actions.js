@@ -81,7 +81,7 @@ jQuery(document).ready(function($) {
                 }
                 if (typeof window.closeSidebar === 'function') window.closeSidebar();
             } else {
-                alert('Erreur: ' + response.data.message);
+                alert('Error: ' + response.data.message);
                 activityElement.css('opacity', 1);
             }
         });

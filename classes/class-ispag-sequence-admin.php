@@ -184,7 +184,7 @@ class ISPAG_Sequence_Admin {
                 'id'      => $sequence_id
             ]);
         } else {
-            wp_send_json_error(['message' => 'Erreur SQL lors de l\'enregistrement']);
+            wp_send_json_error(['message' => 'SQL error while saving']);
         }
     }
 
@@ -201,7 +201,7 @@ class ISPAG_Sequence_Admin {
         if ($repo->enroll($contact_id, $sequence_id)) {
             wp_send_json_success('Contact enrolled successfully!');
         } else {
-            wp_send_json_error('Erreur lors de l\'inscription.');
+            wp_send_json_error('Error while enrolling.');
         }
     }
 

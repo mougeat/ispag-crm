@@ -99,7 +99,7 @@ if ( ! class_exists( 'ISPAG_Simap_Service' ) ) {
                     <?php 
                     if (file_exists(self::$log_file)) {
                         $content = file_get_contents(self::$log_file);
-                        echo !empty($content) ? nl2br(esc_html($content)) : 'La console est vide. Lancez une synchro.';
+                        echo !empty($content) ? nl2br(esc_html($content)) : 'The console is empty. Start a sync.';
                     } else {
                         echo 'Fichier de log non généré.';
                     }
@@ -186,7 +186,7 @@ if ( ! class_exists( 'ISPAG_Simap_Service' ) ) {
             $data = json_decode($body);
             
             if (json_last_error() !== JSON_ERROR_NONE) {
-                $this->log("Erreur de décodage JSON : " . json_last_error_msg(), 'ERROR');
+                $this->log("Error de décodage JSON : " . json_last_error_msg(), 'ERROR');
                 return [];
             }
 

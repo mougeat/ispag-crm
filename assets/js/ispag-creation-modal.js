@@ -477,7 +477,7 @@ jQuery(document).ready(function($) {
         const activityId        = modalActivityId.val();
 
         if (noteContentHtml.trim() === "" || noteContentHtml.trim() === "<p></p>") {
-            return alert("Veuillez saisir un contenu.");
+            return alert("Please enter some content.");
         }
 
         createNoteBtn.prop('disabled', true).text(ispagNoteData.textSaving);
@@ -602,7 +602,7 @@ jQuery(document).ready(function($) {
                         }
                     }
                 } else {
-                    alert('Erreur: ' + response.data.message);
+                    alert('Error: ' + response.data.message);
                     createNoteBtn.prop('disabled', false).text(ispagNoteData.textCreateNote);
                 }
             });

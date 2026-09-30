@@ -15,7 +15,7 @@ window.sendUpdateStage = function(dealId, newStageKey, reason = '') {
             if(r.success) {
                 console.log("[DEAL AJAX] ✅ Update successful");
             } else {
-                alert("Erreur: " + (r.data ? r.data.message : 'Inconnue')); 
+                alert("Error: " + (r.data ? r.data.message : 'Inconnue')); 
             }
         },
         error: function() {

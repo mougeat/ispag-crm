@@ -24,12 +24,12 @@ class ISPAG_CSV_Importer
         'project_name' => 'Nom du Projet (Requis)',
         'current_stage_key' => 'Clé de l\'Étape Kanban (Automatique)',
         'offer_num' => 'Numéro d\'Offre',
-        'deal_group_ref' => 'Référence Groupe (Auto-calculé)',
+        'deal_group_ref' => 'Group reference (auto-calculated)',
         'project_num' => 'Numéro de Projet',
         'identifiant_viag' => 'ID Viag (Clé unique)',
         'date_creation' => 'Date de Création',
         'closing_date' => 'Date de Clôture prévue',
-        'customer_order_id' => 'ID Commande Client',
+        'customer_order_id' => 'Customer order ID',
         'associated_company_id' => 'ID Entreprise Associée',
         'associated_contact_ids' => 'IDs Contacts Associés',
         'project_status' => 'Statut du Projet',
@@ -40,13 +40,13 @@ class ISPAG_CSV_Importer
         'reseller_offer' => 'Offre Revendeur (0/1)',
         'sales_coef' => 'Coeff Vente',
         'total_excl_vat' => 'Total HT',
-        'created_by' => 'Créé par (ID)',
+        'created_by' => 'Created by (ID)',
         'abonne' => 'Abonné',
         'deal_owner' => 'Propriétaire du Deal (ID)',
         'csv_owner_full_name' => '[Recherche] Nom complet Propriétaire',
         'csv_contact_lastname' => '[Recherche] Nom Contact',
         'csv_contact_firstname' => '[Recherche] Prénom Contact',
-        'is_copie' => 'Est une copie',
+        'is_copie' => 'Is a copy',
     );
 
     /**
@@ -67,7 +67,7 @@ class ISPAG_CSV_Importer
         'csv_owner_full_name' => 'Chargé de dossier',
         'csv_contact_lastname' => 'Offerte Kontakt Nachname',
         'csv_contact_firstname' => 'Offerte Kontakt Vorname',
-        'is_copie' => 'Ignorer les statistiques',
+        'is_copie' => 'Ignore statistics',
     );
 
     /**
@@ -114,7 +114,7 @@ class ISPAG_CSV_Importer
 
         add_submenu_page(
             null,
-            'Mappage des Colonnes',
+            'Column mapping',
             'Mappage',
             'manage_options',
             $this->mapping_slug,
@@ -410,7 +410,7 @@ class ISPAG_CSV_Importer
 
                 <?php if ($status === 'failed' && isset($task_data['error'])) : ?>
                     <div class="notice notice-error" style="margin-top: 20px;">
-                        <p><strong>Erreur :</strong> <?php echo esc_html($task_data['error']); ?></p>
+                        <p><strong>Error :</strong> <?php echo esc_html($task_data['error']); ?></p>
                     </div>
                 <?php endif; ?>
 
@@ -475,12 +475,12 @@ class ISPAG_CSV_Importer
                                 $('p:contains("Vous pouvez fermer")').hide();
                             } else if (data.status === 'failed') {
                                 $('p:contains("Statut")').html('<strong>Status:</strong> Failed');
-                                $('.notice-error').html('<p><strong>Erreur :</strong> ' + data.error + '</p>').show();
+                                $('.notice-error').html('<p><strong>Error :</strong> ' + data.error + '</p>').show();
                                 $('#ispag-refresh-status').hide();
                                 $('p:contains("Vous pouvez fermer")').hide();
                             }
                         } else {
-                            alert('Erreur : ' + response.data);
+                            alert('Error: ' + response.data);
                         }
                     },
                     error: function(xhr) {

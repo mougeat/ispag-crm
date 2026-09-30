@@ -144,7 +144,7 @@ class ISPAG_Crm_Deal_Model {
     //             }
                 
     //         } catch ( Exception $e ) {
-    //             error_log( "Erreur de chargement de stage '{$stage_key}' : " . $e->getMessage() );
+    //             error_log( "Loading error de stage '{$stage_key}' : " . $e->getMessage() );
     //         }
     //     }
 
@@ -221,7 +221,7 @@ class ISPAG_Crm_Deal_Model {
             return $repository->get_contacts_by_ids( $safe_ids ); 
             
         } catch ( Exception $e ) {
-            // error_log( "[ISPAG] Erreur contacts consolidés (Deal Group: {$this->deal_group_ref}): " . $e->getMessage() );
+            // error_log( "[ISPAG] Error contacts consolidés (Deal Group: {$this->deal_group_ref}): " . $e->getMessage() );
             return [];
         }
     }
@@ -267,7 +267,7 @@ class ISPAG_Crm_Deal_Model {
             
         } catch ( Exception $e ) {
             if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-                // error_log( "[ISPAG CRM] Erreur récupération entreprises associées : " . $e->getMessage() );
+                // error_log( "[ISPAG CRM] Error récupération entreprises associées : " . $e->getMessage() );
             }
             return [];
         }

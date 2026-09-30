@@ -182,7 +182,7 @@ jQuery(document).ready(function($) {
             if(response.success) {
                 window.location.href = 'admin.php?page=ispag-sequences'; 
             } else {
-                alert('Erreur: ' + (response.data.message || 'Inconnue'));
+                alert('Error: ' + (response.data.message || 'Inconnue'));
                 btn.attr('disabled', false).text('Enregistrer');
             }
         });

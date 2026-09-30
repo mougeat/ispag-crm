@@ -380,7 +380,7 @@ class ISPAG_Company_Importer {
 
                 <?php if ( $status === 'failed' && isset( $task_data['error'] ) ) : ?>
                     <div class="notice notice-error" style="margin-top: 20px;">
-                        <p><strong>Erreur :</strong> <?php echo esc_html( $task_data['error'] ); ?></p>
+                        <p><strong>Error :</strong> <?php echo esc_html( $task_data['error'] ); ?></p>
                     </div>
                 <?php endif; ?>
 
@@ -433,7 +433,7 @@ class ISPAG_Company_Importer {
                                 $('p:contains("Vous pouvez fermer")').hide();
                             } else if (data.status === 'failed') {
                                 $('p:contains("Statut")').html('<strong>Status:</strong> Failed');
-                                $('.notice-error').html('<p><strong>Erreur :</strong> ' + data.error + '</p>').show();
+                                $('.notice-error').html('<p><strong>Error :</strong> ' + data.error + '</p>').show();
                                 $('#ispag-refresh-status').hide();
                                 $('p:contains("Vous pouvez fermer")').hide();
                             }
@@ -488,7 +488,7 @@ class ISPAG_Company_Importer {
                 - Updates : %3$d<br>
                 - Fichier : %4$s<br>
                 - ID Tâche : %5$s<br>
-                - Erreur : %6$s',
+                - Error: %6$s',
                 $row_count,
                 $insert_count,
                 $update_count,

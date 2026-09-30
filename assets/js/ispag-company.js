@@ -16,7 +16,7 @@ jQuery(document).ready(function($) {
                     if (response.success && response.data.html) {
                         $card.html(response.data.html);
                     } else {
-                        var errorMsg = (response.data && response.data.message) ? response.data.message : 'Erreur de chargement';
+                        var errorMsg = (response.data && response.data.message) ? response.data.message : 'Loading error';
                         $card.html('<p class="error" style="padding: 10px; color: #666;">' + errorMsg + '</p>');
                     }
                 },

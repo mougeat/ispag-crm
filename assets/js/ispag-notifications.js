@@ -147,7 +147,7 @@ jQuery(document).ready(function($) {
                 }
             },
             error: function(xhr, status, error) {
-                // console.error('[ISPAG Modal] Erreur lors de la vérification des notifications conceptuelles :', error);
+                // console.error('[ISPAG Modal] Error lors de la vérification des notifications conceptuelles :', error);
             }
         });
     }
@@ -233,7 +233,7 @@ jQuery(document).ready(function($) {
                 updateNotificationBadge();
             },
             error: function(xhr, status, error) {
-                // console.error('[ISPAG Modal] Erreur lors du marquage de la notification comme lue :', error);
+                // console.error('[ISPAG Modal] Error lors du marquage de la notification comme lue :', error);
             }
         });
     }
@@ -301,7 +301,7 @@ jQuery(document).ready(function($) {
             },
             error: function() {
                 $('#ispag-notification-list').html(
-                    '<p style="text-align: center; color: #ef4444;">Erreur de chargement.</p>'
+                    '<p style="text-align: center; color: #ef4444;">Loading error.</p>'
                 );
             }
         });
@@ -481,7 +481,7 @@ jQuery(document).ready(function($) {
             },
             error: function() {
                 $('#ispag-notification-settings-form').html(
-                    '<p style="text-align: center; color: #ef4444;">Erreur de chargement.</p>'
+                    '<p style="text-align: center; color: #ef4444;">Loading error.</p>'
                 );
             }
         });
@@ -517,7 +517,7 @@ jQuery(document).ready(function($) {
                     );
                 } else {
                     showNotificationMessage(
-                        (ispag_texts?.error_prefix || "Erreur : ") + response.data.message,
+                        (ispag_texts?.error_prefix || "Error: ") + response.data.message,
                         'error'
                     );
                 }

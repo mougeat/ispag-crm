@@ -95,7 +95,7 @@ class ISPAG_Company_Registry_Sync {
         if (!isset($schedules['every_minute'])) {
             $schedules['every_minute'] = [
                 'interval' => 60,
-                'display'  => 'Toutes les minutes',
+                'display'  => 'Every minute',
             ];
         }
         return $schedules;
@@ -274,7 +274,7 @@ class ISPAG_Company_Registry_Sync {
 
         if ($results === null) {
             $wpdb->update($this->table_name, ['uid_status' => 'api_error'], ['viag_id' => $company->viag_id]);
-            return "❌ Erreur SPARQL";
+            return "❌ Error SPARQL";
         }
 
         if (empty($results)) {
@@ -370,7 +370,7 @@ LIMIT 10';
         $elapsed = round((microtime(true) - $time_start) * 1000) . 'ms';
 
         if ($errno) {
-            $this->log("  [SPARQL] ❌ Erreur cURL ({$elapsed}) : [{$errno}] {$error}");
+            $this->log("  [SPARQL] ❌ Error cURL ({$elapsed}) : [{$errno}] {$error}");
             return null;
         }
 
@@ -503,7 +503,7 @@ LIMIT 10';
         echo '<span>⏳ En attente : <strong id="ispag-pending">…</strong></span>';
         echo '<span>⚠️ Homonyms: <strong id="ispag-homonyms">…</strong></span>';
         echo '<span>❓ Not found: <strong id="ispag-not-found">…</strong></span>';
-        echo '<span>❌ Erreurs : <strong id="ispag-errors">…</strong></span>';
+        echo '<span>❌ Errors : <strong id="ispag-errors">…</strong></span>';
         echo '</div>';
         echo '<small id="ispag-next-tick" style="color:#888;margin-top:8px;display:block;"></small>';
         echo '</div>';
@@ -534,7 +534,7 @@ LIMIT 10';
             }
             echo '</tbody></table>';
         } else {
-            echo '<p id="ispag-no-homonyms" style="color:#666;">Aucune validation manuelle en attente.</p>';
+            echo '<p id="ispag-no-homonyms" style="color:#666;">No manual validation pending.</p>';
         }
 
         echo '</div>'; // .wrap
@@ -579,7 +579,7 @@ LIMIT 10';
                         : '<span style="color:#999;font-size:12px;">● Stopped</span>'
                     );
                     $('#ispag-next-tick').text(
-                        d.cron_running && d.next_tick ? 'Prochain batch dans : ' + d.next_tick : ''
+                        d.cron_running && d.next_tick ? 'Next batch in: ' + d.next_tick : ''
                     );
 
                     // Nouveaux homonymes → rafraîchir le tableau
@@ -612,7 +612,7 @@ LIMIT 10';
                         $('#ispag-no-homonyms').hide();
                     } else {
                         $('#ispag-homonyms-table').html('');
-                        $('#ispag-no-homonyms').show().text('Aucune validation manuelle en attente.');
+                        $('#ispag-no-homonyms').show().text('No manual validation pending.');
                     }
                 });
             }
@@ -704,7 +704,7 @@ LIMIT 10';
                         : 'Homonyms to validate'
                 );
                 if (prevHomonyms === 0) {
-                    $('#ispag-no-homonyms').show().text('Aucune validation manuelle en attente.');
+                    $('#ispag-no-homonyms').show().text('No manual validation pending.');
                 }
             }
 
@@ -803,7 +803,7 @@ WHERE {
         echo "   DNS : " . esc_html(gethostbyname('lindas.admin.ch')) . "<br>";
         echo "   allow_url_fopen : " . (ini_get('allow_url_fopen') ? '✅' : '❌') . "<br>";
 
-        echo "<br><a href='" . esc_url(admin_url('admin.php?page=ispag-uid-validation')) . "' style='color:#72aee6;'>← Retour</a>";
+        echo "<br><a href='" . esc_url(admin_url('admin.php?page=ispag-uid-validation')) . "' style='color:#72aee6;'>← Back</a>";
         echo "</div>";
     }
 
@@ -859,7 +859,7 @@ add_filter('cron_schedules', function($schedules) {
     if (!isset($schedules['every_minute'])) {
         $schedules['every_minute'] = [
             'interval' => 60,
-            'display'  => 'Toutes les minutes',
+            'display'  => 'Every minute',
         ];
     }
     return $schedules;

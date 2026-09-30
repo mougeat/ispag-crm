@@ -397,7 +397,7 @@ define(\'ISPAG_UPDATE_BRANCH\', \'claude/eager-galileo-tcm8l8\');</pre></div></d
         foreach ($rows as $r) {
             $inst = $r['installed'] !== '' ? substr($r['installed'], 0, 7) : '—';
             if ($r['sha'] === null)      { $state = 'Cliquez sur « Vérifier maintenant »'; $remote = '—'; }
-            elseif ($r['sha'] === '')    { $state = '<strong style="color:#b42318">Erreur ' . (int) $r['code'] . '</strong> — ' . esc_html(self::hint($r['code'], $r['error'])) . '<br><small>GitHub : ' . esc_html($r['error']) . '</small>'; $remote = '—'; }
+            elseif ($r['sha'] === '')    { $state = '<strong style="color:#b42318">Error ' . (int) $r['code'] . '</strong> — ' . esc_html(self::hint($r['code'], $r['error'])) . '<br><small>GitHub : ' . esc_html($r['error']) . '</small>'; $remote = '—'; }
             elseif ($r['sha'] === $r['installed']) { $state = '<span style="color:#1a7f37;font-weight:600">À jour</span>'; $remote = substr($r['sha'], 0, 7); }
             else { $state = '<span style="color:#b26200;font-weight:600">Mise à jour disponible</span>' . ($r['installed'] === '' ? ' <small>(premier passage : le commit installé n\'est pas encore connu)</small>' : ''); $remote = substr($r['sha'], 0, 7); }
             printf('<tr><td>%s <code>%s</code></td><td>%s</td><td><code>%s</code></td><td><code>%s</code></td><td>%s</td></tr>',

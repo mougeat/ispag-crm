@@ -59,8 +59,8 @@ jQuery(document).ready(function($) {
                         }
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                        console.error('ISPAG Debug - Erreur technique AJAX :', textStatus, errorThrown);
-                        $card.html('<p class="error" style="padding: 10px; color: #e74c3c;">Erreur lors du chargement des attachements.</p>');
+                        console.error('ISPAG Debug - Error technique AJAX :', textStatus, errorThrown);
+                        $card.html('<p class="error" style="padding: 10px; color: #e74c3c;">Error while loading attachments.</p>');
                     }
                 });
             });

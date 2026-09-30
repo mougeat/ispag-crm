@@ -56,7 +56,7 @@ class ISPAG_Cron_Weekly_Deal_Report {
         $deals = $this->wpdb->get_results( $sql );
 
         if ( empty( $deals ) ) {
-            $this->log("Aucun deal trouvé.");
+            $this->log("No deal found.");
             return;
         }
 
@@ -102,7 +102,7 @@ class ISPAG_Cron_Weekly_Deal_Report {
 
     private function get_email_html_content($data) {
         $html = '<div style="font-family: Arial, sans-serif; color: #333; max-width: 750px; padding: 20px; border: 1px solid #eee;">';
-        $html .= '<h2 style="color: #2271b1;">Bonjour ' . esc_html($data['info']['name']) . ',</h2>';
+        $html .= '<h2 style="color: #2271b1;">Hello ' . esc_html($data['info']['name']) . ',</h2>';
         $html .= '<p>Here are your projects due this week:</p>';
         $html .= '<table border="0" cellpadding="10" cellspacing="0" style="width:100%; border-collapse: collapse; margin-top:15px;">';
         $html .= '<tr style="background:#f8f9fa; text-align:left; border-bottom:2px solid #eee;"><th>Project</th><th>Customer</th><th style="text-align:center;">Statut</th><th>Échéance</th></tr>';

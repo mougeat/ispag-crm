@@ -79,7 +79,7 @@ class ISPAG_Crm_Mistral
         {
             self::log("ERREUR: Clé API vide.");
             self::$logger->log('crm_mistral', 'ERROR: API key is empty', $user_id);
-            return ['summary' => 'Erreur configuration API', 'actions' => ''];
+            return ['summary' => 'Error configuration API', 'actions' => ''];
         }
 
         $user_locale = get_user_locale();

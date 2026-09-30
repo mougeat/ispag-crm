@@ -87,7 +87,7 @@ jQuery(function ($) {
             source: source
         }, function (response) {
             if (!response.success) {
-                alert('Erreur chargement modal type de document.');
+                alert('Error while loading the document type modal.');
                 return;
             }
 
@@ -154,7 +154,7 @@ jQuery(function ($) {
 
                     $('.ispag-modal-overlay#ispag-upload-modal').removeClass('is-open');
                 } else {
-                    alert('Erreur upload : ' + (response.data || 'inconnue'));
+                    alert('Upload error: ' + (response.data || 'inconnue'));
                 }
             },
             error: function () {

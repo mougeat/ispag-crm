@@ -105,7 +105,7 @@ class ISPAG_Crm_Contacts_Repository {
             }
 
             if (empty($hubspot_deal_id)) {
-                wp_send_json_error(array('message' => 'Aucun identifiant de deal fourni.'));
+                wp_send_json_error(array('message' => 'No deal ID provided.'));
             }
 
             $html_content = $this->render_contact_card($hubspot_deal_id);
@@ -123,14 +123,14 @@ class ISPAG_Crm_Contacts_Repository {
                 ob_clean();
             }
             wp_send_json_error(array(
-                'message' => 'Erreur PHP : ' . $e->getMessage() . ' (Ligne ' . $e->getLine() . ')'
+                'message' => 'PHP error: ' . $e->getMessage() . ' (Ligne ' . $e->getLine() . ')'
             ));
         }
     }
 
     public function render_contact_card($hubspot_deal_id) {
         if (empty($hubspot_deal_id)) {
-            return '<p class="ispag-no-contact">Aucun identifiant de deal fourni.</p>';
+            return '<p class="ispag-no-contact">No deal ID provided.</p>';
         }
 
         // Récupération des données contacts depuis la BDD
@@ -1820,7 +1820,7 @@ class ISPAG_Crm_Contacts_Repository {
         $user_id = wp_insert_user( $user_data );
 
         if ( is_wp_error( $user_id ) ) {
-            // error_log( 'Erreur ISPAG CRM lors de la création du contact : ' . $user_id->get_error_message() );
+            // error_log( 'Error ISPAG CRM lors de la création du contact : ' . $user_id->get_error_message() );
             return false;
         }
 
