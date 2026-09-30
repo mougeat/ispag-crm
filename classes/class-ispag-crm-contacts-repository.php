@@ -207,7 +207,7 @@ class ISPAG_Crm_Contacts_Repository {
             ISPAG_Crm_Contact_Constants::META_LEAD_STATUS        => 'lead_status',
             ISPAG_Crm_Contact_Constants::META_LEAD_LINKEDIN_PAGE => 'linkedin_page',
             ISPAG_Crm_Contact_Constants::META_LIFECYCLE_PHASE    => 'lifecycle_phase',
-            ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID         => 'ispag_company_id',
+            ISPAG_Crm_Contact_Constants::META_COMPANY_ID         => 'ispag_company_id',
             // ISPAG_Crm_Contact_Constants::META_OWNER est retiré d'ici car on utilise la table SQL
             ISPAG_Crm_Contact_Constants::META_LAST_CONTACT_DATE   => 'last_contact_date',
             ISPAG_Crm_Contact_Constants::META_LAST_CONTACT_SOURCE => 'last_contact_source',
@@ -455,7 +455,7 @@ class ISPAG_Crm_Contacts_Repository {
             'meta_query' => array(
                 'relation' => 'AND',
                 array(
-                    'key'     => ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID,
+                    'key'     => ISPAG_Crm_Contact_Constants::META_COMPANY_ID,
                     // Note : On utilise LIKE %id% donc on passe juste la valeur
                     'value'   => $company_id, 
                     'compare' => 'LIKE', 
@@ -598,7 +598,7 @@ class ISPAG_Crm_Contacts_Repository {
             WHERE u.ID = %d",
 
             // Paramètres des meta_key
-            ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID,
+            ISPAG_Crm_Contact_Constants::META_COMPANY_ID,
             ISPAG_Crm_Contact_Constants::META_LEAD_FUNCTION,
             ISPAG_Crm_Contact_Constants::META_LIFECYCLE_PHASE,
             ISPAG_Crm_Contact_Constants::META_LEAD_STATUS,
@@ -883,7 +883,7 @@ class ISPAG_Crm_Contacts_Repository {
     //     $query = "
     //         SELECT DISTINCT
     //             u.ID, u.user_email, u.display_name,
-    //             m_comp.meta_value as " . ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID . ",
+    //             m_comp.meta_value as " . ISPAG_Crm_Contact_Constants::META_COMPANY_ID . ",
     //             m_func.meta_value as " . ISPAG_Crm_Contact_Constants::META_LEAD_FUNCTION . ",
     //             m_life.meta_value as " . ISPAG_Crm_Contact_Constants::META_LIFECYCLE_PHASE . ",
     //             m_lifedesc.phase_description as lifecycle_description,
@@ -900,7 +900,7 @@ class ISPAG_Crm_Contacts_Repository {
     //                 AND type IN ('EMAIL','CALL','MEETING','EMAIL_TRANSACTIONAL','CHRISTMAS_PRESENT','WHATSAPP','SMS','LINKEDIN')
     //             ) as last_contact_date
     //         FROM {$wpdb->users} u
-    //         LEFT JOIN {$wpdb->usermeta} m_comp ON (u.ID = m_comp.user_id AND m_comp.meta_key = '" . ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID . "')
+    //         LEFT JOIN {$wpdb->usermeta} m_comp ON (u.ID = m_comp.user_id AND m_comp.meta_key = '" . ISPAG_Crm_Contact_Constants::META_COMPANY_ID . "')
     //         LEFT JOIN {$wpdb->usermeta} m_func ON (u.ID = m_func.user_id AND m_func.meta_key = '" . ISPAG_Crm_Contact_Constants::META_LEAD_FUNCTION . "')
     //         LEFT JOIN {$wpdb->usermeta} m_status_acc ON (u.ID = m_status_acc.user_id AND m_status_acc.meta_key = '" . ISPAG_Crm_Contact_Constants::ACCOUNT_STATUS . "')
     //         LEFT JOIN {$wpdb->usermeta} m_life ON (u.ID = m_life.user_id AND m_life.meta_key = '" . ISPAG_Crm_Contact_Constants::META_LIFECYCLE_PHASE . "')
@@ -934,7 +934,7 @@ class ISPAG_Crm_Contacts_Repository {
     //         SELECT COUNT(DISTINCT u.ID) 
     //         FROM {$wpdb->users} u 
     //         LEFT JOIN {$wpdb->usermeta} m_status_acc ON (u.ID = m_status_acc.user_id AND m_status_acc.meta_key = '" . ISPAG_Crm_Contact_Constants::ACCOUNT_STATUS . "')
-    //         LEFT JOIN {$wpdb->usermeta} m_comp ON (u.ID = m_comp.user_id AND m_comp.meta_key = '" . ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID . "') 
+    //         LEFT JOIN {$wpdb->usermeta} m_comp ON (u.ID = m_comp.user_id AND m_comp.meta_key = '" . ISPAG_Crm_Contact_Constants::META_COMPANY_ID . "') 
     //         LEFT JOIN {$table_owners} m_owner ON (
     //             u.ID = m_owner.contact_id 
     //             AND m_owner.status = 'active' 
@@ -1021,7 +1021,7 @@ class ISPAG_Crm_Contacts_Repository {
         $query = "
             SELECT DISTINCT
                 u.ID, u.user_email, u.display_name,
-                m_comp.meta_value as " . ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID . ",
+                m_comp.meta_value as " . ISPAG_Crm_Contact_Constants::META_COMPANY_ID . ",
                 m_func.meta_value as " . ISPAG_Crm_Contact_Constants::META_LEAD_FUNCTION . ",
                 m_life.meta_value as " . ISPAG_Crm_Contact_Constants::META_LIFECYCLE_PHASE . ",
                 -- m_lifedesc.phase_description as lifecycle_description,
@@ -1033,7 +1033,7 @@ class ISPAG_Crm_Contacts_Repository {
                 c.favicon as company_favicon,
                 c.company_name AS company_name
             FROM {$wpdb->users} u
-            LEFT JOIN {$wpdb->usermeta} m_comp ON (u.ID = m_comp.user_id AND m_comp.meta_key = '" . ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID . "')
+            LEFT JOIN {$wpdb->usermeta} m_comp ON (u.ID = m_comp.user_id AND m_comp.meta_key = '" . ISPAG_Crm_Contact_Constants::META_COMPANY_ID . "')
             LEFT JOIN {$wpdb->usermeta} m_func ON (u.ID = m_func.user_id AND m_func.meta_key = '" . ISPAG_Crm_Contact_Constants::META_LEAD_FUNCTION . "')
             LEFT JOIN {$wpdb->usermeta} m_status_acc ON (u.ID = m_status_acc.user_id AND m_status_acc.meta_key = '" . ISPAG_Crm_Contact_Constants::ACCOUNT_STATUS . "')
             LEFT JOIN {$wpdb->usermeta} m_life ON (u.ID = m_life.user_id AND m_life.meta_key = '" . ISPAG_Crm_Contact_Constants::META_LIFECYCLE_PHASE . "')
@@ -1097,7 +1097,7 @@ class ISPAG_Crm_Contacts_Repository {
             SELECT COUNT(DISTINCT u.ID) 
             FROM {$wpdb->users} u 
             LEFT JOIN {$wpdb->usermeta} m_status_acc ON (u.ID = m_status_acc.user_id AND m_status_acc.meta_key = '" . ISPAG_Crm_Contact_Constants::ACCOUNT_STATUS . "')
-            LEFT JOIN {$wpdb->usermeta} m_comp ON (u.ID = m_comp.user_id AND m_comp.meta_key = '" . ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID . "') 
+            LEFT JOIN {$wpdb->usermeta} m_comp ON (u.ID = m_comp.user_id AND m_comp.meta_key = '" . ISPAG_Crm_Contact_Constants::META_COMPANY_ID . "') 
             LEFT JOIN {$table_owners} m_owner ON (
                 u.ID = m_owner.contact_id 
                 AND m_owner.status = 'active' 
@@ -1381,7 +1381,7 @@ class ISPAG_Crm_Contacts_Repository {
 
         $contact_function = $meta(ISPAG_Crm_Contact_Constants::META_LEAD_FUNCTION);
         $contact_phone    = $meta(ISPAG_Crm_Contact_Constants::META_LEAD_PHONE);
-        $company_id       = $meta(ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID);
+        $company_id       = $meta(ISPAG_Crm_Contact_Constants::META_COMPANY_ID);
         $linkedin_url     = $meta(ISPAG_Crm_Contact_Constants::META_LEAD_LINKEDIN_PAGE, '');
         $lifecycle        = $meta(ISPAG_Crm_Contact_Constants::META_LIFECYCLE_PHASE, 'Unknown');
         $buying_goal      = $meta(ISPAG_Crm_Contact_Constants::META_BUYING_GOAL, 'Standard supply');
@@ -1836,7 +1836,7 @@ class ISPAG_Crm_Contacts_Repository {
         }
 
         if ( ! empty( $data['company_id'] ) ) {
-            update_user_meta( $user_id, ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID, $data['company_id'] );
+            update_user_meta( $user_id, ISPAG_Crm_Contact_Constants::META_COMPANY_ID, $data['company_id'] );
         }
 
         if ( ! empty( $data['owner_id'] ) ) {
@@ -1897,11 +1897,11 @@ class ISPAG_Crm_Contacts_Repository {
                     $contact_label = $contact_user ? $contact_user->display_name : "ID #$user_id";
                 }
                 //On récupère l'entreprise associé
-                $company_viag_id = get_user_meta($user_id, ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID, true);
+                $company_id = get_user_meta($user_id, ISPAG_Crm_Contact_Constants::META_COMPANY_ID, true);
                 $company_name = __('undefined', 'ispag-crm');
                 if( !empty($company_id) && class_exists('ISPAG_Crm_Company_Repository')){
                     $company_rep = new ISPAG_Crm_Company_Repository();
-                    $company_name = $company_rep->get_company_by_id($company_viag_id);
+                    $company_name = $company_rep->get_company_by_id($company_id);
                 }
 
                 ISPAG_Notifications_Manager::send(

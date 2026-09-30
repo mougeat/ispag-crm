@@ -5,7 +5,7 @@ class ISPAG_Contact_Manager {
     private $menu_slug = 'ispag-contacts';
     
     // Noms des meta-clés personnalisées pour les utilisateurs
-    const META_COMPANY_VIAG_ID           = 'ispag_company_id';
+    const META_COMPANY_ID           = 'ispag_company_id';
     const META_LEAD_STATUS          = 'ispag_lead_status';
     const META_LIFECYCLE_PHASE      = 'ispag_contact_lifecycle_phase'; 
     const META_LAST_CONTACT_SOURCE  = 'ispag_last_contact_source';
@@ -264,7 +264,7 @@ class ISPAG_Contact_Manager {
         }
 
         $meta_fields_to_check = array(
-            self::META_COMPANY_VIAG_ID,
+            self::META_COMPANY_ID,
             self::META_OWNER,
             self::META_LEAD_STATUS,     
             self::META_LIFECYCLE_PHASE, 
@@ -289,9 +289,9 @@ class ISPAG_Contact_Manager {
         foreach ( $user_ids as $user_id ) {
             
             // Mise à jour de l'entreprise liée
-            if ( isset( $_REQUEST[self::META_COMPANY_VIAG_ID] ) && $_REQUEST[self::META_COMPANY_VIAG_ID] !== '-1' ) {
-                $new_company_id = absint( $_REQUEST[self::META_COMPANY_VIAG_ID] );
-                update_user_meta( $user_id, self::META_COMPANY_VIAG_ID, $new_company_id );
+            if ( isset( $_REQUEST[self::META_COMPANY_ID] ) && $_REQUEST[self::META_COMPANY_ID] !== '-1' ) {
+                $new_company_id = absint( $_REQUEST[self::META_COMPANY_ID] );
+                update_user_meta( $user_id, self::META_COMPANY_ID, $new_company_id );
                 $changes_count++;
             }
             
@@ -409,7 +409,7 @@ class ISPAG_Contact_Manager {
         }
         
         global $wpdb;
-        $table_name_fournisseur = $wpdb->prefix . 'achats_fournisseurs';
+        $table_name_fournisseur = $wpdb->prefix . 'ispag_companies';
 
         // 🎯 NOUVEAU : Récupération des données complètes des statuts pour la table
         $lead_statuses_data = $this->get_all_statuses_data();
@@ -439,7 +439,7 @@ class ISPAG_Contact_Manager {
         $sortable_columns_map = array(
              'name'              => 'display_name',
              'email'             => 'user_email',
-             'company_name'      => self::META_COMPANY_VIAG_ID, 
+             'company_name'      => self::META_COMPANY_ID, 
              'lead_status'       => self::META_LEAD_STATUS,
              'lifecycle_phase'   => self::META_LIFECYCLE_PHASE,
              'owner'             => self::META_OWNER,
@@ -458,7 +458,7 @@ class ISPAG_Contact_Manager {
         $company_filter_name = '';
         if ( $company_filter_id > 0 ) {
             $company_data = $wpdb->get_row( $wpdb->prepare( 
-                "SELECT Fournisseur FROM {$table_name_fournisseur} WHERE Id = %d", 
+                "SELECT company_name AS Fournisseur FROM {$table_name_fournisseur} WHERE Id = %d", 
                 $company_filter_id 
             ) );
             if ( $company_data ) {
@@ -466,7 +466,7 @@ class ISPAG_Contact_Manager {
             }
 
             $args['meta_query'][] = array(
-                'key'     => self::META_COMPANY_VIAG_ID,
+                'key'     => self::META_COMPANY_ID,
                 'value'   => $company_filter_id,
                 'compare' => '=',
                 'type'    => 'NUMERIC'
@@ -495,10 +495,10 @@ class ISPAG_Contact_Manager {
         // --- 2. Application du tri ---
         if ( array_key_exists( $orderby, $sortable_columns_map ) ) {
             $current_orderby_key = $sortable_columns_map[$orderby];
-            if ( in_array( $current_orderby_key, array( self::META_COMPANY_VIAG_ID, self::META_LEAD_STATUS, self::META_LIFECYCLE_PHASE, self::META_OWNER ) ) ) {
+            if ( in_array( $current_orderby_key, array( self::META_COMPANY_ID, self::META_LEAD_STATUS, self::META_LIFECYCLE_PHASE, self::META_OWNER ) ) ) {
                  $args['meta_key'] = $current_orderby_key; 
                  $args['orderby'] = 'meta_value'; 
-                 $args['type'] = ( $current_orderby_key == self::META_COMPANY_VIAG_ID || $current_orderby_key == self::META_OWNER) ? 'NUMERIC' : 'CHAR';
+                 $args['type'] = ( $current_orderby_key == self::META_COMPANY_ID || $current_orderby_key == self::META_OWNER) ? 'NUMERIC' : 'CHAR';
             } else {
                  $args['orderby'] = $current_orderby_key;
             }
@@ -516,7 +516,7 @@ class ISPAG_Contact_Manager {
         $contacts = get_users( $args );
         
         // DONNÉES NÉCESSAIRES POUR LE BULK EDIT ET L'AFFICHAGE
-        $companies = $wpdb->get_results( "SELECT Id, Fournisseur FROM {$table_name_fournisseur} ORDER BY Fournisseur ASC" );
+        $companies = $wpdb->get_results( "SELECT Id, company_name AS Fournisseur FROM {$table_name_fournisseur} ORDER BY company_name ASC" );
         $owners = get_users( array( 'role' => 'administrator', 'fields' => array( 'ID', 'display_name' ) ) ); 
         $lead_statuses_options = $this->get_statuses_for_display();
         $lifecycle_phases_options = $this->get_lifecycle_phases_for_display(); 
@@ -603,7 +603,7 @@ class ISPAG_Contact_Manager {
                                 <label class="alignleft" style="width: 48%; margin-right: 2%;">
                                     <span class="title"><?php echo esc_html( __( 'Linked Company', 'ispag-crm' ) ); ?></span>
                                     <span class="input-text-wrap">
-                                        <select name="<?php echo self::META_COMPANY_VIAG_ID; ?>">
+                                        <select name="<?php echo self::META_COMPANY_ID; ?>">
                                             <option value="-1"><?php echo esc_html( __( '— No Change —', 'ispag-crm' ) ); ?></option>
                                             <option value="0"><?php echo esc_html( __( '— Remove Link —', 'ispag-crm' ) ); ?></option>
                                             <?php foreach ( $companies as $company ) : ?>
@@ -734,7 +734,7 @@ class ISPAG_Contact_Manager {
                             // Récupérer tous les IDs d'entreprises pour une seule requête
                             $company_ids = array();
                             foreach ( $contacts as $contact ) {
-                                $company_id = get_user_meta( $contact->ID, self::META_COMPANY_VIAG_ID, true );
+                                $company_id = get_user_meta( $contact->ID, self::META_COMPANY_ID, true );
                                 if ( $company_id > 0 ) {
                                     $company_ids[] = absint( $company_id );
                                 }
@@ -742,7 +742,7 @@ class ISPAG_Contact_Manager {
                             $company_names = array();
                             if ( ! empty( $company_ids ) ) {
                                 $company_ids_str = implode( ',', array_unique( $company_ids ) );
-                                $company_results = $wpdb->get_results( "SELECT Id, Fournisseur FROM {$table_name_fournisseur} WHERE Id IN ({$company_ids_str})" );
+                                $company_results = $wpdb->get_results( "SELECT Id, company_name AS Fournisseur FROM {$table_name_fournisseur} WHERE Id IN ({$company_ids_str})" );
                                 foreach ( $company_results as $res ) {
                                     $company_names[$res->Id] = $res->Fournisseur;
                                 }
@@ -753,7 +753,7 @@ class ISPAG_Contact_Manager {
                                 $user_lead_status_key = get_user_meta( $contact->ID, self::META_LEAD_STATUS, true );
                                 $user_lifecycle_phase_key = get_user_meta( $contact->ID, self::META_LIFECYCLE_PHASE, true );
                                 $user_owner_id = get_user_meta( $contact->ID, self::META_OWNER, true );
-                                $user_company_id = get_user_meta( $contact->ID, self::META_COMPANY_VIAG_ID, true );
+                                $user_company_id = get_user_meta( $contact->ID, self::META_COMPANY_ID, true );
                                 
                                 // Prépare les données du statut de lead
                                 $status_label = isset( $lead_statuses_map[$user_lead_status_key] ) ? $lead_statuses_map[$user_lead_status_key] : __( 'N/A', 'ispag-crm' );
@@ -1128,7 +1128,7 @@ class ISPAG_Contact_Manager {
         global $wpdb;
         global $wp_query;
         // Note: Assurez-vous que cette table est toujours accessible par les utilisateurs ayant 'manage_options'
-        $table_name_fournisseur = $wpdb->prefix . 'achats_fournisseurs';
+        $table_name_fournisseur = $wpdb->prefix . 'ispag_companies';
 
         // 🎯 URL de l'application de contact externe (vers le shortcode de détail)
         $ispag_app_base_url = get_permalink( get_page_by_path( 'contact-detail' ) );
@@ -1222,7 +1222,7 @@ class ISPAG_Contact_Manager {
         }
         if ( $filter_company_id > 0 ) {
             $args['meta_query'][] = array(
-                'key'     => self::META_COMPANY_VIAG_ID,
+                'key'     => self::META_COMPANY_ID,
                 'value'   => $filter_company_id,
                 'compare' => '=',
             );
@@ -1259,7 +1259,7 @@ class ISPAG_Contact_Manager {
 
         // Pré-chargement des données (pour les dropdowns et l'affichage) (inchangé)
         $companies_lookup = array();
-        $companies_data = $wpdb->get_results( "SELECT Id, Fournisseur FROM {$table_name_fournisseur} ORDER BY Fournisseur ASC" );
+        $companies_data = $wpdb->get_results( "SELECT Id, company_name AS Fournisseur FROM {$table_name_fournisseur} ORDER BY company_name ASC" );
         foreach ($companies_data as $company) {
             $companies_lookup[$company->Id] = $company->Fournisseur;
         }
@@ -1490,7 +1490,7 @@ class ISPAG_Contact_Manager {
                 <?php if ( $contacts ) : ?>
                     <?php foreach ( $contacts as $contact ) : 
                         // Logique d'affichage des données (inchangée)
-                        $company_id_linked = absint( get_user_meta( $contact->ID, self::META_COMPANY_VIAG_ID, true ) );
+                        $company_id_linked = absint( get_user_meta( $contact->ID, self::META_COMPANY_ID, true ) );
                         $linked_company_name = $company_id_linked > 0 && isset($companies_lookup[$company_id_linked]) 
                             ? esc_html( $companies_lookup[$company_id_linked] ) : __( 'N/A', 'ispag-crm' );
 
@@ -1696,7 +1696,7 @@ class ISPAG_Contact_Manager {
     //         FROM 
     //             {$wpdb->usermeta} 
     //         WHERE 
-    //             meta_key = '" . self::META_COMPANY_VIAG_ID . "' 
+    //             meta_key = '" . self::META_COMPANY_ID . "' 
     //             AND user_id IN (" . implode(',', $contact_ids_to_update) . ")
     //     ", ARRAY_A );
 

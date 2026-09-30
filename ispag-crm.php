@@ -141,7 +141,7 @@ function ispag_crm_activate() {
     global $wpdb;
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-    // La table achats_fournisseurs est maintenant créée par ISPAG_CRM_Installer (install/schema.php).
+    // Les tables (dont ispag_companies : clients, fournisseurs, ingénieurs) sont créées par ISPAG_CRM_Installer (install/schema.php).
     ISPAG_CRM_Installer::install();
 
     if ( class_exists( 'ISPAG_Status_Manager' ) ) {
@@ -566,14 +566,14 @@ add_action('admin_head', function() {
             $dept      = $company_data->department_key;
 
             // Récupérer le nom de l'entreprise (optionnel, pour le log)
-            $company_name = $wpdb->get_var($wpdb->prepare("SELECT title FROM {$wpdb->prefix}viag_items WHERE id = %d", $co_id));
+            $company_name = $wpdb->get_var($wpdb->prepare("SELECT company_name FROM {$wpdb->prefix}ispag_companies WHERE Id = %d", $co_id));
 
             echo "<h3>🏢 Entreprise : $company_name (ID $co_id)</h3>";
             echo "<p>Owner cible : <b>" . (get_userdata($new_owner)->display_name ?? $new_owner) . "</b></p>";
 
             // 2. Trouver les contacts liés à cette entreprise
             $contacts = get_users([
-                'meta_key'   => ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID,
+                'meta_key'   => ISPAG_Crm_Contact_Constants::META_COMPANY_ID,
                 'meta_value' => $co_id,
                 'fields'     => 'ID'
             ]);

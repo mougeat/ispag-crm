@@ -6,7 +6,7 @@ class ISPAG_Contact_Ajax_Handler {
 
     // Constantes pour les noms des meta-keys
     const META_LEAD_FUNCTION        = 'ispag_lead_function';
-    const META_COMPANY_VIAG_ID           = 'ispag_company_id';
+    const META_COMPANY_ID           = 'ispag_company_id';
     const META_LEAD_STATUS          = 'ispag_lead_status';
     const META_LEAD_LINKEDIN_PAGE   = 'ispag_linkedin_page';
     const META_LIFECYCLE_PHASE      = 'ispag_contact_lifecycle_phase'; 
@@ -138,11 +138,11 @@ class ISPAG_Contact_Ajax_Handler {
                         $contact_label = $contact_user ? $contact_user->display_name : "ID #$contact_id";
                     }
                     //On récupère l'entreprise associé
-                    $company_viag_id = get_user_meta($contact_id, ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID, true);
+                    $company_id = get_user_meta($contact_id, ISPAG_Crm_Contact_Constants::META_COMPANY_ID, true);
                     $company_name = __('undefined', 'ispag-crm');
                     if( !empty($company_id) && class_exists('ISPAG_Crm_Company_Repository')){
                         $company_rep = new ISPAG_Crm_Company_Repository();
-                        $company_name = $company_rep->get_company_by_id($company_viag_id);
+                        $company_name = $company_rep->get_company_by_id($company_id);
                     }
 
                     ISPAG_Notifications_Manager::send(
@@ -177,7 +177,7 @@ class ISPAG_Contact_Ajax_Handler {
                 }
                 break;
             
-            // --- CHAMPS META AVEC SÉLECTION (META_COMPANY_VIAG_ID, META_OWNER, META_LEAD_STATUS, META_LIFECYCLE_PHASE) ---
+            // --- CHAMPS META AVEC SÉLECTION (META_COMPANY_ID, META_OWNER, META_LEAD_STATUS, META_LIFECYCLE_PHASE) ---
             // La logique pour la sauvegarde des meta-champs (update_user_meta) reste ici.
             // ... (TOUT LE CODE DE VOS CASES META-CHAMPS) ...
             case 'billing_phone':
@@ -300,7 +300,7 @@ class ISPAG_Contact_Ajax_Handler {
                 }
                 
                 break;
-            case self::META_COMPANY_VIAG_ID:
+            case self::META_COMPANY_ID:
                 // La valeur doit être un ID de compagnie/fournisseur (ou 0 si géré comme tel)
                 $company_id_to_save = absint( $new_value );
                 
@@ -315,7 +315,7 @@ class ISPAG_Contact_Ajax_Handler {
                 if ( isset( $companies_map[ $company_id_to_save ] ) ) {
                     
                     // 3. Sauvegarde de la meta-donnée
-                    $result = update_user_meta( $contact_id, self::META_COMPANY_VIAG_ID, $company_id_to_save );
+                    $result = update_user_meta( $contact_id, self::META_COMPANY_ID, $company_id_to_save );
                     
                     if ( $result !== false ) {
                         $success = true;
@@ -631,9 +631,9 @@ class ISPAG_Contact_Ajax_Handler {
      */
     private function get_all_companies() {
         global $wpdb;
-        $table_name_fournisseur = $wpdb->prefix . 'achats_fournisseurs';
+        $table_name_fournisseur = $wpdb->prefix . 'ispag_companies';
         // Récupère toutes les entreprises, clé Id, et ordonne par nom (Fournisseur)
-        return $wpdb->get_results( "SELECT Id, Fournisseur, compagnyDomain, NumTel FROM {$table_name_fournisseur} ORDER BY Fournisseur ASC", OBJECT_K ); 
+        return $wpdb->get_results( "SELECT Id, company_name AS Fournisseur, compagny_domain AS compagnyDomain, phone AS NumTel FROM {$table_name_fournisseur} ORDER BY company_name ASC", OBJECT_K ); 
     }
 
     /**
@@ -770,7 +770,6 @@ class ISPAG_Contact_Ajax_Handler {
         $insert_data = [
             'company_name'    => $company_name,
             'compagny_domain' => $domain,
-            'viag_id'         => 0, // référence externe (import), plus utilisée comme clé de liaison
             'is_active'       => 1,
             'created_at'      => current_time('mysql')
         ];
@@ -782,7 +781,7 @@ class ISPAG_Contact_Ajax_Handler {
             return 0;
         }
 
-        // error_log("ISPAG CRM: Nouvelle entreprise créée : $company_name avec VIAG_ID provisoire : $new_viag_id");
+        // error_log("ISPAG CRM: Nouvelle entreprise créée : $company_name ");
 
         // On retourne l'Id (c'est lui qui sert de lien dans le CRM)
         return (int) $wpdb->insert_id;

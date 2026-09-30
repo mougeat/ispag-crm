@@ -2,7 +2,7 @@
 
 class ISPAG_Entreprise_Manager {
     // Utilisation de vos constantes pour la liaison Meta
-    const META_COMPANY_VIAG_ID   = 'ispag_company_id';
+    const META_COMPANY_ID   = 'ispag_company_id';
     const META_COMPANY_CITY = 'ispag_company_city';
 
     private $table_name;
@@ -30,7 +30,7 @@ class ISPAG_Entreprise_Manager {
             'added'      => array('success', __('Company created.', 'ispag-crm')),
             'updated'    => array('success', __('Company updated.', 'ispag-crm')),
             'deleted'    => array('success', __('Company deleted.', 'ispag-crm')),
-            'exists'     => array('warning', __('A company with this domain or Viag ID already exists: nothing was created.', 'ispag-crm')),
+            'exists'     => array('warning', __('A company with this domain already exists: nothing was created.', 'ispag-crm')),
             'error_name' => array('error',   __('The company name is required.', 'ispag-crm')),
             'error_db'   => array('error',   __('The company could not be saved.', 'ispag-crm')),
         );
@@ -129,7 +129,7 @@ class ISPAG_Entreprise_Manager {
                         <tr>
                             <td>
                                 <strong><?php echo esc_html($company->company_name); ?></strong><br>
-                                <small>ID: <?php echo $company->Id; ?> | Viag: <?php echo $company->viag_id; ?></small>
+                                <small>ID: <?php echo $company->Id; ?></small>
                             </td>
                             <td><?php echo esc_html($company->ville_name ? $company->ville_name : '—'); ?></td>
                             <td><?php echo $company->isSupplier ? '✅' : '❌'; ?></td>
@@ -186,11 +186,6 @@ class ISPAG_Entreprise_Manager {
                         <td><input name="ville_meta" type="text" value="<?php echo esc_attr($city); ?>" class="regular-text" placeholder="Saisir la ville"></td>
                     </tr>
                     <tr>
-                        <th><label>Viag ID</label></th>
-                        <td><input name="viag_id" type="number" value="<?php echo $company ? esc_attr($company->viag_id) : ''; ?>" class="small-text">
-                            <?php if (!$company) : ?><p class="description">Optional external reference (e.g. from an import). Companies are linked by their internal Id.</p><?php endif; ?></td>
-                    </tr>
-                    <tr>
                         <th><label>Type</label></th>
                         <td>
                             <label><input name="isSupplier" type="checkbox" value="1" <?php checked($company ? $company->isSupplier : 0, 1); ?>> Fournisseur</label><br>
@@ -237,7 +232,6 @@ class ISPAG_Entreprise_Manager {
                 'company_name'    => isset($_POST['company_name']) ? $_POST['company_name'] : '',
                 'compagny_domain' => isset($_POST['compagny_domain']) ? $_POST['compagny_domain'] : '',
                 'city'            => isset($_POST['ville_meta']) ? $_POST['ville_meta'] : '',
-                'viag_id'         => isset($_POST['viag_id']) ? $_POST['viag_id'] : 0,
                 'isSupplier'      => isset($_POST['isSupplier']) ? 1 : 0,
                 'isIngenieur'     => isset($_POST['isIngenieur']) ? 1 : 0,
                 'is_active'       => isset($_POST['is_active']) ? $_POST['is_active'] : 1,
@@ -257,8 +251,6 @@ class ISPAG_Entreprise_Manager {
             'isIngenieur'     => isset($_POST['isIngenieur']) ? 1 : 0,
             'is_active'       => isset($_POST['is_active']) ? absint($_POST['is_active']) : 1,
         );
-        $viag_id = isset($_POST['viag_id']) ? absint($_POST['viag_id']) : 0;
-        if ($viag_id > 0) $data['viag_id'] = $viag_id;
         $wpdb->update($this->table_name, $data, array('Id' => $id));
         ISPAG_Crm_Company_Creator::save_city($id, $city);
         $back('updated');

@@ -8,7 +8,7 @@ class ISPAG_Contact_Detail_Shortcode {
     const META_LEAD_STATUS          = 'ispag_lead_status';
     const META_LEAD_LINKEDIN_PAGE   = 'ispag_linkedin_page';
     const META_LIFECYCLE_PHASE      = 'ispag_contact_lifecycle_phase';
-    const META_COMPANY_VIAG_ID           = 'ispag_company_id';
+    const META_COMPANY_ID           = 'ispag_company_id';
     const META_OWNER                = 'ispag_owner';
     const META_OPPORTUNITY          = 'ispag_opportunity';
     const META_BUYING_GOAL          = 'ispag_buying_goal';
@@ -79,7 +79,7 @@ class ISPAG_Contact_Detail_Shortcode {
 
         // Tente de supprimer la méta-donnée spécifique
         // NOTE: Pour les meta multiples, delete_user_meta supprime seulement l'occurrence ayant la valeur exacte.
-        $deleted = delete_user_meta( $contact_id, self::META_COMPANY_VIAG_ID, $company_id );
+        $deleted = delete_user_meta( $contact_id, self::META_COMPANY_ID, $company_id );
 
         if ( $deleted ) {
             wp_send_json_success( array( 
@@ -377,7 +377,7 @@ class ISPAG_Contact_Detail_Shortcode {
         }
 
         // Récupérer la liste des entreprises déjà associées pour l'affichage dans la modale
-        $company_ids = get_user_meta( $contact_id, self::META_COMPANY_VIAG_ID, false );
+        $company_ids = get_user_meta( $contact_id, self::META_COMPANY_ID, false );
         $company_ids = array_filter( array_map( 'absint', (array) $company_ids ) );
         $associated_companies = [];
         
@@ -496,7 +496,7 @@ class ISPAG_Contact_Detail_Shortcode {
         $meta_key_city = self::META_COMPANY_CITY; // Utilisation de la constante fournie
 
         // 1. Récupérer les IDs des entreprises déjà associées (à exclure)
-        $company_ids_to_exclude = get_user_meta( $contact_id, self::META_COMPANY_VIAG_ID, false );
+        $company_ids_to_exclude = get_user_meta( $contact_id, self::META_COMPANY_ID, false );
         $company_ids_to_exclude = array_filter( array_map( 'absint', (array) $company_ids_to_exclude ) );
         
         // 2. Préparer les Jointures
@@ -580,8 +580,8 @@ class ISPAG_Contact_Detail_Shortcode {
 
         $updated_count = 0;
         foreach ( $company_ids as $company_id ) {
-            // La clé utilisée est la constante META_COMPANY_VIAG_ID de votre classe
-            add_user_meta( $contact_id, self::META_COMPANY_VIAG_ID, $company_id, false ); 
+            // La clé utilisée est la constante META_COMPANY_ID de votre classe
+            add_user_meta( $contact_id, self::META_COMPANY_ID, $company_id, false ); 
             $updated_count++;
         }
 
@@ -720,7 +720,7 @@ class ISPAG_Contact_Detail_Shortcode {
 
         // 3. Sociétés / Propriétaire / function
         $contact_function = $get_meta(self::META_LEAD_FUNCTION) ?: 'N/A';
-        $company_id = absint( $get_meta(self::META_COMPANY_VIAG_ID) );
+        $company_id = absint( $get_meta(self::META_COMPANY_ID) );
         $company_name = isset($companies_lookup[$company_id]) ? esc_html($companies_lookup[$company_id]->Fournisseur) : 'Aucune';
         $company_domain = isset($companies_lookup[$company_id]) ? esc_html($companies_lookup[$company_id]->compagnyDomain) : '-';
         $company_phone = isset($companies_lookup[$company_id]) ? esc_html($companies_lookup[$company_id]->NumTel) : '-';
@@ -731,7 +731,7 @@ class ISPAG_Contact_Detail_Shortcode {
         $company_country = get_post_meta( $company_id, self::META_COMPANY_COUNTRY, true );
         $company_industry = get_post_meta( $company_id, self::META_COMPANY_INDUSTRY, true );
 
-        $company_ids = get_user_meta( $contact_id, self::META_COMPANY_VIAG_ID, false );
+        $company_ids = get_user_meta( $contact_id, self::META_COMPANY_ID, false );
         $company_ids = array_filter( array_map( 'absint', (array) $company_ids ) );
         $associated_companies_list = [];
         if ( ! empty( $company_ids ) ) {

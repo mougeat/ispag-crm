@@ -291,14 +291,14 @@ class ISPAG_Task_Dashboard {
             return null;
         }
 
-        // Nom de votre table d'entreprises (Fournisseurs)
-        $table_name = $wpdb->prefix . 'achats_fournisseurs'; 
+        // Table des entreprises (clients, fournisseurs, ingénieurs)
+        $table_name = $wpdb->prefix . 'ispag_companies';
 
         // Requête pour récupérer le champ 'name'
         $company_name = $wpdb->get_var( $wpdb->prepare( "
-            SELECT Fournisseur
+            SELECT company_name
             FROM {$table_name}
-            WHERE ID = %d
+            WHERE Id = %d
         ", $company_id ) );
 
         // Retourne le nom (ou null s'il n'y a pas de résultat)

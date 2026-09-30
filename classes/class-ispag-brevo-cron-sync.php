@@ -82,7 +82,7 @@ class ISPAG_Brevo_Cron_Sync
         $owner_id = get_user_meta($user->ID, ISPAG_Crm_Contact_Constants::META_OWNER, true);
         $owner = get_userdata($owner_id);
         $job_title = get_user_meta($user->ID, ISPAG_Crm_Contact_Constants::META_LEAD_FUNCTION, true);
-        $company_id = get_user_meta($user->ID, ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID, true);
+        $company_id = get_user_meta($user->ID, ISPAG_Crm_Contact_Constants::META_COMPANY_ID, true);
         $birthday = get_user_meta($user->ID, ISPAG_Crm_Contact_Constants::USER_BIRTHDAY, true);
 
         $company_rep = new ISPAG_Crm_Company_Repository();

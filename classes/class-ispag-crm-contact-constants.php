@@ -18,7 +18,6 @@ class ISPAG_Crm_Contact_Constants {
     const META_LEAD_LINKEDIN_PAGE   = 'ispag_linkedin_page';
     const META_LIFECYCLE_PHASE      = 'ispag_contact_lifecycle_phase';
     const META_COMPANY_ID           = 'ispag_company_id';
-    const META_COMPANY_VIAG_ID      = 'ispag_company_id';
     const META_OWNER                = 'ispag_owner';
     const META_OPPORTUNITY          = 'ispag_opportunity';
     const META_BUYING_GOAL          = 'ispag_buying_goal';

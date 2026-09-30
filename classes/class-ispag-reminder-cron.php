@@ -318,7 +318,7 @@ class ISPAG_Reminder_Cron {
     //             t3.company_name AS company_name
     //         FROM {$table_deal} AS t1
     //         LEFT JOIN {$wpdb->users} AS t2 ON t1.deal_owner = t2.ID
-    //         LEFT JOIN {$table_company} AS t3 ON t1.associated_company_id = t3.viag_id
+    //         LEFT JOIN {$table_company} AS t3 ON t1.associated_company_id = t3.Id
     //         WHERE 
     //             t1.closing_date BETWEEN %s AND %s
     //             AND t1.current_stage_key NOT IN ('closed_won', 'closed_lost')

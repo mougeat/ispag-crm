@@ -36,7 +36,7 @@ class ISPAG_Crm_Company_Modal {
         }
 
         // 1. Récupérer la liste actuelle (ex: "51459,12345,67890")
-        $current_meta = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, true );
+        $current_meta = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, true );
         
         if ( empty( $current_meta ) ) {
             wp_send_json_error( array( 'message' => 'No association found for this contact.' ) );
@@ -59,9 +59,9 @@ class ISPAG_Crm_Company_Modal {
 
         // Si la liste est vide, on peut soit laisser une chaîne vide, soit supprimer la clé
         if ( empty( $new_meta_value ) ) {
-            $result = delete_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID );
+            $result = delete_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID );
         } else {
-            $result = update_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, $new_meta_value );
+            $result = update_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, $new_meta_value );
         }
 
         if ( false !== $result ) {
@@ -91,7 +91,7 @@ class ISPAG_Crm_Company_Modal {
         }
 
         // Récupérer la liste des entreprises déjà associées pour l'affichage dans la modale
-        $company_ids = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, false );
+        $company_ids = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, false );
         $company_ids = array_filter( array_map( 'absint', (array) $company_ids ) );
         $associated_companies = [];
         
@@ -200,7 +200,7 @@ class ISPAG_Crm_Company_Modal {
         }
 
         // 1. Récupérer la liste actuelle des entreprises du contact
-        $current_meta = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, true );
+        $current_meta = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, true );
         
         // 2. Transformer en tableau propre
         $existing_ids = ! empty( $current_meta ) ? explode( ',', $current_meta ) : array();
@@ -211,7 +211,7 @@ class ISPAG_Crm_Company_Modal {
 
         // 4. Save la nouvelle chaîne
         $new_meta_value = implode( ',', $final_ids );
-        $result = update_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, $new_meta_value );
+        $result = update_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, $new_meta_value );
 
         wp_send_json_success( array( 
             'message' => __( 'Association successfully updated.', 'ispag-crm' ) 
@@ -245,7 +245,7 @@ class ISPAG_Crm_Company_Modal {
         $meta_key_city = ISPAG_Crm_Company_Constants::META_COMPANY_CITY;
 
         // IDs à exclure
-        $company_ids_to_exclude = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, false );
+        $company_ids_to_exclude = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, false );
         $company_ids_to_exclude = array_filter( array_map( 'absint', (array) $company_ids_to_exclude ) );
         
         // Jointure pour la ville

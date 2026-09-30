@@ -136,7 +136,7 @@ class ISPAG_Baikal_Sync
             ISPAG_Crm_Contact_Constants::META_OWNER,
             ISPAG_Crm_Contact_Constants::META_LEAD_PHONE,
             ISPAG_Crm_Contact_Constants::META_LEAD_FUNCTION,
-            ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID,
+            ISPAG_Crm_Contact_Constants::META_COMPANY_ID,
             ISPAG_Crm_Contact_Constants::META_USER_ROLE,
             ISPAG_Crm_Contact_Constants::PRIORITY_LEVEL,
             ISPAG_Crm_Contact_Constants::USER_AVATAR,

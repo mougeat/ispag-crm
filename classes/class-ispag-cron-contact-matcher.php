@@ -36,7 +36,7 @@ class ISPAG_Cron_Contact_Matcher {
 
         $this->log_action( "--- DÉBUT DU SCAN DE MATCHING ---" );
 
-        $meta_key_company = ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID;
+        $meta_key_company = ISPAG_Crm_Contact_Constants::META_COMPANY_ID;
         $table_companies  = ISPAG_Crm_Company_Constants::TABLE_NAME;
 
         // 1. Récupérer les IDs des contacts qui n'ont PAS encore de meta association

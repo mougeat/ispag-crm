@@ -14,8 +14,7 @@ class ISPAG_Company_Importer {
     private $mapping_action = 'ispag_process_company_mapping';
 
     private $db_columns = array(
-        'viag_id'         => 'ID Viag (N° entreprise) *obligatoire',
-        'company_name'    => 'Nom de l\'entreprise',
+        'company_name'    => 'Nom de l\'entreprise *obligatoire',
         'compagny_domain' => 'Domaine (ex: entreprise.ch)', 
         'is_active'       => 'Statut Actif (VRAI/FAUX)',
         'city'            => 'City / Locality',
@@ -27,7 +26,6 @@ class ISPAG_Company_Importer {
     );
 
     private $default_mapping_keys = array(
-        'viag_id'         => 'N°s entreprises',
         'company_name'    => 'Nom',
         'compagny_domain' => 'Domaine',
         'address'         => 'Adresse',
@@ -228,10 +226,10 @@ class ISPAG_Company_Importer {
                         return mb_check_encoding( $f, 'UTF-8' ) ? $f : @iconv( 'Windows-1252', 'UTF-8//IGNORE', $f ); 
                     }, $raw_data );
 
-                    $viag_idx = $mapping['viag_id'] ?? '';
-                    $viag_id  = ( $viag_idx !== '' ) ? trim( $raw_data[$viag_idx] ) : '';
+                    $name_idx     = $mapping['company_name'] ?? '';
+                    $company_name = ( $name_idx !== '' ) ? trim( $raw_data[$name_idx] ) : '';
 
-                    if ( empty( $viag_id ) ) {
+                    if ( $company_name === '' ) {
                         $row_count++;
                         $task_data['processed_rows'] = $row_count;
                         set_transient( 'ispag_company_import_' . $task_id, $task_data, DAY_IN_SECONDS );
@@ -244,7 +242,6 @@ class ISPAG_Company_Importer {
                     $is_active  = in_array( $active_val, ['vrai', 'true', '1', 'oui', 'active'] ) ? 1 : 0;
 
                     $sql_data = array(
-                        'viag_id'      => $viag_id,
                         'company_name' => ( ($mapping['company_name'] ?? '') !== '' ) ? trim( $raw_data[$mapping['company_name']] ) : '',
                         'city'         => ( ($mapping['city'] ?? '') !== '' ) ? trim( $raw_data[$mapping['city']] ) : '',
                         'phone'        => ( ($mapping['phone'] ?? '') !== '' ) ? trim( $raw_data[$mapping['phone']] ) : '',
@@ -259,10 +256,17 @@ class ISPAG_Company_Importer {
                         $sql_data['compagny_domain'] = $domain_val;
                     }
 
-                    $exists = $this->wpdb->get_var( $this->wpdb->prepare( "SELECT id FROM {$table_name} WHERE viag_id = %d", $viag_id ) );
+                    // Une entreprise existante est retrouvée par son domaine, à défaut par son nom (sans tenir compte de la casse)
+                    $exists = null;
+                    if ( ! empty( $domain_val ) ) {
+                        $exists = $this->wpdb->get_var( $this->wpdb->prepare( "SELECT Id FROM {$table_name} WHERE compagny_domain = %s LIMIT 1", $domain_val ) );
+                    }
+                    if ( ! $exists ) {
+                        $exists = $this->wpdb->get_var( $this->wpdb->prepare( "SELECT Id FROM {$table_name} WHERE LOWER(company_name) = LOWER(%s) LIMIT 1", $company_name ) );
+                    }
 
                     if ( $exists ) {
-                        $this->wpdb->update( $table_name, $sql_data, array( 'id' => $exists ) );
+                        $this->wpdb->update( $table_name, $sql_data, array( 'Id' => $exists ) );
                         $company_row_id = (int) $exists;
                         $count_upd++;
                     } else {

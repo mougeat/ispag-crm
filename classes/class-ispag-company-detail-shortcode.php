@@ -10,7 +10,7 @@ class ISPAG_Company_Detail_Shortcode {
     // const META_OWNER_ID = 'ispag_company_owner';
     // const META_TYPE     = 'ispag_company_type';
     const META_TIER                 = 'ispag_company_tier';
-    const META_COMPANY_VIAG_ID           = 'ispag_company_id';
+    const META_COMPANY_ID           = 'ispag_company_id';
     const META_COMPANY_LEAD_STATUS  = 'ispag_company_lead_status';
     const META_COMPANY_OWNER        = 'ispag_company_owner';
     const META_COMPANY_TYPE         = 'ispag_company_type';
@@ -147,7 +147,7 @@ class ISPAG_Company_Detail_Shortcode {
      */
     private function get_company_field_value( $company_id, $field_name ) {
         global $wpdb;
-        $table_name_fournisseur = $wpdb->prefix . 'achats_fournisseurs';
+        $table_name_fournisseur = $wpdb->prefix . 'ispag_companies';
 
         // NOTE SUR LA SÉCURITÉ : Le nom de colonne ($field_name) est inséré directement 
         // dans la requête car il a été nettoyé par sanitize_key() avant l'appel.
@@ -460,7 +460,7 @@ class ISPAG_Company_Detail_Shortcode {
             'search_columns' => array( 'user_login', 'user_nicename', 'user_email', 'display_name' ),
             'number'         => 10, // Limite les résultats
             'exclude'        => get_users( [ // Exclut les contacts déjà associés
-                'meta_key'   => self::META_COMPANY_VIAG_ID,
+                'meta_key'   => self::META_COMPANY_ID,
                 'meta_value' => $company_id,
                 'fields'     => 'ID'
             ] ),
@@ -498,8 +498,8 @@ class ISPAG_Company_Detail_Shortcode {
         
         $updated_count = 0;
         foreach ( $contact_ids as $contact_id ) {
-            // La clé utilisée est la constante META_COMPANY_VIAG_ID de votre classe
-            // update_user_meta( $contact_id, self::META_COMPANY_VIAG_ID, $company_id );
+            // La clé utilisée est la constante META_COMPANY_ID de votre classe
+            // update_user_meta( $contact_id, self::META_COMPANY_ID, $company_id );
             $updated_count++;
         }
 
@@ -602,14 +602,14 @@ class ISPAG_Company_Detail_Shortcode {
     /**
      * Récupère les contacts (utilisateurs WordPress) associés à cette entreprise.
      * La recherche est basée sur la méta-clé utilisateur ispag_company_id = $company_id.
-     * * @param int $company_id L'ID de l'entreprise dans la table achats_fournisseurs.
+     * * @param int $company_id L'ID de l'entreprise dans la table ispag_companies.
      * @param int $limit Le nombre maximum de contacts à retourner (pour l'affichage du panneau droit).
      * @return array Liste des objets utilisateur (WP_User).
      */
     protected function get_associated_contacts( $company_id, $limit = 5 ) {
         
         $contacts_query = new WP_User_Query( array(
-            'meta_key'       => self::META_COMPANY_VIAG_ID,
+            'meta_key'       => self::META_COMPANY_ID,
             'meta_value'     => $company_id,
             'meta_compare'   => '=',
             'number'         => $limit, // Limite le nombre de résultats
@@ -774,14 +774,14 @@ class ISPAG_Company_Detail_Shortcode {
         
         // 3. Détermination de l'ID de l'entreprise
         // $company_id = filter_input( INPUT_GET, 'company_id', FILTER_VALIDATE_INT ); --> OBsolete avec le permalien
-        $company_viag_id = absint( get_query_var( 'company_id' ) );
+        $company_id = absint( get_query_var( 'company_id' ) );
 
         // 4. Récupération des données de l'entreprise
         global $wpdb;
         $table_name = $wpdb->prefix . 'ispag_companies';
         
         $company = $wpdb->get_row( 
-            $wpdb->prepare( "SELECT * FROM {$table_name} WHERE Id = %d", $company_viag_id ) 
+            $wpdb->prepare( "SELECT * FROM {$table_name} WHERE Id = %d", $company_id ) 
         );
 
         if ( ! $company ) {
@@ -821,7 +821,6 @@ class ISPAG_Company_Detail_Shortcode {
         // 5. Préparation des données et Placeholders
         
         $company_name = esc_html($company->company_name);
-        $company_viag_id = esc_html($company->viag_id);
         $company_domain = esc_html(isset($company->compagnyDomain) ? $company->compagnyDomain : 'N/A');
         $company_phone = get_post_meta( $company_id, self::META_COMPANY_PHONE, true );
         // $company_city = esc_html(isset($company->Ville) ? $company->Ville : 'N/A');
@@ -895,15 +894,6 @@ class ISPAG_Company_Detail_Shortcode {
                             data-value="<?php echo esc_attr( $company_domain ); ?>"
                         >
                             <?php echo $company_domain; ?>
-                            <span class="edit-icon">✏️</span>
-                        </p>
-                        <p 
-                            class="ispag-editable-field" 
-                            data-type="text" 
-                            data-name="viag_id" 
-                            data-value="<?php echo esc_attr( $company_viag_id ); ?>"
-                        >
-                            <?php echo $company_viag_id; ?>
                             <span class="edit-icon">✏️</span>
                         </p>
                     </div>

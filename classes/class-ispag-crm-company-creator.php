@@ -8,8 +8,7 @@ defined('ABSPATH') || exit;
  *  - le formulaire d'administration (« CRM ISPAG → Add Company », ISPAG_Entreprise_Manager) ;
  *  - le panneau « Créer une entreprise » de la page publique (action AJAX ispag_create_company).
  *
- * Règles : nom obligatoire ; pas de doublon (même domaine ou même viag_id) ; sans viag_id, un identifiant provisoire
- * (plage 90000-99999, comme la création d'un contact) est attribué ; la ville est écrite aux trois endroits où le CRM la lit.
+ * Règles : nom obligatoire ; pas de doublon (même domaine) ; la ville est écrite aux trois endroits où le CRM la lit.
  */
 class ISPAG_Crm_Company_Creator {
 
@@ -39,13 +38,6 @@ class ISPAG_Crm_Company_Creator {
         return sanitize_text_field($parts[0]);
     }
 
-    /** @deprecated Les liaisons utilisent Id ; conservé pour d'anciens appels. Prochain viag_id provisoire (plage 90000-99999). */
-    public static function next_provisional_viag_id() {
-        global $wpdb;
-        $last = $wpdb->get_var("SELECT MAX(viag_id) FROM {$wpdb->prefix}ispag_companies WHERE viag_id >= 90000 AND viag_id < 100000");
-        return $last ? (int) $last + 1 : 90001;
-    }
-
     /** Écrit une méta d'entreprise dans ispag_companies_meta (met à jour la ligne existante, sinon l'ajoute). */
     public static function save_company_meta($company_id, $key, $value) {
         global $wpdb;
@@ -67,8 +59,8 @@ class ISPAG_Crm_Company_Creator {
     }
 
     /**
-     * @param array $fields company_name*, compagny_domain, city, phone, email, viag_id, isSupplier, isIngenieur, is_active (données brutes de $_POST acceptées)
-     * @return array ['status' => created|exists|error_name|error_email|error_db, 'id'?, 'viag_id'?, 'existing_id'?]
+     * @param array $fields company_name*, compagny_domain, city, phone, email, isSupplier, isIngenieur, is_active (données brutes de $_POST acceptées)
+     * @return array ['status' => created|exists|error_name|error_email|error_db, 'id'?, 'existing_id'?]
      */
     public static function create(array $fields) {
         global $wpdb;
@@ -79,20 +71,17 @@ class ISPAG_Crm_Company_Creator {
         $city   = sanitize_text_field(wp_unslash(isset($fields['city']) ? $fields['city'] : ''));
         $phone  = sanitize_text_field(wp_unslash(isset($fields['phone']) ? $fields['phone'] : ''));
         $email  = sanitize_email(wp_unslash(isset($fields['email']) ? $fields['email'] : ''));
-        $viag_id = isset($fields['viag_id']) ? absint($fields['viag_id']) : 0;
 
         if ($name === '') return array('status' => 'error_name');
         if (!empty($fields['email']) && $email === '') return array('status' => 'error_email');
 
         $existing = $wpdb->get_row($wpdb->prepare(
-            "SELECT Id, viag_id FROM {$table} WHERE (%d > 0 AND viag_id = %d) OR (%s <> '' AND compagny_domain = %s) LIMIT 1",
-            $viag_id, $viag_id, $domain, $domain
+            "SELECT Id FROM {$table} WHERE (%s <> '' AND compagny_domain = %s) LIMIT 1",
+            $domain, $domain
         ));
-        if ($existing) return array('status' => 'exists', 'existing_id' => (int) $existing->Id, 'viag_id' => (int) $existing->viag_id);
+        if ($existing) return array('status' => 'exists', 'existing_id' => (int) $existing->Id);
 
-        // viag_id = simple référence externe (import HubSpot/Viag) ; les liens passent par Id
         $inserted = $wpdb->insert($table, array(
-            'viag_id'         => $viag_id,
             'company_name'    => $name,
             'compagny_domain' => $domain,
             'phone'           => $phone,
@@ -106,7 +95,7 @@ class ISPAG_Crm_Company_Creator {
 
         $id = (int) $wpdb->insert_id;
         self::save_city($id, $city);
-        return array('status' => 'created', 'id' => $id, 'viag_id' => $viag_id);
+        return array('status' => 'created', 'id' => $id);
     }
 
     /** Action AJAX du panneau « Créer une entreprise » de la page publique. */
@@ -131,7 +120,7 @@ class ISPAG_Crm_Company_Creator {
                 ));
             case 'exists':
                 wp_send_json_error(array(
-                    'message'      => __('A company with this domain or Viag ID already exists.', 'ispag-crm'),
+                    'message'      => __('A company with this domain already exists.', 'ispag-crm'),
                     'existing_url' => home_url('/company/' . $result['existing_id'] . '/'),
                 ));
             case 'error_name':

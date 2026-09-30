@@ -623,14 +623,14 @@ class ISPAG_Crm_Deals_Repository {
     // private function _load_companies_batch(array $raw_deals): array {
     //     if (empty($raw_deals)) return [];
 
-    //     // Dédoublonnage par viag_id : on ne veut résoudre le favicon qu'une seule fois par société
+    //     // Dédoublonnage par Id : on ne veut résoudre le favicon qu'une seule fois par société
     //     $companies_by_id = [];
     //     foreach ($raw_deals as $deal) {
     //         $row_id = $deal->associated_company_row_id ?? null;
     //         if (empty($row_id) || isset($companies_by_id[$row_id])) continue;
 
     //         $companies_by_id[$row_id] = (object) [
-    //             'viag_id'         => $row_id,
+    //             'Id'              => $row_id,
     //             'company_name'    => $deal->associated_company_name ?? '',
     //             'favicon'         => $deal->associated_company_favicon ?? '',
     //             'compagny_domain' => $deal->associated_company_domain ?? '',

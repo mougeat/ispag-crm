@@ -19,7 +19,7 @@ class ISPAG_Crm_Contact_Modal {
             wp_send_json_error( array( 'message' => 'IDs manquants.' ) );
         }
 
-        $deleted = delete_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, $company_id );
+        $deleted = delete_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, $company_id );
 
         if ( $deleted ) {
             wp_send_json_success( array( 'message' => 'Association removed.' ) );
@@ -123,14 +123,14 @@ class ISPAG_Crm_Contact_Modal {
         if ( empty( $search_term ) ) {
             // --- CAS 1 : On AJOUTE (avec []) la condition de l'entreprise ---
             $args['meta_query'][] = array(
-                'key'     => ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID,
+                'key'     => ISPAG_Crm_Company_Constants::META_COMPANY_ID,
                 'value'   => $company_id,
                 'compare' => '='
             );
         } else {
             // --- CAS 2 : Recherche active ---
             $excluded_ids = get_users(array(
-                'meta_key'   => ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID,
+                'meta_key'   => ISPAG_Crm_Company_Constants::META_COMPANY_ID,
                 'meta_value' => $company_id,
                 'fields'     => 'ID'
             ));
@@ -248,7 +248,7 @@ class ISPAG_Crm_Contact_Modal {
         // error_log("[ISPAG DEBUG] Mise à jour User Meta pour " . count($contact_ids) . " contacts.");
         foreach ( $contact_ids as $contact_id ) {
             // 1. Récupérer la valeur actuelle (chaîne de caractères)
-            $current_meta = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, true );
+            $current_meta = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, true );
             
             // 2. Transformer en tableau et nettoyer (enlever les espaces et les entrées vides)
             $company_list = ! empty( $current_meta ) ? explode( ',', $current_meta ) : array();
@@ -261,7 +261,7 @@ class ISPAG_Crm_Contact_Modal {
 
             // 4. Re-transformer en chaîne séparée par des virgules et mettre à jour
             $new_meta_value = implode( ',', $company_list );
-            update_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, $new_meta_value );
+            update_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, $new_meta_value );
         }
 
         // error_log("[ISPAG DEBUG] --- Fin Association Contact ---");

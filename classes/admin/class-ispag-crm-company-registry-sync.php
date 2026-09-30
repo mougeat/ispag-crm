@@ -110,7 +110,7 @@ class ISPAG_Company_Registry_Sync {
 
         $companies = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT viag_id, company_name
+                "SELECT Id, company_name
                  FROM {$this->table_name}
                  WHERE is_active = 1
                    AND uid_number IS NULL
@@ -172,7 +172,7 @@ class ISPAG_Company_Registry_Sync {
 
         global $wpdb;
         $pending = $wpdb->get_results(
-            "SELECT viag_id, company_name, uid_validation_data
+            "SELECT Id, company_name, uid_validation_data
              FROM {$this->table_name}
              WHERE uid_validation_data IS NOT NULL
              ORDER BY company_name"
@@ -194,7 +194,7 @@ class ISPAG_Company_Registry_Sync {
     // -------------------------------------------------------------------------
 
     private function render_homonym_row($co, $choices) {
-        $vid = esc_attr($co->viag_id);
+        $vid = esc_attr($co->Id);
         $out = "<tr data-id='{$vid}'>";
 
         // Colonne gauche : nom CRM + bouton ignorer
@@ -265,7 +265,7 @@ class ISPAG_Company_Registry_Sync {
 
         if (mb_strlen($name) > 80) {
             $this->log("  [SKIP] Nom trop long (" . mb_strlen($name) . " chars) — marqué manual_review");
-            $wpdb->update($this->table_name, ['uid_status' => 'manual_review'], ['viag_id' => $company->viag_id]);
+            $wpdb->update($this->table_name, ['uid_status' => 'manual_review'], ['Id' => $company->Id]);
             return "⚠️ Nom trop long";
         }
 
@@ -273,12 +273,12 @@ class ISPAG_Company_Registry_Sync {
         $results = $this->sparql_search($name);
 
         if ($results === null) {
-            $wpdb->update($this->table_name, ['uid_status' => 'api_error'], ['viag_id' => $company->viag_id]);
+            $wpdb->update($this->table_name, ['uid_status' => 'api_error'], ['Id' => $company->Id]);
             return "❌ Error SPARQL";
         }
 
         if (empty($results)) {
-            $wpdb->update($this->table_name, ['uid_status' => 'not_found'], ['viag_id' => $company->viag_id]);
+            $wpdb->update($this->table_name, ['uid_status' => 'not_found'], ['Id' => $company->Id]);
             return "❓ Not found";
         }
 
@@ -288,7 +288,7 @@ class ISPAG_Company_Registry_Sync {
                 'uid_number'     => $res['uid'],
                 'uid_status'     => $res['status'],
                 'last_uid_check' => current_time('mysql'),
-            ], ['viag_id' => $company->viag_id]);
+            ], ['Id' => $company->Id]);
             $this->log("UID lié : {$res['uid']}");
             return "✅ {$res['uid']} lié";
         }
@@ -296,7 +296,7 @@ class ISPAG_Company_Registry_Sync {
         $choices = array_slice($results, 0, 8);
         $wpdb->update($this->table_name, [
             'uid_validation_data' => json_encode($choices),
-        ], ['viag_id' => $company->viag_id]);
+        ], ['Id' => $company->Id]);
         return "⚠️ " . count($results) . " homonymes";
     }
 
@@ -461,7 +461,7 @@ LIMIT 10';
         global $wpdb;
 
         $pending = $wpdb->get_results(
-            "SELECT viag_id, company_name, uid_validation_data
+            "SELECT Id, company_name, uid_validation_data
              FROM {$this->table_name}
              WHERE uid_validation_data IS NOT NULL
              ORDER BY company_name"
@@ -654,7 +654,7 @@ LIMIT 10';
                 btn.prop('disabled', true).text('...');
                 $.post(ajaxurl, {
                     action:  'ispag_confirm_uid',
-                    viag_id: id,
+                    company_id: id,
                     choice:  null,
                     nonce:   nonce_confirm
                 }, function(res) {
@@ -677,7 +677,7 @@ LIMIT 10';
                 var choiceJson = typeof val === 'object' ? JSON.stringify(val) : val;
                 $.post(ajaxurl, {
                     action:  'ispag_confirm_uid',
-                    viag_id: id,
+                    company_id: id,
                     choice:  choiceJson,
                     nonce:   nonce_confirm
                 }, function(res) {
@@ -818,14 +818,14 @@ WHERE {
         }
 
         global $wpdb;
-        $viag_id = intval($_POST['viag_id']);
+        $company_id = intval($_POST['company_id']);
 
         if (empty($_POST['choice']) || $_POST['choice'] === 'null') {
             $wpdb->update($this->table_name, [
                 'uid_validation_data' => null,
                 'uid_status'          => 'not_found',
                 'last_uid_check'      => current_time('mysql'),
-            ], ['viag_id' => $viag_id]);
+            ], ['Id' => $company_id]);
             wp_send_json_success();
             return;
         }
@@ -848,7 +848,7 @@ WHERE {
             'uid_status'          => sanitize_text_field($choice['status']),
             'uid_validation_data' => null,
             'last_uid_check'      => current_time('mysql'),
-        ], ['viag_id' => $viag_id]);
+        ], ['Id' => $company_id]);
 
         wp_send_json_success();
     }

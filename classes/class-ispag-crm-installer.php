@@ -55,12 +55,11 @@ class ISPAG_CRM_Installer {
                 error_log('[ISPAG CRM] Création de la table ' . $wpdb->prefix . $name . ' impossible : ' . $wpdb->last_error);
             }
         }
-        // Liens vers les entreprises : viag_id -> Id (une seule fois, tout ou rien)
+        // Liens vers les entreprises : ancienne clé externe -> Id (une seule fois, tout ou rien)
         require_once __DIR__ . '/class-ispag-crm-company-link-migration.php';
         if (!ISPAG_Crm_Company_Link_Migration::run()) {
             $ok = false;
         }
-        self::ensure_supplier_contact_columns();
         if (!self::seed()) {
             $ok = false;
         }
@@ -73,20 +72,6 @@ class ISPAG_CRM_Installer {
             update_option(self::OPTION, self::DB_VERSION);
         }
         return $ok;
-    }
-
-    /** Sites existants : ajoute les colonnes de contacts fournisseur (facturation, livraison) si elles manquent. */
-    private static function ensure_supplier_contact_columns() {
-        global $wpdb;
-        $table = $wpdb->prefix . 'achats_fournisseurs';
-        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table)) !== $table) {
-            return;
-        }
-        foreach (['IdContactFacturation', 'IdContactLivraison'] as $col) {
-            if (!$wpdb->get_var("SHOW COLUMNS FROM `{$table}` LIKE '{$col}'")) {
-                $wpdb->query("ALTER TABLE `{$table}` ADD COLUMN `{$col}` int NOT NULL DEFAULT 0 AFTER `IdContactPlan`");
-            }
-        }
     }
 
     /**
