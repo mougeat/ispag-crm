@@ -539,9 +539,11 @@ class ISPAG_Crm_Company_Repository {
                 $lifecycle_manager = new ISPAG_Crm_Lifecycle_Manager();
                 $lifecycle_data = $lifecycle_manager->get_company_lifecycle($company->Id);
                 
-                // On extrait uniquement le libellé lisible par l'humain
-                $company->type = ($lifecycle_data && !empty($lifecycle_data->phase_label)) ? $lifecycle_data->phase_label : '';
+                // Clé enregistrée (type_key) et libellé lisible : sans libellé défini dans les phases, on affiche la clé
+                $company->type_key = $lifecycle_data ? (string) $lifecycle_data->lifecycle_type : '';
+                $company->type = ($lifecycle_data && !empty($lifecycle_data->phase_label)) ? $lifecycle_data->phase_label : $company->type_key;
             } else {
+                $company->type_key = '';
                 $company->type = '';
             }
         }
@@ -957,6 +959,13 @@ class ISPAG_Crm_Company_Repository {
             if ( $result !== false ) {
                 $updated_successfully = true;
                 $db_value_to_return = $db_value;
+
+                // Téléphone / e-mail : la fiche lit la colonne puis, à défaut, la méta -> on garde les deux identiques
+                if ( $field_name === 'phone' ) {
+                    ISPAG_Crm_Company_Creator::save_company_meta( $company_id, ISPAG_Crm_Company_Constants::META_COMPANY_PHONE, $db_value );
+                } elseif ( $field_name === 'email' ) {
+                    ISPAG_Crm_Company_Creator::save_company_meta( $company_id, ISPAG_Crm_Company_Constants::META_COMPANY_MAIL, $db_value );
+                }
             }
         }
         // --- 4. RABAIS ET COEF ---
@@ -985,7 +994,8 @@ class ISPAG_Crm_Company_Repository {
 
                 if ( $result !== false ) {
                     $updated_successfully = true;
-                    $db_value_to_return = $new_value;
+                    $labels = $lifecycle_manager->get_standard_lifecycle();
+                    $db_value_to_return = isset($labels[$new_value]) ? $labels[$new_value] : $new_value; // libellé affiché
                 }
             }
 
