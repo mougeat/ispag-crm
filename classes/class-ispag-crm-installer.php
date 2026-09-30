@@ -75,13 +75,21 @@ class ISPAG_CRM_Installer {
      */
     private static function seed() {
         global $wpdb;
-        $file = dirname(__DIR__) . '/install/seeds.php';
-        if (!is_readable($file)) {
-            return true;
+        $dir  = dirname(__DIR__) . '/install';
+        $sets = [];
+        if (is_readable($dir . '/seeds.php')) {
+            $sets = (array) require $dir . '/seeds.php';
+        }
+        // Gros jeux de données : un fichier install/seeds/<table_sans_prefixe>.php par table
+        foreach ((array) glob($dir . '/seeds/*.php') as $file) {
+            $sets[basename($file, '.php')] = require $file;
         }
         $ok = true;
-        foreach ((array) require $file as $name => $rows) {
+        foreach ($sets as $name => $rows) {
             $table = $wpdb->prefix . $name;
+            if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table)) !== $table) {
+                continue;
+            }
             if ((int) $wpdb->get_var("SELECT COUNT(*) FROM `{$table}`") > 0) {
                 continue;
             }
