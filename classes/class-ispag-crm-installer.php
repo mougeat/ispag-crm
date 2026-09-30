@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
  */
 class ISPAG_CRM_Installer {
 
-    const DB_VERSION = '1.2.2';
+    const DB_VERSION = '1.2.3';
     const OPTION     = 'ispag_crm_db_version';
 
     /** Droits utilisés par ce plugin (voir grant_default_caps()). */
@@ -60,6 +60,7 @@ class ISPAG_CRM_Installer {
         if (!ISPAG_Crm_Company_Link_Migration::run()) {
             $ok = false;
         }
+        self::ensure_supplier_contact_columns();
         if (!self::seed()) {
             $ok = false;
         }
@@ -72,6 +73,20 @@ class ISPAG_CRM_Installer {
             update_option(self::OPTION, self::DB_VERSION);
         }
         return $ok;
+    }
+
+    /** Sites existants : ajoute les colonnes de contacts fournisseur (facturation, livraison) si elles manquent. */
+    private static function ensure_supplier_contact_columns() {
+        global $wpdb;
+        $table = $wpdb->prefix . 'achats_fournisseurs';
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table)) !== $table) {
+            return;
+        }
+        foreach (['IdContactFacturation', 'IdContactLivraison'] as $col) {
+            if (!$wpdb->get_var("SHOW COLUMNS FROM `{$table}` LIKE '{$col}'")) {
+                $wpdb->query("ALTER TABLE `{$table}` ADD COLUMN `{$col}` int NOT NULL DEFAULT 0 AFTER `IdContactPlan`");
+            }
+        }
     }
 
     /**
