@@ -107,10 +107,8 @@ class ISPAG_Crm_Company_Creator {
             wp_send_json_error(array('message' => __('You are not allowed to create companies.', 'ispag-crm')), 403);
         }
 
-        // La page publique ne gère que les clients : la fiche publique masque les fournisseurs (isSupplier = 1).
-        $fields = $_POST;
-        $fields['isSupplier'] = 0;
-        $result = self::create($fields);
+        // Une entreprise peut être à la fois cliente et fournisseuse : isSupplier n'est qu'un drapeau, jamais un filtre d'accès.
+        $result = self::create($_POST);
 
         switch ($result['status']) {
             case 'created':

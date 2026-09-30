@@ -162,7 +162,7 @@ class ISPAG_Crm_Company_Repository {
         return $this->wpdb->get_col("
             SELECT DISTINCT city 
             FROM {$this->table_companies} 
-            WHERE city IS NOT NULL AND city != '' AND isSupplier = 0 
+            WHERE city IS NOT NULL AND city != '' 
             ORDER BY city ASC
         ");
     }
@@ -207,7 +207,7 @@ class ISPAG_Crm_Company_Repository {
         $order = (strtoupper($args['order'] ?? 'ASC') === 'DESC') ? 'DESC' : 'ASC';
 
         // 2. Construction des clauses WHERE
-        $where_clauses = ["f.isSupplier = 0"];
+        $where_clauses = ["1=1"]; // fournisseurs inclus : une entreprise peut être à la fois cliente et fournisseuse
         $sql_args_where = []; 
 
         // Filtre Recherche textuelle
