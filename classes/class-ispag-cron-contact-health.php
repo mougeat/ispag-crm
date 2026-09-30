@@ -160,8 +160,8 @@ class ISPAG_Cron_Contact_Health {
                     // Récupération de l'ID entreprise (on prend la première si multi-sociétés)
                     $linked_company_id = 0;
                     if ( ! empty( $contact->companies ) && is_array( $contact->companies ) ) {
-                        // On récupère le viag_id de la première entreprise liée
-                        $linked_company_id = $contact->companies[0]->viag_id; 
+                        // On récupère l'Id de la première entreprise liée
+                        $linked_company_id = $contact->companies[0]->Id; 
                     }
 
                     $wpdb->insert($notes_table, array(

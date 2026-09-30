@@ -265,14 +265,14 @@ class ISPAG_Crm_Contacts_Repository {
                 // 2. On récupère les infos de toutes les entreprises liées en une seule requête
                 $ids_placeholder = implode( ',', array_fill( 0, count( $company_ids ), '%d' ) );
                 $companies_data = $wpdb->get_results( $wpdb->prepare(
-                    "SELECT viag_id, company_name FROM {$table_companies} WHERE viag_id IN ($ids_placeholder)",
+                    "SELECT Id, company_name FROM {$table_companies} WHERE Id IN ($ids_placeholder)",
                     ...$company_ids
                 ) );
 
                 if ( $companies_data ) {
                     $contact->companies = $companies_data;
                     // Pour la compatibilité avec vos anciens scripts qui attendent un seul ID :
-                    $contact->ispag_company_id = $companies_data[0]->viag_id; 
+                    $contact->ispag_company_id = $companies_data[0]->Id; 
                     $contact->company_name     = $companies_data[0]->company_name;
                 }
                 // error_log('LISTE DES ENTREPRISES : ' . print_r($companies_data));
@@ -593,7 +593,7 @@ class ISPAG_Crm_Contacts_Repository {
                 AND m_prio.user_id     = %d
 
             LEFT JOIN {$this->table_companies} c
-                ON c.viag_id = m_comp.meta_value
+                ON c.Id = m_comp.meta_value
 
             WHERE u.ID = %d",
 
@@ -671,7 +671,7 @@ class ISPAG_Crm_Contacts_Repository {
             if ( $company_ids ) {
                 $placeholders   = implode( ',', array_fill( 0, count( $company_ids ), '%d' ) );
                 $contact->companies = $wpdb->get_results( $wpdb->prepare(
-                    "SELECT viag_id, company_name FROM {$this->table_companies} WHERE viag_id IN ($placeholders)",
+                    "SELECT Id, company_name FROM {$this->table_companies} WHERE Id IN ($placeholders)",
                     ...$company_ids
                 ) ) ?: [];
             }
@@ -1051,7 +1051,7 @@ class ISPAG_Crm_Contacts_Repository {
         
             LEFT JOIN {$wpdb->usermeta} m_ava ON (u.ID = m_ava.user_id AND m_ava.meta_key = '" . ISPAG_Crm_Contact_Constants::USER_AVATAR . "')
             LEFT JOIN {$this->table_priorities} m_prio ON (u.ID = m_prio.entity_id AND m_prio.entity_type = 'contact' AND m_prio.user_id = $current_user_id)
-            LEFT JOIN {$this->table_companies} c ON (m_comp.meta_value = c.viag_id)
+            LEFT JOIN {$this->table_companies} c ON (m_comp.meta_value = c.Id)
             {$where_sql}
             ORDER BY {$sort_column} {$order}
             LIMIT %d OFFSET %d
@@ -1390,7 +1390,7 @@ class ISPAG_Crm_Contacts_Repository {
 
         $company_name = 'N/A';
         if (!empty($company_id) && $company_id !== 'N/A') {
-            $company = (new ISPAG_Crm_Company_Repository())->get_company_by_viag_id($company_id);
+            $company = (new ISPAG_Crm_Company_Repository())->get_company_by_id($company_id);
             $company_name = $company->company_name ?? 'N/A';
         }
 
@@ -1901,7 +1901,7 @@ class ISPAG_Crm_Contacts_Repository {
                 $company_name = __('undefined', 'ispag-crm');
                 if( !empty($company_id) && class_exists('ISPAG_Crm_Company_Repository')){
                     $company_rep = new ISPAG_Crm_Company_Repository();
-                    $company_name = $company_rep->get_company_by_viag_id($company_viag_id);
+                    $company_name = $company_rep->get_company_by_id($company_viag_id);
                 }
 
                 ISPAG_Notifications_Manager::send(

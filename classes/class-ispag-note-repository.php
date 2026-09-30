@@ -242,11 +242,11 @@ class ISPAG_Note_Repository {
         if (!empty($all_company_ids)) {
             $placeholders = implode(',', array_fill(0, count($all_company_ids), '%d'));
             $companies_results = $wpdb->get_results($wpdb->prepare(
-                "SELECT viag_id, company_name FROM {$companies_table} WHERE viag_id IN ($placeholders)",
+                "SELECT Id, company_name FROM {$companies_table} WHERE Id IN ($placeholders)",
                 $all_company_ids
             ));
             foreach ($companies_results as $co) {
-                $company_cache[$co->viag_id] = $co->company_name;
+                $company_cache[$co->Id] = $co->company_name;
             }
         }
         // --- OPTIMISATION : CACHE PERSISTANT POUR LES DEALS ---
@@ -652,7 +652,7 @@ class ISPAG_Note_Repository {
         $sql = "
             SELECT company_name 
             FROM {$table_companies} 
-            WHERE viag_id IN ({$placeholders})
+            WHERE Id IN ({$placeholders})
         ";
 
         // Prépare la requête en passant les IDs sanitizés

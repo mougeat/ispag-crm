@@ -72,7 +72,7 @@ class ISPAG_Cron_Task_Reminder {
             $co_ids = explode( ',', $task->company_id );
             $first_co_id = trim($co_ids[0]);
             $company = $this->wpdb->get_row( $this->wpdb->prepare(
-                "SELECT company_name FROM wor9711_ispag_companies WHERE viag_id = %s",
+                "SELECT company_name FROM wor9711_ispag_companies WHERE Id = %s",
                 $first_co_id
             ));
             if ( $company ) {

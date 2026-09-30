@@ -249,7 +249,7 @@ class ISPAG_Crm_Company_Modal {
         $company_ids_to_exclude = array_filter( array_map( 'absint', (array) $company_ids_to_exclude ) );
         
         // Jointure pour la ville
-        $join_sql = " LEFT JOIN {$table_name_postmeta} AS meta_ville ON T1.viag_id = meta_ville.post_id AND meta_ville.meta_key = '{$meta_key_city}' ";
+        $join_sql = " LEFT JOIN {$table_name_postmeta} AS meta_ville ON T1.Id = meta_ville.post_id AND meta_ville.meta_key = '{$meta_key_city}' ";
 
         // Clauses WHERE
         $where_clauses = [];
@@ -257,7 +257,7 @@ class ISPAG_Crm_Company_Modal {
         
         if ( ! empty( $company_ids_to_exclude ) ) {
             $ids_list = implode( ',', $company_ids_to_exclude );
-            $where_clauses[] = "T1.viag_id NOT IN ({$ids_list})";
+            $where_clauses[] = "T1.Id NOT IN ({$ids_list})";
         }
 
         if ( ! empty( $search_term ) ) {
@@ -270,7 +270,7 @@ class ISPAG_Crm_Company_Modal {
         $where_sql = empty( $where_clauses ) ? '1=1' : implode( ' AND ', $where_clauses );
         
         // 3. Calcul du TOTAL (sans LIMIT) pour la pagination
-        $sql_count = "SELECT COUNT(DISTINCT T1.viag_id) FROM {$table_name_fournisseur} AS T1 {$join_sql} WHERE {$where_sql}";
+        $sql_count = "SELECT COUNT(DISTINCT T1.Id) FROM {$table_name_fournisseur} AS T1 {$join_sql} WHERE {$where_sql}";
         if ( ! empty( $params ) ) {
             $total_items = $wpdb->get_var( $wpdb->prepare( $sql_count, ...$params ) );
         } else {
@@ -280,7 +280,7 @@ class ISPAG_Crm_Company_Modal {
         // 4. Requête principale avec LIMIT et OFFSET
         $sql_base = "
             SELECT 
-                T1.viag_id AS Id, T1.company_name AS Fournisseur, 
+                T1.Id AS Id, T1.company_name AS Fournisseur, 
                 meta_ville.meta_value AS Ville 
             FROM {$table_name_fournisseur} AS T1
             {$join_sql}

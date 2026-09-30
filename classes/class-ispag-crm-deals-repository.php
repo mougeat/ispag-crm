@@ -145,7 +145,7 @@ class ISPAG_Crm_Deals_Repository {
                 ) AS associated_contact_names
             FROM {$this->table_name} AS T
             LEFT JOIN {$company_table} AS C 
-                ON C.viag_id = T.associated_company_id
+                ON C.Id = T.associated_company_id
         ";
     }
 
@@ -266,12 +266,12 @@ class ISPAG_Crm_Deals_Repository {
     //    $sql = "
     //         SELECT 
     //             T.*,
-    //             C.viag_id           AS associated_company_viag_id,
+    //             C.Id                AS associated_company_row_id,
     //             C.company_name      AS associated_company_name,
     //             C.favicon           AS associated_company_favicon,
     //             C.compagny_domain   AS associated_company_domain
     //         FROM {$this->table_name} AS T
-    //         LEFT JOIN {$company_table} AS C ON C.viag_id = T.associated_company_id
+    //         LEFT JOIN {$company_table} AS C ON C.Id = T.associated_company_id
     //         {$where_sql}
     //         ORDER BY T.closing_date DESC
     //         LIMIT %d OFFSET %d
@@ -334,8 +334,8 @@ class ISPAG_Crm_Deals_Repository {
     //         $deal_model->associated_contacts      = $contacts_full_map[$raw->id] ?? [];
 
     //         // Favicon ou initiales de la société
-    //         $company_viag_id = $raw->associated_company_viag_id ?? null;
-    //         $company_visual  = $companies_map[$company_viag_id] ?? ['favicon' => null, 'initials' => null];
+    //         $company_row_id = $raw->associated_company_row_id ?? null;
+    //         $company_visual  = $companies_map[$company_row_id] ?? ['favicon' => null, 'initials' => null];
     //         $deal_model->associated_company_favicon  = $company_visual['favicon'];
     //         $deal_model->associated_company_initials = $company_visual['initials'];
 
@@ -414,12 +414,12 @@ class ISPAG_Crm_Deals_Repository {
         $sql = "
             SELECT 
                 T.*,
-                C.viag_id           AS associated_company_viag_id,
+                C.Id                AS associated_company_row_id,
                 C.company_name      AS associated_company_name,
                 C.favicon           AS associated_company_favicon,
                 C.compagny_domain   AS associated_company_domain
             FROM {$this->table_name} AS T
-            LEFT JOIN {$company_table} AS C ON C.viag_id = T.associated_company_id
+            LEFT JOIN {$company_table} AS C ON C.Id = T.associated_company_id
             {$where_sql}
             ORDER BY T.closing_date DESC
             LIMIT %d OFFSET %d
@@ -475,8 +475,8 @@ class ISPAG_Crm_Deals_Repository {
             $deal_model->associated_contacts      = $contacts_full_map[$raw->id] ?? [];
 
             // Favicon / Initiales
-            $company_viag_id = $raw->associated_company_viag_id ?? null;
-            $company_visual  = $companies_map[$company_viag_id] ?? ['favicon' => null, 'initials' => null];
+            $company_row_id = $raw->associated_company_row_id ?? null;
+            $company_visual  = $companies_map[$company_row_id] ?? ['favicon' => null, 'initials' => null];
 
             $deal_model->associated_company_favicon  = $company_visual['favicon'];
             $deal_model->associated_company_initials = $company_visual['initials'];
@@ -624,31 +624,31 @@ class ISPAG_Crm_Deals_Repository {
     //     if (empty($raw_deals)) return [];
 
     //     // Dédoublonnage par viag_id : on ne veut résoudre le favicon qu'une seule fois par société
-    //     $companies_by_viag_id = [];
+    //     $companies_by_id = [];
     //     foreach ($raw_deals as $deal) {
-    //         $viag_id = $deal->associated_company_viag_id ?? null;
-    //         if (empty($viag_id) || isset($companies_by_viag_id[$viag_id])) continue;
+    //         $row_id = $deal->associated_company_row_id ?? null;
+    //         if (empty($row_id) || isset($companies_by_id[$row_id])) continue;
 
-    //         $companies_by_viag_id[$viag_id] = (object) [
-    //             'viag_id'         => $viag_id,
+    //         $companies_by_id[$row_id] = (object) [
+    //             'viag_id'         => $row_id,
     //             'company_name'    => $deal->associated_company_name ?? '',
     //             'favicon'         => $deal->associated_company_favicon ?? '',
     //             'compagny_domain' => $deal->associated_company_domain ?? '',
     //         ];
     //     }
 
-    //     if (empty($companies_by_viag_id)) return [];
+    //     if (empty($companies_by_id)) return [];
 
     //     $company_repo = class_exists('ISPAG_Crm_Company_Repository') ? new ISPAG_Crm_Company_Repository() : null;
     //     $map = [];
 
-    //     foreach ($companies_by_viag_id as $viag_id => $company) {
+    //     foreach ($companies_by_id as $row_id => $company) {
     //         $favicon = $company->favicon;
 
     //         // Même logique que _enrich_company_data : on tente de résoudre le favicon
     //         // si absent mais qu'un domaine est connu, sinon on prépare les initiales.
     //         if (empty($favicon) && !empty($company->compagny_domain) && $company_repo) {
-    //             $favicon = $company_repo->update_company_favicon($viag_id, $company->compagny_domain);
+    //             $favicon = $company_repo->update_company_favicon($row_id, $company->compagny_domain);
     //         }
 
     //         $initials = null;
@@ -660,7 +660,7 @@ class ISPAG_Crm_Deals_Repository {
     //             );
     //         }
 
-    //         $map[$viag_id] = [
+    //         $map[$row_id] = [
     //             'favicon'  => $favicon ?: null,
     //             'initials' => $initials,
     //         ];
@@ -671,21 +671,21 @@ class ISPAG_Crm_Deals_Repository {
     private function _load_companies_batch(array $raw_deals): array {
         if (empty($raw_deals)) return [];
 
-        $companies_by_viag_id = [];
+        $companies_by_id = [];
         foreach ($raw_deals as $deal) {
-            $viag_id = $deal->associated_company_viag_id ?? null;
-            if (empty($viag_id) || isset($companies_by_viag_id[$viag_id])) continue;
+            $row_id = $deal->associated_company_row_id ?? null;
+            if (empty($row_id) || isset($companies_by_id[$row_id])) continue;
 
-            $companies_by_viag_id[$viag_id] = (object) [
+            $companies_by_id[$row_id] = (object) [
                 'company_name' => $deal->associated_company_name ?? '',
                 'favicon'      => $deal->associated_company_favicon ?? '',
             ];
         }
 
-        if (empty($companies_by_viag_id)) return [];
+        if (empty($companies_by_id)) return [];
 
         $map = [];
-        foreach ($companies_by_viag_id as $viag_id => $company) {
+        foreach ($companies_by_id as $row_id => $company) {
             $favicon = $company->favicon;
             $initials = null;
 
@@ -698,7 +698,7 @@ class ISPAG_Crm_Deals_Repository {
                 );
             }
 
-            $map[$viag_id] = [
+            $map[$row_id] = [
                 'favicon'  => $favicon ?: null,
                 'initials' => $initials,
             ];
@@ -1201,7 +1201,7 @@ class ISPAG_Crm_Deals_Repository {
 
         // 2. Récupération des données via le repository
         $repository = new ISPAG_Crm_Company_Repository();
-        $company = $repository->get_company_by_viag_id($company_id);
+        $company = $repository->get_company_by_id($company_id);
 
         if (!$company) {
             // error_log("[$timestamp] ERREUR : Société $company_id introuvable", 3, $log_file);

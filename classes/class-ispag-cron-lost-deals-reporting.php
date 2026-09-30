@@ -45,7 +45,7 @@ class ISPAG_Cron_Lost_Deals_Reporting {
             LEFT JOIN {$wpdb->users} AS t2 
                 ON t1.deal_owner = t2.ID
             LEFT JOIN {$table_company} AS t3 
-                ON t1.associated_company_id = t3.viag_id
+                ON t1.associated_company_id = t3.Id
             WHERE 
                 ts.current_stage_key = 'closed_lost'
                 AND t1.project_db_status != 2

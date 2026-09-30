@@ -500,7 +500,7 @@ function ispag_link_contact_to_company_by_domain($user_id, $email) {
     // On cherche une entreprise qui a ce domaine dans son mail ou site web
     $table_companies = 'wor9711_ispag_companies'; // Selon votre classe constants
     $company_id = $wpdb->get_var($wpdb->prepare(
-        "SELECT viag_id FROM $table_companies WHERE company_mail LIKE %s LIMIT 1",
+        "SELECT Id FROM $table_companies WHERE company_mail LIKE %s LIMIT 1",
         '%' . $wpdb->esc_like($domain) . '%'
     ));
 

@@ -310,14 +310,14 @@ class ISPAG_Note_Manager {
 
             $sql_prepared = $wpdb->prepare(
                 "SELECT 
-                    t1.viag_id, 
+                    t1.Id, 
                     t1.company_name,
                     t2.meta_value AS company_city 
                 FROM {$table_fournisseur} AS t1
                 
                 -- Jointure pour récupérer la ville
                 LEFT JOIN $postmeta_table AS t2 
-                    ON t1.viag_id = t2.post_id
+                    ON t1.Id = t2.post_id
                     AND t2.meta_key = %s
                     
                 WHERE t1.company_name LIKE %s AND t1.is_active = 1
@@ -347,7 +347,7 @@ class ISPAG_Note_Manager {
                     $city_display = !empty($row->company_city) ? ' (' . $row->company_city . ')' : '';
 
                     $companies[] = [
-                        'id' => (string) $row->viag_id, 
+                        'id' => (string) $row->Id, 
                         'text' => $row->company_name . $city_display ,
                         'company_name' => $row->company_name,
                     ];

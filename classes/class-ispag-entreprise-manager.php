@@ -188,7 +188,7 @@ class ISPAG_Entreprise_Manager {
                     <tr>
                         <th><label>Viag ID</label></th>
                         <td><input name="viag_id" type="number" value="<?php echo $company ? esc_attr($company->viag_id) : ''; ?>" class="small-text">
-                            <?php if (!$company) : ?><p class="description">Leave empty: a temporary ID (90001 and above) is assigned automatically.</p><?php endif; ?></td>
+                            <?php if (!$company) : ?><p class="description">Optional external reference (e.g. from an import). Companies are linked by their internal Id.</p><?php endif; ?></td>
                     </tr>
                     <tr>
                         <th><label>Type</label></th>

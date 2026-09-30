@@ -781,7 +781,7 @@ class ISPAG_Company_Detail_Shortcode {
         $table_name = $wpdb->prefix . 'ispag_companies';
         
         $company = $wpdb->get_row( 
-            $wpdb->prepare( "SELECT * FROM {$table_name} WHERE viag_id = %d", $company_viag_id ) 
+            $wpdb->prepare( "SELECT * FROM {$table_name} WHERE Id = %d", $company_viag_id ) 
         );
 
         if ( ! $company ) {
@@ -842,8 +842,8 @@ class ISPAG_Company_Detail_Shortcode {
         $associated_contacts_list_full = $this->get_associated_contacts( $company_id, 999 ); 
         
         $repo = new ISPAG_Crm_Deals_Repository(); 
-        $transactions_list = $repo->get_projects_by_company( $company->viag_id, 5 );
-        $transactions_list_full = $repo->get_projects_by_company( $company->viag_id, 999 );
+        $transactions_list = $repo->get_projects_by_company( $company->Id, 5 );
+        $transactions_list_full = $repo->get_projects_by_company( $company->Id, 999 );
 
         // $transactions_list = $this->get_company_transactions( $company_id, 5 ); 
         // $transactions_list_full = $this->get_company_transactions( $company_id, 999 ); 

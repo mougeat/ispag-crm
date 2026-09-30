@@ -254,9 +254,9 @@ class ISPAG_Crm_Deal_Model {
         try {
             $repository = new ISPAG_Crm_Company_Repository();
 
-            foreach ( $safe_ids as $viag_id ) {
+            foreach ( $safe_ids as $company_id ) {
                 // On utilise la méthode spécifique que tu as fournie
-                $company = $repository->get_company_by_viag_id( $viag_id );
+                $company = $repository->get_company_by_id( $company_id );
                 
                 if ( $company ) {
                     $companies_list[] = $company;

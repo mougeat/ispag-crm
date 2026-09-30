@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
  */
 class ISPAG_CRM_Installer {
 
-    const DB_VERSION = '1.1.0';
+    const DB_VERSION = '1.2.0';
     const OPTION     = 'ispag_crm_db_version';
 
     /** Droits utilisés par ce plugin (voir grant_default_caps()). */
@@ -54,6 +54,11 @@ class ISPAG_CRM_Installer {
                 $ok = false;
                 error_log('[ISPAG CRM] Création de la table ' . $wpdb->prefix . $name . ' impossible : ' . $wpdb->last_error);
             }
+        }
+        // Liens vers les entreprises : viag_id -> Id (une seule fois, tout ou rien)
+        require_once __DIR__ . '/class-ispag-crm-company-link-migration.php';
+        if (!ISPAG_Crm_Company_Link_Migration::run()) {
+            $ok = false;
         }
         if (!self::seed()) {
             $ok = false;

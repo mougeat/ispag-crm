@@ -43,7 +43,7 @@ class ISPAG_Cron_Weekly_Deal_Report {
                 ref.stage_color AS status_color
             FROM {$this->table_deal} AS t1
             LEFT JOIN {$this->wpdb->users} AS t2 ON t1.deal_owner = t2.ID
-            LEFT JOIN {$this->table_company} AS t3 ON t1.associated_company_id = t3.viag_id
+            LEFT JOIN {$this->table_company} AS t3 ON t1.associated_company_id = t3.Id
             INNER JOIN {$this->table_status_rel} AS rel ON (t1.deal_group_ref COLLATE utf8mb4_unicode_ci) = rel.deal_group_ref
             INNER JOIN {$this->table_status_ref} AS ref ON (rel.current_stage_key COLLATE utf8mb4_unicode_ci) = ref.stage_key
             WHERE 

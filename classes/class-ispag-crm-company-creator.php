@@ -39,7 +39,7 @@ class ISPAG_Crm_Company_Creator {
         return sanitize_text_field($parts[0]);
     }
 
-    /** Prochain viag_id provisoire (plage 90000-99999). */
+    /** @deprecated Les liaisons utilisent Id ; conservé pour d'anciens appels. Prochain viag_id provisoire (plage 90000-99999). */
     public static function next_provisional_viag_id() {
         global $wpdb;
         $last = $wpdb->get_var("SELECT MAX(viag_id) FROM {$wpdb->prefix}ispag_companies WHERE viag_id >= 90000 AND viag_id < 100000");
@@ -90,7 +90,7 @@ class ISPAG_Crm_Company_Creator {
         ));
         if ($existing) return array('status' => 'exists', 'existing_id' => (int) $existing->Id, 'viag_id' => (int) $existing->viag_id);
 
-        $viag_id = $viag_id > 0 ? $viag_id : self::next_provisional_viag_id();
+        // viag_id = simple référence externe (import HubSpot/Viag) ; les liens passent par Id
         $inserted = $wpdb->insert($table, array(
             'viag_id'         => $viag_id,
             'company_name'    => $name,
@@ -127,12 +127,12 @@ class ISPAG_Crm_Company_Creator {
             case 'created':
                 wp_send_json_success(array(
                     'message'      => __('Company created.', 'ispag-crm'),
-                    'redirect_url' => home_url('/company/' . $result['viag_id'] . '/'),
+                    'redirect_url' => home_url('/company/' . $result['id'] . '/'),
                 ));
             case 'exists':
                 wp_send_json_error(array(
                     'message'      => __('A company with this domain or Viag ID already exists.', 'ispag-crm'),
-                    'existing_url' => home_url('/company/' . $result['viag_id'] . '/'),
+                    'existing_url' => home_url('/company/' . $result['existing_id'] . '/'),
                 ));
             case 'error_name':
                 wp_send_json_error(array('message' => __('The company name is required.', 'ispag-crm')));

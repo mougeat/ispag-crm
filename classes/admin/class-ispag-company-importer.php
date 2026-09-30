@@ -263,17 +263,19 @@ class ISPAG_Company_Importer {
 
                     if ( $exists ) {
                         $this->wpdb->update( $table_name, $sql_data, array( 'id' => $exists ) );
+                        $company_row_id = (int) $exists;
                         $count_upd++;
                     } else {
                         $sql_data['isSupplier']  = 0;
                         $sql_data['isIngenieur'] = 0;
                         $sql_data['created_at']  = current_time( 'mysql' );
                         $this->wpdb->insert( $table_name, $sql_data );
+                        $company_row_id = (int) $this->wpdb->insert_id;
                         $count_ins++;
                     }
 
-                    // Mise à jour des métadonnées associées
-                    $this->update_company_metas( $viag_id, $raw_data, $mapping );
+                    // Mise à jour des métadonnées associées (liées à l'Id de l'entreprise)
+                    $this->update_company_metas( $company_row_id, $raw_data, $mapping );
 
                     $row_count++;
                     $task_data['processed_rows'] = $row_count;

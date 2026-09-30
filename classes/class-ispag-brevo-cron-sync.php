@@ -86,7 +86,7 @@ class ISPAG_Brevo_Cron_Sync
         $birthday = get_user_meta($user->ID, ISPAG_Crm_Contact_Constants::USER_BIRTHDAY, true);
 
         $company_rep = new ISPAG_Crm_Company_Repository();
-        $company = $company_rep->get_company_by_viag_id($company_id);
+        $company = $company_rep->get_company_by_id($company_id);
 
         $this->logger->log_db_change('brevo_cron_sync', 'user_meta', 'FETCH_META', ['user_id' => $user->ID, 'phone' => $phone, 'owner_id' => $owner_id, 'job_title' => $job_title, 'company_id' => $company_id], $user_id);
 

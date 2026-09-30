@@ -592,6 +592,11 @@ class ISPAG_CSV_Importer
 
                     $db_data['record_source'] = 'viag_crm';
 
+                    // Le CSV Viag contient des numéros d'entreprise (viag_id) : les deals sont liés par Id
+                    if (!empty($db_data['associated_company_id'])) {
+                        $db_data['associated_company_id'] = $this->viag_ids_to_company_ids($db_data['associated_company_id']);
+                    }
+
                     $existing_row = $this->wpdb->get_row($this->wpdb->prepare(
                         "SELECT id, associated_contact_ids, associated_company_id, current_stage_key FROM {$this->target_table} WHERE {$this->lookup_column} = %s",
                         $db_data[$this->lookup_column]
@@ -804,6 +809,16 @@ class ISPAG_CSV_Importer
     /**
      * Prépare les données du CSV pour l'insertion en base de données
      */
+    /** Convertit une liste de viag_id (« 123,456 ») en liste d'Id de ispag_companies (les inconnus sont ignorés). */
+    private function viag_ids_to_company_ids($csv_value) {
+        $viag_ids = array_filter(array_map('absint', preg_split('/[,;\s]+/', (string) $csv_value)));
+        if (!$viag_ids) return '';
+        $table = ISPAG_Crm_Company_Constants::TABLE_NAME;
+        $ph    = implode(',', array_fill(0, count($viag_ids), '%d'));
+        $ids   = $this->wpdb->get_col($this->wpdb->prepare("SELECT Id FROM {$table} WHERE viag_id IN ($ph) ORDER BY Id", ...$viag_ids));
+        return implode(',', array_map('intval', $ids));
+    }
+
     private function prepare_data_for_db($raw_data, $mapping) {
         $db_data = array();
         $owner_fn = ''; $contact_ln = ''; $contact_fn = '';

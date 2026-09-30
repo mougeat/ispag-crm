@@ -160,7 +160,7 @@ class ISPAG_Reminder_Cron {
                 t2.display_name, 
                 t2.user_email,
                 t3.company_name AS company_name,
-                t3.viag_id AS company_id,
+                t3.Id AS company_id,
                 t4.ObjetCommande AS project_name,
                 t4.hubspot_deal_id AS project_id,
                 t5.display_name AS contact_name,

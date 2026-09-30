@@ -501,7 +501,7 @@ class ISPAG_Contact_Detail_Shortcode {
         
         // 2. Préparer les Jointures
         // Jointure pour récupérer la ville de l'entreprise (alias 'meta_ville')
-        $join_sql = " LEFT JOIN {$table_name_postmeta} AS meta_ville ON T1.viag_id = meta_ville.post_id AND meta_ville.meta_key = '{$meta_key_city}' ";
+        $join_sql = " LEFT JOIN {$table_name_postmeta} AS meta_ville ON T1.Id = meta_ville.post_id AND meta_ville.meta_key = '{$meta_key_city}' ";
 
 
         // 3. Préparer la clause WHERE
@@ -531,7 +531,7 @@ class ISPAG_Contact_Detail_Shortcode {
         // 4. Construction et exécution de la requête SQL
         $sql_base = "
             SELECT 
-                T1.viag_id AS Id, T1.company_name AS Fournisseur, T1.compagnyDomain, T1.NumTel, 
+                T1.Id AS Id, T1.company_name AS Fournisseur, T1.compagnyDomain, T1.NumTel, 
                 meta_ville.meta_value AS Ville 
             FROM {$table_name_fournisseur} AS T1
             {$join_sql}

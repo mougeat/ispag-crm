@@ -142,7 +142,7 @@ class ISPAG_Contact_Ajax_Handler {
                     $company_name = __('undefined', 'ispag-crm');
                     if( !empty($company_id) && class_exists('ISPAG_Crm_Company_Repository')){
                         $company_rep = new ISPAG_Crm_Company_Repository();
-                        $company_name = $company_rep->get_company_by_viag_id($company_viag_id);
+                        $company_name = $company_rep->get_company_by_id($company_viag_id);
                     }
 
                     ISPAG_Notifications_Manager::send(
@@ -748,31 +748,21 @@ class ISPAG_Contact_Ajax_Handler {
     }
 
     /**
-     * Cherche une entreprise par domaine ou la crée avec un VIAG_ID provisoire
+     * Cherche une entreprise par domaine ou la crée ; retourne son Id (ispag_companies.Id), 0 en cas d'échec.
      */
     public function ispag_find_or_create_company_by_domain($domain) {
         global $wpdb;
         $table_companies = ISPAG_Crm_Company_Constants::TABLE_NAME;
 
-        // 1. On cherche si elle existe déjà (on récupère le viag_id)
-        $existing_viag_id = $wpdb->get_var($wpdb->prepare(
-            "SELECT viag_id FROM $table_companies WHERE compagny_domain = %s LIMIT 1", 
+        // 1. On cherche si elle existe déjà (on récupère son Id)
+        $existing_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT Id FROM $table_companies WHERE compagny_domain = %s LIMIT 1", 
             $domain
         ));
 
-        if ($existing_viag_id) {
-            // error_log("ISPAG CRM: Entreprise déjà existante. VIAG_ID: $existing_viag_id");
-            return $existing_viag_id;
+        if ($existing_id) {
+            return (int) $existing_id;
         }
-
-        // 2. Génération d'un VIAG_ID provisoire (Plage 90000)
-        // On cherche le plus haut ID provisoire actuel entre 90000 et 99999
-        $last_provisional = $wpdb->get_var(
-            "SELECT MAX(viag_id) FROM $table_companies WHERE viag_id >= 90000 AND viag_id < 100000"
-        );
-
-        // Si c'est la première, on commence à 90001, sinon on incrémente
-        $new_viag_id = $last_provisional ? (int)$last_provisional + 1 : 90001;
 
         // 3. Création de la "coquille"
         $company_name = ucfirst(explode('.', $domain)[0]);
@@ -780,7 +770,7 @@ class ISPAG_Contact_Ajax_Handler {
         $insert_data = [
             'company_name'    => $company_name,
             'compagny_domain' => $domain,
-            'viag_id'         => $new_viag_id,
+            'viag_id'         => 0, // référence externe (import), plus utilisée comme clé de liaison
             'is_active'       => 1,
             'created_at'      => current_time('mysql')
         ];
@@ -794,8 +784,8 @@ class ISPAG_Contact_Ajax_Handler {
 
         // error_log("ISPAG CRM: Nouvelle entreprise créée : $company_name avec VIAG_ID provisoire : $new_viag_id");
 
-        // On retourne le viag_id (car c'est lui qui sert de lien dans ton CRM)
-        return $new_viag_id;
+        // On retourne l'Id (c'est lui qui sert de lien dans le CRM)
+        return (int) $wpdb->insert_id;
     }
 
     public function ispag_check_email_exists() {

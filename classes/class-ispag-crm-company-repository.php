@@ -146,7 +146,7 @@ class ISPAG_Crm_Company_Repository {
                 $company_id = absint($company_id);
                 $associated_companies_list_full[] = $company_id;
                 if ($company_id > 0) {
-                    $companies[] = $company_repo->get_company_by_viag_id($company_id);
+                    $companies[] = $company_repo->get_company_by_id($company_id);
                 }
             }
         }
@@ -235,7 +235,7 @@ class ISPAG_Crm_Company_Repository {
         if ( ! empty( $args['owner_id'] ) ) {
             $where_clauses[] = "EXISTS (
                 SELECT 1 FROM {$table_owners} ow 
-                WHERE CAST(ow.company_id AS CHAR) = CAST(f.viag_id AS CHAR) COLLATE utf8mb4_unicode_ci
+                WHERE CAST(ow.company_id AS CHAR) = CAST(f.Id AS CHAR) COLLATE utf8mb4_unicode_ci
                 AND ow.user_id = %d 
                 AND ow.status = 'active'
             )";
@@ -253,24 +253,24 @@ class ISPAG_Crm_Company_Repository {
                 (SELECT u.display_name 
                 FROM {$table_users} u
                 JOIN {$table_owners} ow ON u.ID = ow.user_id
-                WHERE CAST(ow.company_id AS CHAR) = CAST(f.viag_id AS CHAR) COLLATE utf8mb4_unicode_ci
+                WHERE CAST(ow.company_id AS CHAR) = CAST(f.Id AS CHAR) COLLATE utf8mb4_unicode_ci
                 AND ow.status = 'active' 
                 LIMIT 1) AS current_owner_name,
                 -- Dernier contact
                 (SELECT MAX(n.created_at) FROM {$this->table_note} n 
-                WHERE n.company_id = CAST(f.viag_id AS CHAR) COLLATE utf8mb4_unicode_ci
+                WHERE n.company_id = CAST(f.Id AS CHAR) COLLATE utf8mb4_unicode_ci
                 AND n.type IN ($types_string)) AS last_contact_date,
                 -- Nombre de contacts
                 (SELECT COUNT(*) FROM `{$this->table_usermeta}` um 
                 WHERE um.meta_key = 'ispag_company_id' 
-                AND um.meta_value = CAST(f.viag_id AS CHAR) COLLATE utf8mb4_unicode_ci) AS nb_contacts,
+                AND um.meta_value = CAST(f.Id AS CHAR) COLLATE utf8mb4_unicode_ci) AS nb_contacts,
                 -- Nombre de transactions ouvertes
                 (SELECT COUNT(*) FROM `{$this->table_transactions}` t 
-                WHERE t.associated_company_id = f.viag_id 
+                WHERE t.associated_company_id = f.Id 
                 AND t.project_db_status = 0) AS nb_transactions
             FROM {$this->table_companies} f
             LEFT JOIN {$this->table_priorities} AS up 
-                ON f.viag_id = up.entity_id 
+                ON f.Id = up.entity_id 
                 AND up.entity_type = 'company' 
                 AND up.user_id = %d
             {$where_sql}
@@ -293,7 +293,7 @@ class ISPAG_Crm_Company_Repository {
 
         // 4. Calcul du total pour la pagination
         $total_sql = "SELECT COUNT(*) FROM {$this->table_companies} f 
-                    LEFT JOIN {$this->table_priorities} up ON f.viag_id = up.entity_id AND up.user_id = %d
+                    LEFT JOIN {$this->table_priorities} up ON f.Id = up.entity_id AND up.user_id = %d
                     $where_sql";
         
         // Même chose pour le total : l'utilisateur du LEFT JOIN d'abord, puis les filtres
@@ -346,7 +346,7 @@ class ISPAG_Crm_Company_Repository {
                 (
                     SELECT up.priority_level
                     FROM {$this->table_priorities} up
-                    WHERE up.entity_id = f.viag_id
+                    WHERE up.entity_id = f.Id
                     AND up.entity_type = 'company'
                     AND up.user_id = $current_user_id
                     LIMIT 1
@@ -357,14 +357,14 @@ class ISPAG_Crm_Company_Repository {
                     SELECT COUNT(um.user_id)
                     FROM {$table_um} um
                     WHERE um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID . "'
-                    AND um.meta_value = f.viag_id
+                    AND um.meta_value = f.Id
                 ) AS nb_contacts,
 
                 -- Compte des transactions ouvertes
                 (
                     SELECT COUNT(t.Id)
                     FROM {$table_t} t
-                    WHERE t.associated_company_id = f.viag_id
+                    WHERE t.associated_company_id = f.Id
                     AND t.project_db_status = 0
                 ) AS nb_transactions
 
@@ -386,9 +386,9 @@ class ISPAG_Crm_Company_Repository {
     }
 
     /**
-     * Récupère les données d'une seule entreprise par son ID VIAG.
+     * Récupère les données d'une seule entreprise par son Id (ispag_companies.Id).
      *
-     * @param int|string $viag_id L'ID externe (VIAG) de l'entreprise.
+     * @param int|string $id L'Id de l'entreprise.
      * @return stdClass|null L'objet entreprise, ou null si non trouvé.
      */
     public function get_company_by_id( $id ) {
@@ -423,7 +423,7 @@ class ISPAG_Crm_Company_Repository {
                 (
                     SELECT up.priority_level
                     FROM {$this->table_priorities} up
-                    WHERE up.entity_id = f.viag_id
+                    WHERE up.entity_id = f.Id
                     AND up.entity_type = 'company'
                     AND up.user_id = $current_user_id
                     LIMIT 1
@@ -434,14 +434,14 @@ class ISPAG_Crm_Company_Repository {
                     SELECT COUNT(um.user_id)
                     FROM {$table_um} um
                     WHERE um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID . "'
-                    AND um.meta_value = f.viag_id
+                    AND um.meta_value = f.Id
                 ) AS nb_contacts,
 
                 -- Compte des transactions ouvertes
                 (
                     SELECT COUNT(t.Id)
                     FROM {$table_t} t
-                    WHERE t.associated_company_id = f.viag_id
+                    WHERE t.associated_company_id = f.Id
                     AND t.project_db_status = 0
                 ) AS nb_transactions
 
@@ -483,11 +483,11 @@ class ISPAG_Crm_Company_Repository {
         }
 
         foreach ( $companies as &$company ) { // Utilisation de &$company pour modifier l'objet original
-            // L'ID utilisé pour lier l'entreprise dans les notes est viag_id
-            $company_id = $company->viag_id ?? null;
+            // L'ID utilisé pour lier l'entreprise (notes, contacts, projets…) est ispag_companies.Id
+            $company_id = $company->Id ?? null;
             
             if($company->compagny_domain AND !$company->favicon){
-                $company->favicon = $this->update_company_favicon($company->viag_id, $company->compagny_domain);
+                $company->favicon = $this->update_company_favicon($company->Id, $company->compagny_domain);
             }
             if(! $company->favicon ){
                 $company->initials = strtoupper( substr( $company->company_name, 0, 1 ) . substr( $company->company_name, strpos($company->company_name, ' ') + 1, 1 ) );
@@ -677,7 +677,7 @@ class ISPAG_Crm_Company_Repository {
             $this->wpdb->update(
                 $this->table_companies,
                 array('favicon' => $favicon_url), // Colonne à modifier
-                array('viag_id' => $id),              // Condition (ID de la ligne)
+                array('Id' => $id),                   // Condition (ID de la ligne)
                 array('%s'),                     // Format de la valeur
                 array('%d')                      // Format de l'ID
             );
@@ -710,7 +710,7 @@ class ISPAG_Crm_Company_Repository {
 
         // 2. Récupération des données via le repository
         $repository = new ISPAG_Crm_Company_Repository();
-        $company = $repository->get_company_by_viag_id($company_id);
+        $company = $repository->get_company_by_id($company_id);
 
         if (!$company) {
             // error_log("[$timestamp] ERREUR : Société $company_id introuvable", 3, $log_file);
@@ -828,7 +828,7 @@ class ISPAG_Crm_Company_Repository {
         }
 
         if(! empty($company_viag_id)){
-            $company_id = $this->get_id_by_viag_id($company_viag_id);
+            $company_id = $company_viag_id; // le paramètre company_id envoyé par l'écran est l'Id de l'entreprise
         }
 
         $updated_successfully = false;
@@ -881,7 +881,7 @@ class ISPAG_Crm_Company_Repository {
                 // --- NOTIFICATION DU NOUVEL OWNER ET DE L'ADMIN ---
                 if ( $updated_successfully && !empty( $new_owner_id ) && class_exists( 'ISPAG_Notifications_Manager' ) ) {
                     // Optionnel : Récupérer le nom de la société pour affiner le message si besoin
-                    $company_name = $wpdb->get_var( $wpdb->prepare( "SELECT company_name FROM $table_companies WHERE viag_id = %d", $company_viag_id ) );
+                    $company_name = $wpdb->get_var( $wpdb->prepare( "SELECT company_name FROM $table_companies WHERE Id = %d", $company_viag_id ) );
                     $company_label = !empty( $company_name ) ? $company_name : "ID #$company_viag_id";
  
                     $url = home_url('company/' . $company_viag_id);

@@ -85,7 +85,7 @@ class ISPAG_Cron_Contact_Matcher {
 
             // 2. Chercher la compagnie par son domaine (Colonne : compagny_domain)
             $company = $wpdb->get_row( $wpdb->prepare( "
-                SELECT viag_id, company_name 
+                SELECT Id, company_name 
                 FROM {$table_companies} 
                 WHERE compagny_domain = %s 
                 LIMIT 1
@@ -98,11 +98,11 @@ class ISPAG_Cron_Contact_Matcher {
 
             if ( $company ) {
                 // 3. Création de la meta association
-                $updated = update_user_meta( $user_id, $meta_key_company, $company->viag_id );
+                $updated = update_user_meta( $user_id, $meta_key_company, $company->Id );
                 
                 if ( $updated ) {
                     $count_updated++;
-                    $this->log_action( "SUCCESS : Contact #{$user_id} ({$user_email}) associé à '{$company->company_name}' (VIAG ID: {$company->viag_id})", 'SUCCESS' );
+                    $this->log_action( "SUCCESS : Contact #{$user_id} ({$user_email}) associé à '{$company->company_name}' (ID: {$company->Id})", 'SUCCESS' );
                 } else {
                     $this->log_action( "Erreur : Échec update_user_meta pour le contact #{$user_id}", 'ERROR' );
                 }
