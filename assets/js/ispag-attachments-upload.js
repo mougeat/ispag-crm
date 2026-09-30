@@ -434,18 +434,11 @@ jQuery(function ($) {
         e.preventDefault();
     });
 
-    // --- Le drop sur la carte ---
-    $(document).on('drop', '.ispag-docu-card__body .ispag-dropzone__field', function (e) {
-        e.preventDefault();
-        dragCounter = 0;
-        $(this).removeClass('is-dragover');
+    // Ouvre la modal d'ajout de la carte et y injecte le fichier (dépôt OU choix via le sélecteur de fichiers)
+    function startUploadFromCard($card, file) {
+        if (!file) return;
+        pendingDropFile = file;
 
-        const files = e.originalEvent.dataTransfer.files;
-        if (!files || !files.length) return;
-
-        pendingDropFile = files[0];
-
-        const $card = $(this).closest('.ispag-docu-card');
         const entityType = $card.data('entity-type');
         const entityId = $card.data('entity-id');
 
@@ -455,6 +448,35 @@ jQuery(function ($) {
 
         // 2. On attend que la modal soit dans le DOM pour y injecter le fichier
         waitForModalDropzone(entityType, entityId);
+    }
+
+    // --- Le drop sur la carte ---
+    $(document).on('drop', '.ispag-docu-card__body .ispag-dropzone__field', function (e) {
+        e.preventDefault();
+        dragCounter = 0;
+        $(this).removeClass('is-dragover');
+
+        const files = e.originalEvent.dataTransfer.files;
+        if (!files || !files.length) return;
+
+        startUploadFromCard($(this).closest('.ispag-docu-card'), files[0]);
+    });
+
+    // --- Le clic sur la carte : même chose que le dépôt, avec le sélecteur de fichiers (Parcourir) ---
+    $(document).on('click', '.ispag-docu-card__body .ispag-dropzone__field', function (e) {
+        if ($(e.target).closest('a, button, input').length) return;
+        const $card = $(this).closest('.ispag-docu-card');
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.style.display = 'none';
+        document.body.appendChild(input);
+        input.addEventListener('change', function () {
+            if (input.files && input.files.length) {
+                startUploadFromCard($card, input.files[0]);
+            }
+            input.remove();
+        });
+        input.click();
     });
 
     /**
