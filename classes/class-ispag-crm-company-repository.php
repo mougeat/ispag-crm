@@ -84,6 +84,10 @@ class ISPAG_Crm_Company_Repository {
     }
 
     public function handle_ajax_load_companies_datas($hubspot_deal_id = null) {
+        // Fiches entreprise : réservées aux utilisateurs qui gèrent les commandes
+        if (!current_user_can('manage_order')) {
+            wp_send_json_error(array('message' => 'Access denied.'), 403);
+        }
         if (empty($hubspot_deal_id) && isset($_POST['hubspot_deal_id'])) {
             $hubspot_deal_id = sanitize_text_field($_POST['hubspot_deal_id']);
         }

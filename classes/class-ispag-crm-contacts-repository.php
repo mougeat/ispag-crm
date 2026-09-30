@@ -94,6 +94,10 @@ class ISPAG_Crm_Contacts_Repository {
     }
 
     public function handle_ajax_load_contacts_datas($hubspot_deal_id = null) {
+        // Fiches contact : réservées aux utilisateurs qui gèrent les commandes
+        if (!current_user_can('manage_order')) {
+            wp_send_json_error(array('message' => 'Access denied.'), 403);
+        }
         try {
             // Nettoie tout tampon de sortie précédent pour garantir un JSON propre
             if (ob_get_level()) {
