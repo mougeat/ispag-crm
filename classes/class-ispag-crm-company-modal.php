@@ -209,7 +209,7 @@ class ISPAG_Crm_Company_Modal {
         // 3. Fusionner avec les nouveaux IDs et supprimer les doublons
         $final_ids = array_unique( array_merge( $existing_ids, $company_ids ) );
 
-        // 4. Sauvegarder la nouvelle chaîne
+        // 4. Save la nouvelle chaîne
         $new_meta_value = implode( ',', $final_ids );
         $result = update_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, $new_meta_value );
 

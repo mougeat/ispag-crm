@@ -143,7 +143,7 @@ jQuery(document).ready(function($) {
                 is_personal: isPersonal
             },
             beforeSend: function() {
-                $('#folder-status-msg').text('Enregistrement...').css('color', '#666');
+                $('#folder-status-msg').text('Saving...').css('color', '#666');
             },
             success: function(response) {
                 if(response.success) {
@@ -220,7 +220,7 @@ jQuery(document).ready(function($) {
             url: ispag_crm_obj.ajax_url,
             type: 'POST',
             data: $.param(formData) + '&action=ispag_save_template&security=' + ispag_crm_obj.nonce,
-            beforeSend: function() { $status.text('Enregistrement...').css('color', '#666'); },
+            beforeSend: function() { $status.text('Saving...').css('color', '#666'); },
             success: function(response) {
                 if (response.success) { location.reload(); }
                 else { $status.text(response.data).css('color', 'red'); }

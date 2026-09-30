@@ -499,7 +499,7 @@ jQuery(document).ready(function($) {
         const originalButtonText = $button.text();
 
         $button.prop('disabled', true)
-               .html('<span class="ispag-spinner"></span> ' + (ispag_texts?.saving || "Enregistrement..."));
+               .html('<span class="ispag-spinner"></span> ' + (ispag_texts?.saving || "Saving..."));
 
         const formData = $('#ispag-notification-settings-form form').serialize();
 

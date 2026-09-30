@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         field.classList.add('loading');
-        field.innerHTML = '<span style="color: var(--ispag-color-primary, #007bff);">Sauvegarde...</span>'; 
+        field.innerHTML = '<span style="color: var(--ispag-color-primary, #007bff);">Saving...</span>'; 
         
         formData.append('action', ajaxAction); 
         formData.append(idKey, entityId); 
@@ -473,7 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        modal.find('.ispag-modal-save').prop('disabled', true).text('Sauvegarde...');
+        modal.find('.ispag-modal-save').prop('disabled', true).text('Saving...');
 
         $.ajax({
             url: ajaxUrl,
@@ -497,7 +497,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Error while linking contacts.');
             },
             complete: function() {
-                modal.find('.ispag-modal-save').prop('disabled', false).text('Sauvegarder');
+                modal.find('.ispag-modal-save').prop('disabled', false).text('Save');
             }
         });
     }
@@ -684,7 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function searchSidebarContacts(term, companyId) {
         const container = $('.contact-list-container');
-        container.html('<div class="ispag-loader">Recherche...</div>');
+        container.html('<div class="ispag-loader">Searching...</div>');
 
         $.post(ispag_ajax.ajax_url, {
             action: 'ispag_search_contacts',
@@ -752,7 +752,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        btn.prop('disabled', true).text('Enregistrement...');
+        btn.prop('disabled', true).text('Saving...');
 
         $.ajax({
             url: ispag_ajax.ajax_url,
@@ -769,12 +769,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     location.reload(); 
                 } else {
                     alert('Error: ' + response.data.message);
-                    btn.prop('disabled', false).text('Sauvegarder');
+                    btn.prop('disabled', false).text('Save');
                 }
             },
             error: function() {
                 alert('Network error lors de la liaison.');
-                btn.prop('disabled', false).text('Sauvegarder');
+                btn.prop('disabled', false).text('Save');
             }
         });
     });
@@ -871,7 +871,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         const saveBtn = modal.find('.ispag-modal-save-company');
-        saveBtn.prop('disabled', true).text('Sauvegarde...');
+        saveBtn.prop('disabled', true).text('Saving...');
 
         $.ajax({
             url: ispag_ajax.ajax_url,

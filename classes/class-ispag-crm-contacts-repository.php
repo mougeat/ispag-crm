@@ -33,7 +33,7 @@ class ISPAG_Crm_Contacts_Repository {
         // 1. Afficher le champ dans l'édition du profil
         add_action('show_user_profile', array( $this, 'ispag_add_account_status_field' ));
         add_action('edit_user_profile', array( $this, 'ispag_add_account_status_field' ));
-        // 2. Sauvegarder la modification
+        // 2. Save la modification
         add_action('personal_options_update', array( $this, 'ispag_save_account_status_field' ));
         add_action('edit_user_profile_update', array( $this, 'ispag_save_account_status_field' ));
 

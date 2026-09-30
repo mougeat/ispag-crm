@@ -288,7 +288,7 @@ class ISPAG_Notifications_Renderer {
             wp_send_json_error(['message' => 'User not logged in.']);
         }
 
-        // Sauvegarder les préférences de canaux
+        // Save les préférences de canaux
         if (isset($_POST['ispag_notif_prefs']) && is_array($_POST['ispag_notif_prefs'])) {
             $clean_prefs = [];
             $available_types = ISPAG_Notifications_Manager::get_available_notification_types();
@@ -304,7 +304,7 @@ class ISPAG_Notifications_Renderer {
             update_user_meta($current_user_id, 'ispag_notif_prefs', $clean_prefs);
         }
 
-        // ⬇️ Sauvegarder les préférences de déconnexion (week-end et périodes de vacances)
+        // ⬇️ Save les préférences de déconnexion (week-end et périodes de vacances)
         $allow_weekend = isset($_POST['allow_weekend_notifications']) ? 1 : 0;
         $holiday_periods = isset($_POST['holiday_periods']) ? array_values($_POST['holiday_periods']) : [];
 

@@ -1404,7 +1404,7 @@ class ISPAG_Notifications_Manager
         $result = update_user_meta($user_id, 'ispag_notif_prefs', $clean_prefs);
         $logger->log_db_change('notifications_manager', 'usermeta', 'UPDATE_NOTIF_PREFS', ['user_id' => $user_id, 'result' => $result], $user_id);
 
-        // Sauvegarder les préférences de déconnexion
+        // Save les préférences de déconnexion
         $result1 = update_user_meta($user_id, 'ispag_allow_weekend_notifications', $allow_weekend);
         $result2 = update_user_meta($user_id, 'ispag_holiday_periods', json_encode($holiday_periods));
 
@@ -1433,7 +1433,7 @@ class ISPAG_Notifications_Manager
             return false;
         }
 
-        // Sauvegarder les préférences de canaux
+        // Save les préférences de canaux
         if (isset($_POST['ispag_notif_prefs']) && is_array($_POST['ispag_notif_prefs']))
         {
             $clean_prefs = [];
@@ -1469,7 +1469,7 @@ class ISPAG_Notifications_Manager
             $logger->log_db_change('notifications_manager', 'usermeta', 'CLEAR_NOTIF_PREFS_FROM_PROFILE', ['user_id' => $user_id, 'result' => $result], $user_id);
         }
 
-        // Sauvegarder les préférences de déconnexion
+        // Save les préférences de déconnexion
         if (isset($_POST['ispag_allow_weekend_notifications']) || isset($_POST['ispag_holiday_periods']))
         {
             $allow_weekend = isset($_POST['ispag_allow_weekend_notifications']) ? 1 : 0;

@@ -176,14 +176,14 @@ jQuery(document).ready(function($) {
             return;
         }
 
-        btn.attr('disabled', true).text('Enregistrement...');
+        btn.attr('disabled', true).text('Saving...');
 
         $.post(ispag_ajax_sequence.ajax_url, data, function(response) {
             if(response.success) {
                 window.location.href = 'admin.php?page=ispag-sequences'; 
             } else {
                 alert('Error: ' + (response.data.message || 'Inconnue'));
-                btn.attr('disabled', false).text('Enregistrer');
+                btn.attr('disabled', false).text('Save');
             }
         });
     });

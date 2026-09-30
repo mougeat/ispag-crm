@@ -255,7 +255,7 @@ if (!class_exists('ISPAG_Workflow_Step')) {
                     'reminder_date' => current_time('mysql')
                 ];
 
-                // 6. Sauvegarder la tâche
+                // 6. Save la tâche
                 $result = $note_handler->handle_save_note($task_data, null, null, true);
 
                 if ($result) {

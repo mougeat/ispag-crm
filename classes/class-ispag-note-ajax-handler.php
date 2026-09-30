@@ -42,7 +42,7 @@ class ISPAG_Note_Ajax_Handler {
         
         $logger->log_user_action( 'note_ajax', 'save_activity_attempt', $data, $user_id );
 
-        // 2. Sauvegarder via le Repository
+        // 2. Save via le Repository
         $new_id = $this->repository->save_activity( $data, $activity_id );
 
         if ( $new_id ) {

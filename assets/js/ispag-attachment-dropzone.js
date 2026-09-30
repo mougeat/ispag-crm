@@ -138,7 +138,7 @@ jQuery(function ($) {
         formData.append('_ajax_nonce', ISPAG_TANK.nonce); // ou ton nonce dédié aux attachments
 
         const $btn = $(this);
-        $btn.prop('disabled', true).text('Envoi...');
+        $btn.prop('disabled', true).text('Sending...');
 
         $.ajax({
             url: ajaxurl,
