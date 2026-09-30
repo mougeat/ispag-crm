@@ -163,6 +163,13 @@
                         setFiles(null);
                         $select.val('');
                         $dz.trigger('ispag:attachment-uploaded', [response.data]);
+
+                        // Zone de dépôt intégrée à la page (onglet Documents…) : la modal n'est pas là pour rafraîchir la liste
+                        if (!$dz.closest('.ispag-modal-overlay').length) {
+                            $('.ispag-docu-card[data-entity-type="' + $dz.data('entity-type') + '"][data-entity-id="' + $dz.data('entity-id') + '"]')
+                                .trigger('ispag:refresh-attachments');
+                            $submit.prop('disabled', false);
+                        }
                     } else {
                         hideProgress();
                         $status.text((response.data && response.data.message) || ispagAttachmentsAjax.texts.uploadError);
