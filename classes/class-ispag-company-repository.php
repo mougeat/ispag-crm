@@ -241,7 +241,7 @@ class ISPAG_Company_Repository {
             SELECT 
                 f.Id, 
                 f.company_name AS Fournisseur, 
-                f.compagnyDomain, 
+                f.compagny_domain AS compagnyDomain, 
                 
                 meta_city.meta_value AS city,
                 meta_adress.meta_value AS adress,
@@ -289,7 +289,7 @@ class ISPAG_Company_Repository {
         }
 
         $sql = $this->wpdb->prepare(
-            "SELECT Id, company_name AS Fournisseur, compagnyDomain FROM {$this->table_fournisseur} WHERE Id = %d", 
+            "SELECT Id, company_name AS Fournisseur, compagny_domain AS compagnyDomain FROM {$this->table_fournisseur} WHERE Id = %d", 
             $company_id
         );
 
