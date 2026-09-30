@@ -114,26 +114,9 @@ class ISPAG_CRM_Installer {
      * existant (qui gère ses droits autrement, par un plugin de rôles par ex.), rien n'est touché.
      */
     private static function grant_default_caps() {
-        // Une seule fois par plugin : un droit retiré ensuite volontairement n'est jamais redonné
-        $flag = 'ispag_caps_granted_crm';
-        if (get_option($flag)) {
-            return;
+        // Droits et rôles ISPAG : registre central dans ISPAG Project Manager (page « ISPAG Rights »)
+        if (class_exists('ISPAG_Capabilities')) {
+            ISPAG_Capabilities::install();
         }
-        $admin = get_role('administrator');
-        if (!$admin) {
-            return;
-        }
-        // Site neuf uniquement (aucun droit ISPAG encore) : les droits généraux.
-        foreach (self::CAPS as $cap) {
-            if (!$admin->has_cap($cap)) {
-                $admin->add_cap($cap);
-            }
-        }
-        foreach (self::ADMIN_EXTRA_CAPS as $cap) {
-            if (!$admin->has_cap($cap)) {
-                $admin->add_cap($cap);
-            }
-        }
-        update_option($flag, 1);
     }
 }
