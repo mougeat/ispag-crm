@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/ispag-crm-card-links.php';
 
 if ( ! class_exists( 'ISPAG_Crm_Contacts_Repository' ) ) :
 
@@ -94,10 +95,6 @@ class ISPAG_Crm_Contacts_Repository {
     }
 
     public function handle_ajax_load_contacts_datas($hubspot_deal_id = null) {
-        // Fiches contact : réservées aux utilisateurs qui gèrent les commandes
-        if (!current_user_can('manage_order')) {
-            wp_send_json_error(array('message' => 'Access denied.'), 403);
-        }
         try {
             // Nettoie tout tampon de sortie précédent pour garantir un JSON propre
             if (ob_get_level()) {
@@ -148,7 +145,7 @@ class ISPAG_Crm_Contacts_Repository {
         echo ispag_get_template('ispag-template-contact-card-new', [
             'datas' => $datas 
         ]);
-        return ob_get_clean();
+        return ispag_crm_strip_detail_links(ob_get_clean());
     }
     private function get_contacts_data_from_db($hubspot_deal_id) {
         global $wpdb;

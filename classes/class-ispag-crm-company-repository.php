@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/ispag-crm-card-links.php';
 
 // Fichier : includes/crm/repositories/class-ispag-crm-company-repository.php
 
@@ -84,10 +85,6 @@ class ISPAG_Crm_Company_Repository {
     }
 
     public function handle_ajax_load_companies_datas($hubspot_deal_id = null) {
-        // Fiches entreprise : réservées aux utilisateurs qui gèrent les commandes
-        if (!current_user_can('manage_order')) {
-            wp_send_json_error(array('message' => 'Access denied.'), 403);
-        }
         if (empty($hubspot_deal_id) && isset($_POST['hubspot_deal_id'])) {
             $hubspot_deal_id = sanitize_text_field($_POST['hubspot_deal_id']);
         }
@@ -124,7 +121,7 @@ class ISPAG_Crm_Company_Repository {
         echo ispag_get_template('ispag-template-company-card-new', [
             'datas' => $datas
         ]);
-        return ob_get_clean();
+        return ispag_crm_strip_detail_links(ob_get_clean());
     }
 
     private function get_companies_data_from_db($hubspot_deal_id) {
