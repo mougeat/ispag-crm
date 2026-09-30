@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
  */
 class ISPAG_CRM_Installer {
 
-    const DB_VERSION = '1.2.1';
+    const DB_VERSION = '1.2.2';
     const OPTION     = 'ispag_crm_db_version';
 
     /** Droits utilisés par ce plugin (voir grant_default_caps()). */
@@ -114,13 +114,18 @@ class ISPAG_CRM_Installer {
      * existant (qui gère ses droits autrement, par un plugin de rôles par ex.), rien n'est touché.
      */
     private static function grant_default_caps() {
+        // Une seule fois par plugin : un droit retiré ensuite volontairement n'est jamais redonné
+        $flag = 'ispag_caps_granted_crm';
+        if (get_option($flag)) {
+            return;
+        }
         $admin = get_role('administrator');
         if (!$admin) {
             return;
         }
         // Site neuf uniquement (aucun droit ISPAG encore) : les droits généraux.
-        if (!$admin->has_cap('manage_order')) {
-            foreach (self::CAPS as $cap) {
+        foreach (self::CAPS as $cap) {
+            if (!$admin->has_cap($cap)) {
                 $admin->add_cap($cap);
             }
         }
@@ -129,5 +134,6 @@ class ISPAG_CRM_Installer {
                 $admin->add_cap($cap);
             }
         }
+        update_option($flag, 1);
     }
 }
