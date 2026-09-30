@@ -96,9 +96,7 @@ WHERE x.meta_value IS NOT NULL AND x.meta_value <> '' AND x.meta_value <> '0'
   );
 
 -- 4. Remappage des references (ancien Id fournisseur -> ispag_companies.Id) ---
---    Colonnes concernees a verifier :
---      SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS
---      WHERE TABLE_SCHEMA = DATABASE() AND COLUMN_NAME IN ('IdFournisseur','supplier_id');
+--    Colonnes concernees : voir 2026-09-remap-references-fournisseurs.sql (SHOW COLUMNS ; information_schema est bloque chez OVH).
 UPDATE wor9711_achats_commande_liste_fournisseurs t
 JOIN wor9711_tmp_supplier_map m ON m.old_id = t.IdFournisseur
 SET t.IdFournisseur = m.company_id;

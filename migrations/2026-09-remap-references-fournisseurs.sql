@@ -31,11 +31,14 @@ FROM wor9711_achats_articles_purchase t
 LEFT JOIN wor9711_achats_fournisseurs f ON f.Id = t.supplier_id
 LEFT JOIN wor9711_ispag_companies c ON c.Id = t.supplier_id;
 
--- Autres colonnes de reference fournisseur eventuellement oubliees :
-SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS
-WHERE TABLE_SCHEMA = DATABASE() AND COLUMN_NAME IN ('IdFournisseur','supplier_id','id_fournisseur','fournisseur_id');
+-- Autres colonnes de reference fournisseur eventuellement oubliees (information_schema est interdit chez OVH :
+-- on utilise SHOW COLUMNS, table par table ; ajouter vos autres tables achats_* si besoin) :
+SHOW COLUMNS FROM wor9711_achats_articles LIKE '%ournisseur%';
+SHOW COLUMNS FROM wor9711_achats_articles LIKE 'supplier%';
+SHOW COLUMNS FROM wor9711_achats_liste_commande LIKE '%ournisseur%';
+SHOW COLUMNS FROM wor9711_achats_articles_cmd_fournisseurs LIKE '%ournisseur%';
 
--- ETAPE 1 : SAUVEGARDE + REMAPPAGE (a executer si le diagnostic montre des lignes incoherentes) ---------
+-- ETAPE 1 (a lancer seulement apres l'etape 0, en une execution separee) : SAUVEGARDE + REMAPPAGE (a executer si le diagnostic montre des lignes incoherentes) ---------
 CREATE TABLE IF NOT EXISTS wor9711_supplier_remap_done (done_at DATETIME NOT NULL);
 
 CREATE TABLE IF NOT EXISTS wor9711_backup_details_commande_supplier  AS SELECT Id, IdFournisseur AS old_value FROM wor9711_achats_details_commande;
