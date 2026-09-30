@@ -211,6 +211,7 @@ function ispag_run_crm_manager() {
         'ISPAG_Crm_Company_Repository',
         'ISPAG_Crm_Company_Modal',
         'ISPAG_Crm_Company_Creator',
+        'ISPAG_Crm_Supplier_Tab',
         'ISPAG_Crm_Contact_Modal',
         'ISPAG_Template_Repository',
         'ISPAG_Template_AJAX',
