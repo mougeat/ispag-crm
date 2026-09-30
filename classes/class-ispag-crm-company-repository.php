@@ -89,7 +89,7 @@ class ISPAG_Crm_Company_Repository {
         }
 
         if (empty($hubspot_deal_id)) {
-            wp_send_json_error(array('message' => 'Aucun identifiant de deal fourni.'));
+            wp_send_json_error(array('message' => 'No deal ID provided.'));
         }
 
         // On récupère directement le HTML généré par votre méthode de rendu
@@ -106,7 +106,7 @@ class ISPAG_Crm_Company_Repository {
 
     public function render_company_card($hubspot_deal_id) {
         if (empty($hubspot_deal_id)) {
-            return '<p class="ispag-no-company">Aucun identifiant de deal fourni.</p>';
+            return '<p class="ispag-no-company">No deal ID provided.</p>';
         }
 
         // On utilise notre méthode mutualisée
@@ -334,7 +334,9 @@ class ISPAG_Crm_Company_Repository {
             SELECT
                 f.*,
                 -- Récupération des méta-données de base
-                (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_CITY . "' ORDER BY meta_id DESC LIMIT 1) AS city,
+                COALESCE(NULLIF((SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_CITY . "' ORDER BY meta_id DESC LIMIT 1), ''), f.city) AS city,
+                COALESCE(NULLIF(f.phone, ''), (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_PHONE . "' ORDER BY meta_id DESC LIMIT 1)) AS phone,
+                COALESCE(NULLIF(f.email, ''), (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_MAIL . "' ORDER BY meta_id DESC LIMIT 1)) AS email,
                 (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_ADDRESS . "' ORDER BY meta_id DESC LIMIT 1) AS address,
                 (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_POSTAL_CODE . "' ORDER BY meta_id DESC LIMIT 1) AS postal_code,
                 (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_COUNTRY . "' ORDER BY meta_id DESC LIMIT 1) AS country,
@@ -409,7 +411,9 @@ class ISPAG_Crm_Company_Repository {
             SELECT
                 f.*,
                 -- Récupération des méta-données de base
-                (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_CITY . "' ORDER BY meta_id DESC LIMIT 1) AS city,
+                COALESCE(NULLIF((SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_CITY . "' ORDER BY meta_id DESC LIMIT 1), ''), f.city) AS city,
+                COALESCE(NULLIF(f.phone, ''), (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_PHONE . "' ORDER BY meta_id DESC LIMIT 1)) AS phone,
+                COALESCE(NULLIF(f.email, ''), (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_MAIL . "' ORDER BY meta_id DESC LIMIT 1)) AS email,
                 (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_ADDRESS . "' ORDER BY meta_id DESC LIMIT 1) AS address,
                 (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_POSTAL_CODE . "' ORDER BY meta_id DESC LIMIT 1) AS postal_code,
                 (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_COUNTRY . "' ORDER BY meta_id DESC LIMIT 1) AS country,
