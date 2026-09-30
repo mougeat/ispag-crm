@@ -142,7 +142,10 @@ class ISPAG_Contact_Ajax_Handler {
                     $company_name = __('undefined', 'ispag-crm');
                     if( !empty($company_id) && class_exists('ISPAG_Crm_Company_Repository')){
                         $company_rep = new ISPAG_Crm_Company_Repository();
-                        $company_name = $company_rep->get_company_by_id($company_id);
+                        $company_obj  = $company_rep->get_company_by_id($company_id);
+                        if ($company_obj && !empty($company_obj->company_name)) {
+                            $company_name = $company_obj->company_name;
+                        }
                     }
 
                     ISPAG_Notifications_Manager::send(
