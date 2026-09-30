@@ -12,8 +12,8 @@ if (!class_exists('ISPAG_Page_Installer', false)) {
  * Règles de sécurité pour un site existant :
  *  - une page n'est créée que si son adresse (slug) n'existe pas, et si aucune page ne porte déjà sa clé ISPAG ;
  *    les pages existantes ne sont JAMAIS modifiées ;
- *  - la création n'a lieu qu'à l'activation du plugin / du thème, ou sur clic dans Outils → Pages ISPAG.
- *    Jamais automatiquement au chargement (donc pas lors d'une mise à jour automatique) ;
+ *  - la création a lieu à l'activation du plugin / du thème, sur clic dans Outils → Pages ISPAG, et une seule fois par
+ *    version de la liste de pages via ensure_created() (rattrapage après une mise à jour) ;
  *  - les pages d'une autre langue (Polylang) ne sont créées que si Polylang et cette langue existent.
  *
  * Format d'une page : ['key','slug','title', 'content'?, 'template'?, 'lang'?, 'group'?]
@@ -126,6 +126,27 @@ class ISPAG_Page_Installer {
                 pll_save_post_translations($translations);
             }
         }
+    }
+
+    /**
+     * Rattrapage après une mise à jour : crée les pages manquantes du paquet UNE SEULE FOIS par version de liste de pages.
+     * À appeler à l'init avec un numéro qu'on incrémente quand install/pages.php reçoit de nouvelles pages.
+     * Sûr : create_missing() ne touche jamais une page existante ; un verrou évite deux créations simultanées.
+     */
+    public static function ensure_created($package, $version) {
+        $opt = 'ispag_pages_version_' . sanitize_key($package);
+        if (get_option($opt) === (string) $version) return;
+
+        $lock = $opt . '_lock';
+        if (!add_option($lock, time(), '', 'no')) {
+            // Verrou déjà posé : on le libère s'il est resté bloqué plus de 5 minutes
+            if (time() - (int) get_option($lock) > 300) delete_option($lock);
+            return;
+        }
+        $r = self::create_missing($package);
+        if (!empty($r['created'])) self::schedule_flush();
+        if (empty($r['errors'])) update_option($opt, (string) $version, false); // sinon on réessaiera au chargement suivant
+        delete_option($lock);
     }
 
     // ------------------------------------------------------------------ adresses (permaliens)
