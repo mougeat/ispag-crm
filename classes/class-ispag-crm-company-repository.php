@@ -369,7 +369,7 @@ class ISPAG_Crm_Company_Repository {
                 ) AS nb_transactions
 
             FROM {$table_c} f
-            WHERE f.Id = %d AND f.isSupplier = 0
+            WHERE f.Id = %d
             LIMIT 1
         ";
 
