@@ -990,6 +990,25 @@ class ISPAG_Crm_Company_Repository {
             }
 
         }
+        // --- 4b. ADRESSE (rue, code postal, ville, pays, région) : tables de l'entreprise, pas les postmeta ---
+        elseif ( in_array( $field_name, array(
+            ISPAG_Crm_Company_Constants::META_COMPANY_ADDRESS,
+            ISPAG_Crm_Company_Constants::META_COMPANY_POSTAL_CODE,
+            ISPAG_Crm_Company_Constants::META_COMPANY_CITY,
+            ISPAG_Crm_Company_Constants::META_COMPANY_COUNTRY,
+            ISPAG_Crm_Company_Constants::META_COMPANY_REGION,
+        ), true ) ) {
+            if ( ! current_user_can( 'edit_company' ) && ! current_user_can( 'manage_options' ) ) {
+                wp_send_json_error( array( 'message' => __( 'You are not allowed to edit companies.', 'ispag-crm' ) ), 403 );
+            }
+            $db_value_to_return = sanitize_text_field( $new_value );
+            if ( $field_name === ISPAG_Crm_Company_Constants::META_COMPANY_CITY ) {
+                ISPAG_Crm_Company_Creator::save_city( $company_id, $db_value_to_return ); // colonne city + méta
+            } else {
+                ISPAG_Crm_Company_Creator::save_company_meta( $company_id, $field_name, $db_value_to_return );
+            }
+            $updated_successfully = true;
+        }
         // --- 5. MÉTA ---
         else {
             $db_value_to_return = ($field_name === ISPAG_Crm_Company_Constants::META_COMPANY_OWNER) ? absint($new_value) : sanitize_text_field($new_value);
