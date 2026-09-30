@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
  */
 class ISPAG_CRM_Installer {
 
-    const DB_VERSION = '1.2.0';
+    const DB_VERSION = '1.2.1';
     const OPTION     = 'ispag_crm_db_version';
 
     /** Droits utilisés par ce plugin (voir grant_default_caps()). */
