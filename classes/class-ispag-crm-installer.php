@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
  */
 class ISPAG_CRM_Installer {
 
-    const DB_VERSION = '1.2.3';
+    const DB_VERSION = '1.2.4';
     const OPTION     = 'ispag_crm_db_version';
 
     /** Droits utilisés par ce plugin (voir grant_default_caps()). */
@@ -60,6 +60,7 @@ class ISPAG_CRM_Installer {
         if (!ISPAG_Crm_Company_Link_Migration::run()) {
             $ok = false;
         }
+        self::relax_company_columns();
         if (!self::seed()) {
             $ok = false;
         }
@@ -72,6 +73,25 @@ class ISPAG_CRM_Installer {
             update_option(self::OPTION, self::DB_VERSION);
         }
         return $ok;
+    }
+
+    /**
+     * Sites existants : ispag_companies peut avoir des colonnes NOT NULL sans valeur par défaut (isSupplier, isIngenieur)
+     * ou l'ancienne clé externe viag_id, qui n'est plus renseignée nulle part. Sans valeur par défaut, toute création
+     * d'entreprise (ou de contact avec entreprise déduite du domaine) échoue en mode SQL strict.
+     * Non destructif : aucune donnée n'est supprimée (la colonne viag_id peut être retirée à la main plus tard).
+     */
+    private static function relax_company_columns() {
+        global $wpdb;
+        $table = $wpdb->prefix . 'ispag_companies';
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table)) !== $table) {
+            return;
+        }
+        foreach (['isSupplier' => 'int NOT NULL DEFAULT 0', 'isIngenieur' => 'int NOT NULL DEFAULT 0', 'viag_id' => 'bigint NOT NULL DEFAULT 0'] as $col => $def) {
+            if ($wpdb->get_var("SHOW COLUMNS FROM `{$table}` LIKE '{$col}'")) {
+                $wpdb->query("ALTER TABLE `{$table}` MODIFY `{$col}` {$def}");
+            }
+        }
     }
 
     /**

@@ -13,8 +13,8 @@ return [
     'ispag_companies' => <<<'SQL'
 CREATE TABLE IF NOT EXISTS `{prefix}ispag_companies` (
   `Id` int NOT NULL AUTO_INCREMENT,
-  `isSupplier` int NOT NULL,
-  `isIngenieur` int NOT NULL,
+  `isSupplier` int NOT NULL DEFAULT 0,
+  `isIngenieur` int NOT NULL DEFAULT 0,
   `company_name` varchar(255) DEFAULT NULL,
   `uid_number` varchar(20) DEFAULT NULL,
   `uid_status` varchar(20) DEFAULT NULL,

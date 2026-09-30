@@ -770,6 +770,8 @@ class ISPAG_Contact_Ajax_Handler {
         $insert_data = [
             'company_name'    => $company_name,
             'compagny_domain' => $domain,
+            'isSupplier'      => 0,
+            'isIngenieur'     => 0,
             'is_active'       => 1,
             'created_at'      => current_time('mysql')
         ];
@@ -777,7 +779,7 @@ class ISPAG_Contact_Ajax_Handler {
         $result = $wpdb->insert($table_companies, $insert_data);
 
         if ($result === false) {
-            // error_log("ISPAG CRM: SQL error lors de la création de l'entreprise : " . $wpdb->last_error);
+            error_log("ISPAG CRM: création de l'entreprise pour le domaine {$domain} impossible : " . $wpdb->last_error);
             return 0;
         }
 
