@@ -154,7 +154,11 @@ class ISPAG_Notifications_Renderer {
                                 $current_channels = ISPAG_Notifications_Manager::get_user_channel_preferences($current_user_id, $type_key);
                             ?>
                                 <tr class="ispag-notification-type-row">
-                                    <td class="ispag-notification-type-label"><?php echo esc_html($type_info['label']); ?></td>
+                                    <td class="ispag-notification-type-label">
+                                        <?php echo esc_html($type_info['label']); ?>
+                                        <?php // Marqueur : garantit que le type est envoyé même si toutes les cases sont décochées ?>
+                                        <input type="hidden" name="ispag_notif_prefs[<?php echo esc_attr($type_key); ?>][]" value="" />
+                                    </td>
                                     <?php foreach ($available_channels as $channel_key => $channel_label):
                                         $is_checked = in_array($channel_key, $current_channels);
                                     ?>
@@ -289,20 +293,22 @@ class ISPAG_Notifications_Renderer {
         }
 
         // Save les préférences de canaux
-        if (isset($_POST['ispag_notif_prefs']) && is_array($_POST['ispag_notif_prefs'])) {
-            $clean_prefs = [];
-            $available_types = ISPAG_Notifications_Manager::get_available_notification_types();
-            $available_channels = ISPAG_Notifications_Manager::get_available_channels();
+        $posted_prefs = isset($_POST['ispag_notif_prefs']) && is_array($_POST['ispag_notif_prefs'])
+            ? wp_unslash($_POST['ispag_notif_prefs'])
+            : [];
+        $clean_prefs = [];
+        $available_types = ISPAG_Notifications_Manager::get_available_notification_types();
+        $available_channels = ISPAG_Notifications_Manager::get_available_channels();
 
-            foreach ($_POST['ispag_notif_prefs'] as $type => $channels) {
-                if (isset($available_types[$type]) && is_array($channels)) {
-                    if (user_can($current_user_id, $available_types[$type]['capability'])) {
-                        $clean_prefs[$type] = array_intersect($channels, array_keys($available_channels));
-                    }
+        foreach ($posted_prefs as $type => $channels) {
+            if (isset($available_types[$type]) && is_array($channels)) {
+                if (user_can($current_user_id, $available_types[$type]['capability'])) {
+                    // Un tableau vide est valide : l'utilisateur a décoché tous les canaux
+                    $clean_prefs[$type] = array_values(array_intersect($channels, array_keys($available_channels)));
                 }
             }
-            update_user_meta($current_user_id, 'ispag_notif_prefs', $clean_prefs);
         }
+        update_user_meta($current_user_id, 'ispag_notif_prefs', $clean_prefs);
 
         // ⬇️ Save les préférences de déconnexion (week-end et périodes de vacances)
         $allow_weekend = isset($_POST['allow_weekend_notifications']) ? 1 : 0;
