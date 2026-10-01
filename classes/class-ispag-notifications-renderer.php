@@ -41,6 +41,8 @@ class ISPAG_Notifications_Renderer {
         add_action('wp_ajax_ispag_save_notification_settings', [__CLASS__, 'save_notification_settings_ajax']);
         add_action('wp_ajax_nopriv_ispag_save_notification_settings', [__CLASS__, 'save_notification_settings_ajax']);
 
+        add_action('wp_ajax_ispag_mark_all_notifications_read', [__CLASS__, 'mark_all_notifications_read_ajax']);
+
         add_action('wp_ajax_ispag_get_notifications_by_tab', [__CLASS__, 'get_notifications_by_tab_ajax']);
         add_action('wp_ajax_nopriv_ispag_get_notifications_by_tab', [__CLASS__, 'get_notifications_by_tab_ajax']);
     }
@@ -322,6 +324,30 @@ class ISPAG_Notifications_Renderer {
     }
 
     /**
+     * Marque toutes les notifications non lues de l'utilisateur comme lues (appelée via AJAX)
+     */
+    public static function mark_all_notifications_read_ajax() {
+        check_ajax_referer('ispag_nonce', '_ajax_nonce');
+
+        $current_user_id = get_current_user_id();
+        if ($current_user_id === 0) {
+            wp_send_json_error(['message' => 'Utilisateur non connecté.']);
+        }
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'ispag_notifications';
+
+        $wpdb->query($wpdb->prepare(
+            "UPDATE $table_name SET is_read = 1, read_at = %s
+             WHERE user_id = %d AND is_read = 0 AND is_deleted = 0 AND type != 'conceptual_window'",
+            current_time('mysql'),
+            $current_user_id
+        ));
+
+        wp_send_json_success(['message' => __('All notifications marked as read.', 'ispag-crm')]);
+    }
+
+    /**
      * Récupère le nombre de notifications non lues pour un utilisateur
      */
     public static function get_unread_notification_count($user_id) {
@@ -418,6 +444,9 @@ class ISPAG_Notifications_Renderer {
             <div class="notification-header">
                 <h3><?php _e('Notifications', 'ispag-crm'); ?></h3>
                 <div class="notification-header-actions">
+                    <button type="button" id="ispag-mark-all-read" class="ispag-btn ispag-btn-secondary">
+                        <?php _e('Mark all as read', 'ispag-crm'); ?>
+                    </button>
                     <!-- Bouton de fermeture -->
                     <button class="close-sidebar ispag-close-modal ispag-btn ispag-btn-red-outlined ispag-close-croix" id="ispag-close-notification-sidebar">×</button>
                 </div>

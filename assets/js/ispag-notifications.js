@@ -274,6 +274,38 @@ jQuery(document).ready(function($) {
         loadNotifications(tab);
     });
 
+    // Marquer toutes les notifications comme lues
+    $(document).on('click', '#ispag-mark-all-read', function(e) {
+        e.preventDefault();
+        const $button = $(this).prop('disabled', true);
+
+        $.ajax({
+            url: ispag_notifications_obj.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'ispag_mark_all_notifications_read',
+                _ajax_nonce: ispag_notifications_obj.nonce
+            },
+            success: function(response) {
+                if (response.success) {
+                    loadNotifications($('.notification-tab.active').data('tab') || 'unread');
+                    updateNotificationBadge();
+                } else {
+                    showNotificationMessage(response.data.message, 'error');
+                }
+            },
+            error: function() {
+                showNotificationMessage(
+                    ispag_texts?.connection_error || "Erreur de connexion. Veuillez réessayer.",
+                    'error'
+                );
+            },
+            complete: function() {
+                $button.prop('disabled', false);
+            }
+        });
+    });
+
     // Charger les notifications en fonction de l'onglet
     function loadNotifications(tab = 'unread') {
         $.ajax({
