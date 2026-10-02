@@ -266,12 +266,14 @@ class ISPAG_Attachments_Card_Renderer {
             <?php
             endif;
             ?>
+            <?php if (function_exists('ispag_user_can_delete_attachment') ? ispag_user_can_delete_attachment($att->id) : current_user_can('manage_order')) : ?>
             <span
                     class="ispag-btn ispag-btn-grey-outlined ispag-docu-card__remove"
                     data-media-id="<?php echo esc_attr($att->id); ?>"
                     title="Retirer">
                 &times;
             </span>
+            <?php endif; ?>
         </li>
         <?php
         return ob_get_clean();

@@ -61,12 +61,14 @@ class ISPAG_Attachments_Table_Renderer {
                                             data-ajax-action="<?php echo esc_attr($att->ajax_action); ?>">
                                         <span class="dashicons dashicons-analytics"></span>
                                     </span>
+                                    <?php if (function_exists('ispag_user_can_delete_attachment') ? ispag_user_can_delete_attachment($att->id) : current_user_can('manage_order')) : ?>
                                     <span
                                             class="ispag-btn ispag-btn-grey-outlined ispag-docu-card__remove"
                                             data-media-id="<?php echo esc_attr($att->id); ?>"
                                             title="Retirer">
                                         &times;
                                     </span>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
