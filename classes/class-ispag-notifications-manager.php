@@ -827,7 +827,8 @@ class ISPAG_Notifications_Manager
         // ISPAG Project Manager, sans Brevo. null = pas un e-mail d'étape, on continue avec le comportement normal.
         if ($type === 'deal_status_change')
         {
-            $handled = apply_filters('ispag_send_phase_mail', null, $user_id, $extra_data);
+            // notification_url : lien du projet portant ispag_notif, à utiliser dans le mail pour que l'ouvrir marque la cloche comme lue
+            $handled = apply_filters('ispag_send_phase_mail', null, $user_id, $extra_data + ['notification_url' => self::absolute_url($url)]);
             if ($handled !== null)
             {
                 $logger->log_user_action($log_name, 'phase_mail_handled', ['recipient' => $user->user_email, 'slug' => $extra_data['phase_slug'] ?? '', 'sent' => (bool) $handled], $current_user_id);
@@ -851,6 +852,16 @@ class ISPAG_Notifications_Manager
                 'TASK_TITLE' => (string)$title,
                 'DUE_DATE' => (string)$content
             ];
+
+            // Ouvrir un lien du CRM depuis le mail marque la notification comme lue (cloche, push)
+            $notif_id = self::notification_id_from_url($url);
+            if ($notif_id) {
+                foreach ($params as $key => $value) {
+                    if (is_string($value) && substr($key, -5) === '_LINK' && strpos($value, home_url()) === 0) {
+                        $params[$key] = add_query_arg('ispag_notif', $notif_id, $value);
+                    }
+                }
+            }
 
             $logger->log_user_action($log_name, 'brevo_params_prepared', ['template_id' => $template_id, 'params' => $params], $current_user_id);
 
@@ -984,6 +995,15 @@ class ISPAG_Notifications_Manager
         $url = (string) $url;
         if ($url === '') return home_url('/');
         return preg_match('#^https?://#i', $url) ? $url : home_url('/' . ltrim($url, '/'));
+    }
+
+    /** Id de la notification (cloche) porté par un lien suivi, 0 s'il n'y en a pas. */
+    private static function notification_id_from_url($url)
+    {
+        $query = wp_parse_url((string) $url, PHP_URL_QUERY);
+        if (!$query) return 0;
+        parse_str($query, $args);
+        return isset($args['ispag_notif']) ? (int) $args['ispag_notif'] : 0;
     }
 
     /** Ajoute à l'URL l'id de la notification (cloche) : ouvrir le lien la marque comme lue. */
