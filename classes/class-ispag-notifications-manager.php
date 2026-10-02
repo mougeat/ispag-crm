@@ -568,7 +568,7 @@ class ISPAG_Notifications_Manager
 
                 if (in_array('telegram', $user_channels))
                 {
-                    $result = self::send_to_telegram($user_id, $title, $content, $url, $entity_id);
+                    $result = self::send_to_telegram($user_id, $title, $content, $tracked_url, $entity_id);
                     $logger->log_user_action('notifications_manager', 'sent_to_telegram', ['user_id' => $user_id, 'result' => $result], $current_user_id);
                 }
 

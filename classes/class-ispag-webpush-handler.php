@@ -32,7 +32,7 @@ class ISPAG_WebPush_Handler {
         $done = true;
 
         add_action('init', [__CLASS__, 'maybe_serve_service_worker'], 0);
-        add_action('template_redirect', [__CLASS__, 'mark_read_from_click']);
+        add_action('init', [__CLASS__, 'mark_read_from_click'], 20);
         add_action('wp_ajax_ispag_push_subscribe', [__CLASS__, 'ajax_subscribe']);
         add_action('wp_ajax_ispag_push_unsubscribe', [__CLASS__, 'ajax_unsubscribe']);
     }
@@ -422,7 +422,7 @@ class ISPAG_WebPush_Handler {
         return $path ?: '/';
     }
 
-    /** Clic sur une notification push : la ligne correspondante de la cloche passe en « lue ». */
+    /** Ouverture d'un lien suivi (push, mail, Telegram, cloche) : la ligne correspondante de la cloche passe en « lue ». */
     public static function mark_read_from_click() {
         if (empty($_GET[self::QUERY_PARAM]) || !is_user_logged_in()) {
             return;

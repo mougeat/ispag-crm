@@ -110,6 +110,34 @@ jQuery(document).ready(function($) {
         });
     }
 
+    // Ferme les notifications push affichées dont la ligne de la cloche est lue ou supprimée
+    // (lue depuis la cloche, un e-mail, Telegram, un autre onglet ou un autre appareil)
+    async function closeReadPushNotifications() {
+        const obj = window.ispag_notifications_obj || {};
+        if (!('serviceWorker' in navigator) || String(obj.current_user_id) === '0') return;
+        try {
+            const registration = await navigator.serviceWorker.getRegistration(obj.push_scope);
+            if (!registration) return;
+            const shown = (await registration.getNotifications()).filter(function (n) { return /^ispag-\d+$/.test(n.tag || ''); });
+            if (!shown.length) return;
+
+            const response = await $.post(obj.ajaxurl, { action: 'ispag_get_unread_notification_ids', _ajax_nonce: obj.nonce });
+            if (!response || !response.success) return;
+            const unread = response.data.ids.map(function (id) { return 'ispag-' + id; });
+            shown.forEach(function (n) { if (unread.indexOf(n.tag) === -1) n.close(); });
+        } catch (err) { /* sans conséquence : le push reste affiché */ }
+    }
+
+    closeReadPushNotifications();
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') closeReadPushNotifications();
+    });
+    $(document).ajaxSuccess(function (event, xhr, settings) {
+        if (typeof settings.data === 'string' && /action=ispag_(mark_notification_as_read|mark_all_notifications_read|delete_notification)/.test(settings.data)) {
+            closeReadPushNotifications();
+        }
+    });
+
     (function initPush() {
         const obj = window.ispag_notifications_obj || {};
         if (String(obj.current_user_id) === '0') return;

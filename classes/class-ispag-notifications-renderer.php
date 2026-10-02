@@ -31,6 +31,7 @@ class ISPAG_Notifications_Renderer {
     private static function register_ajax_actions() {
         add_action('wp_ajax_ispag_get_unread_notifications', [__CLASS__, 'get_unread_notifications_ajax']);
         add_action('wp_ajax_nopriv_ispag_get_unread_notifications', [__CLASS__, 'get_unread_notifications_ajax']);
+        add_action('wp_ajax_ispag_get_unread_notification_ids', [__CLASS__, 'get_unread_notification_ids_ajax']);
         add_action('wp_ajax_ispag_get_unread_notification_count', [__CLASS__, 'get_unread_notification_count_ajax']);
         add_action('wp_ajax_nopriv_ispag_get_unread_notification_count', [__CLASS__, 'get_unread_notification_count_ajax']);
         
@@ -652,6 +653,26 @@ class ISPAG_Notifications_Renderer {
         }
 
         wp_send_json_success(['html' => $html]);
+    }
+
+    /**
+     * Ids des notifications non lues de l'utilisateur : le navigateur ferme les push affichés qui n'en font plus partie
+     * (lus depuis la cloche, un e-mail, Telegram ou un autre appareil).
+     */
+    public static function get_unread_notification_ids_ajax() {
+        check_ajax_referer('ispag_nonce', '_ajax_nonce');
+
+        $current_user_id = get_current_user_id();
+        if ($current_user_id === 0) {
+            wp_send_json_error(['message' => 'User not logged in.']);
+        }
+
+        global $wpdb;
+        $ids = $wpdb->get_col($wpdb->prepare(
+            "SELECT id FROM {$wpdb->prefix}ispag_notifications WHERE user_id = %d AND is_read = 0 AND is_deleted = 0 AND type != 'conceptual_window'",
+            $current_user_id
+        ));
+        wp_send_json_success(['ids' => array_map('intval', $ids)]);
     }
 
     /**
