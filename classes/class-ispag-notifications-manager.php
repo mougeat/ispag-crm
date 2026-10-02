@@ -79,7 +79,6 @@ class ISPAG_Notifications_Manager
         add_action('wp_ajax_ispag_mark_conceptual_read', [__CLASS__, 'mark_conceptual_notification_read_ajax']);
         // $logger->log_user_action('notifications_manager', 'conceptual_notification_hooks_registered', [], $user_id);
 
-        add_action('init', [__CLASS__, 'mark_read_from_url'], 20);
         add_action('wp_ajax_ispag_mark_notification_as_read', [__CLASS__, 'mark_notification_as_read_ajax']);
         add_action('wp_ajax_nopriv_ispag_mark_notification_as_read', [__CLASS__, 'mark_notification_as_read_ajax']);
         add_action('wp_ajax_ispag_delete_notification', [__CLASS__, 'delete_notification_ajax']);
@@ -992,23 +991,6 @@ class ISPAG_Notifications_Manager
             . esc_html__('Open in ISPAG', 'ispag-crm') . '</a></p>'
             . '<p style="color:#64748b;font-size:12px">' . esc_html($link) . '</p>'
             . '</div>';
-    }
-
-    /**
-     * Ouvrir un lien de notification (e-mail, cloche, push) marque la notification comme lue.
-     * Paramètre d'URL : ispag_notif (id de la ligne de la cloche).
-     */
-    public static function mark_read_from_url()
-    {
-        if (wp_doing_ajax() || !is_user_logged_in()) return;
-        $notif_id = isset($_GET['ispag_notif']) ? (int) $_GET['ispag_notif'] : 0;
-        if (!$notif_id) return;
-
-        global $wpdb;
-        $wpdb->query($wpdb->prepare(
-            "UPDATE {$wpdb->prefix}ispag_notifications SET is_read = 1, read_at = %s WHERE id = %d AND user_id = %d AND is_read = 0",
-            current_time('mysql'), $notif_id, get_current_user_id()
-        ));
     }
 
     /**
