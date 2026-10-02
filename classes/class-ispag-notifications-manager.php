@@ -1,7 +1,7 @@
 <?php
 /**
  * Classe centrale pour la gestion et le routage des notifications ISPAG.
- * Gère les canaux : CRM (cloche), OneSignal (push), Mail, Telegram.
+ * Gère les canaux : CRM (cloche), Push (Web Push natif), Mail, Telegram.
  * Respecte les préférences des utilisateurs et leurs rôles.
  * Logging : Toutes les actions sont loguées dans ispag_notifications_manager.log.
  */
@@ -144,7 +144,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent when a contact is assigned to you.', 'ispag-crm'),
                 'group' => 'contact',
                 'capability' => 'manage_order',
-                'default_channels' => ['crm', 'onesignal', 'mail'],
+                'default_channels' => ['crm', 'push', 'mail'],
                 'retain_during_disconnection' => true, // ⬅️ À retenir pendant les périodes de déconnexion
             ],
             'contact_leadstatus' => [
@@ -152,7 +152,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent when the lead status of a contact changes.', 'ispag-crm'),
                 'group' => 'contact',
                 'capability' => 'manage_options',
-                'default_channels' => ['crm', 'onesignal'],
+                'default_channels' => ['crm', 'push'],
                 'retain_during_disconnection' => false, // ⬅️ Ignorer pendant les périodes de déconnexion
             ],
             //*************
@@ -163,7 +163,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent when a company is assigned to you.', 'ispag-crm'),
                 'group' => 'company',
                 'capability' => 'manage_order',
-                'default_channels' => ['crm', 'onesignal', 'mail'],
+                'default_channels' => ['crm', 'push', 'mail'],
                 'retain_during_disconnection' => true, // ⬅️ À retenir
             ],
             'company_followup' => [
@@ -171,7 +171,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent for company follow-ups.', 'ispag-crm'),
                 'group' => 'company',
                 'capability' => 'manage_options',
-                'default_channels' => ['crm', 'onesignal', 'conceptual_window'],
+                'default_channels' => ['crm', 'push', 'conceptual_window'],
                 'retain_during_disconnection' => true, // ⬅️ À retenir
             ],
             //*************
@@ -182,7 +182,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent when the status of a project changes.', 'ispag-crm'),
                 'group' => 'deal',
                 'capability' => 'read_orders',
-                'default_channels' => ['crm', 'onesignal', 'mail', 'conceptual_window'],
+                'default_channels' => ['crm', 'push', 'mail', 'conceptual_window'],
                 'retain_during_disconnection' => true, // ⬅️ À retenir
             ],
             'deal_billing' => [
@@ -190,7 +190,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent for invoicing projects.', 'ispag-crm'),
                 'group' => 'deal',
                 'capability' => 'manage_order',
-                'default_channels' => ['crm', 'onesignal', 'mail'],
+                'default_channels' => ['crm', 'push', 'mail'],
                 'retain_during_disconnection' => false, // ⬅️ Ignorer
             ],
             'product_manager' => [
@@ -198,7 +198,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent for item management actions (drawing needs validation, drawing validated, etc.).', 'ispag-crm'),
                 'group' => 'deal',
                 'capability' => 'manage_order',
-                'default_channels' => ['crm', 'onesignal', 'mail'],
+                'default_channels' => ['crm', 'push', 'mail'],
                 'retain_during_disconnection' => false, // ⬅️ Ignorer
             ],
             'product_modifications' => [
@@ -206,7 +206,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent for item management actions (product modifications, etc.).', 'ispag-crm'),
                 'group' => 'deal',
                 'capability' => 'manage_options',
-                'default_channels' => ['crm', 'onesignal', 'mail'],
+                'default_channels' => ['crm', 'push', 'mail'],
                 'retain_during_disconnection' => true, // ⬅️ Ignorer
             ],
             'article_changed_by_other' => [
@@ -214,7 +214,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent to the project manager when another person creates, modifies or deletes an item of the project.', 'ispag-crm'),
                 'group' => 'deal',
                 'capability' => 'manage_order',
-                'default_channels' => ['crm', 'onesignal', 'mail'],
+                'default_channels' => ['crm', 'push', 'mail'],
                 'retain_during_disconnection' => true, // ⬅️ À retenir
             ],
             'deal_manager' => [
@@ -222,7 +222,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent for project or deal management actions. (new project, etc.)', 'ispag-crm'),
                 'group' => 'deal',
                 'capability' => 'manage_order',
-                'default_channels' => ['crm', 'onesignal'],
+                'default_channels' => ['crm', 'push'],
                 'retain_during_disconnection' => true, // ⬅️ À retenir
             ],
             //*************
@@ -233,7 +233,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent for purchase follow-ups.', 'ispag-crm'),
                 'group' => 'purchase',
                 'capability' => 'manage_order',
-                'default_channels' => ['crm', 'onesignal', 'conceptual_window'],
+                'default_channels' => ['crm', 'push', 'conceptual_window'],
                 'retain_during_disconnection' => false, // ⬅️ Ignorer
             ],
             'purchase_order_creation' => [
@@ -268,7 +268,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent when a document is analyzed by AI.', 'ispag-crm'),
                 'group' => 'datas',
                 'capability' => 'manage_order',
-                'default_channels' => ['onesignal', 'conceptual_window'],
+                'default_channels' => ['push', 'conceptual_window'],
                 'retain_during_disconnection' => false, // ⬅️ À retenir
             ],
             'article_cleanup' => [
@@ -287,7 +287,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent for CRM task assignments or updates.', 'ispag-crm'),
                 'group' => 'task',
                 'capability' => 'manage_order',
-                'default_channels' => ['crm', 'onesignal', 'conceptual_window'],
+                'default_channels' => ['crm', 'push', 'conceptual_window'],
                 'retain_during_disconnection' => true, // ⬅️ À retenir
             ],
             //*************
@@ -298,7 +298,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent when a new form is submitted.', 'ispag-crm'),
                 'group' => 'form_submission',
                 'capability' => 'export_reports',
-                'default_channels' => ['crm', 'onesignal', 'mail', 'conceptual_window'],
+                'default_channels' => ['crm', 'push', 'mail', 'conceptual_window'],
                 'retain_during_disconnection' => false, // ⬅️ Ignorer
             ],
             //*************
@@ -309,7 +309,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent for billing-related updates.', 'ispag-crm'),
                 'group' => 'billing',
                 'capability' => 'manage_order',
-                'default_channels' => ['crm', 'onesignal'],
+                'default_channels' => ['crm', 'push'],
                 'retain_during_disconnection' => true, // ⬅️ À retenir
             ],
             //*************
@@ -332,7 +332,7 @@ class ISPAG_Notifications_Manager
                 'description' => __('Notification sent for automation or workflow alerts.', 'ispag-crm'),
                 'group' => 'automation',
                 'capability' => 'export_reports',
-                'default_channels' => ['crm', 'onesignal', 'conceptual_window'],
+                'default_channels' => ['crm', 'push', 'conceptual_window'],
                 'retain_during_disconnection' => true, // ⬅️ À retenir
             ]
         ];
@@ -349,7 +349,7 @@ class ISPAG_Notifications_Manager
 
         return [
             'crm' => __('CRM (Cloche / Sidebar)', 'ispag-crm'),
-            'onesignal' => __('Push (mobile)', 'ispag-crm'),
+            'push' => __('Push (navigateur / mobile)', 'ispag-crm'),
             'mail' => __('E-mail', 'ispag-crm'),
             'telegram' => __('Telegram', 'ispag-crm'),
             'conceptual_window' => __('Conceptual window', 'ispag-crm'),
@@ -435,7 +435,6 @@ class ISPAG_Notifications_Manager
             `url` TEXT,
             `type` VARCHAR(50) NOT NULL,
             `entity_id` BIGINT(20) UNSIGNED,
-            `onesignal_id` VARCHAR(255),
             `is_read` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
             `is_deleted` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
             `sent_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -529,8 +528,6 @@ class ISPAG_Notifications_Manager
 
             $logger->log_user_action('notifications_manager', 'user_channels_retrieved', ['user_id' => $user_id, 'channels' => $user_channels], $current_user_id);
 
-            $onesignal_id = null;
-
             if (!empty($user_channels))
             {
                 if (in_array('conceptual_window', $user_channels))
@@ -539,35 +536,22 @@ class ISPAG_Notifications_Manager
                     $logger->log_user_action('notifications_manager', 'sent_to_conceptual_window', ['user_id' => $user_id, 'result' => $result], $current_user_id);
                 }
 
-                if (in_array('onesignal', $user_channels) && class_exists('ISPAG_OneSignal_Handler'))
-                {
-                    $onesignal_id = ISPAG_OneSignal_Handler::send_os_push_notification($user_id, $title, $content, $url, $entity_id);
-                    $logger->log_user_action('notifications_manager', 'sent_to_onesignal', ['user_id' => $user_id, 'onesignal_id' => $onesignal_id], $current_user_id);
-                }
-
                 $bell_id = null;
                 if (in_array('crm', $user_channels))
                 {
-                    $bell_id = self::send_to_crm_bell($user_id, $title, $content, $url, $type, $entity_id, $onesignal_id);
+                    $bell_id = self::send_to_crm_bell($user_id, $title, $content, $url, $type, $entity_id);
                     $logger->log_db_change('notifications_manager', $wpdb->prefix . 'ispag_notifications', 'INSERT_CRM_BELL', ['user_id' => $user_id, 'bell_id' => $bell_id], $current_user_id);
+                }
 
-                    if ($onesignal_id && $bell_id !== null)
-                    {
-                        global $wpdb;
-                        $table_name = $wpdb->prefix . 'ispag_notifications';
-                        $updated = $wpdb->update(
-                            $table_name,
-                            ['onesignal_id' => $onesignal_id],
-                            ['id' => $bell_id],
-                            ['%s'],
-                            ['%d']
-                        );
-                        $logger->log_db_change('notifications_manager', $table_name, 'UPDATE_ONESIGNAL_ID', ['bell_id' => $bell_id, 'onesignal_id' => $onesignal_id, 'result' => $updated], $current_user_id);
-                    }
+                // Après la cloche : le push porte l'id de la ligne pour la marquer lue au clic
+                if (in_array('push', $user_channels) && class_exists('ISPAG_WebPush_Handler'))
+                {
+                    $devices = ISPAG_WebPush_Handler::send_push_notification($user_id, $title, $content, $url, $entity_id, $bell_id);
+                    $logger->log_user_action('notifications_manager', 'sent_to_push', ['user_id' => $user_id, 'devices' => $devices], $current_user_id);
                 }
 
                 // Lien suivi : l'ouvrir (mail, cloche, push) marque la notification comme lue sur tous les canaux
-                $tracked_url = self::tracked_url($url, $bell_id, $onesignal_id);
+                $tracked_url = self::tracked_url($url, $bell_id);
 
                 if (in_array('mail', $user_channels))
                 {
@@ -720,7 +704,7 @@ class ISPAG_Notifications_Manager
 
         $types = self::get_available_notification_types();
 
-        $default_channels = isset($types[$type]['default_channels']) ? $types[$type]['default_channels'] : ['crm', 'onesignal'];
+        $default_channels = isset($types[$type]['default_channels']) ? $types[$type]['default_channels'] : ['crm', 'push'];
         $saved_prefs = get_user_meta($user_id, 'ispag_notif_prefs', true);
 
         $logger->log_user_action('notifications_manager', 'default_channels_retrieved', ['type' => $type, 'default_channels' => $default_channels], 0);
@@ -728,7 +712,8 @@ class ISPAG_Notifications_Manager
         if (is_array($saved_prefs) && isset($saved_prefs[$type]) && is_array($saved_prefs[$type]))
         {
             $logger->log_user_action('notifications_manager', 'user_preferences_found', ['user_id' => $user_id, 'type' => $type, 'channels' => $saved_prefs[$type]], 0);
-            return $saved_prefs[$type];
+            // Préférences enregistrées du temps d'OneSignal : l'ancien canal devient « push »
+            return array_values(array_unique(array_map(function ($c) { return $c === 'onesignal' ? 'push' : $c; }, $saved_prefs[$type])));
         }
 
         $logger->log_user_action('notifications_manager', 'using_default_channels', ['user_id' => $user_id, 'type' => $type, 'default_channels' => $default_channels], 0);
@@ -738,7 +723,7 @@ class ISPAG_Notifications_Manager
     /**
      * Canal 1 : Enregistrement en BDD pour la cloche CRM (Sidebar)
      */
-    private static function send_to_crm_bell($user_id, $title, $content, $url, $type, $entity_id, $onesignal_id = null)
+    private static function send_to_crm_bell($user_id, $title, $content, $url, $type, $entity_id)
     {
         $logger = self::get_logger();
         $logger->log_user_action('notifications_manager', 'send_to_crm_bell_start', [
@@ -753,13 +738,6 @@ class ISPAG_Notifications_Manager
 
         $clean_content = wp_strip_all_tags(html_entity_decode($content, ENT_QUOTES, 'UTF-8'));
 
-        // Si onesignal_id n'est pas null, on peut l'ajouter en paramètre à l'URL si besoin
-        if (!empty($onesignal_id))
-        {
-            $url = add_query_arg('onesignal_id', $onesignal_id, $url);
-            $logger->log_user_action('notifications_manager', 'onesignal_id_added_to_url', ['onesignal_id' => $onesignal_id], 0);
-        }
-
         $inserted = $wpdb->insert($table_name, [
             'user_id' => $user_id,
             'title' => $title,
@@ -767,7 +745,6 @@ class ISPAG_Notifications_Manager
             'url' => $url,
             'type' => $type,
             'entity_id' => $entity_id,
-            'onesignal_id' => $onesignal_id,
             'is_read' => 0,
             'sent_at' => current_time('mysql')
         ]);
@@ -990,13 +967,10 @@ class ISPAG_Notifications_Manager
         return preg_match('#^https?://#i', $url) ? $url : home_url('/' . ltrim($url, '/'));
     }
 
-    /** Ajoute à l'URL l'id de la notification (cloche) et celui de la notification push. */
-    private static function tracked_url($url, $bell_id, $onesignal_id)
+    /** Ajoute à l'URL l'id de la notification (cloche) : ouvrir le lien la marque comme lue. */
+    private static function tracked_url($url, $bell_id)
     {
-        $args = [];
-        if (!empty($bell_id)) $args['ispag_notif'] = (int) $bell_id;
-        if (!empty($onesignal_id)) $args['onesignal_id'] = $onesignal_id;
-        return $args ? add_query_arg($args, $url) : $url;
+        return !empty($bell_id) ? add_query_arg('ispag_notif', (int) $bell_id, $url) : $url;
     }
 
     /** Corps HTML d'un e-mail de notification, avec bouton vers le projet. */
@@ -1021,31 +995,20 @@ class ISPAG_Notifications_Manager
     }
 
     /**
-     * Ouvrir un lien de notification (e-mail, cloche, push) marque la notification comme lue :
-     * la ligne de la cloche, et la notification push côté OneSignal.
-     * Paramètres d'URL : ispag_notif (id de la cloche) et/ou onesignal_id.
+     * Ouvrir un lien de notification (e-mail, cloche, push) marque la notification comme lue.
+     * Paramètre d'URL : ispag_notif (id de la ligne de la cloche).
      */
     public static function mark_read_from_url()
     {
         if (wp_doing_ajax() || !is_user_logged_in()) return;
         $notif_id = isset($_GET['ispag_notif']) ? (int) $_GET['ispag_notif'] : 0;
-        $os_id = isset($_GET['onesignal_id']) ? sanitize_text_field(wp_unslash($_GET['onesignal_id'])) : '';
-        if (!$notif_id && $os_id === '') return;
+        if (!$notif_id) return;
 
         global $wpdb;
-        $table = $wpdb->prefix . 'ispag_notifications';
-        $user_id = get_current_user_id();
-
-        $rows = $wpdb->get_results($wpdb->prepare(
-            "SELECT id, onesignal_id FROM {$table} WHERE user_id = %d AND is_read = 0 AND (id = %d OR (onesignal_id <> '' AND onesignal_id = %s))",
-            $user_id, $notif_id, $os_id
+        $wpdb->query($wpdb->prepare(
+            "UPDATE {$wpdb->prefix}ispag_notifications SET is_read = 1, read_at = %s WHERE id = %d AND user_id = %d AND is_read = 0",
+            current_time('mysql'), $notif_id, get_current_user_id()
         ));
-        foreach ($rows as $row) {
-            $wpdb->update($table, ['is_read' => 1, 'read_at' => current_time('mysql')], ['id' => (int) $row->id], ['%d', '%s'], ['%d']);
-            if (!empty($row->onesignal_id) && class_exists('ISPAG_OneSignal_Handler')) {
-                ISPAG_OneSignal_Handler::mark_as_read_on_onesignal($row->onesignal_id);
-            }
-        }
     }
 
     /**
@@ -1151,21 +1114,6 @@ class ISPAG_Notifications_Manager
         check_ajax_referer('ispag_nonce', '_ajax_nonce');
 
         $notification_id = isset($_POST['notification_id']) ? intval($_POST['notification_id']) : 0;
-        $onesignal_id = isset($_POST['onesignal_id']) ? sanitize_text_field($_POST['onesignal_id']) : '';
-
-        // Clic sur la notification push : on retrouve la ligne de la cloche par l'id OneSignal et on la marque lue (jamais de bascule)
-        $os_click = isset($_POST['onesignal_notification_id']) ? sanitize_text_field($_POST['onesignal_notification_id']) : '';
-        if ($notification_id === 0 && $os_click !== '') {
-            global $wpdb;
-            $updated = $wpdb->query($wpdb->prepare(
-                "UPDATE {$wpdb->prefix}ispag_notifications SET is_read = 1, read_at = %s WHERE onesignal_id = %s AND user_id = %d AND is_read = 0",
-                current_time('mysql'), $os_click, get_current_user_id()
-            ));
-            if (class_exists('ISPAG_OneSignal_Handler')) {
-                ISPAG_OneSignal_Handler::mark_as_read_on_onesignal($os_click);
-            }
-            wp_send_json_success(['message' => 'Notification marked as read.', 'updated' => (int) $updated]);
-        }
 
         if ($notification_id === 0) {
             wp_send_json_error(['message' => 'ID de notification manquant.']);
@@ -1198,10 +1146,6 @@ class ISPAG_Notifications_Manager
             array('%d', '%s'),
             array('%d')
         );
-
-        if ($new_state == 1 && class_exists('ISPAG_OneSignal_Handler')) {
-            ISPAG_OneSignal_Handler::mark_as_read_on_onesignal($onesignal_id);
-        }
 
         $msg = ($new_state == 1) 
             ? __('Notification marked as read.', 'ispag-crm') 

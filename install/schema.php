@@ -288,7 +288,6 @@ CREATE TABLE IF NOT EXISTS `{prefix}ispag_notifications` (
   `url` text,
   `type` varchar(50) NOT NULL,
   `entity_id` bigint UNSIGNED DEFAULT NULL,
-  `onesignal_id` varchar(255) DEFAULT NULL,
   `is_read` tinyint UNSIGNED NOT NULL DEFAULT '0',
   `is_deleted` tinyint UNSIGNED NOT NULL DEFAULT '0',
   `sent_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -298,6 +297,23 @@ CREATE TABLE IF NOT EXISTS `{prefix}ispag_notifications` (
   KEY `is_read` (`is_read`),
   KEY `type` (`type`),
   KEY `is_deleted` (`is_deleted`)
+) ENGINE=InnoDB {charset}
+SQL
+    ,
+    'ispag_push_subscriptions' => <<<'SQL'
+CREATE TABLE IF NOT EXISTS `{prefix}ispag_push_subscriptions` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` bigint UNSIGNED NOT NULL,
+  `endpoint` text NOT NULL,
+  `endpoint_hash` char(64) NOT NULL,
+  `p256dh` varchar(255) NOT NULL,
+  `auth` varchar(255) NOT NULL,
+  `user_agent` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_used_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `endpoint_hash` (`endpoint_hash`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB {charset}
 SQL
     ,

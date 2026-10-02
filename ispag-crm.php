@@ -229,7 +229,7 @@ function ispag_run_crm_manager() {
         'ISPAG_Baikal_Sync',
         'ISPAG_Sequence_Admin',
         'ISPAG_Sequence_Repository',
-        'ISPAG_OneSignal_Handler',
+        'ISPAG_WebPush_Handler',
         'ISPAG_Notifications_Manager',
         'ISPAG_Notifications_Renderer',
         'ISPAG_Simap_Service',
@@ -264,11 +264,6 @@ function ispag_run_crm_manager() {
     // Gestionnaire de workflows (singleton propre, pas de doublon possible)
     ISPAG_Workflow_Manager::get_instance();
 
-    // CHARGEMENT DU SDK ONESIGNAL (Géré par la classe)
-    if ( isset( $instances['ISPAG_OneSignal_Handler'] ) ) {
-        add_action( 'wp_enqueue_scripts', array( 'ISPAG_OneSignal_Handler', 'enqueue_scripts' ) );
-    }
-
     if ( class_exists( 'ISPAG_Crm_Deals_Repository' ) ) {
         $instances['ISPAG_Crm_Deals_Repository'] = new ISPAG_Crm_Deals_Repository();
         $deals_repo = $instances['ISPAG_Crm_Deals_Repository'];
@@ -287,7 +282,6 @@ function ispag_run_crm_manager() {
         $handlers = [
             new ISPAG_Brevo_Webhook_Handler( $contacts_repo, $notes_repo ),
             new ISPAG_Iphone_Shortcut_Webhook_Handler( $contacts_repo, $notes_repo ),
-            new ISPAG_OneSignal_Handler(),
             new ISPAG_Mailgun_Webhook_Handler( $contacts_repo, $notes_repo ),
         ];
 

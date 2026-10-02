@@ -29,6 +29,31 @@ function ispag_enqueue_attachments_assets() {
     ]);
 }
 
+
+/**
+ * Un utilisateur peut supprimer un document s'il gère les commandes, s'il l'a chargé lui-même,
+ * ou s'il est propriétaire (contact associé) du projet auquel le document est lié.
+ */
+function ispag_user_can_delete_attachment($mediaId) {
+    static $cache = [];
+    $mediaId = (int) $mediaId;
+    if (!$mediaId || !is_user_logged_in()) return false;
+    if (current_user_can('manage_order')) return true;
+    if (isset($cache[$mediaId])) return $cache[$mediaId];
+
+    global $wpdb;
+    $row = $wpdb->get_row($wpdb->prepare(
+        "SELECT IdUser, hubspot_deal_id FROM {$wpdb->prefix}achats_historique WHERE IdMedia = %d LIMIT 1",
+        $mediaId
+    ));
+    $ok = false;
+    if ($row) {
+        $ok = ((int) $row->IdUser === get_current_user_id())
+            || ($row->hubspot_deal_id && class_exists('ISPAG_Projet_Repository') && ISPAG_Projet_Repository::is_user_project_owner((int) $row->hubspot_deal_id));
+    }
+    return $cache[$mediaId] = $ok;
+}
+
 // 2. Handler AJAX : tableau complet des pièces jointes (sidebar)
 add_action('wp_ajax_ispag_get_all_attachments', 'ispag_handle_get_all_attachments');
 function ispag_handle_get_all_attachments() {
@@ -221,6 +246,10 @@ function ispag_handle_delete_attachment() {
 
     if (!$mediaId) {
         wp_send_json_error(['message' => __('Missing parameters.', 'ispag-crm')]);
+    }
+
+    if (!ispag_user_can_delete_attachment($mediaId)) {
+        wp_send_json_error(['message' => __('Not authorized.', 'ispag-crm')]);
     }
 
     // Supprimer le fichier physique

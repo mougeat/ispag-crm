@@ -253,6 +253,7 @@ class ISPAG_Attachments_Card_Renderer {
                     <?php echo esc_html__($att->label, 'ispag-crm'); ?>
             </div>
             
+            <?php if (current_user_can('manage_order')) : // extraction de données : réservée aux gestionnaires ?>
             <span 
                     class="ispag-btn ispag-btn-grey-outlined extract-doc-btn"
                     data-doc-id="<?php echo esc_attr($att->id); ?>"
@@ -263,15 +264,18 @@ class ISPAG_Attachments_Card_Renderer {
                     data-ajax-action="<?php echo esc_attr($att->ajax_action); ?>">
                 <span class="dashicons dashicons-analytics"></span>
             </span>
+            <?php endif; ?>
             <?php
             endif;
             ?>
+            <?php if (function_exists('ispag_user_can_delete_attachment') ? ispag_user_can_delete_attachment($att->id) : current_user_can('manage_order')) : ?>
             <span
                     class="ispag-btn ispag-btn-grey-outlined ispag-docu-card__remove"
                     data-media-id="<?php echo esc_attr($att->id); ?>"
                     title="Retirer">
                 &times;
             </span>
+            <?php endif; ?>
         </li>
         <?php
         return ob_get_clean();

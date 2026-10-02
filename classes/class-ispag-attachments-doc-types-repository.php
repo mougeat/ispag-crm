@@ -71,6 +71,14 @@ class ISPAG_Attachments_Doc_Types_Repository {
         $articleList = $this->get_project_main_article($deal_id);
         $articleTypes = [];
 
+        // Types de documents liés aux article : identiques pour tous les articles, une seule requête (aucune variable : pas de prepare)
+        $rows = $this->wpdb->get_results(
+            "SELECT id, slug, label, ajax_action, badge_class, sort_order, restricted, for_article_type
+            FROM {$this->table}
+            WHERE for_article_type = 1 {$restriction}
+            ORDER BY sort_order ASC"
+        ) ?: [];
+
         foreach ($articleList as $article) {
             // Générer dynamiquement le titre de l'article en fonction de son type
             switch ($article->Type) {
@@ -89,16 +97,6 @@ class ISPAG_Attachments_Doc_Types_Repository {
                 default:
                     $articleTitle = $article->Article; // Cas par défaut si le type n'est pas reconnu
             }
-
-            // Récupérer les types de documents pour cet article
-            $sql = $this->wpdb->prepare(
-                "SELECT id, slug, label, ajax_action, badge_class, sort_order, restricted, for_article_type
-                FROM {$this->table}
-                WHERE for_article_type = 1 {$restriction}
-                ORDER BY sort_order ASC"
-            );
-
-            $rows = $this->wpdb->get_results($sql);
 
             // Ajouter un marqueur pour le regroupement (optgroup)
             foreach ($rows as $row) {

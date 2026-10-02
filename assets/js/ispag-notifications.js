@@ -55,76 +55,91 @@ jQuery(document).ready(function($) {
     }
 
     // =========================================================================
-    // 3. INITIALISATION ONESIGNAL (NOUVELLE VERSION)
+    // 3. NOTIFICATIONS PUSH (Web Push natif, sans service externe)
     // =========================================================================
 
-    // Charger le SDK OneSignal dynamiquement
-    const oneSignalScript = document.createElement('script');
-    oneSignalScript.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
-    oneSignalScript.defer = true;
-    document.head.appendChild(oneSignalScript);
+    function urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const raw = window.atob(base64);
+        const out = new Uint8Array(raw.length);
+        for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+        return out;
+    }
 
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-        // 1. Initialiser OneSignal
-        await OneSignal.init({ 
-            appId: ispag_notifications_obj.app_id, // Assurez-vous que ispag_onesignal_obj.app_id est défini dans wp_localize_script
-            safari_web_id: "web.onesignal.auto.4dbe0dd2-36c1-4474-980b-740086f7dd0e",
-            notifyButton: {
-                enable: false, // Désactive la cloche
-            },
-            serviceWorkerPath: 'OneSignalSDKWorker.js',
-            serviceWorkerParam: { scope: '/' },
-            autoRegister: false, // Désactive l'abonnement automatique
+    function arrayBufferToBase64Url(buffer) {
+        let binary = '';
+        new Uint8Array(buffer).forEach(function (b) { binary += String.fromCharCode(b); });
+        return window.btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    // Abonne ce navigateur (permission déjà accordée) et envoie l'abonnement au serveur
+    async function subscribeToPush() {
+        const registration = await navigator.serviceWorker.register(ispag_notifications_obj.push_sw_url, {
+            scope: ispag_notifications_obj.push_scope
         });
+        await navigator.serviceWorker.ready;
 
-        // 2. Attendre que le Service Worker soit prêt
-        await OneSignal.ServiceWorker.register();
-
-        // 3. Lier l'utilisateur WordPress (si connecté)
-        const currentUserId = ispag_notifications_obj.current_user_id; // Définissez cette variable dans wp_localize_script
-        if (currentUserId !== "0") {
-            console.log('🔗 Login OneSignal pour l\'utilisateur WP :', currentUserId);
-            await OneSignal.login("WP_" + currentUserId);
-
-            // 4. Demander les permissions pour les notifications
-            console.log('🔔 Demande de permission pour les notifications...');
-            const permission = await OneSignal.Notifications.requestPermission();
-            console.log('Permission pour les notifications :', permission);
-
-            // 5. (Optionnel) Demander la permission pour la géolocalisation
-            // Décommentez si vous utilisez la géolocalisation
-            // const locationPermission = await OneSignal.Location.requestPermission();
-            // console.log('Permission pour la géolocalisation :', locationPermission);
-        }
-
-        // 6. Écouteurs d'événements pour les notifications
-        OneSignal.Notifications.addEventListener('click', function(event) {
-            console.log('Notification cliquée :', event);
-            markNotificationAsRead(event.notification.id);
-        });
-
-        OneSignal.Notifications.addEventListener('display', function(event) {
-            console.log('Notification affichée :', event);
-            markNotificationAsRead(event.notification.id);
-        });
-
-        // Fonction pour marquer une notification comme lue
-        function markNotificationAsRead(onesignalNotificationId) {
-            jQuery.ajax({
-                url: ajaxurl,
-                type: 'POST',
-                data: {
-                    action: 'ispag_mark_notification_as_read',
-                    onesignal_notification_id: onesignalNotificationId,
-                    _ajax_nonce: ispag_ajax_obj.nonce
-                },
-                success: function(response) {
-                    console.log('Notification marquée comme lue :', response);
-                }
+        let subscription = await registration.pushManager.getSubscription();
+        if (!subscription) {
+            subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(ispag_notifications_obj.vapid_public_key)
             });
         }
-    });
+
+        // Ne renvoie l'abonnement au serveur que s'il a changé (ou si le compte a changé)
+        const syncKey = ispag_notifications_obj.current_user_id + '|' + subscription.endpoint;
+        try {
+            if (localStorage.getItem('ispag_push_synced') === syncKey) return;
+        } catch (e) { /* stockage indisponible : on synchronise */ }
+
+        $.ajax({
+            url: ispag_notifications_obj.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'ispag_push_subscribe',
+                endpoint: subscription.endpoint,
+                p256dh: arrayBufferToBase64Url(subscription.getKey('p256dh')),
+                auth: arrayBufferToBase64Url(subscription.getKey('auth')),
+                _ajax_nonce: ispag_notifications_obj.nonce
+            },
+            success: function () {
+                try { localStorage.setItem('ispag_push_synced', syncKey); } catch (e) { /* ignoré */ }
+            }
+        });
+    }
+
+    (function initPush() {
+        const obj = window.ispag_notifications_obj || {};
+        if (String(obj.current_user_id) === '0') return;
+        if (!obj.vapid_public_key) {
+            console.warn('ISPAG push : clé VAPID absente (le serveur ne gère pas Web Push, ou le script est mal localisé).');
+            return;
+        }
+        if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
+            console.warn('ISPAG push : ce navigateur ne gère pas les notifications push (sur iPhone, ajoute le CRM à l\'écran d\'accueil).');
+            return;
+        }
+        if (Notification.permission === 'denied') {
+            console.warn('ISPAG push : notifications bloquées pour ce site dans le navigateur.');
+            return;
+        }
+
+        if (Notification.permission === 'granted') {
+            subscribeToPush().catch(function (err) { console.warn('ISPAG push :', err); });
+            return;
+        }
+
+        // Permission jamais demandée : les navigateurs (Safari/iOS en particulier) exigent un geste de l'utilisateur
+        $(document).one('click keydown', function () {
+            Notification.requestPermission().then(function (permission) {
+                if (permission === 'granted') {
+                    subscribeToPush().catch(function (err) { console.warn('ISPAG push :', err); });
+                }
+            });
+        });
+    })();
 
     // =========================================================================
     // 4. GESTION DES FENÊTRES CONCEPTUELLES (MODALE DYNAMIQUE)
@@ -347,7 +362,6 @@ jQuery(document).ready(function($) {
         const $button = $(this);
         const $notificationItem = $button.closest('.notification-item');
         const notificationId = $notificationItem.data('notification-id');
-        const onesignalId = $notificationItem.data('onesignal-id');
         const url = $button.attr('href');
 
         // Ajouter un spinner au bouton "Ouvrir"
@@ -360,7 +374,6 @@ jQuery(document).ready(function($) {
             data: {
                 action: 'ispag_mark_notification_as_read',
                 notification_id: notificationId,
-                onesignal_id: onesignalId,
                 _ajax_nonce: ispag_notifications_obj.nonce
             },
             success: function() {
@@ -385,7 +398,6 @@ jQuery(document).ready(function($) {
 
         const $button = $(this);
         const notificationId = $button.data('notification-id');
-        const onesignalId = $button.data('onesignal-id');
 
         // Désactiver le bouton et ajouter un spinner Dashicons
         $button.prop('disabled', true);
@@ -397,7 +409,6 @@ jQuery(document).ready(function($) {
             data: {
                 action: 'ispag_mark_notification_as_read',
                 notification_id: notificationId,
-                onesignal_id: onesignalId,
                 _ajax_nonce: ispag_notifications_obj.nonce
             },
             success: function() {
