@@ -297,7 +297,14 @@ class ISPAG_Note_Ajax_Handler {
         if ( class_exists( 'ISPAG_Note_Renderer' ) ) {
             $note_renderer = new ISPAG_Note_Renderer();
             $new_item_html = $note_renderer->render_activity_card( $log_entry );
-            $table_html    = $note_renderer->render_task_table_row( $log_entry );
+
+            // Ligne du tableau des tâches : seulement pour une tâche ouverte de l'utilisateur courant
+            if ( ! empty( $log_entry->is_task ) && class_exists( 'ISPAG_Note_Repository' ) && function_exists( 'ispag_get_template' ) ) {
+                $task_for_row = ( new ISPAG_Note_Repository() )->get_active_task( $activity_id );
+                if ( $task_for_row ) {
+                    $table_html = ispag_get_template( 'task-row', [ 'task' => $task_for_row ] );
+                }
+            }
         }
 
         // 7. Mise à jour des métas de dernier contact

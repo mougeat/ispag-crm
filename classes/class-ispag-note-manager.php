@@ -59,6 +59,7 @@ class ISPAG_Note_Manager {
         add_action( 'wp_ajax_ispag_search_deals_select2', array( $this, 'ispag_search_deals' ) );
 
         add_action( 'wp_ajax_ispag_complete_task', array( $this, 'handle_complete_task_ajax' ) );
+        add_action( 'wp_ajax_ispag_snooze_task', array( $this, 'handle_snooze_task_ajax' ) );
     }
     
     /**
@@ -456,6 +457,54 @@ class ISPAG_Note_Manager {
             'deals' => $deals,
             'debug_sql' => $sql_prepared 
         ]);
+    }
+
+
+    /**
+     * Reporte une tâche de N jours (1, 3 ou 7) à partir d'aujourd'hui, en gardant l'heure d'origine.
+     * Le rappel est décalé du même écart. Renvoie la ligne HTML mise à jour du tableau des tâches.
+     */
+    public function handle_snooze_task_ajax() {
+        global $wpdb;
+        check_ajax_referer( 'ispag_crm_nonce', 'security' );
+
+        $activity_id = absint( $_POST['activity_id'] ?? 0 );
+        $days        = absint( $_POST['days'] ?? 0 );
+        if ( ! $activity_id || ! in_array( $days, array( 1, 3, 7 ), true ) ) {
+            wp_send_json_error( array( 'message' => __( 'Invalid request.', 'ispag-crm' ) ) );
+        }
+
+        $table = self::TABLE_NOTE;
+        $task  = $wpdb->get_row( $wpdb->prepare(
+            "SELECT * FROM {$table} WHERE id = %d AND is_task = 1 AND is_completed = 0 AND user_id = %d",
+            $activity_id, get_current_user_id()
+        ) );
+        if ( ! $task ) {
+            wp_send_json_error( array( 'message' => __( 'Task not found.', 'ispag-crm' ) ) );
+        }
+
+        $old_due  = strtotime( $task->due_date ) ?: current_time( 'timestamp' );
+        $new_day  = strtotime( '+' . $days . ' day', strtotime( date( 'Y-m-d', current_time( 'timestamp' ) ) ) );
+        $new_due  = $new_day + ( $old_due - strtotime( date( 'Y-m-d', $old_due ) ) );
+
+        $update = array( 'due_date' => date( 'Y-m-d H:i:s', $new_due ), 'updated_at' => current_time( 'mysql' ) );
+        if ( ! empty( $task->reminder_date ) && strtotime( $task->reminder_date ) ) {
+            $update['reminder_date'] = date( 'Y-m-d H:i:s', $new_due - ( $old_due - strtotime( $task->reminder_date ) ) );
+        }
+        if ( $wpdb->update( $table, $update, array( 'id' => $activity_id ) ) === false ) {
+            wp_send_json_error( array( 'message' => __( 'Database update failed.', 'ispag-crm' ) ) );
+        }
+
+        $row_html = '';
+        if ( class_exists( 'ISPAG_Note_Repository' ) && function_exists( 'ispag_get_template' ) ) {
+            $formatted = ( new ISPAG_Note_Repository() )->get_active_task( $activity_id );
+            if ( $formatted ) $row_html = ispag_get_template( 'task-row', array( 'task' => $formatted ) );
+        }
+
+        wp_send_json_success( array(
+            'message'  => __( 'Task postponed.', 'ispag-crm' ),
+            'row_html' => $row_html,
+        ) );
     }
 
     /**

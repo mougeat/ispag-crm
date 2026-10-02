@@ -71,13 +71,16 @@ jQuery(document).ready(function($) {
                 if (actionType === 'delete') {
                     activityElement.fadeOut(300, function() { $(this).remove(); });
                     // Supprimer aussi la ligne du tableau si elle existe
-                    $('#task-' + activityId).fadeOut();
+                    $('#task-' + activityId).fadeOut(200, function() { $(this).remove(); $(document).trigger('ispag:tasks-changed'); });
                 } else {
                     activityElement.addClass('is-completed').css('opacity', 1);
                     activityElement.find('.ispag-quick-complete').html('<span class="dashicons dashicons-yes-alt is-completed-check"></span>');
                     // Gérer aussi la ligne de tableau
                     const $row = $('#task-' + activityId);
-                    if($row.length) $row.addClass('is-completed').css('background-color', '#d4edda').fadeOut();
+                    if($row.length) {
+                        $row.addClass('is-completed').css('background-color', '#d4edda').fadeOut(300, function() { $(this).remove(); $(document).trigger('ispag:tasks-changed'); });
+                        $(document).trigger('ispag:task-completed');
+                    }
                 }
                 if (typeof window.closeSidebar === 'function') window.closeSidebar();
             } else {

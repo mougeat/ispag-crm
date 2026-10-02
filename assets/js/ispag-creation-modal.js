@@ -680,13 +680,13 @@ jQuery(document).ready(function($) {
                         if (existingTaskRow.length) {
                             // Si la tâche existe (Édition), on remplace la ligne
                             existingTaskRow.replaceWith(newTaskRowHtml);
+                            $(document).trigger('ispag:tasks-changed');
                         } else {
                             // Si c'est une nouvelle tâche (Création)
                             // On vérifie si la ligne "No tasks found" est présente pour la supprimer
-                            if ($('#the-list tr').length === 1 && $('#the-list td').attr('colspan') == "8") {
-                                $('#the-list').empty();
-                            }
+                            $('#the-list .empty-msg').closest('tr:not(.empty-state-row)').remove();
                             $('#the-list').prepend(newTaskRowHtml);
+                            $(document).trigger('ispag:tasks-changed');
                         }
                     }
                 } else {
