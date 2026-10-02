@@ -297,7 +297,7 @@ jQuery(document).ready(function($) {
                 emailFields.show();
                 
                 createNoteBtn.attr('data-action', 'send_mail');
-                finalBtnText = originText ? (ispagNoteData.textSend + ' ' + originText) : (ispagNoteData.textSend + ' ' + type);
+                finalBtnText = ispagNoteData.textPrepareMail;
                 createNoteBtn.text(finalBtnText);
                 break;
             case 'log_email':
@@ -336,8 +336,10 @@ jQuery(document).ready(function($) {
         const type = modalActionType.val();
         if (type === 'email' || type === 'mail') {
             $('#ispag-note-template-wrapper').slideDown(200);
+            $('.ispag-eml-hint').slideDown(200);
         } else {
             $('#ispag-note-template-wrapper').slideUp(200);
+            $('.ispag-eml-hint').slideUp(200);
         }
     }
 
@@ -399,6 +401,7 @@ jQuery(document).ready(function($) {
         // On récupère le texte du bouton (en enlevant les espaces superflus)
         const buttonText = $btn.text().trim();
         
+        // extraData peut être une fonction (index) => données propres à chaque option
         const populate = (sel, ids, names, extraData = {}) => {
             const s = $(sel).val(null);
             if (ids && names) {
@@ -411,7 +414,7 @@ jQuery(document).ready(function($) {
                     const fullData = { 
                         id: id.trim(), 
                         text: nameArr[i], 
-                        ...extraData 
+                        ...(typeof extraData === 'function' ? extraData(i) : extraData)
                     };
                     
                     // On attache ces données à l'élément DOM de l'option
@@ -423,10 +426,13 @@ jQuery(document).ready(function($) {
         };
 
         // Pour les contacts (si tu as besoin de l'email/tel en direct)
-        populate(contactSelect, $btn.data('contact-ids'), $btn.data('contact-names'), {
-            email: $btn.data('contact-emails'),
-            phone: $btn.data('contact-phones')
-        });
+        // Les listes e-mails / téléphones sont dans le même ordre que les ids : une valeur par contact
+        const emailList = String($btn.data('contact-emails') || '').split(',');
+        const phoneList = String($btn.data('contact-phones') || '').split(',');
+        populate(contactSelect, $btn.data('contact-ids'), $btn.data('contact-names'), i => ({
+            email: (emailList[i] || '').trim(),
+            phone: (phoneList[i] || '').trim()
+        }));
 
         populate(companySelect, $(this).data('company-ids'), $(this).data('company-names'));
         
@@ -554,59 +560,67 @@ jQuery(document).ready(function($) {
             return;
         }
 
-        createNoteBtn.prop('disabled', true).text(ispagNoteData.textSaving);
+        createNoteBtn.prop('disabled', true).text(submitMode === 'send_mail' ? ispagNoteData.textPreparingMail : ispagNoteData.textSaving);
 
-        // --- CAS 1 : ENVOI VIA OUTLOOK (Pas d'enregistrement DB) ---
+        // --- CAS 1 : BROUILLON .EML (pas d'enregistrement DB : le CRM classe le mail à l'envoi via la copie cachée) ---
         if (submitMode === 'send_mail' && activityId == 0) {
-            // 1. Récupérer l'email du premier contact
-            const contactData       = contactSelect.select2('data');
-            const companyData       = companySelect.select2('data');
-            const dealData          = dealSelect.select2('data');
-            const recipientEmail    = (contactData.length > 0) ? (contactData[0].email || "") : "";
-            const offerNum          = (dealData.length > 0) ? (dealData[0].offer_num || "") : "";
-            const dealId            = (dealData.length > 0) ? (dealData[0].id || "") : "";
-            const companyId         = (companyData.length > 0) ? (companyData[0].id || "") : "";
-            const userId            = (contactData.length > 0) ? (contactData[0].id || "") : "";
+            const contactData = contactSelect.select2('data');
+            const companyData = companySelect.select2('data');
+            const dealData    = dealSelect.select2('data');
 
-            // 2. Construire le lien mailto
-            const subject = encodeURIComponent(activityTitle);
+            // Tous les destinataires sélectionnés (une adresse par contact)
+            const recipients = contactData.map(c => c.email || '').filter(Boolean).join(',');
 
-            let taskTag = ""; 
+            let taskTs = 0;
             if (isTask) {
                 let finalDate = new Date();
-                const offset = taskDueOffsetSelect.val(); // ex: "0d", "7d", "custom"
-                const timeStr = taskDueTime.val() || "08:00"; // HH:mm
+                const offset  = taskDueOffsetSelect.val();   // ex: "0d", "7d", "1m", "custom"
+                const timeStr = taskDueTime.val() || "08:00";
 
                 if (offset === 'custom') {
                     finalDate = new Date(taskDueDateCustom.val());
+                } else if (/m$/.test(offset)) {
+                    finalDate.setMonth(finalDate.getMonth() + (parseInt(offset, 10) || 0));
                 } else {
-                    // Extraction du nombre de jours depuis l'offset (ex: "14d" -> 14)
-                    const daysToAdd = parseInt(offset.replace('d', '')) || 0;
-                    finalDate.setDate(finalDate.getDate() + daysToAdd);
+                    finalDate.setDate(finalDate.getDate() + (parseInt(offset, 10) || 0));
                 }
-
-                // Appliquer l'heure choisie
                 const [hours, minutes] = timeStr.split(':');
-                finalDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-
-                // Conversion en timestamp (secondes)
-                const timestamp = Math.floor(finalDate.getTime() / 1000);
-                taskTag = ` [T-${timestamp}]`;
+                finalDate.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+                taskTs = Math.floor(finalDate.getTime() / 1000);
             }
 
-            const invisibleGap = "\n".repeat(5);
-            const trackingTag = `Ref: [D-${offerNum}] [U-${userId}] [C-${companyId}] ${taskTag}`;
-
-
-            const body = encodeURIComponent(noteContentPlain + invisibleGap + trackingTag);
-            const mailtoUrl = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
-
-            // 3. Ouvrir Outlook
-            window.location.href = mailtoUrl;
-
-            // 4. Fermer simplement la modale
-            closeModal();
-            return; // On s'arrête ici, pas d'AJAX
+            $.post(ispagNoteData.ajaxurl, {
+                action: 'ispag_build_eml',
+                security: ispagNoteData.nonce,
+                to: recipients,
+                subject: activityTitle,
+                body_html: noteContentHtml,
+                deal_ref: dealData.length ? (dealData[0].offer_num || '') : '',
+                user_id: contactData.length ? (contactData[0].id || '') : '',
+                company_id: companyData.length ? (companyData[0].id || '') : '',
+                task_ts: taskTs
+            }).done(function(response) {
+                if (!response.success) {
+                    showError((response.data && response.data.message) || 'Error');
+                    createNoteBtn.prop('disabled', false).text(ispagNoteData.textPrepareMail);
+                    return;
+                }
+                // Téléchargement du .eml : le navigateur propose de l'ouvrir dans le client de messagerie
+                const bytes = Uint8Array.from(atob(response.data.eml), ch => ch.charCodeAt(0));
+                const url   = URL.createObjectURL(new Blob([bytes], { type: 'message/rfc822' }));
+                const link  = document.createElement('a');
+                link.href = url;
+                link.download = response.data.filename;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 10000);
+                closeModal();
+            }).fail(function() {
+                showError(ispagNoteData.textErrorNetwork || 'Network error, your text has been kept. Please try again.');
+                createNoteBtn.prop('disabled', false).text(ispagNoteData.textPrepareMail);
+            });
+            return;
         }
 
         // --- CAS 2 : ENREGISTREMENT CLASSIQUE (AJAX) ---

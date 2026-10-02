@@ -193,6 +193,11 @@ class ISPAG_Note_Modal_View {
                         </div>
                     </div>
 
+                    <p class="ispag-eml-hint" style="display:none;">
+                        <span class="dashicons dashicons-info-outline"></span>
+                        <?php esc_html_e('A draft (.eml) is downloaded: open it in your mail client to review and send. The CRM files the email automatically once sent.', 'ispag-crm'); ?>
+                    </p>
+
                     <div class="ispag-form-group">
                         <label id="activity-title-label" for="activity-title-input"><?php esc_html_e('Note Title', 'ispag-crm'); ?></label>
                         <input type="text" id="activity-title-input" name="activity_title" class="ispag-input" placeholder="<?php esc_html_e('Quick summary', 'ispag-crm'); ?>...">

@@ -206,6 +206,7 @@ function ispag_run_crm_manager() {
         'ISPAG_Status_Manager',
         'ISPAG_Contact_Ajax_Handler',
         'ISPAG_Note_Manager',
+        'ISPAG_Eml_Builder',
         'ISPAG_Crm_Deal_Model',
         'ISPAG_Company_Importer',
         'ISPAG_Crm_Company_Repository',

@@ -197,6 +197,8 @@ class ISPAG_Note_Manager {
             'textCallTitle'             => __('Call title', 'ispag-crm'),
             'textNoteTitle'             => __('Note title', 'ispag-crm'),
             'textNoteTitleInput'        => __('Quick summary', 'ispag-crm'),
+            'textPrepareMail'           => __('Prepare email', 'ispag-crm'),
+            'textPreparingMail'         => __('Preparing...', 'ispag-crm'),
             'modalTitleDefault'         => __('Note', 'ispag-crm'),
             'textConfirmDiscard'        => __('Discard this draft?', 'ispag-crm'),
             'textErrorContent'          => __('Please enter some content.', 'ispag-crm'),
