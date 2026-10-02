@@ -73,10 +73,7 @@ class ISPAG_OneSignal_Handler {
                         markNotificationAsRead(event.notification.id);
                     });
 
-                    OneSignal.Notifications.addEventListener('display', function(event) {
-                        // console.log('Notification affichée:', event);
-                        markNotificationAsRead(event.notification.id);
-                    });
+                    // Seul le clic marque la notification comme lue (pas son affichage)
 
                     // Fonction pour marquer comme lue en AJAX
                     function markNotificationAsRead(onesignalNotificationId) {

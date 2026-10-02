@@ -79,6 +79,7 @@ class ISPAG_Notifications_Manager
         add_action('wp_ajax_ispag_mark_conceptual_read', [__CLASS__, 'mark_conceptual_notification_read_ajax']);
         // $logger->log_user_action('notifications_manager', 'conceptual_notification_hooks_registered', [], $user_id);
 
+        add_action('init', [__CLASS__, 'mark_read_from_url'], 20);
         add_action('wp_ajax_ispag_mark_notification_as_read', [__CLASS__, 'mark_notification_as_read_ajax']);
         add_action('wp_ajax_nopriv_ispag_mark_notification_as_read', [__CLASS__, 'mark_notification_as_read_ajax']);
         add_action('wp_ajax_ispag_delete_notification', [__CLASS__, 'delete_notification_ajax']);
@@ -544,6 +545,7 @@ class ISPAG_Notifications_Manager
                     $logger->log_user_action('notifications_manager', 'sent_to_onesignal', ['user_id' => $user_id, 'onesignal_id' => $onesignal_id], $current_user_id);
                 }
 
+                $bell_id = null;
                 if (in_array('crm', $user_channels))
                 {
                     $bell_id = self::send_to_crm_bell($user_id, $title, $content, $url, $type, $entity_id, $onesignal_id);
@@ -564,9 +566,12 @@ class ISPAG_Notifications_Manager
                     }
                 }
 
+                // Lien suivi : l'ouvrir (mail, cloche, push) marque la notification comme lue sur tous les canaux
+                $tracked_url = self::tracked_url($url, $bell_id, $onesignal_id);
+
                 if (in_array('mail', $user_channels))
                 {
-                    $result = self::send_to_email($user_id, $title, $content, $url, $type, $extra_data);
+                    $result = self::send_to_email($user_id, $title, $content, $tracked_url, $type, $extra_data);
                     $logger->log_user_action('notifications_manager', 'sent_to_email', ['user_id' => $user_id, 'result' => $result], $current_user_id);
                 }
 
@@ -780,6 +785,9 @@ class ISPAG_Notifications_Manager
             $insert_id = $wpdb->insert_id;
             $logger->log_user_action('notifications_manager', 'crm_bell_inserted', ['insert_id' => $insert_id], 0);
 
+            // Le lien de la cloche porte l'id de la notification : l'ouvrir la marque comme lue (et la notification push aussi)
+            $wpdb->update($table_name, ['url' => add_query_arg('ispag_notif', $insert_id, $url)], ['id' => $insert_id], ['%s'], ['%d']);
+
             if (get_current_user_id() === (int)$user_id && !is_admin())
             {
                 $logger->log_user_action('notifications_manager', 'adding_trigger_script_for_current_user', ['user_id' => $user_id], 0);
@@ -946,7 +954,11 @@ class ISPAG_Notifications_Manager
             'cc_emails' => $cc_emails
         ], $current_user_id);
 
-        $sent = wp_mail($user->user_email, $subject, wp_strip_all_tags($body), $headers);
+        // E-mail HTML : le contenu peut arriver échappé (&lt;strong&gt;) ou avec des balises ; le lien vers le projet est ajouté
+        $headers[] = 'Content-Type: text/html; charset=UTF-8';
+        $html = self::email_html($name, $title, $body, $url);
+
+        $sent = wp_mail($user->user_email, $subject, $html, $headers);
 
         if (!$sent)
         {
@@ -968,6 +980,72 @@ class ISPAG_Notifications_Manager
         }
 
         return $sent;
+    }
+
+    /** URL absolue ; une URL relative (project-detail/12/) est rattachée au site. */
+    private static function absolute_url($url)
+    {
+        $url = (string) $url;
+        if ($url === '') return home_url('/');
+        return preg_match('#^https?://#i', $url) ? $url : home_url('/' . ltrim($url, '/'));
+    }
+
+    /** Ajoute à l'URL l'id de la notification (cloche) et celui de la notification push. */
+    private static function tracked_url($url, $bell_id, $onesignal_id)
+    {
+        $args = [];
+        if (!empty($bell_id)) $args['ispag_notif'] = (int) $bell_id;
+        if (!empty($onesignal_id)) $args['onesignal_id'] = $onesignal_id;
+        return $args ? add_query_arg($args, $url) : $url;
+    }
+
+    /** Corps HTML d'un e-mail de notification, avec bouton vers le projet. */
+    private static function email_html($name, $title, $content, $url)
+    {
+        $allowed = ['strong' => [], 'b' => [], 'em' => [], 'i' => [], 'br' => [], 'ul' => [], 'li' => [], 'p' => [], 'a' => ['href' => []]];
+        $text = html_entity_decode((string) $content, ENT_QUOTES, 'UTF-8');
+        $text = wp_kses($text, $allowed);
+        if ($text === wp_strip_all_tags($text)) {
+            $text = nl2br($text); // texte brut : on garde les retours à la ligne
+        }
+        $link = self::absolute_url($url);
+
+        return '<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#1e293b;max-width:600px">'
+            . '<p>' . sprintf(esc_html__('Hello %s,', 'ispag-crm'), esc_html($name)) . '</p>'
+            . '<h3 style="margin:0 0 10px;color:#d21034">' . esc_html($title) . '</h3>'
+            . '<div style="line-height:1.6">' . $text . '</div>'
+            . '<p style="margin:22px 0"><a href="' . esc_url($link) . '" style="background:#d21034;color:#ffffff;text-decoration:none;padding:10px 18px;border-radius:4px;display:inline-block">'
+            . esc_html__('Open in ISPAG', 'ispag-crm') . '</a></p>'
+            . '<p style="color:#64748b;font-size:12px">' . esc_html($link) . '</p>'
+            . '</div>';
+    }
+
+    /**
+     * Ouvrir un lien de notification (e-mail, cloche, push) marque la notification comme lue :
+     * la ligne de la cloche, et la notification push côté OneSignal.
+     * Paramètres d'URL : ispag_notif (id de la cloche) et/ou onesignal_id.
+     */
+    public static function mark_read_from_url()
+    {
+        if (wp_doing_ajax() || !is_user_logged_in()) return;
+        $notif_id = isset($_GET['ispag_notif']) ? (int) $_GET['ispag_notif'] : 0;
+        $os_id = isset($_GET['onesignal_id']) ? sanitize_text_field(wp_unslash($_GET['onesignal_id'])) : '';
+        if (!$notif_id && $os_id === '') return;
+
+        global $wpdb;
+        $table = $wpdb->prefix . 'ispag_notifications';
+        $user_id = get_current_user_id();
+
+        $rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT id, onesignal_id FROM {$table} WHERE user_id = %d AND is_read = 0 AND (id = %d OR (onesignal_id <> '' AND onesignal_id = %s))",
+            $user_id, $notif_id, $os_id
+        ));
+        foreach ($rows as $row) {
+            $wpdb->update($table, ['is_read' => 1, 'read_at' => current_time('mysql')], ['id' => (int) $row->id], ['%d', '%s'], ['%d']);
+            if (!empty($row->onesignal_id) && class_exists('ISPAG_OneSignal_Handler')) {
+                ISPAG_OneSignal_Handler::mark_as_read_on_onesignal($row->onesignal_id);
+            }
+        }
     }
 
     /**
@@ -1074,6 +1152,20 @@ class ISPAG_Notifications_Manager
 
         $notification_id = isset($_POST['notification_id']) ? intval($_POST['notification_id']) : 0;
         $onesignal_id = isset($_POST['onesignal_id']) ? sanitize_text_field($_POST['onesignal_id']) : '';
+
+        // Clic sur la notification push : on retrouve la ligne de la cloche par l'id OneSignal et on la marque lue (jamais de bascule)
+        $os_click = isset($_POST['onesignal_notification_id']) ? sanitize_text_field($_POST['onesignal_notification_id']) : '';
+        if ($notification_id === 0 && $os_click !== '') {
+            global $wpdb;
+            $updated = $wpdb->query($wpdb->prepare(
+                "UPDATE {$wpdb->prefix}ispag_notifications SET is_read = 1, read_at = %s WHERE onesignal_id = %s AND user_id = %d AND is_read = 0",
+                current_time('mysql'), $os_click, get_current_user_id()
+            ));
+            if (class_exists('ISPAG_OneSignal_Handler')) {
+                ISPAG_OneSignal_Handler::mark_as_read_on_onesignal($os_click);
+            }
+            wp_send_json_success(['message' => 'Notification marked as read.', 'updated' => (int) $updated]);
+        }
 
         if ($notification_id === 0) {
             wp_send_json_error(['message' => 'ID de notification manquant.']);
