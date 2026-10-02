@@ -383,13 +383,13 @@ class ISPAG_Notifications_Renderer {
             true
         );
 
-        $app_id = defined('CRM_ONE_SIGNAL_APP_ID') ? CRM_ONE_SIGNAL_APP_ID : getenv('CRM_ONE_SIGNAL_APP_ID');
-
         // Localiser le script pour AJAX
         wp_localize_script('ispag-notifications-js', 'ispag_notifications_obj', [
             'nonce'             => wp_create_nonce('ispag_nonce'),
             'ajaxurl'           => admin_url('admin-ajax.php'),
-            'app_id'            => $app_id,
+            'vapid_public_key'  => ISPAG_WebPush_Handler::is_supported() ? ISPAG_WebPush_Handler::get_public_key() : '',
+            'push_sw_url'       => ISPAG_WebPush_Handler::service_worker_url(),
+            'push_scope'        => ISPAG_WebPush_Handler::scope(),
             'current_user_id'   => get_current_user_id(),
         ]);
 
@@ -688,7 +688,7 @@ class ISPAG_Notifications_Renderer {
     //     }
 
     //     $mark_as_read_button = sprintf(
-    //         '<a href="#" class="ispag-btn ispag-btn-grey notification-mark-as-read"  data-notification-id="%d" data-url="%s" data-onesignal-id="%s">%s</a>',
+    //         '<a href="#" class="ispag-btn ispag-btn-grey notification-mark-as-read"  data-notification-id="%d" data-url="%s">%s</a>',
             
     //         esc_attr($notification->id),
     //         esc_url($target_url),
@@ -697,7 +697,7 @@ class ISPAG_Notifications_Renderer {
     //     );
 
     //     return sprintf(
-    //         '<div class="notification-item unread" data-notification-id="%d" data-url="%s" data-onesignal-id="%s">
+    //         '<div class="notification-item unread" data-notification-id="%d" data-url="%s">
     //             <div class="notification-title">%s</div>
     //             <div class="notification-content">%s</div>
     //             <div class="notification-time">%s</div>
@@ -758,18 +758,16 @@ class ISPAG_Notifications_Renderer {
         if (!$is_read) {
             // Non lue -> Enveloppe ouverte (pour la marquer comme lue)
             $mark_as_read_btn = sprintf(
-                '<button type="button" class="notification-action-btn notification-mark-as-read" data-notification-id="%d" data-onesignal-id="%s" title="%s">%s</button>',
+                '<button type="button" class="notification-action-btn notification-mark-as-read" data-notification-id="%d" title="%s">%s</button>',
                 esc_attr($notification->id),
-                esc_attr($notification->onesignal_id),
                 __('Mark as read', 'ispag-crm'),
                 $envelope_open
             );
         } else {
             // Lue -> Enveloppe fermée (pour la remettre non lue)
             $mark_as_read_btn = sprintf(
-                '<button type="button" class="notification-action-btn notification-mark-as-read" data-notification-id="%d" data-onesignal-id="%s" title="%s">%s</button>',
+                '<button type="button" class="notification-action-btn notification-mark-as-read" data-notification-id="%d" title="%s">%s</button>',
                 esc_attr($notification->id),
-                esc_attr($notification->onesignal_id),
                 __('Mark as unread', 'ispag-crm'),
                 $envelope_closed
             );
@@ -796,7 +794,7 @@ class ISPAG_Notifications_Renderer {
         $formatted_date = date_i18n('d M à H:i', strtotime($notification->sent_at));
 
         return sprintf(
-            '<div class="%s" data-notification-id="%d" data-onesignal-id="%s">
+            '<div class="%s" data-notification-id="%d">
                 <div class="notification-indicator"></div>
                 <div class="notification-body">
                     <div class="notification-header-line">
@@ -811,7 +809,6 @@ class ISPAG_Notifications_Renderer {
             </div>',
             esc_attr($item_class),
             esc_attr($notification->id),
-            esc_attr($notification->onesignal_id),
             esc_html($notification->title),
             esc_html($formatted_date),
             esc_html($notification->content),
