@@ -1509,6 +1509,10 @@ class ISPAG_Crm_Contacts_Repository {
 
         if (ob_get_length()) ob_clean();
 
+        if ( $ai_error = ISPAG_Crm_Mistral::ajax_error($ai_response) ) {
+            wp_send_json_error(['message' => $ai_error]);
+        }
+
         if ($mode === 'meeting') {
             $this->_send_meeting_response($ai_response, $prepared['contact']->display_name);
         } else {

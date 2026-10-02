@@ -694,9 +694,8 @@ class ISPAG_Crm_Company_Repository {
         );
 
         // Vérification de la réponse
-        if (null === $ai_response || !isset($ai_response['summary'])) {
-            // error_log("[$timestamp] ERREUR : L'IA a renvoyé une réponse vide ou invalide.", 3, $log_file);
-            wp_send_json_error(['message' => 'AI processing failed.']);
+        if ( $ai_error = ISPAG_Crm_Mistral::ajax_error($ai_response) ) {
+            wp_send_json_error(['message' => $ai_error]);
         }
 
         // 4. Préparation du HTML pour le retour AJAX

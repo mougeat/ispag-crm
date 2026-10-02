@@ -17,12 +17,54 @@ class ISPAG_Crm_Mistral
      */
     public static function init()
     {
-        self::$api_key = getenv('CRM_MISTRAL_API_KEY');
+        self::$api_key = self::read_api_key();
         self::$logger = ISPAG_Logger::get_instance();
         $user_id = get_current_user_id();
         // self::$logger->log_user_action('crm_mistral', 'class_initialized', [], $user_id);
 
         add_filter('ispag_send_to_crm_mistral', [self::class, 'send_to_mistral'], 10, 5);
+    }
+
+
+    /**
+     * Lit la clé API : getenv() d'abord, puis $_ENV / $_SERVER (putenv/getenv sont souvent désactivés
+     * chez les hébergeurs mutualisés), puis une constante définie dans wp-config.php.
+     */
+    private static function read_api_key()
+    {
+        $name = 'CRM_MISTRAL_API_KEY';
+        $key  = getenv($name);
+        if (empty($key) && !empty($_ENV[$name]))    $key = $_ENV[$name];
+        if (empty($key) && !empty($_SERVER[$name])) $key = $_SERVER[$name];
+        if (empty($key) && defined($name))          $key = constant($name);
+        return is_string($key) ? trim($key) : '';
+    }
+
+    /**
+     * Échec explicite : écrit toujours dans le journal PHP (le logger de secours n'écrit rien)
+     * et renvoie une réponse portant la cause dans la clé 'error'.
+     */
+    private static function fail($message, $detail = '')
+    {
+        error_log('[ISPAG][crm_mistral] ' . $message . ($detail !== '' ? ' | ' . $detail : ''));
+        return ['error' => $message, 'summary' => $message, 'actions' => ''];
+    }
+
+    /**
+     * Pour les appelants AJAX : retourne le message d'erreur à afficher, ou null si la réponse est exploitable.
+     * Le détail technique n'est montré qu'aux administrateurs.
+     */
+    public static function ajax_error($ai_response)
+    {
+        if (is_array($ai_response) && empty($ai_response['error']) && isset($ai_response['summary'])) {
+            return null;
+        }
+        $reason = is_array($ai_response) && !empty($ai_response['error'])
+            ? $ai_response['error']
+            : 'No response: filter "ispag_send_to_crm_mistral" is not registered (ISPAG_Crm_Mistral::init() not executed).';
+        return current_user_can('manage_options')
+            ? 'Mistral: ' . $reason
+            : __('AI processing failed.', 'ispag-crm');
     }
 
     /**
@@ -79,7 +121,7 @@ class ISPAG_Crm_Mistral
         {
             self::log("ERREUR: Clé API vide.");
             self::$logger->log('crm_mistral', 'ERROR: API key is empty', $user_id);
-            return ['summary' => 'Error configuration API', 'actions' => ''];
+            return self::fail('API key missing (CRM_MISTRAL_API_KEY not found in .env, environment or wp-config.php)');
         }
 
         $user_locale = get_user_locale();
@@ -126,11 +168,20 @@ class ISPAG_Crm_Mistral
             $error_message = $response->get_error_message();
             self::log("ERREUR WP_REMOTE: " . $error_message);
             self::$logger->log('crm_mistral', 'ERROR: WP_REMOTE_REQUEST_FAILED - ' . $error_message, $user_id);
-            return ['summary' => 'Network error.', 'actions' => ''];
+            return self::fail('Network error: ' . $error_message);
         }
 
-        $body_raw = wp_remote_retrieve_body($response);
-        $body = json_decode($body_raw, true);
+        $body_raw  = wp_remote_retrieve_body($response);
+        $body      = json_decode($body_raw, true);
+        $http_code = (int) wp_remote_retrieve_response_code($response);
+
+        if ($http_code < 200 || $http_code >= 300)
+        {
+            $api_msg = is_array($body) ? ($body['message'] ?? ($body['error']['message'] ?? '')) : '';
+            if (is_array($api_msg)) $api_msg = wp_json_encode($api_msg);
+            self::log("ERREUR HTTP $http_code", substr($body_raw, 0, 500));
+            return self::fail("Mistral API HTTP $http_code" . ($api_msg !== '' ? ': ' . $api_msg : ''), substr($body_raw, 0, 300));
+        }
 
         self::$logger->log_user_action('crm_mistral', 'response_received', ['body_size' => strlen($body_raw)], $user_id);
 
@@ -160,7 +211,7 @@ class ISPAG_Crm_Mistral
         {
             self::log("ERREUR: Contenu vide reçu de l'IA.");
             self::$logger->log('crm_mistral', 'ERROR: Empty AI response', $user_id);
-            return ['summary' => 'The AI returned no data.', 'actions' => ''];
+            return self::fail('The AI returned no data (empty message content)', substr($body_raw, 0, 300));
         }
 
         // Nettoyage agressif du JSON
@@ -193,7 +244,7 @@ class ISPAG_Crm_Mistral
             $error_msg = json_last_error_msg();
             self::log("ERREUR JSON: " . $error_msg, "Texte tenté: " . $cleaned);
             self::$logger->log('crm_mistral', 'ERROR: JSON_DECODE_FAILED - ' . $error_msg, $user_id, ['cleaned_text' => substr($cleaned, 0, 200)]);
-            return ['summary' => 'AI data formatting error.', 'actions' => ''];
+            return self::fail('AI data formatting error (invalid JSON: ' . $error_msg . ')', substr($cleaned, 0, 300));
         }
 
         self::$logger->log_user_action('crm_mistral', 'json_decoded_successfully', [], $user_id);
