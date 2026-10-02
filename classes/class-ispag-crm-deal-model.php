@@ -49,8 +49,9 @@ class ISPAG_Crm_Deal_Model {
      * Constructeur CORRIGÉ. Hydrate le modèle avec les données brutes.
      * Le Repository DOIT passer les données brutes ici.
      * @param object $data L'objet stdClass contenant les données brutes du deal (résultat de $wpdb->get_row).
+     * @param bool   $compute_last_activity FAUX pour éviter la requête SQL par deal (le Repository charge alors la dernière activité en batch).
      */
-    public function __construct( $data = null ) {
+    public function __construct( $data = null, $compute_last_activity = true ) {
         if ( is_object( $data ) || is_array( $data ) ) {
             $data_array = (array) $data;
 
@@ -63,7 +64,7 @@ class ISPAG_Crm_Deal_Model {
             }
             
             // Si l'ID est rempli, on peut enrichir le modèle (calculer les labels/couleurs)
-            if ( ! empty( $this->id ) ) {
+            if ( $compute_last_activity && ! empty( $this->id ) ) {
                 // $this->_enrich_model_for_display();
                 $this->last_activity_date = $this->calculate_last_activity_date();
             }

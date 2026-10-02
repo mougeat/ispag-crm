@@ -268,6 +268,7 @@ function ispag_run_crm_manager() {
         $instances['ISPAG_Crm_Deals_Repository'] = new ISPAG_Crm_Deals_Repository();
         $deals_repo = $instances['ISPAG_Crm_Deals_Repository'];
         add_action( 'wp_ajax_ispag_update_deal_stage', array( $deals_repo, 'ispag_ajax_handle_deal_stage_update' ) );
+        add_action( 'wp_ajax_ispag_kanban_load_more', array( $deals_repo, 'ajax_kanban_load_more' ) );
         add_action( 'wp_ajax_ispag_bulk_update_deals', array( $deals_repo, 'ispag_handle_bulk_deal_update' ) );
     }
 
