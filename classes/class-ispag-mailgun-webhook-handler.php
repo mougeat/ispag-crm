@@ -91,11 +91,10 @@ class ISPAG_Mailgun_Webhook_Handler {
             }
             $this->_log( 'Email client identifié via transfert : ' . ($client_to ?: 'AUCUN') );
         } else {
-            if ( preg_match( '/<([^>]+)>/', $raw_to, $matches ) ) {
-                $client_to = sanitize_email( $matches[1] );
-            } else {
-                $client_to = sanitize_email( $raw_to );
-            }
+            // « To » peut contenir plusieurs destinataires (« a@x.ch, Nom <b@y.ch> ») : on les retient tous
+            preg_match_all( '/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i', (string) $raw_to, $to_found );
+            $to_candidates = array_values( array_unique( array_map( 'strtolower', $to_found[0] ) ) );
+            $client_to = $to_candidates ? sanitize_email( $to_candidates[0] ) : '';
             $this->_log( 'Email client identifié via "To" direct : ' . $client_to );
         }
 
@@ -140,7 +139,15 @@ class ISPAG_Mailgun_Webhook_Handler {
         $user_crm = get_user_by( 'email', $sender );
         $user_id  = $user_crm ? $user_crm->ID : 1;
 
-        $client_user = get_user_by( 'email', $client_to );
+        // Tous les destinataires connus du CRM (mode direct), sinon le seul client identifié (mode transfert)
+        $client_users = [];
+        foreach ( ( ! empty( $to_candidates ) ? $to_candidates : [ $client_to ] ) as $candidate ) {
+            $u = $candidate ? get_user_by( 'email', $candidate ) : false;
+            if ( $u && ! isset( $client_users[ $u->ID ] ) && strtolower( $u->user_email ) !== strtolower( $sender ) ) {
+                $client_users[ $u->ID ] = $u;
+            }
+        }
+        $client_user = $client_users ? reset( $client_users ) : false;
 
         if ( ! $client_user ) {
              $this->_log( 'ÉCHEC : Aucun utilisateur WordPress trouvé pour l\'email : ' . $client_to );
@@ -152,7 +159,7 @@ class ISPAG_Mailgun_Webhook_Handler {
         $media_ids = $this->handle_attachments();
 
         $note_data = new stdClass();
-        $note_data->contact_id    = $client_user->ID;
+        $note_data->contact_id    = implode( ',', array_keys( $client_users ) );
         $note_data->user_id       = $user_id; 
         $note_data->company_id    = $metadata['company_id'] ?? null;
         $note_data->deal_id       = $deal_ref; 
