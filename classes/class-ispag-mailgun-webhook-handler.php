@@ -129,6 +129,14 @@ class ISPAG_Mailgun_Webhook_Handler {
         }
 
         // 4. RECHERCHE DES UTILISATEURS DANS LE CRM
+        // Mails envoyés par la plateforme (noreply@, ex. e-mails d'étape de projet) : l'auteur est l'adresse Reply-To
+        if ( strpos( $sender, 'noreply@' ) === 0 ) {
+            $reply_to = $this->get_reply_to( $params );
+            if ( $reply_to ) {
+                $this->_log( 'Expéditeur plateforme : auteur pris dans Reply-To : ' . $reply_to );
+                $sender = $reply_to;
+            }
+        }
         $user_crm = get_user_by( 'email', $sender );
         $user_id  = $user_crm ? $user_crm->ID : 1;
 
@@ -185,6 +193,19 @@ class ISPAG_Mailgun_Webhook_Handler {
             }
         }
         return ! empty( $attachment_ids ) ? implode( ',', $attachment_ids ) : null;
+    }
+
+    /** Adresse Reply-To du message (paramètre Mailgun direct, sinon dans message-headers). */
+    private function get_reply_to( $params ) {
+        $raw = $params['Reply-To'] ?? $params['reply-to'] ?? '';
+        if ( $raw === '' && ! empty( $params['message-headers'] ) ) {
+            $headers = is_array( $params['message-headers'] ) ? $params['message-headers'] : json_decode( $params['message-headers'], true );
+            foreach ( (array) $headers as $h ) {
+                if ( is_array( $h ) && isset( $h[0], $h[1] ) && strtolower( $h[0] ) === 'reply-to' ) { $raw = $h[1]; break; }
+            }
+        }
+        if ( preg_match( '/<([^>]+)>/', (string) $raw, $m ) ) $raw = $m[1];
+        return sanitize_email( trim( (string) $raw ) );
     }
 
     private function parse_metadata( $text ) {
