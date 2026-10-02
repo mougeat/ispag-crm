@@ -208,6 +208,14 @@ class ISPAG_Notifications_Manager
                 'default_channels' => ['crm', 'onesignal', 'mail'],
                 'retain_during_disconnection' => true, // ⬅️ Ignorer
             ],
+            'article_changed_by_other' => [
+                'label' => __('Item modified by someone else', 'ispag-crm'),
+                'description' => __('Notification sent to the project manager when another person creates, modifies or deletes an item of the project.', 'ispag-crm'),
+                'group' => 'deal',
+                'capability' => 'manage_order',
+                'default_channels' => ['crm', 'onesignal', 'mail'],
+                'retain_during_disconnection' => true, // ⬅️ À retenir
+            ],
             'deal_manager' => [
                 'label' => __('Project / Deal Management', 'ispag-crm'),
                 'description' => __('Notification sent for project or deal management actions. (new project, etc.)', 'ispag-crm'),
