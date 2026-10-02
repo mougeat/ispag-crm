@@ -127,7 +127,7 @@ class ISPAG_Note_Manager {
             $plugin_url . 'assets/js/ispag-activity-actions.js', 
             // Dépend de JQuery et de l'initialisation des données
             array( 'jquery', self::ASSET_HANDLE ), 
-            '1.0', 
+            (int) @filemtime( plugin_dir_path( dirname( __FILE__ ) ) . 'assets/js/ispag-activity-actions.js' ), 
             true 
         );
 
@@ -146,7 +146,7 @@ class ISPAG_Note_Manager {
             $plugin_url . 'assets/js/ispag-task-sidebar.js', 
             // Dépend de JQuery et de l'initialisation des données (pour closeSidebar, etc.)
             array( 'jquery', self::ASSET_HANDLE ), 
-            '1.0', 
+            (int) @filemtime( plugin_dir_path( dirname( __FILE__ ) ) . 'assets/js/ispag-task-sidebar.js' ), 
             true 
         );
 

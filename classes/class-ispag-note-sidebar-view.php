@@ -97,27 +97,7 @@ class ISPAG_Note_Sidebar_View {
                 </div>
             </div>
         </div>
-                <script>
-        jQuery(document).ready(function($) {
-            // Ouvrir la sidebar au clic sur une tâche
-            $('.open-task-sidebar').on('click', function(e) {
-                e.preventDefault();
-                const taskId = $(this).data('task-id');
-                $('#ispag-task-sidebar-modal').addClass('active');
-                // Charger les données de la tâche ici (AJAX)
-            });
 
-            // Fermer la sidebar
-            $('#close-task-sidebar-btn, #close-task-sidebar-footer-btn, #ispag-task-modal-overlay').on('click', function() {
-                $('#ispag-task-sidebar-modal').removeClass('active');
-            });
-
-            // Fermer la modal
-            $('#ispag-note-modal .ispag-close-modal').on('click', function() {
-                $('#ispag-note-modal').removeClass('active');
-            });
-        });
-        </script>
         <?php
         echo ob_get_clean();
     }
