@@ -65,10 +65,11 @@ class ISPAG_Note_Modal_View {
         <div id="ispag-note-modal" class="ispag-modal-overlay">
             <div class="ispag-modal-content">
                 <div class="ispag-modal-header">
-                    <h4 id="ispag-action-type"><?php esc_html_e('Note', 'ispag-crm'); ?></h4>
-                    <button class="ispag-close-modal ispag-btn ispag-btn-red-outlined ispag-close-croix" title="<?php esc_attr_e('Close', 'ispag-crm'); ?>">×</button>
+                    <h4 id="ispag-action-type"><span class="dashicons dashicons-edit ispag-modal-type-icon"></span><span class="ispag-modal-title-text"><?php esc_html_e('Note', 'ispag-crm'); ?></span></h4>
+                    <button type="button" class="ispag-close-modal ispag-btn ispag-btn-red-outlined ispag-close-croix" title="<?php esc_attr_e('Close', 'ispag-crm'); ?>" aria-label="<?php esc_attr_e('Close', 'ispag-crm'); ?>">×</button>
                 </div>
 
+                <form id="create-note-form" novalidate onsubmit="return false;">
                 <div class="ispag-modal-body">
                     <input type="hidden" id="modal-contact-id" name="contact_id" value="0">
                     <input type="hidden" id="modal-company-id" name="company_id" value="0">
@@ -197,7 +198,7 @@ class ISPAG_Note_Modal_View {
                         <input type="text" id="activity-title-input" name="activity_title" class="ispag-input" placeholder="<?php esc_html_e('Quick summary', 'ispag-crm'); ?>...">
                     </div>
 
-                    <textarea id="note-text-area" placeholder="<?php esc_attr_e('Start writing to leave a note...', 'ispag-crm'); ?>" rows="6"></textarea>
+                    <textarea id="note-text-area" name="note_content" placeholder="<?php esc_attr_e('Start writing to leave a note...', 'ispag-crm'); ?>" rows="6"></textarea>
 
                     <div class="ispag-task-toggle-section">
                         <label>
@@ -208,8 +209,16 @@ class ISPAG_Note_Modal_View {
                             <label>
                                 <strong><?php esc_html_e('To do', 'ispag-crm'); ?></strong> <?php esc_html_e('for a follow-up in', 'ispag-crm'); ?>
 
+                                <div class="ispag-due-chips" role="group" aria-label="<?php esc_attr_e('Due date', 'ispag-crm'); ?>">
+                                    <?php
+                                    $due_chips = [ '0d' => __('Today', 'ispag-crm'), '1d' => __('Tomorrow', 'ispag-crm'), '2d' => __('3 business days', 'ispag-crm'), '7d' => __('1 week', 'ispag-crm'), '14d' => __('2 weeks', 'ispag-crm'), '1m' => __('1 month', 'ispag-crm'), '3m' => __('3 months', 'ispag-crm'), 'custom' => __('Custom date', 'ispag-crm') ];
+                                    foreach ($due_chips as $val => $lbl) {
+                                        echo '<button type="button" class="ispag-chip" data-due-offset="' . esc_attr($val) . '">' . esc_html($lbl) . '</button>';
+                                    }
+                                    ?>
+                                </div>
                                 <div class="task-due-date-group ispag-flex-row">
-                                    <div class="ispag-field-group">
+                                    <div class="ispag-field-group ispag-due-offset-select">
                                         <select id="task-due-offset" name="task_due_offset">
                                             <option value="0d"><?php esc_html_e('Today', 'ispag-crm'); ?></option>
                                             <option value="1d"><?php esc_html_e('Tomorrow', 'ispag-crm'); ?></option>
@@ -261,11 +270,18 @@ class ISPAG_Note_Modal_View {
                     </div>
                 </div>
 
+                <div class="ispag-modal-error" id="ispag-note-error" role="alert" hidden></div>
+
                 <div class="ispag-modal-footer">
-                    <button id="ispag-create-note-btn" class="ispag-btn ispag-btn-primary"> 
+                    <span class="ispag-modal-hint"><?php esc_html_e('Ctrl + Enter to save', 'ispag-crm'); ?></span>
+                    <button type="button" id="cancel-note-btn" class="ispag-btn ispag-btn-secondary-outlined">
+                        <?php esc_html_e('Cancel', 'ispag-crm'); ?>
+                    </button>
+                    <button type="button" id="ispag-create-note-btn" class="ispag-btn ispag-btn-primary">
                         <?php esc_html_e('Create a Note', 'ispag-crm'); ?>
                     </button>
                 </div>
+                </form>
             </div>
         </div>
 

@@ -54,6 +54,56 @@ jQuery(document).ready(function($) {
     let dueTime = '';      
     let reminderOffset = '';
 
+    const errorBox   = $('#ispag-note-error');
+    const typeIcons  = { note: 'edit', task: 'yes-alt', meeting: 'groups', call: 'phone', email: 'email-alt', mail: 'email-alt', log_email: 'email-alt', whatsapp: 'format-chat' };
+    let isDirty = false;
+
+    /** Titre de l'en-tête + icône du type d'activité. */
+    function setModalTitle(text, type) {
+        modalHeader.find('.ispag-modal-title-text').text(text);
+        modalHeader.find('.ispag-modal-type-icon').attr('class', 'dashicons dashicons-' + (typeIcons[type] || 'edit') + ' ispag-modal-type-icon');
+    }
+
+    function showError(message, $field) {
+        errorBox.text(message).prop('hidden', false);
+        if ($field && $field.length) { $field.addClass('ispag-field-invalid').trigger('focus'); }
+    }
+
+    function clearError() {
+        errorBox.prop('hidden', true).text('');
+        $('.ispag-field-invalid').removeClass('ispag-field-invalid');
+    }
+
+    // Toute saisie marque le formulaire comme modifié (évite de perdre un texte par un clic à côté)
+    modal.on('input change', 'input, textarea, select', function() { isDirty = true; clearError(); });
+
+    function editorHasContent() {
+        const ed = (window.tinymce && tinymce.get('note-text-area'));
+        const html = ed ? ed.getContent() : noteTextArea.val();
+        return !!html && html.trim() !== '' && html.trim() !== '<p></p>';
+    }
+
+    /** Fermeture demandée par l'utilisateur : confirmation si du texte risque d'être perdu. */
+    function requestClose() {
+        if (isDirty && (activityTitleInput.val().trim() !== '' || editorHasContent())) {
+            if (!window.confirm(ispagNoteData.textConfirmDiscard || 'Discard this draft?')) return;
+        }
+        closeModal();
+    }
+
+    // Puces d'échéance : pilotent le select #task-due-offset (qui reste la source de vérité)
+    function syncDueChips() {
+        const v = taskDueOffsetSelect.val();
+        $('.ispag-due-chips .ispag-chip').each(function() {
+            $(this).toggleClass('is-active', $(this).data('due-offset') === v);
+        });
+    }
+    $(document).on('click', '.ispag-due-chips .ispag-chip', function() {
+        taskDueOffsetSelect.val($(this).data('due-offset')).trigger('change');
+        isDirty = true;
+    });
+    taskDueOffsetSelect.on('change', syncDueChips);
+
     /* ==========================================================================
        2. FONCTIONS UTILITAIRES & RENDU
        ========================================================================== */
@@ -69,34 +119,40 @@ jQuery(document).ready(function($) {
 
     // 3. On l'exécute une fois au chargement (au cas où la modale s'ouvre avec une valeur pré-remplie)
     toggleCustomDate();
+    syncDueChips();
 
     /**
      * Ferme la modale et réinitialise le formulaire.
      */
     function closeModal() {
         modal.removeClass('is-open');
+        isDirty = false;
+        clearError();
         setTimeout(function() {
-            createNoteForm.trigger('reset');
+            if (createNoteForm.length) createNoteForm[0].reset();
             contactSelect.val(null).trigger('change');
             companySelect.val(null).trigger('change');
             dealSelect.val(null).trigger('change');
-            
+
             taskCheckbox.prop('checked', false);
             taskFields.hide();
             meetingFields.hide();
             callFields.hide();
             emailFields.hide();
-            noteFields.show(); 
-            
-            modalHeader.find('h4').text(ispagNoteData.modalTitleDefault);
-            createNoteBtn.text(ispagNoteData.textCreateNote); 
+            noteFields.show();
+
+            setModalTitle(ispagNoteData.modalTitleDefault || 'Note', 'note');
+            createNoteBtn.prop('disabled', false).text(ispagNoteData.textCreateNote);
             createNoteBtn.removeAttr('data-action');
             createNoteBtn.removeData('action');
-            
-            $('#activity-id-edit').val(''); 
-            modalActivityId.val('');
 
-            if (tinymce.get('note-text-area')) {
+            $('#activity-id-edit').val('');
+            modalActivityId.val('');
+            toggleCustomDate();
+            syncDueChips();
+            isDirty = false;
+
+            if (window.tinymce && tinymce.get('note-text-area')) {
                 tinymce.get('note-text-area').setContent('');
             }
         }, 150); // même durée que la transition CSS (0.15s)
@@ -272,6 +328,7 @@ jQuery(document).ready(function($) {
                 createNoteBtn.text(finalBtnText);
                 break;
         }
+        if (!editMode) setModalTitle(finalBtnText || type, type);
         checkNoteTypeForTemplate();
     };
 
@@ -394,13 +451,23 @@ jQuery(document).ready(function($) {
 
         modal.addClass('is-open');
         modalContent.css('right', '0');
+        isDirty = false;
+        setTimeout(() => activityTitleInput.trigger('focus'), 200);
     });
 
     // Fermeture
-    closeButton.on('click', closeModal);
-    $('#cancel-note-btn').on('click', closeModal);
-    modal.on('click', e => { if (e.target === modal[0]) closeModal(); });
-    $(document).on('keydown', e => { if (e.key === 'Escape' && modal.is(':visible')) closeModal(); });
+    closeButton.on('click', requestClose);
+    $('#cancel-note-btn').on('click', requestClose);
+    modal.on('mousedown', e => { if (e.target === modal[0]) requestClose(); });
+    $(document).on('keydown', e => {
+        if (!modal.hasClass('is-open')) return;
+        if (e.key === 'Escape') { requestClose(); }
+        // Ctrl/Cmd + Entrée : enregistrer sans quitter le clavier
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && !createNoteBtn.prop('disabled')) {
+            e.preventDefault();
+            createNoteBtn.trigger('click');
+        }
+    });
 
     // Changements de type : On garde le type choisi (Call, Meeting, etc.)
     activityTypeSelect.on('change', function() { 
@@ -476,8 +543,15 @@ jQuery(document).ready(function($) {
         const submitMode        = createNoteBtn.attr('data-action');
         const activityId        = modalActivityId.val();
 
+        clearError();
         if (noteContentHtml.trim() === "" || noteContentHtml.trim() === "<p></p>") {
-            return alert("Please enter some content.");
+            showError(ispagNoteData.textErrorContent || 'Please enter some content.', editor ? $() : noteTextArea);
+            if (editor) editor.focus();
+            return;
+        }
+        if (isTask && taskDueOffsetSelect.val() === 'custom' && !taskDueDateCustom.val()) {
+            showError(ispagNoteData.textErrorDueDate || 'Please choose a due date.', taskDueDateCustom);
+            return;
         }
 
         createNoteBtn.prop('disabled', true).text(ispagNoteData.textSaving);
@@ -602,9 +676,13 @@ jQuery(document).ready(function($) {
                         }
                     }
                 } else {
-                    alert('Error: ' + response.data.message);
+                    showError((response.data && response.data.message) || 'Error');
                     createNoteBtn.prop('disabled', false).text(ispagNoteData.textCreateNote);
                 }
+            })
+            .fail(function() {
+                showError(ispagNoteData.textErrorNetwork || 'Network error, your text has been kept. Please try again.');
+                createNoteBtn.prop('disabled', false).text(ispagNoteData.textCreateNote);
             });
     });
 
@@ -625,8 +703,8 @@ jQuery(document).ready(function($) {
         modalContent.css('right', '0');
 
         // 3. Remplissage des champs de base
-        modalHeader.find('h4').text(ispagNoteData.modalTitleEdit.replace('%s', activityData.id));   
-        createNoteBtn.text(ispagNoteData.textUpdate);
+        setModalTitle(ispagNoteData.modalTitleEdit.replace('%s', activityData.id), (activityData.type || 'note').toLowerCase());
+        createNoteBtn.prop('disabled', false).text(ispagNoteData.textUpdate);
         modalActivityId.val(activityData.id);
         activityTitleInput.val(window.stripslashes_js(activityData.note_title));
 
@@ -684,6 +762,8 @@ jQuery(document).ready(function($) {
 
         // 7. Mise à jour visuelle des champs selon le type
         window.toggleActivityFields(type, ispagNoteData.textUpdate, true);
+        syncDueChips();
+        isDirty = false;
 
         // 8. Remplissage des Select2 (Contacts, Entreprises, Deals)
         const forceS2 = ($s, ids, names, extraData = {}) => {
@@ -716,6 +796,9 @@ jQuery(document).ready(function($) {
             total_excl_vat: activityData.total_excl_vat,
             closing_date: activityData.closing_date,
         });
+
+        // Les remplissages ci-dessus déclenchent des 'change' : le formulaire n'est pas encore modifié
+        isDirty = false;
     };
 });
 

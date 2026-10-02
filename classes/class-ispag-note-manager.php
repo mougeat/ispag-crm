@@ -89,7 +89,7 @@ class ISPAG_Note_Manager {
             self::ASSET_HANDLE, 
             $plugin_url . 'assets/css/ispag-note-modal.css', 
             array(), 
-            '1.0' 
+            (int) @filemtime( plugin_dir_path( dirname( __FILE__ ) ) . 'assets/css/ispag-note-modal.css' ) 
         );
         wp_enqueue_style( self::ASSET_HANDLE );
 
@@ -116,7 +116,7 @@ class ISPAG_Note_Manager {
             $plugin_url . 'assets/js/ispag-creation-modal.js', 
             // Dépend de l'initialisation des données et de Select2
             array( 'jquery', 'select2-js', self::ASSET_HANDLE ), 
-            '1.0', 
+            (int) @filemtime( plugin_dir_path( dirname( __FILE__ ) ) . 'assets/js/ispag-creation-modal.js' ), 
             true 
         );
 
@@ -197,6 +197,11 @@ class ISPAG_Note_Manager {
             'textCallTitle'             => __('Call title', 'ispag-crm'),
             'textNoteTitle'             => __('Note title', 'ispag-crm'),
             'textNoteTitleInput'        => __('Quick summary', 'ispag-crm'),
+            'modalTitleDefault'         => __('Note', 'ispag-crm'),
+            'textConfirmDiscard'        => __('Discard this draft?', 'ispag-crm'),
+            'textErrorContent'          => __('Please enter some content.', 'ispag-crm'),
+            'textErrorDueDate'          => __('Please choose a due date.', 'ispag-crm'),
+            'textErrorNetwork'          => __('Network error, your text has been kept. Please try again.', 'ispag-crm'),
             
         );
 
