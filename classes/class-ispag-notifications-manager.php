@@ -208,6 +208,14 @@ class ISPAG_Notifications_Manager
                 'default_channels' => ['crm', 'push', 'mail'],
                 'retain_during_disconnection' => true, // ⬅️ Ignorer
             ],
+            'drawing_to_approve' => [
+                'label' => __('Drawing to approve', 'ispag-crm'),
+                'description' => __('Notification sent to the people concerned by a project when a drawing is attached and waits for their approval.', 'ispag-crm'),
+                'group' => 'deal',
+                'capability' => 'read_orders',
+                'default_channels' => ['crm', 'push', 'mail'],
+                'retain_during_disconnection' => true, // ⬅️ À retenir
+            ],
             'article_changed_by_other' => [
                 'label' => __('Item modified by someone else', 'ispag-crm'),
                 'description' => __('Notification sent to the project manager when another person creates, modifies or deletes an item of the project.', 'ispag-crm'),
