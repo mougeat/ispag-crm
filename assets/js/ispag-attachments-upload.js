@@ -162,7 +162,7 @@
                         setTimeout(hideProgress, 400);
                         setFiles(null);
                         $select.val('');
-                        $dz.trigger('ispag:attachment-uploaded', [response.data]);
+                        $dz.trigger('ispag:attachment-uploaded', [$.extend({}, response.data, { articleId: parseInt(articleId, 10) || 0 })]);
 
                         // Zone de dépôt intégrée à la page (onglet Documents…) : la modal n'est pas là pour rafraîchir la liste
                         if (!$dz.closest('.ispag-modal-overlay').length) {
