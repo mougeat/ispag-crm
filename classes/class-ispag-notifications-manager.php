@@ -823,8 +823,20 @@ class ISPAG_Notifications_Manager
 
         $logger->log_user_action($log_name, 'user_data_retrieved', ['user_email' => $user->user_email], $current_user_id);
 
-        // Cas spécial pour les notifications de type 'crm_task' ou 'deal_status_change'
-        if (($type === 'crm_task' || $type === 'deal_status_change') && class_exists('ISPAG_Brevo_Mailer'))
+        // E-mail d'étape de projet : rendu (template achats_template_mail, pièces jointes) et envoyé par
+        // ISPAG Project Manager, sans Brevo. null = pas un e-mail d'étape, on continue avec le comportement normal.
+        if ($type === 'deal_status_change')
+        {
+            $handled = apply_filters('ispag_send_phase_mail', null, $user_id, $extra_data);
+            if ($handled !== null)
+            {
+                $logger->log_user_action($log_name, 'phase_mail_handled', ['recipient' => $user->user_email, 'slug' => $extra_data['phase_slug'] ?? '', 'sent' => (bool) $handled], $current_user_id);
+                return (bool) $handled;
+            }
+        }
+
+        // Cas spécial pour les notifications de type 'crm_task' (rappel de tâche via un template Brevo)
+        if ($type === 'crm_task' && class_exists('ISPAG_Brevo_Mailer'))
         {
             $logger->log_user_action($log_name, 'send_to_email_via_brevo_mailer', [
                 'recipient' => $user->user_email,
