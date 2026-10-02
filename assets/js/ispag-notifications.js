@@ -112,9 +112,19 @@ jQuery(document).ready(function($) {
 
     (function initPush() {
         const obj = window.ispag_notifications_obj || {};
-        if (!obj.vapid_public_key || String(obj.current_user_id) === '0') return;
-        if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return;
-        if (Notification.permission === 'denied') return;
+        if (String(obj.current_user_id) === '0') return;
+        if (!obj.vapid_public_key) {
+            console.warn('ISPAG push : clé VAPID absente (le serveur ne gère pas Web Push, ou le script est mal localisé).');
+            return;
+        }
+        if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
+            console.warn('ISPAG push : ce navigateur ne gère pas les notifications push (sur iPhone, ajoute le CRM à l\'écran d\'accueil).');
+            return;
+        }
+        if (Notification.permission === 'denied') {
+            console.warn('ISPAG push : notifications bloquées pour ce site dans le navigateur.');
+            return;
+        }
 
         if (Notification.permission === 'granted') {
             subscribeToPush().catch(function (err) { console.warn('ISPAG push :', err); });

@@ -383,15 +383,7 @@ class ISPAG_Notifications_Renderer {
             true
         );
 
-        // Localiser le script pour AJAX
-        wp_localize_script('ispag-notifications-js', 'ispag_notifications_obj', [
-            'nonce'             => wp_create_nonce('ispag_nonce'),
-            'ajaxurl'           => admin_url('admin-ajax.php'),
-            'vapid_public_key'  => ISPAG_WebPush_Handler::is_supported() ? ISPAG_WebPush_Handler::get_public_key() : '',
-            'push_sw_url'       => ISPAG_WebPush_Handler::service_worker_url(),
-            'push_scope'        => ISPAG_WebPush_Handler::scope(),
-            'current_user_id'   => get_current_user_id(),
-        ]);
+        self::localize_scripts();
 
         // Ajouter un script pour charger le formulaire de configuration
         wp_add_inline_script('ispag-notifications-js', '
@@ -424,9 +416,20 @@ class ISPAG_Notifications_Renderer {
      * Localise les scripts pour AJAX
      */
     public static function localize_scripts() {
+        // Une seule localisation : une seconde écraserait la première (vapid_public_key, current_user_id...)
+        static $done = false;
+        if ($done) {
+            return;
+        }
+        $done = true;
+
         wp_localize_script('ispag-notifications-js', 'ispag_notifications_obj', [
-            'nonce' => wp_create_nonce('ispag_nonce'),
-            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce'             => wp_create_nonce('ispag_nonce'),
+            'ajaxurl'           => admin_url('admin-ajax.php'),
+            'vapid_public_key'  => ISPAG_WebPush_Handler::is_supported() ? ISPAG_WebPush_Handler::get_public_key() : '',
+            'push_sw_url'       => ISPAG_WebPush_Handler::service_worker_url(),
+            'push_scope'        => ISPAG_WebPush_Handler::scope(),
+            'current_user_id'   => get_current_user_id(),
         ]);
     }
 
