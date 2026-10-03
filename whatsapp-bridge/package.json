@@ -1,0 +1,19 @@
+{
+  "name": "ispag-whatsapp-bridge",
+  "version": "1.0.0",
+  "description": "Relais WhatsApp multi-numéros pour le CRM ISPAG (appareils liés, gratuit)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "fake": "BRIDGE_FAKE=1 node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^4.22.3",
+    "qrcode": "^1.5.4",
+    "whatsapp-web.js": "^1.26.0"
+  }
+}

@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Classe ISPAG_Cron_Lifecycle
  * Gère l'automatisation dynamique des phases.

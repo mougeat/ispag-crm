@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Gère les notes et tâches associées aux contacts dans l'interface ISPAG.
  * C'est le point d'entrée pour l'initialisation des autres classes.
@@ -59,6 +60,7 @@ class ISPAG_Note_Manager {
         add_action( 'wp_ajax_ispag_search_deals_select2', array( $this, 'ispag_search_deals' ) );
 
         add_action( 'wp_ajax_ispag_complete_task', array( $this, 'handle_complete_task_ajax' ) );
+        add_action( 'wp_ajax_ispag_snooze_task', array( $this, 'handle_snooze_task_ajax' ) );
     }
     
     /**
@@ -89,7 +91,7 @@ class ISPAG_Note_Manager {
             self::ASSET_HANDLE, 
             $plugin_url . 'assets/css/ispag-note-modal.css', 
             array(), 
-            '1.0' 
+            (int) @filemtime( plugin_dir_path( dirname( __FILE__ ) ) . 'assets/css/ispag-note-modal.css' ) 
         );
         wp_enqueue_style( self::ASSET_HANDLE );
 
@@ -116,7 +118,7 @@ class ISPAG_Note_Manager {
             $plugin_url . 'assets/js/ispag-creation-modal.js', 
             // Dépend de l'initialisation des données et de Select2
             array( 'jquery', 'select2-js', self::ASSET_HANDLE ), 
-            '1.0', 
+            (int) @filemtime( plugin_dir_path( dirname( __FILE__ ) ) . 'assets/js/ispag-creation-modal.js' ), 
             true 
         );
 
@@ -126,7 +128,7 @@ class ISPAG_Note_Manager {
             $plugin_url . 'assets/js/ispag-activity-actions.js', 
             // Dépend de JQuery et de l'initialisation des données
             array( 'jquery', self::ASSET_HANDLE ), 
-            '1.0', 
+            (int) @filemtime( plugin_dir_path( dirname( __FILE__ ) ) . 'assets/js/ispag-activity-actions.js' ), 
             true 
         );
 
@@ -145,7 +147,7 @@ class ISPAG_Note_Manager {
             $plugin_url . 'assets/js/ispag-task-sidebar.js', 
             // Dépend de JQuery et de l'initialisation des données (pour closeSidebar, etc.)
             array( 'jquery', self::ASSET_HANDLE ), 
-            '1.0', 
+            (int) @filemtime( plugin_dir_path( dirname( __FILE__ ) ) . 'assets/js/ispag-task-sidebar.js' ), 
             true 
         );
 
@@ -197,6 +199,13 @@ class ISPAG_Note_Manager {
             'textCallTitle'             => __('Call title', 'ispag-crm'),
             'textNoteTitle'             => __('Note title', 'ispag-crm'),
             'textNoteTitleInput'        => __('Quick summary', 'ispag-crm'),
+            'textPrepareMail'           => __('Prepare email', 'ispag-crm'),
+            'textPreparingMail'         => __('Preparing...', 'ispag-crm'),
+            'modalTitleDefault'         => __('Note', 'ispag-crm'),
+            'textConfirmDiscard'        => __('Discard this draft?', 'ispag-crm'),
+            'textErrorContent'          => __('Please enter some content.', 'ispag-crm'),
+            'textErrorDueDate'          => __('Please choose a due date.', 'ispag-crm'),
+            'textErrorNetwork'          => __('Network error, your text has been kept. Please try again.', 'ispag-crm'),
             
         );
 
@@ -215,7 +224,7 @@ class ISPAG_Note_Manager {
 
         // 1. Vérification de sécurité (Nonce)
         if ( ! check_ajax_referer( 'ispag_crm_nonce', 'security', false ) ) {
-            wp_send_json_error( array( 'message' => 'Nonce de sécurité invalide.' ) );
+            wp_send_json_error( array( 'message' => 'Invalid security nonce.' ) );
             wp_die();
         }
         
@@ -285,7 +294,7 @@ class ISPAG_Note_Manager {
         // // 1. Vérification de sécurité (Nonce)
         // if ( ! check_ajax_referer( 'ispag_note_nonce', 'security', false ) ) {
         //     error_log('[ISPAG AJAX ERROR] Nonce de sécurité invalide pour ispag_search_contacts.');
-        //     wp_send_json_error( array( 'message' => 'Nonce de sécurité invalide.' ) );
+        //     wp_send_json_error( array( 'message' => 'Invalid security nonce.' ) );
         //     wp_die();
         // }
         
@@ -310,14 +319,14 @@ class ISPAG_Note_Manager {
 
             $sql_prepared = $wpdb->prepare(
                 "SELECT 
-                    t1.viag_id, 
+                    t1.Id, 
                     t1.company_name,
                     t2.meta_value AS company_city 
                 FROM {$table_fournisseur} AS t1
                 
                 -- Jointure pour récupérer la ville
                 LEFT JOIN $postmeta_table AS t2 
-                    ON t1.viag_id = t2.post_id
+                    ON t1.Id = t2.post_id
                     AND t2.meta_key = %s
                     
                 WHERE t1.company_name LIKE %s AND t1.is_active = 1
@@ -347,7 +356,7 @@ class ISPAG_Note_Manager {
                     $city_display = !empty($row->company_city) ? ' (' . $row->company_city . ')' : '';
 
                     $companies[] = [
-                        'id' => (string) $row->viag_id, 
+                        'id' => (string) $row->Id, 
                         'text' => $row->company_name . $city_display ,
                         'company_name' => $row->company_name,
                     ];
@@ -377,7 +386,7 @@ class ISPAG_Note_Manager {
     
         // 1. Vérification du Nonce (la cause probable du 403)
         if ( ! check_ajax_referer( 'ispag_crm_nonce', 'security', false ) ) {
-            wp_send_json_error( 'Session expirée, veuillez rafraîchir la page.' );
+            wp_send_json_error( 'Session expired, please refresh the page.' );
         }
 
         $table_deals = self::TABLE_DEALS;
@@ -449,6 +458,54 @@ class ISPAG_Note_Manager {
             'deals' => $deals,
             'debug_sql' => $sql_prepared 
         ]);
+    }
+
+
+    /**
+     * Reporte une tâche de N jours (1, 3 ou 7) à partir d'aujourd'hui, en gardant l'heure d'origine.
+     * Le rappel est décalé du même écart. Renvoie la ligne HTML mise à jour du tableau des tâches.
+     */
+    public function handle_snooze_task_ajax() {
+        global $wpdb;
+        check_ajax_referer( 'ispag_crm_nonce', 'security' );
+
+        $activity_id = absint( $_POST['activity_id'] ?? 0 );
+        $days        = absint( $_POST['days'] ?? 0 );
+        if ( ! $activity_id || ! in_array( $days, array( 1, 3, 7 ), true ) ) {
+            wp_send_json_error( array( 'message' => __( 'Invalid request.', 'ispag-crm' ) ) );
+        }
+
+        $table = self::TABLE_NOTE;
+        $task  = $wpdb->get_row( $wpdb->prepare(
+            "SELECT * FROM {$table} WHERE id = %d AND is_task = 1 AND is_completed = 0 AND user_id = %d",
+            $activity_id, get_current_user_id()
+        ) );
+        if ( ! $task ) {
+            wp_send_json_error( array( 'message' => __( 'Task not found.', 'ispag-crm' ) ) );
+        }
+
+        $old_due  = strtotime( $task->due_date ) ?: current_time( 'timestamp' );
+        $new_day  = strtotime( '+' . $days . ' day', strtotime( date( 'Y-m-d', current_time( 'timestamp' ) ) ) );
+        $new_due  = $new_day + ( $old_due - strtotime( date( 'Y-m-d', $old_due ) ) );
+
+        $update = array( 'due_date' => date( 'Y-m-d H:i:s', $new_due ), 'updated_at' => current_time( 'mysql' ) );
+        if ( ! empty( $task->reminder_date ) && strtotime( $task->reminder_date ) ) {
+            $update['reminder_date'] = date( 'Y-m-d H:i:s', $new_due - ( $old_due - strtotime( $task->reminder_date ) ) );
+        }
+        if ( $wpdb->update( $table, $update, array( 'id' => $activity_id ) ) === false ) {
+            wp_send_json_error( array( 'message' => __( 'Database update failed.', 'ispag-crm' ) ) );
+        }
+
+        $row_html = '';
+        if ( class_exists( 'ISPAG_Note_Repository' ) && function_exists( 'ispag_get_template' ) ) {
+            $formatted = ( new ISPAG_Note_Repository() )->get_active_task( $activity_id );
+            if ( $formatted ) $row_html = ispag_get_template( 'task-row', array( 'task' => $formatted ) );
+        }
+
+        wp_send_json_success( array(
+            'message'  => __( 'Task postponed.', 'ispag-crm' ),
+            'row_html' => $row_html,
+        ) );
     }
 
     /**
@@ -526,9 +583,6 @@ class ISPAG_Note_Manager {
         // La table des notes doit être accessible
         $table_notes = self::TABLE_NOTE; 
 
-        // 2. Préparation du pattern de recherche pour les IDs multiples (comme fait précédemment)
-        $like_pattern = $wpdb->esc_like( $safe_entity_id );
-        
         // Définir les types d'activités de contact à rechercher
         $contact_types = ['MEETING', 'CALL', 'EMAIL', 'LOG_EMAIL', 'EMAIL_CAMPAIGN', 'EMAIL_TRANSACTIONAL', 'CHRISTMAS_PRESENT', 'WHATSAPP', 'SMS'];
         $type_placeholders = implode( ',', array_fill( 0, count( $contact_types ), '%s' ) );
@@ -549,18 +603,8 @@ class ISPAG_Note_Manager {
             LIMIT 1
         ";
 
-        // 5. Préparation de la requête avec les valeurs de remplacement
-        $prepared_values = array_merge(
-            // Valeurs pour la condition de recherche d'ID
-            [ 
-                $safe_entity_id, 
-                $like_pattern . ',%', 
-                '%,' . $like_pattern, 
-                '%,' . $like_pattern . ',%' 
-            ],
-            // Valeurs pour la condition IN (MEETING, CALL, EMAIL)
-            $contact_types 
-        );
+        // 5. Valeurs de remplacement : deux fois l'ID (égalité, FIND_IN_SET) puis les types d'activité
+        $prepared_values = array_merge( [ (string) $safe_entity_id, (string) $safe_entity_id ], $contact_types );
         
         $sql_prepared = $wpdb->prepare( $sql, ...$prepared_values );
 
@@ -588,7 +632,7 @@ class ISPAG_Note_Manager {
 
         // Validation simple des données reçues
         if ( empty( $note_data->contact_id ) || empty( $note_data->content ) ) {
-            return new WP_Error( 'data_missing', 'Données de contact ou contenu manquant pour la création de la note.' );
+            return new WP_Error( 'data_missing', 'Missing contact data or content for note creation.' );
         }
 
         // --- Préparation des données pour l'insertion ---
@@ -634,7 +678,7 @@ class ISPAG_Note_Manager {
 
         if ( $inserted === false ) {
             // Échec de l'insertion SQL
-            return new WP_Error( 'db_insert_failed', 'Erreur de base de données lors de l\'enregistrement de la note.', [ 'db_error' => $wpdb->last_error ] );
+            return new WP_Error( 'db_insert_failed', 'Database error while saving the note.', [ 'db_error' => $wpdb->last_error ] );
         }
 
         // Succès : retourne l'ID de la ligne insérée

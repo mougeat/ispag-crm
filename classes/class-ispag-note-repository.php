@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Gère les interactions avec la base de données pour les notes et tâches.
  * Responsable de la logique CRUD (Create, Read, Update, Delete).
@@ -207,30 +208,50 @@ class ISPAG_Note_Repository {
     public function get_active_tasks() {
         global $wpdb;
         $tasks_table = $wpdb->prefix . self::TABLE_NOTES; 
-        $companies_table = self::COMPANIES_TABLE; 
-        $deal_table = self::DEALS_TABLE; 
         $user_id = get_current_user_id();
         
-        // 1. Requête SQL principale (Identique)
         $sql = $wpdb->prepare("SELECT t.*, u.display_name FROM {$tasks_table} AS t 
             LEFT JOIN {$wpdb->users} AS u ON t.contact_id = u.ID
             WHERE t.is_task = 1 AND t.user_id = %d AND t.is_completed = 0
             ORDER BY t.due_date ASC", $user_id);
 
-        $raw_tasks = $wpdb->get_results( $sql );
+        return $this->format_tasks( $wpdb->get_results( $sql ) );
+    }
+
+    /**
+     * Une tâche ouverte de l'utilisateur courant, au même format que get_active_tasks()
+     * (sert à renvoyer la ligne mise à jour après création, édition ou report). Null si elle n'est plus active.
+     */
+    public function get_active_task( $task_id ) {
+        global $wpdb;
+        $tasks_table = $wpdb->prefix . self::TABLE_NOTES;
+        $row = $wpdb->get_results( $wpdb->prepare(
+            "SELECT t.*, u.display_name FROM {$tasks_table} AS t
+             LEFT JOIN {$wpdb->users} AS u ON t.contact_id = u.ID
+             WHERE t.id = %d AND t.is_task = 1 AND t.user_id = %d AND t.is_completed = 0",
+            absint( $task_id ), get_current_user_id()
+        ) );
+        $formatted = $this->format_tasks( $row );
+        return $formatted ? $formatted[0] : null;
+    }
+
+    private function format_tasks( $raw_tasks ) {
+        global $wpdb;
+        $companies_table = self::COMPANIES_TABLE; 
+        $deal_table = self::DEALS_TABLE; 
         if ( empty( $raw_tasks ) ) return [];
-        
 
         // --- OPTIMISATION : COLLECTE DES IDS ---
         $all_company_ids = [];
         $all_deal_group_refs = []; // ✅ Utilisez deal_group_ref au lieu de deal_id
         
         foreach ($raw_tasks as $task) {
+            // Entreprises et deals sont collectés séparément : une tâche peut avoir un deal sans entreprise
             if (!empty($task->company_id)) {
-                $company_ids = explode(',', $task->company_id);
-                $deal_group_refs = explode(',', $task->deal_id); // ✅ Récupérez deal_group_ref
-                $all_company_ids = array_merge($all_company_ids, $company_ids);
-                $all_deal_group_refs = array_merge($all_deal_group_refs, $deal_group_refs);
+                $all_company_ids = array_merge($all_company_ids, explode(',', $task->company_id));
+            }
+            if (!empty($task->deal_id)) {
+                $all_deal_group_refs = array_merge($all_deal_group_refs, array_map('trim', explode(',', $task->deal_id)));
             }
         }
         $all_company_ids = array_unique(array_filter(array_map('absint', $all_company_ids)));
@@ -242,11 +263,11 @@ class ISPAG_Note_Repository {
         if (!empty($all_company_ids)) {
             $placeholders = implode(',', array_fill(0, count($all_company_ids), '%d'));
             $companies_results = $wpdb->get_results($wpdb->prepare(
-                "SELECT viag_id, company_name FROM {$companies_table} WHERE viag_id IN ($placeholders)",
+                "SELECT Id, company_name FROM {$companies_table} WHERE Id IN ($placeholders)",
                 $all_company_ids
             ));
             foreach ($companies_results as $co) {
-                $company_cache[$co->viag_id] = $co->company_name;
+                $company_cache[$co->Id] = $co->company_name;
             }
         }
         // --- OPTIMISATION : CACHE PERSISTANT POUR LES DEALS ---
@@ -295,8 +316,8 @@ class ISPAG_Note_Repository {
                 'contact_id'   => $task->contact_id, 
                 'company_name' => $this->get_company_display_fast( $task->company_id, $company_cache ),
                 'company_id'   => $task->company_id,
-                'deal_name'    => $this->get_deal_display_fast( $task->deal_id, $deal_cache ),
-                'deal_id'      => $this->get_deal_id_fast($task->deal_id, $deal_cache),
+                'deal_name'    => $this->get_deal_display_fast( trim( explode( ',', (string) $task->deal_id )[0] ), $deal_cache ),
+                'deal_id'      => $this->get_deal_id_fast( trim( explode( ',', (string) $task->deal_id )[0] ), $deal_cache ),
                 'due_date'     => $task->due_date, 
                 'task_type'    => esc_html( $task->type ), 
                 'is_completed' => $task->is_completed,
@@ -405,7 +426,7 @@ class ISPAG_Note_Repository {
             wp_send_json_success( $task_data );
             
         } else {
-            wp_send_json_error( array( 'message' => 'Tâche non trouvée.' ) );
+            wp_send_json_error( array( 'message' => 'Task not found.' ) );
         }
     }
     /**
@@ -652,7 +673,7 @@ class ISPAG_Note_Repository {
         $sql = "
             SELECT company_name 
             FROM {$table_companies} 
-            WHERE viag_id IN ({$placeholders})
+            WHERE Id IN ({$placeholders})
         ";
 
         // Prépare la requête en passant les IDs sanitizés

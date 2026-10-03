@@ -10,6 +10,18 @@ if (!defined('ABSPATH')) {
     die;
 }
 
+/**
+ * Traductions désactivées pour l'instant : tous les textes de base sont en anglais.
+ * Empêche aussi le chargement de fichiers .mo posés ailleurs (wp-content/languages/plugins/…).
+ * Pour réactiver plus tard : add_filter('ispag_disable_translations', '__return_false');
+ */
+add_filter('override_load_textdomain', function ($override, $domain) {
+    if (in_array($domain, ['creation-reservoir', 'ispag-crm', 'ispag'], true) && apply_filters('ispag_disable_translations', true)) {
+        return true;
+    }
+    return $override;
+}, 10, 2);
+
 // ----------------------------------------------------------------------------
 // 1. CONSTANTES ET ENVIRONNEMENT
 // ----------------------------------------------------------------------------
@@ -95,6 +107,29 @@ spl_autoload_register(function($class) {
 // 3. ACTIVATION DU PLUGIN
 // ----------------------------------------------------------------------------
 
+// Mise à jour depuis une branche GitHub (jeton + branche : wp-config.php ou Outils → Updates ISPAG ; « main » par défaut)
+require_once ISPAG_CRM_PLUGIN_DIR . 'classes/class-ispag-github-updater.php';
+ISPAG_GitHub_Updater::plugin(__FILE__, 'mougeat/ispag-crm');
+
+// Schéma de base de données : créé à l'activation, et re-vérifié à chaque chargement si la version change
+register_activation_hook(__FILE__, ['ISPAG_CRM_Installer', 'install']);
+ISPAG_CRM_Installer::init();
+
+// ISPAG_Logger : le vrai (classes/class-ispag-logger.php d'ISPAG Project Manager, s'il est présent) passe en premier ;
+// sinon classe de secours. Enregistré dès le chargement : l'activation du plugin utilise déjà le logger.
+spl_autoload_register(function ($class) {
+    if ($class !== 'ISPAG_Logger') return;
+    $real = defined('ISPAG_PROJECT_MANAGER_DIR') ? ISPAG_PROJECT_MANAGER_DIR . 'classes/class-ispag-logger.php' : '';
+    if ($real && is_readable($real)) { require_once $real; return; }
+    require_once ISPAG_CRM_PLUGIN_DIR . 'install/fallback-logger.php';
+});
+
+
+// Les pages du CRM sont des modèles de page du thème (créées par le thème). Le plugin, lui, ajoute des adresses
+// /deal/, /contact/, /company/ qui donnent une 404 tant que les permaliens ne sont pas rafraîchis.
+require_once ISPAG_CRM_PLUGIN_DIR . 'classes/class-ispag-page-installer.php';
+register_activation_hook(__FILE__, ['ISPAG_Page_Installer', 'schedule_flush']);
+
 // 2. Enregistrer le hook d'activation (s'exécute uniquement au clic sur "Activer")
 register_activation_hook(__FILE__, ['ISPAG_Notifications_Manager', 'activate']);
 
@@ -106,21 +141,8 @@ function ispag_crm_activate() {
     global $wpdb;
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-    $table_fournisseurs = $wpdb->prefix . 'achats_fournisseurs';
-    $charset_collate    = $wpdb->get_charset_collate();
-
-    $sql_fournisseurs = "CREATE TABLE $table_fournisseurs (
-        Id INT NOT NULL AUTO_INCREMENT,
-        isSupplier INT NOT NULL DEFAULT 0,
-        isIngenieur INT NOT NULL DEFAULT 0,
-        Fournisseur TEXT NOT NULL,
-        compagnyDomain TEXT NOT NULL,
-        Mail TEXT NOT NULL,
-        PRIMARY KEY (Id),
-        KEY compagnyDomain_idx (compagnyDomain(100))
-    ) $charset_collate;";
-
-    dbDelta( $sql_fournisseurs );
+    // Les tables (dont ispag_companies : clients, fournisseurs, ingénieurs) sont créées par ISPAG_CRM_Installer (install/schema.php).
+    ISPAG_CRM_Installer::install();
 
     if ( class_exists( 'ISPAG_Status_Manager' ) ) {
         ISPAG_Status_Manager::insert_initial_data();
@@ -184,10 +206,14 @@ function ispag_run_crm_manager() {
         'ISPAG_Status_Manager',
         'ISPAG_Contact_Ajax_Handler',
         'ISPAG_Note_Manager',
+        'ISPAG_Eml_Builder',
         'ISPAG_Crm_Deal_Model',
         'ISPAG_Company_Importer',
         'ISPAG_Crm_Company_Repository',
         'ISPAG_Crm_Company_Modal',
+        'ISPAG_Crm_Company_Creator',
+        'ISPAG_Crm_Supplier_Tab',
+        'ISPAG_Crm_Reference_Tables',
         'ISPAG_Crm_Contact_Modal',
         'ISPAG_Template_Repository',
         'ISPAG_Template_AJAX',
@@ -204,7 +230,7 @@ function ispag_run_crm_manager() {
         'ISPAG_Baikal_Sync',
         'ISPAG_Sequence_Admin',
         'ISPAG_Sequence_Repository',
-        'ISPAG_OneSignal_Handler',
+        'ISPAG_WebPush_Handler',
         'ISPAG_Notifications_Manager',
         'ISPAG_Notifications_Renderer',
         'ISPAG_Simap_Service',
@@ -239,15 +265,11 @@ function ispag_run_crm_manager() {
     // Gestionnaire de workflows (singleton propre, pas de doublon possible)
     ISPAG_Workflow_Manager::get_instance();
 
-    // CHARGEMENT DU SDK ONESIGNAL (Géré par la classe)
-    if ( isset( $instances['ISPAG_OneSignal_Handler'] ) ) {
-        add_action( 'wp_enqueue_scripts', array( 'ISPAG_OneSignal_Handler', 'enqueue_scripts' ) );
-    }
-
     if ( class_exists( 'ISPAG_Crm_Deals_Repository' ) ) {
         $instances['ISPAG_Crm_Deals_Repository'] = new ISPAG_Crm_Deals_Repository();
         $deals_repo = $instances['ISPAG_Crm_Deals_Repository'];
         add_action( 'wp_ajax_ispag_update_deal_stage', array( $deals_repo, 'ispag_ajax_handle_deal_stage_update' ) );
+        add_action( 'wp_ajax_ispag_kanban_load_more', array( $deals_repo, 'ajax_kanban_load_more' ) );
         add_action( 'wp_ajax_ispag_bulk_update_deals', array( $deals_repo, 'ispag_handle_bulk_deal_update' ) );
     }
 
@@ -262,7 +284,6 @@ function ispag_run_crm_manager() {
         $handlers = [
             new ISPAG_Brevo_Webhook_Handler( $contacts_repo, $notes_repo ),
             new ISPAG_Iphone_Shortcut_Webhook_Handler( $contacts_repo, $notes_repo ),
-            new ISPAG_OneSignal_Handler(),
             new ISPAG_Mailgun_Webhook_Handler( $contacts_repo, $notes_repo ),
         ];
 
@@ -345,7 +366,7 @@ add_action( 'wp_enqueue_scripts', function() {
         wp_enqueue_style( 'ispag-crm-main', ISPAG_CRM_PLUGIN_URL . 'assets/css/ispag-crm-styles.css' );
         wp_enqueue_script( 'ispag-crm-js', ISPAG_CRM_PLUGIN_URL . 'assets/js/ispag-contact-detail-edit.js', ['jquery'], '1.2.0', true );
         wp_enqueue_script( 'ispag-ai-loader', ISPAG_CRM_PLUGIN_URL . 'assets/js/ispag-load-ai-datas.js', ['jquery'], '1.2.0', true );
-        wp_enqueue_script( 'ispag-drag-drop', ISPAG_CRM_PLUGIN_URL . 'assets/js/ispag-drag-and-drop-deals.js', ['jquery'], '1.2.0', true );
+        wp_enqueue_script( 'ispag-drag-drop', ISPAG_CRM_PLUGIN_URL . 'assets/js/ispag-drag-and-drop-deals.js', ['jquery'], (int) @filemtime( ISPAG_CRM_PLUGIN_DIR . 'assets/js/ispag-drag-and-drop-deals.js' ), true );
         wp_enqueue_script( 'ispag-sequence-loader-js', ISPAG_CRM_PLUGIN_URL . 'assets/js/sequence-loader.js', ['jquery', 'ispag-crm-js'], '1.2.1', true );
     }
 
@@ -382,7 +403,7 @@ add_filter('wp_authenticate_user', function($user) {
     if (is_wp_error($user)) return $user;
     $status = get_user_meta($user->ID, 'ispag_account_status', true);
     if ($status === 'disabled') {
-        return new WP_Error('disabled_account', __('Votre compte ISPAG a été suspendu.', 'ispag-crm'));
+        return new WP_Error('disabled_account', __('Your ISPAG account has been suspended.', 'ispag-crm'));
     }
     return $user;
 }, 10, 1);
@@ -477,7 +498,7 @@ function ispag_link_contact_to_company_by_domain($user_id, $email) {
     // On cherche une entreprise qui a ce domaine dans son mail ou site web
     $table_companies = 'wor9711_ispag_companies'; // Selon votre classe constants
     $company_id = $wpdb->get_var($wpdb->prepare(
-        "SELECT viag_id FROM $table_companies WHERE company_mail LIKE %s LIMIT 1",
+        "SELECT Id FROM $table_companies WHERE company_mail LIKE %s LIMIT 1",
         '%' . $wpdb->esc_like($domain) . '%'
     ));
 
@@ -543,14 +564,14 @@ add_action('admin_head', function() {
             $dept      = $company_data->department_key;
 
             // Récupérer le nom de l'entreprise (optionnel, pour le log)
-            $company_name = $wpdb->get_var($wpdb->prepare("SELECT title FROM {$wpdb->prefix}viag_items WHERE id = %d", $co_id));
+            $company_name = $wpdb->get_var($wpdb->prepare("SELECT company_name FROM {$wpdb->prefix}ispag_companies WHERE Id = %d", $co_id));
 
             echo "<h3>🏢 Entreprise : $company_name (ID $co_id)</h3>";
             echo "<p>Owner cible : <b>" . (get_userdata($new_owner)->display_name ?? $new_owner) . "</b></p>";
 
             // 2. Trouver les contacts liés à cette entreprise
             $contacts = get_users([
-                'meta_key'   => ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID,
+                'meta_key'   => ISPAG_Crm_Contact_Constants::META_COMPANY_ID,
                 'meta_value' => $co_id,
                 'fields'     => 'ID'
             ]);
@@ -582,12 +603,12 @@ add_action('admin_head', function() {
                             'assigned_at'    => current_time('mysql')
                         ]);
                         $updates++;
-                        echo "🔹 Contact ID $contact_id : <span style='color:#00ff00;'>Mis à jour</span><br>";
+                        echo "🔹 Contact ID $contact_id : <span style='color:#00ff00;'>Updated</span><br>";
                     }
                 }
             }
 
-            echo "<p style='color:#72aee6;'>✅ Fin du lot. $updates modifications effectuées.</p>";
+            echo "<p style='color:#72aee6;'>✅ End of batch. $updates changes made.</p>";
 
             // 3. Redirection automatique vers le lot suivant
             $next = $offset + 1;
@@ -596,9 +617,9 @@ add_action('admin_head', function() {
 
         } else {
             echo "<div style='background:#46b450; padding:20px; color:#fff;'>";
-            echo "<h2>🏁 Terminé !</h2>";
-            echo "Tous les contacts ont été alignés sur les propriétaires de leurs entreprises.";
-            echo "</div><br><a href='".admin_url()."' style='color:#72aee6;'>Retour au CRM</a>";
+            echo "<h2>🏁 Done!</h2>";
+            echo "All contacts have been aligned with the owners of their companies.";
+            echo "</div><br><a href='".admin_url()."' style='color:#72aee6;'>Back to CRM</a>";
         }
 
         echo "</div>";

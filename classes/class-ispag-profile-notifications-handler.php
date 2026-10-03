@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Classe dédiée à la gestion des préférences de notifications dans la page de profil utilisateur.
  * Réutilise la logique de ISPAG_Notifications_Manager pour l'affichage et l'enregistrement.
@@ -237,7 +238,7 @@ class ISPAG_Profile_Notifications_Handler
 
         $user_id = get_current_user_id();
 
-        // Sauvegarder les préférences de canaux
+        // Save les préférences de canaux
         if (isset($_POST['ispag_notif_prefs']) && is_array($_POST['ispag_notif_prefs'])) {
             $clean_prefs = [];
             $available_types = ISPAG_Notifications_Manager::get_available_notification_types();
@@ -253,7 +254,7 @@ class ISPAG_Profile_Notifications_Handler
             update_user_meta($user_id, 'ispag_notif_prefs', $clean_prefs);
         }
 
-        // Sauvegarder les préférences de déconnexion
+        // Save les préférences de déconnexion
         $allow_weekend = isset($_POST['ispag_allow_weekend_notifications']) ? 1 : 0;
         update_user_meta($user_id, 'ispag_allow_weekend_notifications', $allow_weekend);
 

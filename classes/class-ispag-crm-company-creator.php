@@ -1,0 +1,132 @@
+<?php
+defined('ABSPATH') || exit;
+
+/**
+ * Création d'une entreprise du CRM.
+ *
+ * Une seule logique, deux points d'entrée :
+ *  - le formulaire d'administration (« CRM ISPAG → Add Company », ISPAG_Entreprise_Manager) ;
+ *  - le panneau « Créer une entreprise » de la page publique (action AJAX ispag_create_company).
+ *
+ * Règles : nom obligatoire ; pas de doublon (même domaine) ; la ville est écrite aux trois endroits où le CRM la lit.
+ */
+class ISPAG_Crm_Company_Creator {
+
+    const NONCE_ACTION = 'ispag_new_company_nonce';
+
+    public function __construct() {
+        add_action('wp_ajax_ispag_create_company', array(self::class, 'ajax_create'));
+    }
+
+    /**
+     * Qui peut créer une entreprise depuis la page publique : le droit CRM add_company, ou le droit « équipe ISPAG »
+     * manage_order (qui permet déjà de créer des contacts, donc des entreprises par leur domaine).
+     * Modifiable : add_filter('ispag_crm_can_create_company', fn($ok) => ..., 10, 1).
+     */
+    public static function can_create() {
+        return (bool) apply_filters('ispag_crm_can_create_company', is_user_logged_in() && current_user_can('add_company'));
+    }
+
+    /** « https://www.Exemple.ch/page », « info@exemple.ch » ou « exemple.ch » → « exemple.ch ». */
+    public static function normalize_domain($raw) {
+        $d = strtolower(trim((string) $raw));
+        if ($d === '') return '';
+        if (strpos($d, '@') !== false) $d = substr($d, strrpos($d, '@') + 1);
+        $d = preg_replace('#^[a-z][a-z0-9+.\-]*://#', '', $d);
+        $d = preg_replace('#^www\.#', '', $d);
+        $parts = preg_split('#[/?\\#\s]#', $d);
+        return sanitize_text_field($parts[0]);
+    }
+
+    /** Écrit une méta d'entreprise dans ispag_companies_meta (met à jour la ligne existante, sinon l'ajoute). */
+    public static function save_company_meta($company_id, $key, $value) {
+        global $wpdb;
+        $meta_table = $wpdb->prefix . 'ispag_companies_meta';
+        $meta_id = $wpdb->get_var($wpdb->prepare("SELECT meta_id FROM {$meta_table} WHERE company_id = %d AND meta_key = %s ORDER BY meta_id DESC LIMIT 1", $company_id, $key));
+        if ($meta_id) {
+            $wpdb->update($meta_table, array('meta_value' => $value), array('meta_id' => $meta_id));
+        } else {
+            $wpdb->insert($meta_table, array('company_id' => $company_id, 'meta_key' => $key, 'meta_value' => $value));
+        }
+    }
+
+    /** La ville est lue selon l'écran dans la colonne city, dans ispag_companies_meta ou dans les postmeta : on écrit aux trois. */
+    public static function save_city($company_id, $city) {
+        global $wpdb;
+        $wpdb->update($wpdb->prefix . 'ispag_companies', array('city' => $city), array('Id' => $company_id));
+        self::save_company_meta($company_id, 'ispag_company_city', $city);
+        update_post_meta($company_id, 'ispag_company_city', $city);
+    }
+
+    /**
+     * @param array $fields company_name*, compagny_domain, city, phone, email, isSupplier, isIngenieur, is_active (données brutes de $_POST acceptées)
+     * @return array ['status' => created|exists|error_name|error_email|error_db, 'id'?, 'existing_id'?]
+     */
+    public static function create(array $fields) {
+        global $wpdb;
+        $table = $wpdb->prefix . 'ispag_companies';
+
+        $name   = sanitize_text_field(wp_unslash(isset($fields['company_name']) ? $fields['company_name'] : ''));
+        $domain = self::normalize_domain(wp_unslash(isset($fields['compagny_domain']) ? $fields['compagny_domain'] : ''));
+        $city   = sanitize_text_field(wp_unslash(isset($fields['city']) ? $fields['city'] : ''));
+        $phone  = sanitize_text_field(wp_unslash(isset($fields['phone']) ? $fields['phone'] : ''));
+        $email  = sanitize_email(wp_unslash(isset($fields['email']) ? $fields['email'] : ''));
+
+        if ($name === '') return array('status' => 'error_name');
+        if (!empty($fields['email']) && $email === '') return array('status' => 'error_email');
+
+        $existing = $wpdb->get_row($wpdb->prepare(
+            "SELECT Id FROM {$table} WHERE (%s <> '' AND compagny_domain = %s) LIMIT 1",
+            $domain, $domain
+        ));
+        if ($existing) return array('status' => 'exists', 'existing_id' => (int) $existing->Id);
+
+        $inserted = $wpdb->insert($table, array(
+            'company_name'    => $name,
+            'compagny_domain' => $domain,
+            'phone'           => $phone,
+            'email'           => $email,
+            'isSupplier'      => !empty($fields['isSupplier']) ? 1 : 0,
+            'isIngenieur'     => !empty($fields['isIngenieur']) ? 1 : 0,
+            'is_active'       => isset($fields['is_active']) ? absint($fields['is_active']) : 1,
+            'created_at'      => current_time('mysql'),
+        ));
+        if ($inserted === false) return array('status' => 'error_db');
+
+        $id = (int) $wpdb->insert_id;
+        self::save_city($id, $city);
+        return array('status' => 'created', 'id' => $id);
+    }
+
+    /** Action AJAX du panneau « Créer une entreprise » de la page publique. */
+    public static function ajax_create() {
+        if (!check_ajax_referer(self::NONCE_ACTION, 'nonce', false)) {
+            wp_send_json_error(array('message' => __('Security check failed. Please reload the page.', 'ispag-crm')), 403);
+        }
+        if (!self::can_create()) {
+            wp_send_json_error(array('message' => __('You are not allowed to create companies.', 'ispag-crm')), 403);
+        }
+
+        // Une entreprise peut être à la fois cliente et fournisseuse : isSupplier n'est qu'un drapeau, jamais un filtre d'accès.
+        $result = self::create($_POST);
+
+        switch ($result['status']) {
+            case 'created':
+                wp_send_json_success(array(
+                    'message'      => __('Company created.', 'ispag-crm'),
+                    'redirect_url' => home_url('/company/' . $result['id'] . '/'),
+                ));
+            case 'exists':
+                wp_send_json_error(array(
+                    'message'      => __('A company with this domain already exists.', 'ispag-crm'),
+                    'existing_url' => home_url('/company/' . $result['existing_id'] . '/'),
+                ));
+            case 'error_name':
+                wp_send_json_error(array('message' => __('The company name is required.', 'ispag-crm')));
+            case 'error_email':
+                wp_send_json_error(array('message' => __('This email address is not valid.', 'ispag-crm')));
+            default:
+                wp_send_json_error(array('message' => __('The company could not be saved.', 'ispag-crm')));
+        }
+    }
+}

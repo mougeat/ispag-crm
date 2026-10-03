@@ -32,7 +32,7 @@ class ISPAG_Attachments_Uploader {
         // error_log('handleUpload ARTICLE ID : ' . $article_id);
 
         if (!in_array($entityType, array_merge(self::ENTITY_TYPES_ACHATS, self::ENTITY_TYPES_NOTES), true)) {
-            return ['success' => false, 'message' => __('Type d\'entité invalide.', 'ispag-crm')];
+            return ['success' => false, 'message' => __('Invalid entity type.', 'ispag-crm')];
         }
 
         $docType = $this->docTypesRepo->findBySlug($docTypeSlug);
@@ -115,6 +115,17 @@ class ISPAG_Attachments_Uploader {
             $data['purchase_order'] = (int) $entityId;
         } else { // 'deal' ou 'project'
             $data['hubspot_deal_id'] = (int) $entityId;
+
+            // Document lié à un article du projet : on le lie aussi à l'achat de cet article (visible dans les deux fiches)
+            if (!empty($article_id)) {
+                $purchase_id = (int) $this->wpdb->get_var($this->wpdb->prepare(
+                    "SELECT IdCommande FROM {$this->wpdb->prefix}achats_articles_cmd_fournisseurs WHERE IdCommandeClient = %d AND IdCommande > 0 ORDER BY Id DESC LIMIT 1",
+                    (int) $article_id
+                ));
+                if ($purchase_id) {
+                    $data['purchase_order'] = $purchase_id;
+                }
+            }
         }
 
         $this->wpdb->insert(

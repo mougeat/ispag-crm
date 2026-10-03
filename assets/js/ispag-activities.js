@@ -1,4 +1,4 @@
-console.log('[ISPAG Activity ] fichier JS chargé');
+// console.log('[ISPAG Activity ] fichier JS chargé');
 
 jQuery(function ($) {
     'use strict';
@@ -43,12 +43,12 @@ jQuery(function ($) {
                 $pane.html(response.data.html);
                 $pane.data('loaded', true);
             } else {
-                $pane.html('<p class="ispag-error-message">' + (response.data.message || 'Erreur.') + '</p>');
+                $pane.html('<p class="ispag-error-message">' + (response.data.message || 'Error.') + '</p>');
             }
         })
         .fail(function (xhr) {
             // console.error('[ISPAG Activity Tracker] échec AJAX :', xhr.status, xhr.responseText);
-            $pane.html('<p class="ispag-error-message">Erreur réseau.</p>');
+            $pane.html('<p class="ispag-error-message">Network error.</p>');
         })
         .always(function() {
             $pane.removeData('loading');

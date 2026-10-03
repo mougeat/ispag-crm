@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 class Ispag_Agent_Commercial_API {
 

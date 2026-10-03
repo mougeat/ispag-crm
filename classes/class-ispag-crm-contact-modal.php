@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 // Fichier : includes/crm/repositories/class-ispag-crm-contact-modal.php
 
 if ( ! class_exists( 'ISPAG_Crm_Contact_Modal' ) ) :
@@ -19,12 +20,12 @@ class ISPAG_Crm_Contact_Modal {
             wp_send_json_error( array( 'message' => 'IDs manquants.' ) );
         }
 
-        $deleted = delete_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, $company_id );
+        $deleted = delete_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, $company_id );
 
         if ( $deleted ) {
-            wp_send_json_success( array( 'message' => 'Association retirée.' ) );
+            wp_send_json_success( array( 'message' => 'Association removed.' ) );
         } else {
-            wp_send_json_error( array( 'message' => 'Échec de la suppression.' ) );
+            wp_send_json_error( array( 'message' => 'Deletion failed.' ) );
         }
         wp_die();
     }
@@ -123,14 +124,14 @@ class ISPAG_Crm_Contact_Modal {
         if ( empty( $search_term ) ) {
             // --- CAS 1 : On AJOUTE (avec []) la condition de l'entreprise ---
             $args['meta_query'][] = array(
-                'key'     => ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID,
+                'key'     => ISPAG_Crm_Company_Constants::META_COMPANY_ID,
                 'value'   => $company_id,
                 'compare' => '='
             );
         } else {
             // --- CAS 2 : Recherche active ---
             $excluded_ids = get_users(array(
-                'meta_key'   => ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID,
+                'meta_key'   => ISPAG_Crm_Company_Constants::META_COMPANY_ID,
                 'meta_value' => $company_id,
                 'fields'     => 'ID'
             ));
@@ -177,7 +178,7 @@ class ISPAG_Crm_Contact_Modal {
         // 2. Vérification des données critiques
         if ( ! $company_id && empty( $contact_ids) && empty($deal_id) && empty($deal_group_ref) ) {
             // error_log("[ISPAG ERROR] Données incomplètes : CompanyID=$company_id, deal_group_ref=$deal_group_ref, deal_id=$deal_id, ContactsCount=" . count($contact_ids));
-            wp_send_json_error( array( 'message' => 'Données incomplètes (ID Société, Contacts ou deal).' ) );
+            wp_send_json_error( array( 'message' => 'Incomplete data (Company ID, Contacts or deal).' ) );
         }
 
         $table_deals = ISPAG_Crm_Deal_Constants::TABLE_NAME;
@@ -217,7 +218,7 @@ class ISPAG_Crm_Contact_Modal {
                     }
                 }
             } else {
-                // error_log("[ISPAG WARNING] Aucun deal trouvé en base pour la REF: $deal_group_ref");
+                // error_log("[ISPAG WARNING] No deal found en base pour la REF: $deal_group_ref");
             }
         } elseif(! empty($deal_id)){
             $existing_deals = $wpdb->get_results( $wpdb->prepare(
@@ -248,7 +249,7 @@ class ISPAG_Crm_Contact_Modal {
         // error_log("[ISPAG DEBUG] Mise à jour User Meta pour " . count($contact_ids) . " contacts.");
         foreach ( $contact_ids as $contact_id ) {
             // 1. Récupérer la valeur actuelle (chaîne de caractères)
-            $current_meta = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, true );
+            $current_meta = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, true );
             
             // 2. Transformer en tableau et nettoyer (enlever les espaces et les entrées vides)
             $company_list = ! empty( $current_meta ) ? explode( ',', $current_meta ) : array();
@@ -261,11 +262,11 @@ class ISPAG_Crm_Contact_Modal {
 
             // 4. Re-transformer en chaîne séparée par des virgules et mettre à jour
             $new_meta_value = implode( ',', $company_list );
-            update_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, $new_meta_value );
+            update_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, $new_meta_value );
         }
 
         // error_log("[ISPAG DEBUG] --- Fin Association Contact ---");
-        wp_send_json_success( array( 'message' => 'Liaison effectuée avec succès.' ) );
+        wp_send_json_success( array( 'message' => 'Link created successfully.' ) );
     }
 }
 endif;

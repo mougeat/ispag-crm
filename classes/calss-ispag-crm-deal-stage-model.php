@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 if ( ! class_exists( 'ISPAG_Crm_Deal_Stage_Model' ) ) :
 

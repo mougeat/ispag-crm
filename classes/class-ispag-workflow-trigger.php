@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Workflow_Trigger
  * Classe abstraite pour les déclencheurs d'un workflow.

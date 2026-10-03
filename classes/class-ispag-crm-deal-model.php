@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 // Fichier: classes/class-ispag-crm-deal-model.php
 
@@ -49,8 +50,9 @@ class ISPAG_Crm_Deal_Model {
      * Constructeur CORRIGÉ. Hydrate le modèle avec les données brutes.
      * Le Repository DOIT passer les données brutes ici.
      * @param object $data L'objet stdClass contenant les données brutes du deal (résultat de $wpdb->get_row).
+     * @param bool   $compute_last_activity FAUX pour éviter la requête SQL par deal (le Repository charge alors la dernière activité en batch).
      */
-    public function __construct( $data = null ) {
+    public function __construct( $data = null, $compute_last_activity = true ) {
         if ( is_object( $data ) || is_array( $data ) ) {
             $data_array = (array) $data;
 
@@ -63,7 +65,7 @@ class ISPAG_Crm_Deal_Model {
             }
             
             // Si l'ID est rempli, on peut enrichir le modèle (calculer les labels/couleurs)
-            if ( ! empty( $this->id ) ) {
+            if ( $compute_last_activity && ! empty( $this->id ) ) {
                 // $this->_enrich_model_for_display();
                 $this->last_activity_date = $this->calculate_last_activity_date();
             }
@@ -123,7 +125,7 @@ class ISPAG_Crm_Deal_Model {
     //  */
     // private function _enrich_model_for_display() {
     //     // Fallbacks par défaut
-    //     $this->stage_label = __('Non défini', 'ispag-crm');
+    //     $this->stage_label = __('Not defined', 'ispag-crm');
     //     $this->stage_color = '#cccccc'; 
     //     $this->project_db_status_label = __('Status Inconnu', 'ispag-crm');
 
@@ -144,7 +146,7 @@ class ISPAG_Crm_Deal_Model {
     //             }
                 
     //         } catch ( Exception $e ) {
-    //             error_log( "Erreur de chargement de stage '{$stage_key}' : " . $e->getMessage() );
+    //             error_log( "Loading error de stage '{$stage_key}' : " . $e->getMessage() );
     //         }
     //     }
 
@@ -221,7 +223,7 @@ class ISPAG_Crm_Deal_Model {
             return $repository->get_contacts_by_ids( $safe_ids ); 
             
         } catch ( Exception $e ) {
-            // error_log( "[ISPAG] Erreur contacts consolidés (Deal Group: {$this->deal_group_ref}): " . $e->getMessage() );
+            // error_log( "[ISPAG] Error contacts consolidés (Deal Group: {$this->deal_group_ref}): " . $e->getMessage() );
             return [];
         }
     }
@@ -254,9 +256,9 @@ class ISPAG_Crm_Deal_Model {
         try {
             $repository = new ISPAG_Crm_Company_Repository();
 
-            foreach ( $safe_ids as $viag_id ) {
+            foreach ( $safe_ids as $company_id ) {
                 // On utilise la méthode spécifique que tu as fournie
-                $company = $repository->get_company_by_viag_id( $viag_id );
+                $company = $repository->get_company_by_id( $company_id );
                 
                 if ( $company ) {
                     $companies_list[] = $company;
@@ -267,7 +269,7 @@ class ISPAG_Crm_Deal_Model {
             
         } catch ( Exception $e ) {
             if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-                // error_log( "[ISPAG CRM] Erreur récupération entreprises associées : " . $e->getMessage() );
+                // error_log( "[ISPAG CRM] Error récupération entreprises associées : " . $e->getMessage() );
             }
             return [];
         }

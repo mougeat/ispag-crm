@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 // Fichier : includes/crm/class-ispag-cron-task-reminder.php
 
 if ( ! class_exists( 'ISPAG_Cron_Task_Reminder' ) ) :
@@ -12,6 +13,7 @@ class ISPAG_Cron_Task_Reminder {
     public function __construct() {
         global $wpdb;
         $this->wpdb = $wpdb;
+        $this->app_base_url = untrailingslashit(get_site_url()); // adresse du site courant (plus celle de la production)
 
         // On lie l'action du CRON WordPress à notre méthode
         add_action( 'ispag_fifteen_minute_cron_event', array( $this, 'check_and_send_reminders' ) );
@@ -54,7 +56,7 @@ class ISPAG_Cron_Task_Reminder {
         if ( ! $user ) return;
 
         // --- 1. Gestion du CONTACT ---
-        $contact_name = "Non spécifié";
+        $contact_name = "Not specified";
         $contact_link = $this->get_app_url('contacts/');
         if ( ! empty( $task->contact_id ) ) {
             $c_ids = explode( ',', $task->contact_id );
@@ -65,13 +67,13 @@ class ISPAG_Cron_Task_Reminder {
         }
 
         // --- 2. Gestion de l'ENTREPRISE ---
-        $company_name = "Non spécifiée";
+        $company_name = "Not specifiede";
         $company_link = $this->get_app_url('companies/');
         if ( ! empty( $task->company_id ) ) {
             $co_ids = explode( ',', $task->company_id );
             $first_co_id = trim($co_ids[0]);
             $company = $this->wpdb->get_row( $this->wpdb->prepare(
-                "SELECT company_name FROM wor9711_ispag_companies WHERE viag_id = %s",
+                "SELECT company_name FROM wor9711_ispag_companies WHERE Id = %s",
                 $first_co_id
             ));
             if ( $company ) {
@@ -101,7 +103,7 @@ class ISPAG_Cron_Task_Reminder {
         }
 
         // --- 3. Gestion du DEAL (PROJET) ---
-        $project_name = "Projet non lié";
+        $project_name = "Unlinked project";
         $project_link = $this->get_app_url('deals/');
         if ( ! empty( $task->deal_id ) ) {
             $d_ids = explode( ',', $task->deal_id );
@@ -125,8 +127,8 @@ class ISPAG_Cron_Task_Reminder {
         );
 
         // Textes pour la cloche CRM et le Push
-        $push_title = "Rappel Tâche : " . $task->title;
-        $push_body  = "Échéance : " . $due_date_formatted . " | " . $task->content;
+        $push_title = "Task reminder: " . $task->title;
+        $push_body  = "Due: " . $due_date_formatted . " | " . $task->content;
         
         $sent_success = false;
 

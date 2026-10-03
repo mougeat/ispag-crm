@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Workflow_CPT
  * Enregistre un Custom Post Type pour les workflows.

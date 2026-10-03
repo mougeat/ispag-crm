@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Classe dédiée au rendu des notifications (cloche, sidebar, liste, badge)
  * Utilise Dashicons pour l'icône de cloche.
@@ -30,19 +31,17 @@ class ISPAG_Notifications_Renderer {
      */
     private static function register_ajax_actions() {
         add_action('wp_ajax_ispag_get_unread_notifications', [__CLASS__, 'get_unread_notifications_ajax']);
-        add_action('wp_ajax_nopriv_ispag_get_unread_notifications', [__CLASS__, 'get_unread_notifications_ajax']);
+        add_action('wp_ajax_ispag_get_unread_notification_ids', [__CLASS__, 'get_unread_notification_ids_ajax']);
         add_action('wp_ajax_ispag_get_unread_notification_count', [__CLASS__, 'get_unread_notification_count_ajax']);
-        add_action('wp_ajax_nopriv_ispag_get_unread_notification_count', [__CLASS__, 'get_unread_notification_count_ajax']);
         
 
         // Actions AJAX pour la configuration des notifications
         add_action('wp_ajax_ispag_get_notification_settings_form', [__CLASS__, 'get_notification_settings_form_ajax']);
-        add_action('wp_ajax_nopriv_ispag_get_notification_settings_form', [__CLASS__, 'get_notification_settings_form_ajax']);
         add_action('wp_ajax_ispag_save_notification_settings', [__CLASS__, 'save_notification_settings_ajax']);
-        add_action('wp_ajax_nopriv_ispag_save_notification_settings', [__CLASS__, 'save_notification_settings_ajax']);
+
+        add_action('wp_ajax_ispag_mark_all_notifications_read', [__CLASS__, 'mark_all_notifications_read_ajax']);
 
         add_action('wp_ajax_ispag_get_notifications_by_tab', [__CLASS__, 'get_notifications_by_tab_ajax']);
-        add_action('wp_ajax_nopriv_ispag_get_notifications_by_tab', [__CLASS__, 'get_notifications_by_tab_ajax']);
     }
 
     /**
@@ -78,7 +77,7 @@ class ISPAG_Notifications_Renderer {
 
         $current_user_id = get_current_user_id();
         if ($current_user_id === 0) {
-            wp_send_json_error(['message' => 'Utilisateur non connecté.']);
+            wp_send_json_error(['message' => 'User not logged in.']);
         }
 
         $available_types = ISPAG_Notifications_Manager::get_available_notification_types();
@@ -154,7 +153,11 @@ class ISPAG_Notifications_Renderer {
                                 $current_channels = ISPAG_Notifications_Manager::get_user_channel_preferences($current_user_id, $type_key);
                             ?>
                                 <tr class="ispag-notification-type-row">
-                                    <td class="ispag-notification-type-label"><?php echo esc_html($type_info['label']); ?></td>
+                                    <td class="ispag-notification-type-label">
+                                        <?php echo esc_html($type_info['label']); ?>
+                                        <?php // Marqueur : garantit que le type est envoyé même si toutes les cases sont décochées ?>
+                                        <input type="hidden" name="ispag_notif_prefs[<?php echo esc_attr($type_key); ?>][]" value="" />
+                                    </td>
                                     <?php foreach ($available_channels as $channel_key => $channel_label):
                                         $is_checked = in_array($channel_key, $current_channels);
                                     ?>
@@ -285,26 +288,28 @@ class ISPAG_Notifications_Renderer {
 
         $current_user_id = get_current_user_id();
         if ($current_user_id === 0) {
-            wp_send_json_error(['message' => 'Utilisateur non connecté.']);
+            wp_send_json_error(['message' => 'User not logged in.']);
         }
 
-        // Sauvegarder les préférences de canaux
-        if (isset($_POST['ispag_notif_prefs']) && is_array($_POST['ispag_notif_prefs'])) {
-            $clean_prefs = [];
-            $available_types = ISPAG_Notifications_Manager::get_available_notification_types();
-            $available_channels = ISPAG_Notifications_Manager::get_available_channels();
+        // Save les préférences de canaux
+        $posted_prefs = isset($_POST['ispag_notif_prefs']) && is_array($_POST['ispag_notif_prefs'])
+            ? wp_unslash($_POST['ispag_notif_prefs'])
+            : [];
+        $clean_prefs = [];
+        $available_types = ISPAG_Notifications_Manager::get_available_notification_types();
+        $available_channels = ISPAG_Notifications_Manager::get_available_channels();
 
-            foreach ($_POST['ispag_notif_prefs'] as $type => $channels) {
-                if (isset($available_types[$type]) && is_array($channels)) {
-                    if (user_can($current_user_id, $available_types[$type]['capability'])) {
-                        $clean_prefs[$type] = array_intersect($channels, array_keys($available_channels));
-                    }
+        foreach ($posted_prefs as $type => $channels) {
+            if (isset($available_types[$type]) && is_array($channels)) {
+                if (user_can($current_user_id, $available_types[$type]['capability'])) {
+                    // Un tableau vide est valide : l'utilisateur a décoché tous les canaux
+                    $clean_prefs[$type] = array_values(array_intersect($channels, array_keys($available_channels)));
                 }
             }
-            update_user_meta($current_user_id, 'ispag_notif_prefs', $clean_prefs);
         }
+        update_user_meta($current_user_id, 'ispag_notif_prefs', $clean_prefs);
 
-        // ⬇️ Sauvegarder les préférences de déconnexion (week-end et périodes de vacances)
+        // ⬇️ Save les préférences de déconnexion (week-end et périodes de vacances)
         $allow_weekend = isset($_POST['allow_weekend_notifications']) ? 1 : 0;
         $holiday_periods = isset($_POST['holiday_periods']) ? array_values($_POST['holiday_periods']) : [];
 
@@ -313,6 +318,30 @@ class ISPAG_Notifications_Renderer {
 
         $msg = __('Preferences successfully saved.', 'ispag-crm');
         wp_send_json_success(['message' => $msg]);
+    }
+
+    /**
+     * Marque toutes les notifications non lues de l'utilisateur comme lues (appelée via AJAX)
+     */
+    public static function mark_all_notifications_read_ajax() {
+        check_ajax_referer('ispag_nonce', '_ajax_nonce');
+
+        $current_user_id = get_current_user_id();
+        if ($current_user_id === 0) {
+            wp_send_json_error(['message' => 'Utilisateur non connecté.']);
+        }
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'ispag_notifications';
+
+        $wpdb->query($wpdb->prepare(
+            "UPDATE $table_name SET is_read = 1, read_at = %s
+             WHERE user_id = %d AND is_read = 0 AND is_deleted = 0 AND type != 'conceptual_window'",
+            current_time('mysql'),
+            $current_user_id
+        ));
+
+        wp_send_json_success(['message' => __('All notifications marked as read.', 'ispag-crm')]);
     }
 
     /**
@@ -351,15 +380,7 @@ class ISPAG_Notifications_Renderer {
             true
         );
 
-        $app_id = defined('CRM_ONE_SIGNAL_APP_ID') ? CRM_ONE_SIGNAL_APP_ID : getenv('CRM_ONE_SIGNAL_APP_ID');
-
-        // Localiser le script pour AJAX
-        wp_localize_script('ispag-notifications-js', 'ispag_notifications_obj', [
-            'nonce'             => wp_create_nonce('ispag_nonce'),
-            'ajaxurl'           => admin_url('admin-ajax.php'),
-            'app_id'            => $app_id,
-            'current_user_id'   => get_current_user_id(),
-        ]);
+        self::localize_scripts();
 
         // Ajouter un script pour charger le formulaire de configuration
         wp_add_inline_script('ispag-notifications-js', '
@@ -392,9 +413,20 @@ class ISPAG_Notifications_Renderer {
      * Localise les scripts pour AJAX
      */
     public static function localize_scripts() {
+        // Une seule localisation : une seconde écraserait la première (vapid_public_key, current_user_id...)
+        static $done = false;
+        if ($done) {
+            return;
+        }
+        $done = true;
+
         wp_localize_script('ispag-notifications-js', 'ispag_notifications_obj', [
-            'nonce' => wp_create_nonce('ispag_nonce'),
-            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce'             => wp_create_nonce('ispag_nonce'),
+            'ajaxurl'           => admin_url('admin-ajax.php'),
+            'vapid_public_key'  => ISPAG_WebPush_Handler::is_supported() ? ISPAG_WebPush_Handler::get_public_key() : '',
+            'push_sw_url'       => ISPAG_WebPush_Handler::service_worker_url(),
+            'push_scope'        => ISPAG_WebPush_Handler::scope(),
+            'current_user_id'   => get_current_user_id(),
         ]);
     }
 
@@ -412,6 +444,9 @@ class ISPAG_Notifications_Renderer {
             <div class="notification-header">
                 <h3><?php _e('Notifications', 'ispag-crm'); ?></h3>
                 <div class="notification-header-actions">
+                    <button type="button" id="ispag-mark-all-read" class="ispag-btn ispag-btn-secondary">
+                        <?php _e('Mark all as read', 'ispag-crm'); ?>
+                    </button>
                     <!-- Bouton de fermeture -->
                     <button class="close-sidebar ispag-close-modal ispag-btn ispag-btn-red-outlined ispag-close-croix" id="ispag-close-notification-sidebar">×</button>
                 </div>
@@ -499,7 +534,7 @@ class ISPAG_Notifications_Renderer {
 
         $current_user_id = get_current_user_id();
         if ($current_user_id === 0) {
-            wp_send_json_error(['message' => 'Utilisateur non connecté.']);
+            wp_send_json_error(['message' => 'User not logged in.']);
         }
 
         $tab = isset($_POST['tab']) ? sanitize_text_field($_POST['tab']) : 'unread';
@@ -583,7 +618,7 @@ class ISPAG_Notifications_Renderer {
 
         $current_user_id = get_current_user_id();
         if ($current_user_id === 0) {
-            wp_send_json_error(['message' => 'Utilisateur non connecté.']);
+            wp_send_json_error(['message' => 'User not logged in.']);
         }
 
         global $wpdb;
@@ -617,6 +652,26 @@ class ISPAG_Notifications_Renderer {
     }
 
     /**
+     * Ids des notifications non lues de l'utilisateur : le navigateur ferme les push affichés qui n'en font plus partie
+     * (lus depuis la cloche, un e-mail, Telegram ou un autre appareil).
+     */
+    public static function get_unread_notification_ids_ajax() {
+        check_ajax_referer('ispag_nonce', '_ajax_nonce');
+
+        $current_user_id = get_current_user_id();
+        if ($current_user_id === 0) {
+            wp_send_json_error(['message' => 'User not logged in.']);
+        }
+
+        global $wpdb;
+        $ids = $wpdb->get_col($wpdb->prepare(
+            "SELECT id FROM {$wpdb->prefix}ispag_notifications WHERE user_id = %d AND is_read = 0 AND is_deleted = 0 AND type != 'conceptual_window'",
+            $current_user_id
+        ));
+        wp_send_json_success(['ids' => array_map('intval', $ids)]);
+    }
+
+    /**
      * Récupère le nombre de notifications non lues (appelée via AJAX)
      */
     public static function get_unread_notification_count_ajax() {
@@ -624,7 +679,7 @@ class ISPAG_Notifications_Renderer {
 
         $current_user_id = get_current_user_id();
         if ($current_user_id === 0) {
-            wp_send_json_error(['message' => 'Utilisateur non connecté.']);
+            wp_send_json_error(['message' => 'User not logged in.']);
         }
 
         $count = self::get_unread_notification_count($current_user_id);
@@ -653,7 +708,7 @@ class ISPAG_Notifications_Renderer {
     //     }
 
     //     $mark_as_read_button = sprintf(
-    //         '<a href="#" class="ispag-btn ispag-btn-grey notification-mark-as-read"  data-notification-id="%d" data-url="%s" data-onesignal-id="%s">%s</a>',
+    //         '<a href="#" class="ispag-btn ispag-btn-grey notification-mark-as-read"  data-notification-id="%d" data-url="%s">%s</a>',
             
     //         esc_attr($notification->id),
     //         esc_url($target_url),
@@ -662,7 +717,7 @@ class ISPAG_Notifications_Renderer {
     //     );
 
     //     return sprintf(
-    //         '<div class="notification-item unread" data-notification-id="%d" data-url="%s" data-onesignal-id="%s">
+    //         '<div class="notification-item unread" data-notification-id="%d" data-url="%s">
     //             <div class="notification-title">%s</div>
     //             <div class="notification-content">%s</div>
     //             <div class="notification-time">%s</div>
@@ -723,18 +778,16 @@ class ISPAG_Notifications_Renderer {
         if (!$is_read) {
             // Non lue -> Enveloppe ouverte (pour la marquer comme lue)
             $mark_as_read_btn = sprintf(
-                '<button type="button" class="notification-action-btn notification-mark-as-read" data-notification-id="%d" data-onesignal-id="%s" title="%s">%s</button>',
+                '<button type="button" class="notification-action-btn notification-mark-as-read" data-notification-id="%d" title="%s">%s</button>',
                 esc_attr($notification->id),
-                esc_attr($notification->onesignal_id),
                 __('Mark as read', 'ispag-crm'),
                 $envelope_open
             );
         } else {
             // Lue -> Enveloppe fermée (pour la remettre non lue)
             $mark_as_read_btn = sprintf(
-                '<button type="button" class="notification-action-btn notification-mark-as-read" data-notification-id="%d" data-onesignal-id="%s" title="%s">%s</button>',
+                '<button type="button" class="notification-action-btn notification-mark-as-read" data-notification-id="%d" title="%s">%s</button>',
                 esc_attr($notification->id),
-                esc_attr($notification->onesignal_id),
                 __('Mark as unread', 'ispag-crm'),
                 $envelope_closed
             );
@@ -761,7 +814,7 @@ class ISPAG_Notifications_Renderer {
         $formatted_date = date_i18n('d M à H:i', strtotime($notification->sent_at));
 
         return sprintf(
-            '<div class="%s" data-notification-id="%d" data-onesignal-id="%s">
+            '<div class="%s" data-notification-id="%d">
                 <div class="notification-indicator"></div>
                 <div class="notification-body">
                     <div class="notification-header-line">
@@ -776,7 +829,6 @@ class ISPAG_Notifications_Renderer {
             </div>',
             esc_attr($item_class),
             esc_attr($notification->id),
-            esc_attr($notification->onesignal_id),
             esc_html($notification->title),
             esc_html($formatted_date),
             esc_html($notification->content),

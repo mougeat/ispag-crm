@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 if ( ! class_exists( 'ISPAG_Crm_Deals_Repository' ) ) :
 
@@ -93,7 +94,7 @@ class ISPAG_Crm_Deals_Repository {
 
         foreach ( $projects as $project_raw_data ) {
             $deal_model = new ISPAG_Crm_Deal_Model( $project_raw_data );
-            $group_ref = !empty($project_raw_data->deal_group_ref) ? $project_raw_data->deal_group_ref : $this->get_root_offer_number($project_raw_data->offer_number);
+            $group_ref = !empty($project_raw_data->deal_group_ref) ? $project_raw_data->deal_group_ref : $this->get_root_offer_number($project_raw_data->offer_number ?? '');
 
             // Injection Stage
             // 1. Récupération des détails (Cache ou Repo)
@@ -113,7 +114,7 @@ class ISPAG_Crm_Deals_Repository {
                 $deal_model->stage_color = $stage_details->stage_color ?? $stage_details->color ?? '';
             }
 
-            $group_ref = !empty($project_raw_data->deal_group_ref) ? $project_raw_data->deal_group_ref : $this->get_root_offer_number($project_raw_data->offer_number);
+            $group_ref = !empty($project_raw_data->deal_group_ref) ? $project_raw_data->deal_group_ref : $this->get_root_offer_number($project_raw_data->offer_number ?? '');
 
             if ( $note_manager && !empty($group_ref) ) {
                 // On passe bien la référence (ex: OF26-11102)
@@ -145,7 +146,7 @@ class ISPAG_Crm_Deals_Repository {
                 ) AS associated_contact_names
             FROM {$this->table_name} AS T
             LEFT JOIN {$company_table} AS C 
-                ON C.viag_id = T.associated_company_id
+                ON C.Id = T.associated_company_id
         ";
     }
 
@@ -266,12 +267,12 @@ class ISPAG_Crm_Deals_Repository {
     //    $sql = "
     //         SELECT 
     //             T.*,
-    //             C.viag_id           AS associated_company_viag_id,
+    //             C.Id                AS associated_company_row_id,
     //             C.company_name      AS associated_company_name,
     //             C.favicon           AS associated_company_favicon,
     //             C.compagny_domain   AS associated_company_domain
     //         FROM {$this->table_name} AS T
-    //         LEFT JOIN {$company_table} AS C ON C.viag_id = T.associated_company_id
+    //         LEFT JOIN {$company_table} AS C ON C.Id = T.associated_company_id
     //         {$where_sql}
     //         ORDER BY T.closing_date DESC
     //         LIMIT %d OFFSET %d
@@ -334,8 +335,8 @@ class ISPAG_Crm_Deals_Repository {
     //         $deal_model->associated_contacts      = $contacts_full_map[$raw->id] ?? [];
 
     //         // Favicon ou initiales de la société
-    //         $company_viag_id = $raw->associated_company_viag_id ?? null;
-    //         $company_visual  = $companies_map[$company_viag_id] ?? ['favicon' => null, 'initials' => null];
+    //         $company_row_id = $raw->associated_company_row_id ?? null;
+    //         $company_visual  = $companies_map[$company_row_id] ?? ['favicon' => null, 'initials' => null];
     //         $deal_model->associated_company_favicon  = $company_visual['favicon'];
     //         $deal_model->associated_company_initials = $company_visual['initials'];
 
@@ -363,7 +364,7 @@ class ISPAG_Crm_Deals_Repository {
         $where_conditions = [];
         $params           = [];
 
-        $get_date_range = function($filter_key) { /* ... inchangé ... */ };
+        $get_date_range = [ $this, 'get_date_range' ];
 
         $where_conditions[] = "T.process_type IN (%s, %s)";
         $params[] = 'Offre';
@@ -414,12 +415,12 @@ class ISPAG_Crm_Deals_Repository {
         $sql = "
             SELECT 
                 T.*,
-                C.viag_id           AS associated_company_viag_id,
+                C.Id                AS associated_company_row_id,
                 C.company_name      AS associated_company_name,
                 C.favicon           AS associated_company_favicon,
                 C.compagny_domain   AS associated_company_domain
             FROM {$this->table_name} AS T
-            LEFT JOIN {$company_table} AS C ON C.viag_id = T.associated_company_id
+            LEFT JOIN {$company_table} AS C ON C.Id = T.associated_company_id
             {$where_sql}
             ORDER BY T.closing_date DESC
             LIMIT %d OFFSET %d
@@ -454,7 +455,7 @@ class ISPAG_Crm_Deals_Repository {
         $grouped = [];
 
         foreach ($raw_deals as $raw) {
-            $deal_model = new ISPAG_Crm_Deal_Model($raw);
+            $deal_model = new ISPAG_Crm_Deal_Model($raw, false);
 
             $group_ref = !empty($raw->deal_group_ref)
                 ? $raw->deal_group_ref
@@ -475,8 +476,8 @@ class ISPAG_Crm_Deals_Repository {
             $deal_model->associated_contacts      = $contacts_full_map[$raw->id] ?? [];
 
             // Favicon / Initiales
-            $company_viag_id = $raw->associated_company_viag_id ?? null;
-            $company_visual  = $companies_map[$company_viag_id] ?? ['favicon' => null, 'initials' => null];
+            $company_row_id = $raw->associated_company_row_id ?? null;
+            $company_visual  = $companies_map[$company_row_id] ?? ['favicon' => null, 'initials' => null];
 
             $deal_model->associated_company_favicon  = $company_visual['favicon'];
             $deal_model->associated_company_initials = $company_visual['initials'];
@@ -490,6 +491,233 @@ class ISPAG_Crm_Deals_Repository {
     }
 
 
+
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // KANBAN : chargement allégé + pagination par colonne
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Convertit un filtre de date (today, this_week, last_month…) en intervalle [début, fin].
+     * Retourne [null, null] pour 'all' ou une valeur inconnue (= pas de filtre).
+     */
+    public function get_date_range( $key ) {
+        $now   = current_datetime();
+        $today = $now->setTime( 0, 0, 0 );
+        $fmt   = fn( $d, $end = false ) => $d->format( 'Y-m-d' ) . ( $end ? ' 23:59:59' : ' 00:00:00' );
+        $monday = $today->modify( 'monday this week' );
+
+        switch ( $key ) {
+            case 'today':     return [ $fmt( $today ), $fmt( $today, true ) ];
+            case 'yesterday': $d = $today->modify( '-1 day' ); return [ $fmt( $d ), $fmt( $d, true ) ];
+            case 'this_week': return [ $fmt( $monday ), $fmt( $monday->modify( '+6 days' ), true ) ];
+            case 'last_week': $d = $monday->modify( '-7 days' ); return [ $fmt( $d ), $fmt( $d->modify( '+6 days' ), true ) ];
+            case 'next_week': $d = $monday->modify( '+7 days' ); return [ $fmt( $d ), $fmt( $d->modify( '+6 days' ), true ) ];
+            case 'this_month':
+            case 'last_month':
+            case 'next_month':
+                $offset = [ 'this_month' => '0 month', 'last_month' => '-1 month', 'next_month' => '+1 month' ][ $key ];
+                $first  = $today->modify( 'first day of this month' )->modify( $offset );
+                return [ $fmt( $first ), $fmt( $first->modify( 'last day of this month' ), true ) ];
+            case 'last_year':
+                $y = (int) $today->format( 'Y' ) - 1;
+                return [ "$y-01-01 00:00:00", "$y-12-31 23:59:59" ];
+            case 'older_than_last_year':
+                $y = (int) $today->format( 'Y' ) - 2;
+                return [ '1970-01-01 00:00:00', "$y-12-31 23:59:59" ];
+        }
+        return [ null, null ];
+    }
+
+    /**
+     * Données du Kanban : les totaux sont calculés sur TOUS les deals, mais seuls les
+     * $per_stage premiers de chaque colonne sont enrichis (contacts, avatars, activité).
+     *
+     * @return array [ stage_key => [ 'count' => int, 'total' => float, 'deals' => ISPAG_Crm_Deal_Model[] ] ]
+     */
+    public function get_kanban_data( $filters = [], $per_stage = 20, $only_stage = null, $offset = 0 ) {
+        $light = $this->_kanban_light_rows( $filters );
+        if ( empty( $light ) ) return [];
+
+        $result = [];
+        foreach ( $light as $stage_key => $bucket ) {
+            if ( $only_stage !== null && $only_stage !== $stage_key ) continue;
+            $slice = array_slice( $bucket['rows'], $only_stage !== null ? $offset : 0, $per_stage );
+            $result[ $stage_key ] = [
+                'count' => count( $bucket['rows'] ),
+                'total' => $bucket['total'],
+                'deals' => $this->_enrich_kanban_rows( $slice ),
+            ];
+        }
+        return $result;
+    }
+
+    /**
+     * Requête unique, triée, groupée par étape (sans enrichissement).
+     */
+    private function _kanban_light_rows( $filters ) {
+        $current_user_id = ! current_user_can( 'administrator' ) ? get_current_user_id() : 'all';
+        $filters = array_merge( [
+            'status'       => 'open',
+            'owner'        => ( $current_user_id > 0 ) ? $current_user_id : 'all',
+            'closing_date' => 'all',
+            'create_date'  => 'all',
+            'search'       => '',
+            'limit'        => 4000,
+        ], $filters );
+
+        $where  = [ 'T.process_type IN (%s, %s)' ];
+        $params = [ 'Offre', 'Commande' ];
+
+        if ( $filters['owner'] !== 'all' ) {
+            $where[]  = 'T.deal_owner = %d';
+            $params[] = absint( $filters['owner'] );
+        }
+
+        if ( ! empty( $filters['company_id'] ) ) {
+            $where[]  = 'T.associated_company_id = %d';
+            $params[] = absint( $filters['company_id'] );
+        }
+        if ( ! empty( $filters['contact_id'] ) ) {
+            $where[]  = 'FIND_IN_SET(%d, REPLACE(T.associated_contact_ids, \' \', \'\')) > 0';
+            $params[] = absint( $filters['contact_id'] );
+        }
+
+        if ( ! empty( $filters['search'] ) ) {
+            $term = sanitize_text_field( $filters['search'] );
+            if ( strpos( $term, 'user-' ) === 0 ) {
+                $where[]  = 'T.associated_contact_ids LIKE %s';
+                $params[] = '%' . $this->wpdb->esc_like( absint( str_replace( 'user-', '', $term ) ) ) . '%';
+            } elseif ( strpos( $term, 'company-' ) === 0 ) {
+                $where[]  = 'T.associated_company_id = %d';
+                $params[] = absint( str_replace( 'company-', '', $term ) );
+            } else {
+                $s        = '%' . $this->wpdb->esc_like( $term ) . '%';
+                $where[]  = '(T.project_name LIKE %s OR C.company_name LIKE %s OR T.offer_num LIKE %s)';
+                $params   = array_merge( $params, [ $s, $s, $s ] );
+            }
+        }
+
+        if ( $filters['status'] === 'open' ) {
+            $where[] = '(T.project_db_status = ' . (int) ISPAG_Crm_Deal_Constants::STATUS_OPEN . '
+                        OR (T.project_db_status = 1 AND T.database_status = 11))';
+        }
+
+        foreach ( [ 'closing_date' => 'T.closing_date', 'create_date' => 'T.date_creation' ] as $key => $col ) {
+            if ( $filters[ $key ] !== 'all' ) {
+                [ $start, $end ] = $this->get_date_range( $filters[ $key ] );
+                if ( $start && $end ) {
+                    $where[]  = "$col BETWEEN %s AND %s";
+                    $params[] = $start;
+                    $params[] = $end;
+                }
+            }
+        }
+
+        $company_table = $this->wpdb->prefix . 'ispag_companies';
+        $params[]      = absint( $filters['limit'] );
+
+        $raw_deals = $this->wpdb->get_results( $this->wpdb->prepare(
+            "SELECT T.*,
+                    C.Id              AS associated_company_row_id,
+                    C.company_name    AS associated_company_name,
+                    C.favicon         AS associated_company_favicon
+             FROM {$this->table_name} AS T
+             LEFT JOIN {$company_table} AS C ON C.Id = T.associated_company_id
+             WHERE " . implode( ' AND ', $where ) . "
+             ORDER BY T.closing_date DESC
+             LIMIT %d",
+            $params
+        ) );
+
+        if ( empty( $raw_deals ) ) return [];
+
+        $group_refs = [];
+        foreach ( $raw_deals as $raw ) {
+            $raw->_group_ref = ! empty( $raw->deal_group_ref ) ? $raw->deal_group_ref : $this->get_root_offer_number( $raw->offer_number );
+            $group_refs[]    = $raw->_group_ref;
+        }
+        $stages_map = $this->_load_stages_batch( array_unique( array_filter( $group_refs ) ) );
+
+        $grouped = [];
+        foreach ( $raw_deals as $raw ) {
+            $stage     = $stages_map[ $raw->_group_ref ] ?? null;
+            $stage_key = ( $stage && ! empty( $stage->stage_key ) ) ? $stage->stage_key : 'submission_received';
+            $raw->_stage = $stage;
+
+            if ( ! isset( $grouped[ $stage_key ] ) ) {
+                $grouped[ $stage_key ] = [ 'rows' => [], 'total' => 0.0 ];
+            }
+            $grouped[ $stage_key ]['rows'][] = $raw;
+            $grouped[ $stage_key ]['total'] += (float) $raw->total_excl_vat;
+        }
+        return $grouped;
+    }
+
+    /**
+     * Enrichit uniquement les lignes affichées (batch : 1 requête par type de donnée).
+     */
+    private function _enrich_kanban_rows( array $rows ) {
+        if ( empty( $rows ) ) return [];
+
+        $activities_map = $this->_load_last_activities_batch( array_unique( array_column( $rows, '_group_ref' ) ) );
+        $contacts_data  = $this->_load_contact_names_batch( $rows );
+        $companies_map  = $this->_load_companies_batch( $rows );
+
+        $models = [];
+        foreach ( $rows as $raw ) {
+            $m = new ISPAG_Crm_Deal_Model( $raw, false );
+            if ( $raw->_stage ) {
+                $m->stage_key   = $raw->_stage->stage_key   ?? '';
+                $m->stage_label = $raw->_stage->stage_label ?? '';
+                $m->stage_color = $raw->_stage->stage_color ?? '';
+            }
+            $m->last_activity_date       = $activities_map[ $raw->_group_ref ] ?? null;
+            $m->associated_contact_names = $contacts_data['names'][ $raw->id ] ?? '';
+            $m->associated_contacts      = $contacts_data['contacts'][ $raw->id ] ?? [];
+
+            $visual = $companies_map[ $raw->associated_company_row_id ?? null ] ?? [ 'favicon' => null, 'initials' => null ];
+            $m->associated_company_favicon  = $visual['favicon'];
+            $m->associated_company_initials = $visual['initials'];
+            $models[] = $m;
+        }
+        return $models;
+    }
+
+    /**
+     * AJAX : charge la suite des cartes d'une colonne (bouton « Voir plus »).
+     */
+    public function ajax_kanban_load_more() {
+        check_ajax_referer( 'ispag_crm_nonce', 'nonce' );
+
+        $stage_key = sanitize_text_field( $_POST['stage_key'] ?? '' );
+        $offset    = absint( $_POST['offset'] ?? 0 );
+        $per_page  = 20;
+        $filters   = [];
+        foreach ( [ 'owner', 'closing_date', 'create_date', 'search' ] as $k ) {
+            if ( isset( $_POST[ $k ] ) && $_POST[ $k ] !== '' ) $filters[ $k ] = sanitize_text_field( $_POST[ $k ] );
+        }
+        foreach ( [ 'company_id', 'contact_id' ] as $k ) {
+            if ( ! empty( $_POST[ $k ] ) ) $filters[ $k ] = absint( $_POST[ $k ] );
+        }
+        if ( isset( $filters['owner'] ) && $filters['owner'] !== 'all' ) $filters['owner'] = absint( $filters['owner'] );
+
+        $data   = $this->get_kanban_data( $filters, $per_page, $stage_key, $offset );
+        $bucket = $data[ $stage_key ] ?? [ 'count' => 0, 'deals' => [] ];
+
+        $stage_color = '';
+        $html = '';
+        foreach ( $bucket['deals'] as $deal ) {
+            $stage_color = $deal->stage_color ?: '#ccc';
+            $html .= ispag_get_template( 'kanban-card', [ 'deal' => $deal, 'stage_color' => esc_attr( $stage_color ) ] );
+        }
+
+        wp_send_json_success( [
+            'html'      => $html,
+            'loaded'    => $offset + count( $bucket['deals'] ),
+            'remaining' => max( 0, $bucket['count'] - $offset - count( $bucket['deals'] ) ),
+        ] );
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
     // LOADERS BATCH (1 requête chacun, peu importe le nombre de deals)
@@ -623,32 +851,32 @@ class ISPAG_Crm_Deals_Repository {
     // private function _load_companies_batch(array $raw_deals): array {
     //     if (empty($raw_deals)) return [];
 
-    //     // Dédoublonnage par viag_id : on ne veut résoudre le favicon qu'une seule fois par société
-    //     $companies_by_viag_id = [];
+    //     // Dédoublonnage par Id : on ne veut résoudre le favicon qu'une seule fois par société
+    //     $companies_by_id = [];
     //     foreach ($raw_deals as $deal) {
-    //         $viag_id = $deal->associated_company_viag_id ?? null;
-    //         if (empty($viag_id) || isset($companies_by_viag_id[$viag_id])) continue;
+    //         $row_id = $deal->associated_company_row_id ?? null;
+    //         if (empty($row_id) || isset($companies_by_id[$row_id])) continue;
 
-    //         $companies_by_viag_id[$viag_id] = (object) [
-    //             'viag_id'         => $viag_id,
+    //         $companies_by_id[$row_id] = (object) [
+    //             'Id'              => $row_id,
     //             'company_name'    => $deal->associated_company_name ?? '',
     //             'favicon'         => $deal->associated_company_favicon ?? '',
     //             'compagny_domain' => $deal->associated_company_domain ?? '',
     //         ];
     //     }
 
-    //     if (empty($companies_by_viag_id)) return [];
+    //     if (empty($companies_by_id)) return [];
 
     //     $company_repo = class_exists('ISPAG_Crm_Company_Repository') ? new ISPAG_Crm_Company_Repository() : null;
     //     $map = [];
 
-    //     foreach ($companies_by_viag_id as $viag_id => $company) {
+    //     foreach ($companies_by_id as $row_id => $company) {
     //         $favicon = $company->favicon;
 
     //         // Même logique que _enrich_company_data : on tente de résoudre le favicon
     //         // si absent mais qu'un domaine est connu, sinon on prépare les initiales.
     //         if (empty($favicon) && !empty($company->compagny_domain) && $company_repo) {
-    //             $favicon = $company_repo->update_company_favicon($viag_id, $company->compagny_domain);
+    //             $favicon = $company_repo->update_company_favicon($row_id, $company->compagny_domain);
     //         }
 
     //         $initials = null;
@@ -660,7 +888,7 @@ class ISPAG_Crm_Deals_Repository {
     //             );
     //         }
 
-    //         $map[$viag_id] = [
+    //         $map[$row_id] = [
     //             'favicon'  => $favicon ?: null,
     //             'initials' => $initials,
     //         ];
@@ -671,21 +899,21 @@ class ISPAG_Crm_Deals_Repository {
     private function _load_companies_batch(array $raw_deals): array {
         if (empty($raw_deals)) return [];
 
-        $companies_by_viag_id = [];
+        $companies_by_id = [];
         foreach ($raw_deals as $deal) {
-            $viag_id = $deal->associated_company_viag_id ?? null;
-            if (empty($viag_id) || isset($companies_by_viag_id[$viag_id])) continue;
+            $row_id = $deal->associated_company_row_id ?? null;
+            if (empty($row_id) || isset($companies_by_id[$row_id])) continue;
 
-            $companies_by_viag_id[$viag_id] = (object) [
+            $companies_by_id[$row_id] = (object) [
                 'company_name' => $deal->associated_company_name ?? '',
                 'favicon'      => $deal->associated_company_favicon ?? '',
             ];
         }
 
-        if (empty($companies_by_viag_id)) return [];
+        if (empty($companies_by_id)) return [];
 
         $map = [];
-        foreach ($companies_by_viag_id as $viag_id => $company) {
+        foreach ($companies_by_id as $row_id => $company) {
             $favicon = $company->favicon;
             $initials = null;
 
@@ -698,7 +926,7 @@ class ISPAG_Crm_Deals_Repository {
                 );
             }
 
-            $map[$viag_id] = [
+            $map[$row_id] = [
                 'favicon'  => $favicon ?: null,
                 'initials' => $initials,
             ];
@@ -968,7 +1196,7 @@ class ISPAG_Crm_Deals_Repository {
 
         // Contrôle des autorisations
         if (!current_user_can('manage_order')) {
-            ISPAG_Workflow_Logger::warning("Droits insuffisants pour mettre à jour le stage");
+            ISPAG_Workflow_Logger::warning("Insufficient rights to update the stage");
             wp_send_json_error(['message' => 'Droits insuffisants']);
         }
 
@@ -982,7 +1210,7 @@ class ISPAG_Crm_Deals_Repository {
                 "Données manquantes pour mettre à jour le stage via AJAX",
                 ['has_deal_id' => !empty($deal_id), 'has_new_stage' => !empty($new_stage_key)]
             );
-            wp_send_json_error(['message' => 'Données manquantes ou invalides']);
+            wp_send_json_error(['message' => 'Missing or invalid data']);
         }
 
         // Appel de la logique métier
@@ -1040,10 +1268,10 @@ class ISPAG_Crm_Deals_Repository {
 
         if (!$this->update_deal_stage($group_ref, $new_stage_key, $reason)) {
             ISPAG_Workflow_Logger::error(
-                "Échec de la mise à jour du stage pour group_ref: {$group_ref}",
+                "Stage update failed pour group_ref: {$group_ref}",
                 ['group_ref' => $group_ref, 'new_stage_key' => $new_stage_key]
             );
-            return new WP_Error('update_failed', 'Échec de la mise à jour du stage');
+            return new WP_Error('update_failed', 'Stage update failed');
         }
 
         ISPAG_Workflow_Logger::info(
@@ -1121,7 +1349,7 @@ class ISPAG_Crm_Deals_Repository {
         $user_id      = get_current_user_id();
 
         if (empty($ids)) {
-            wp_send_json_error(['message' => 'Aucun projet sélectionné']);
+            wp_send_json_error(['message' => 'No project selected']);
         }
 
         $success_count = 0;
@@ -1201,7 +1429,7 @@ class ISPAG_Crm_Deals_Repository {
 
         // 2. Récupération des données via le repository
         $repository = new ISPAG_Crm_Company_Repository();
-        $company = $repository->get_company_by_viag_id($company_id);
+        $company = $repository->get_company_by_id($company_id);
 
         if (!$company) {
             // error_log("[$timestamp] ERREUR : Société $company_id introuvable", 3, $log_file);
@@ -1259,9 +1487,8 @@ class ISPAG_Crm_Deals_Repository {
         );
 
         // Vérification de la réponse
-        if (null === $ai_response || !isset($ai_response['summary'])) {
-            // error_log("[$timestamp] ERREUR : L'IA a renvoyé une réponse vide ou invalide.", 3, $log_file);
-            wp_send_json_error(['message' => 'AI processing failed.']);
+        if ( $ai_error = ISPAG_Crm_Mistral::ajax_error($ai_response) ) {
+            wp_send_json_error(['message' => $ai_error]);
         }
 
         // 4. Préparation du HTML pour le retour AJAX

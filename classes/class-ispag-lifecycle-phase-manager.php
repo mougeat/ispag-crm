@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Classe ISPAG_Lifecycle_Phase_Manager (Version UI Utilisateurs uniquement)
  * Gère l'affichage des phases sur les profils et les listes d'utilisateurs.

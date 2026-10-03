@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Baikal_Sync
  * Synchronise les contacts entre le CRM ISPAG et Baïkal (CardDAV), dans les
@@ -136,7 +137,7 @@ class ISPAG_Baikal_Sync
             ISPAG_Crm_Contact_Constants::META_OWNER,
             ISPAG_Crm_Contact_Constants::META_LEAD_PHONE,
             ISPAG_Crm_Contact_Constants::META_LEAD_FUNCTION,
-            ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID,
+            ISPAG_Crm_Contact_Constants::META_COMPANY_ID,
             ISPAG_Crm_Contact_Constants::META_USER_ROLE,
             ISPAG_Crm_Contact_Constants::PRIORITY_LEVEL,
             ISPAG_Crm_Contact_Constants::USER_AVATAR,
@@ -216,7 +217,7 @@ class ISPAG_Baikal_Sync
         ]);
 
         if (is_wp_error($response)) {
-            $this->logger->log_error($this->log_file, "Erreur GET distant contact {$contact_id} pour [{$baikal_user}]", [
+            $this->logger->log_error($this->log_file, "Error GET distant contact {$contact_id} pour [{$baikal_user}]", [
                 'error' => $response->get_error_message()
             ], get_current_user_id());
             return null;
@@ -287,7 +288,7 @@ class ISPAG_Baikal_Sync
         ]);
 
         if (is_wp_error($response)) {
-            $this->logger->log_error($this->log_file, "Erreur PUSH [{$user}] pour le contact {$id}", [
+            $this->logger->log_error($this->log_file, "Error PUSH [{$user}] pour le contact {$id}", [
                 'error' => $response->get_error_message()
             ], get_current_user_id());
             return false;
@@ -339,8 +340,8 @@ class ISPAG_Baikal_Sync
         </style>";
         
         echo "<div class='header'>
-                <h1>🚀 Synchro Baïkal par lots : Cyril & Claudio</h1>
-                <p id='stats'>Préparation...</p>
+                <h1>🚀 Baïkal batch sync: Cyril & Claudio</h1>
+                <p id='stats'>Preparing...</p>
                 <div id='progress-bar'><div id='progress-fill'></div></div>
               </div>
               <div id='log-container'></div>";
@@ -359,17 +360,17 @@ class ISPAG_Baikal_Sync
 
         async function processBatch() {
             if (currentIndex >= total) {
-                statsEl.innerHTML = 'Synchro terminée avec succès ! 🎉';
+                statsEl.innerHTML = 'Sync completed successfully! 🎉';
                 fillEl.style.width = '100%';
                 let finishDiv = document.createElement('div');
                 finishDiv.style.marginTop = '30px';
-                finishDiv.innerHTML = '<a href=\"" . admin_url() . "\" style=\"display:inline-block; background:#2271b1; color:white; padding:10px 20px; text-decoration:none; border-radius:3px;\">Retour au CRM</a>';
+                finishDiv.innerHTML = '<a href=\"" . admin_url() . "\" style=\"display:inline-block; background:#2271b1; color:white; padding:10px 20px; text-decoration:none; border-radius:3px;\">Back to CRM</a>';
                 containerEl.appendChild(finishDiv);
                 return;
             }
 
             let chunk = contactIds.slice(currentIndex, currentIndex + batchSize);
-            statsEl.innerHTML = `Progression : \${currentIndex} / \${total} contacts traités...`;
+            statsEl.innerHTML = `Progress: \${currentIndex} / \${total} contacts processed...`;
             let percent = (currentIndex / total) * 100;
             fillEl.style.width = percent + '%';
 
@@ -395,13 +396,13 @@ class ISPAG_Baikal_Sync
                 } else {
                     let div = document.createElement('div');
                     div.className = 'log-entry error';
-                    div.innerHTML = '❌ Erreur serveur : ' + (result.data?.message || 'Réponse invalide');
+                    div.innerHTML = '❌ Server error : ' + (result.data?.message || 'Invalid response');
                     containerEl.appendChild(div);
                 }
             } catch (e) {
                 let div = document.createElement('div');
                 div.className = 'log-entry error';
-                div.innerHTML = '❌ Erreur réseau / JS : ' + e.message;
+                div.innerHTML = '❌ Network error / JS : ' + e.message;
                 containerEl.appendChild(div);
             }
 
@@ -411,7 +412,7 @@ class ISPAG_Baikal_Sync
         }
 
         if (total === 0) {
-            statsEl.innerHTML = '⚠️ Aucun contact actif trouvé pour " . self::DEPARTMENT_KEY . ".';
+            statsEl.innerHTML = '⚠️ No active contact found for " . self::DEPARTMENT_KEY . ".';
         } else {
             processBatch();
         }
@@ -427,7 +428,7 @@ class ISPAG_Baikal_Sync
 
         $ids = isset($_POST['ids']) ? json_decode(stripslashes($_POST['ids']), true) : [];
         if (empty($ids) || !is_array($ids)) {
-            wp_send_json_error(['message' => 'Aucun ID reçu ou format invalide.']);
+            wp_send_json_error(['message' => 'No ID received ou format invalide.']);
         }
 
         $logs = [];$repo = new ISPAG_Crm_Contacts_Repository();
@@ -482,7 +483,7 @@ class ISPAG_Baikal_Sync
         ]);
 
         if (is_wp_error($response)) {
-            $this->logger->log_error($this->log_file, "Erreur PROPFIND pour l'utilisateur [{$user}]", [
+            $this->logger->log_error($this->log_file, "Error PROPFIND pour l'utilisateur [{$user}]", [
                 'error' => $response->get_error_message()
             ], get_current_user_id());
             return;
@@ -497,7 +498,7 @@ class ISPAG_Baikal_Sync
 
         $xml = simplexml_load_string(wp_remote_retrieve_body($response));
         if ($xml === false) {
-            $this->logger->log_error($this->log_file, "Erreur parsing XML PROPFIND pour [{$user}]", [], get_current_user_id());
+            $this->logger->log_error($this->log_file, "Error parsing XML PROPFIND pour [{$user}]", [], get_current_user_id());
             return;
         }
 

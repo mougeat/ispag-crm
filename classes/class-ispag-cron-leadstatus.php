@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Classe ISPAG_Cron_LeadStatus
  * Gère l'automatisation des statuts de lead.
@@ -281,11 +282,11 @@ class ISPAG_Cron_LeadStatus
 
                 // Titre et contenu de la notification
                 $notification_title = sprintf(
-                    __("Le statut de lead de %s a changé", 'ispag'),
+                    __("The lead status of %s has changed", 'ispag'),
                     $user->display_name
                 );
                 $notification_content = sprintf(
-                    __("Le statut de lead de %s est passé de <strong>%s</strong> à <strong>%s</strong>.", 'ispag'),
+                    __("The lead status of %s changed from <strong>%s</strong> to <strong>%s</strong>.", 'ispag'),
                     $user->display_name,
                     $current_status,
                     $label

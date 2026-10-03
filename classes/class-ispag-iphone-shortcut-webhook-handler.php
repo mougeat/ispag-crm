@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 if ( ! defined( 'ISPAG_CRM_SHORTCUT_SECRET' ) ) {
     // Définissez cette clé dans votre wp-config.php
@@ -44,7 +45,7 @@ class ISPAG_Iphone_Shortcut_Webhook_Handler {
         
         if ( empty( $received_secret ) || $received_secret !== ISPAG_CRM_SHORTCUT_SECRET ) {
             $this->_log( 'ERREUR DE SÉCURITÉ : Secret invalide ou manquant.' );
-            return new WP_Error( 'shortcut_auth_fail', 'Non autorisé', [ 'status' => 401 ] );
+            return new WP_Error( 'shortcut_auth_fail', 'Not authorized', [ 'status' => 401 ] );
         }
 
         return true;
@@ -97,7 +98,7 @@ class ISPAG_Iphone_Shortcut_Webhook_Handler {
         // C. Si toujours rien, on s'arrête
         if ( ! $contact_id ) {
             $this->_log( "Contact non trouvé (Email: $email, Tel: $phone). Arrêt." );
-            return new WP_REST_Response( [ 'message' => 'Contact introuvable dans le CRM.' ], 404 );
+            return new WP_REST_Response( [ 'message' => 'Contact not found in the CRM.' ], 404 );
         }
 
         // 3. MISE À JOUR DU TÉLÉPHONE (si vide dans le CRM)
@@ -152,10 +153,10 @@ class ISPAG_Iphone_Shortcut_Webhook_Handler {
         $result = $this->note_repository->create_note( $note_data );
 
         if ( is_wp_error( $result ) ) {
-            return new WP_REST_Response( [ 'message' => 'Erreur enregistrement note.' ], 500 );
+            return new WP_REST_Response( [ 'message' => 'Error while saving the note.' ], 500 );
         }
 
-        return new WP_REST_Response( [ 'message' => 'Note enregistrée', 'id' => $result ], 200 );
+        return new WP_REST_Response( [ 'message' => 'Note saved', 'id' => $result ], 200 );
     }
 
     /**
@@ -216,7 +217,7 @@ class ISPAG_Iphone_Shortcut_Webhook_Handler {
             return $users[0];
         }
 
-        $this->_log( "Aucun contact trouvé pour les variantes de téléphone testées." );
+        $this->_log( "No contact found pour les variantes de téléphone testées." );
         return 0;
     }
     

@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 // Fichier : includes/crm/repositories/class-ispag-crm-company-repository.php
 
@@ -36,10 +37,10 @@ class ISPAG_Crm_Company_Modal {
         }
 
         // 1. Récupérer la liste actuelle (ex: "51459,12345,67890")
-        $current_meta = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, true );
+        $current_meta = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, true );
         
         if ( empty( $current_meta ) ) {
-            wp_send_json_error( array( 'message' => 'Aucune association trouvée pour ce contact.' ) );
+            wp_send_json_error( array( 'message' => 'No association found for this contact.' ) );
         }
 
         // 2. Transformer en tableau et nettoyer
@@ -48,7 +49,7 @@ class ISPAG_Crm_Company_Modal {
 
         // 3. Vérifier si l'ID est présent avant de tenter la suppression
         if ( ! in_array( (string)$company_id, $existing_ids ) ) {
-            wp_send_json_error( array( 'message' => 'Cette entreprise n\'est pas associée à ce contact.' ) );
+            wp_send_json_error( array( 'message' => 'This company is not associated with this contact.' ) );
         }
 
         // 4. Supprimer l'ID spécifique de la liste
@@ -59,20 +60,20 @@ class ISPAG_Crm_Company_Modal {
 
         // Si la liste est vide, on peut soit laisser une chaîne vide, soit supprimer la clé
         if ( empty( $new_meta_value ) ) {
-            $result = delete_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID );
+            $result = delete_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID );
         } else {
-            $result = update_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, $new_meta_value );
+            $result = update_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, $new_meta_value );
         }
 
         if ( false !== $result ) {
             wp_send_json_success( array( 
                 'message' => sprintf( 
-                    'Association de l\'entreprise ID %d retirée avec succès.', 
+                    'Association of company ID %d removed successfully.', 
                     $company_id
                 ) 
             ) );
         } else {
-            wp_send_json_error( array( 'message' => 'Erreur lors de la mise à jour de l\'association.' ) );
+            wp_send_json_error( array( 'message' => 'Error during update de l\'association.' ) );
         }
 
         wp_die();
@@ -91,7 +92,7 @@ class ISPAG_Crm_Company_Modal {
         }
 
         // Récupérer la liste des entreprises déjà associées pour l'affichage dans la modale
-        $company_ids = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, false );
+        $company_ids = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, false );
         $company_ids = array_filter( array_map( 'absint', (array) $company_ids ) );
         $associated_companies = [];
         
@@ -200,7 +201,7 @@ class ISPAG_Crm_Company_Modal {
         }
 
         // 1. Récupérer la liste actuelle des entreprises du contact
-        $current_meta = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, true );
+        $current_meta = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, true );
         
         // 2. Transformer en tableau propre
         $existing_ids = ! empty( $current_meta ) ? explode( ',', $current_meta ) : array();
@@ -209,9 +210,9 @@ class ISPAG_Crm_Company_Modal {
         // 3. Fusionner avec les nouveaux IDs et supprimer les doublons
         $final_ids = array_unique( array_merge( $existing_ids, $company_ids ) );
 
-        // 4. Sauvegarder la nouvelle chaîne
+        // 4. Save la nouvelle chaîne
         $new_meta_value = implode( ',', $final_ids );
-        $result = update_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, $new_meta_value );
+        $result = update_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, $new_meta_value );
 
         wp_send_json_success( array( 
             'message' => __( 'Association successfully updated.', 'ispag-crm' ) 
@@ -245,11 +246,11 @@ class ISPAG_Crm_Company_Modal {
         $meta_key_city = ISPAG_Crm_Company_Constants::META_COMPANY_CITY;
 
         // IDs à exclure
-        $company_ids_to_exclude = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID, false );
+        $company_ids_to_exclude = get_user_meta( $contact_id, ISPAG_Crm_Company_Constants::META_COMPANY_ID, false );
         $company_ids_to_exclude = array_filter( array_map( 'absint', (array) $company_ids_to_exclude ) );
         
         // Jointure pour la ville
-        $join_sql = " LEFT JOIN {$table_name_postmeta} AS meta_ville ON T1.viag_id = meta_ville.post_id AND meta_ville.meta_key = '{$meta_key_city}' ";
+        $join_sql = " LEFT JOIN {$table_name_postmeta} AS meta_ville ON T1.Id = meta_ville.post_id AND meta_ville.meta_key = '{$meta_key_city}' ";
 
         // Clauses WHERE
         $where_clauses = [];
@@ -257,7 +258,7 @@ class ISPAG_Crm_Company_Modal {
         
         if ( ! empty( $company_ids_to_exclude ) ) {
             $ids_list = implode( ',', $company_ids_to_exclude );
-            $where_clauses[] = "T1.viag_id NOT IN ({$ids_list})";
+            $where_clauses[] = "T1.Id NOT IN ({$ids_list})";
         }
 
         if ( ! empty( $search_term ) ) {
@@ -270,7 +271,7 @@ class ISPAG_Crm_Company_Modal {
         $where_sql = empty( $where_clauses ) ? '1=1' : implode( ' AND ', $where_clauses );
         
         // 3. Calcul du TOTAL (sans LIMIT) pour la pagination
-        $sql_count = "SELECT COUNT(DISTINCT T1.viag_id) FROM {$table_name_fournisseur} AS T1 {$join_sql} WHERE {$where_sql}";
+        $sql_count = "SELECT COUNT(DISTINCT T1.Id) FROM {$table_name_fournisseur} AS T1 {$join_sql} WHERE {$where_sql}";
         if ( ! empty( $params ) ) {
             $total_items = $wpdb->get_var( $wpdb->prepare( $sql_count, ...$params ) );
         } else {
@@ -280,7 +281,7 @@ class ISPAG_Crm_Company_Modal {
         // 4. Requête principale avec LIMIT et OFFSET
         $sql_base = "
             SELECT 
-                T1.viag_id AS Id, T1.company_name AS Fournisseur, 
+                T1.Id AS Id, T1.company_name AS Fournisseur, 
                 meta_ville.meta_value AS Ville 
             FROM {$table_name_fournisseur} AS T1
             {$join_sql}

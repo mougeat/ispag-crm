@@ -12,10 +12,10 @@ jQuery(document).ready(function($) {
 });
 
 jQuery(document).ready(function($) {
-    console.log('ISPAG Debug - Début du script d\'attachements');
+    // console.log('ISPAG Debug - Début du script d\'attachements');
 
     var $cards = $('.ispag-docu-card');
-    console.log('ISPAG Debug - Nombre de cartes .ispag-docu-card trouvées :', $cards.length);
+    // console.log('ISPAG Debug - Nombre de cartes .ispag-docu-card trouvées :', $cards.length);
 
     if ($cards.length > 0) {
         // Chargement différé pour laisser la page s'afficher en priorité
@@ -26,7 +26,7 @@ jQuery(document).ready(function($) {
                 var entity_type = $card.data('entity-type');
                 const view = $card.data('view') || 'card';
 
-                console.log('ISPAG Debug - Traitement carte - entity_id :', entity_id, '/ entity_type :', entity_type);
+                // console.log('ISPAG Debug - Traitement carte - entity_id :', entity_id, '/ entity_type :', entity_type);
 
                 if (!entity_id) {
                     console.warn('ISPAG Debug - ATTENTION : entity_id est vide ou undefined sur cette carte !');
@@ -54,19 +54,19 @@ jQuery(document).ready(function($) {
                             }
                         } else {
                             console.warn('ISPAG Debug - Réponse AJAX en échec :', response);
-                            var errorMsg = (response.data && response.data.message) ? response.data.message : 'Aucun attachement trouvé.';
+                            var errorMsg = (response.data && response.data.message) ? response.data.message : 'No attachment found.';
                             $card.html('<p class="error" style="padding: 10px; color: #666;">' + errorMsg + '</p>');
                         }
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                        console.error('ISPAG Debug - Erreur technique AJAX :', textStatus, errorThrown);
-                        $card.html('<p class="error" style="padding: 10px; color: #e74c3c;">Erreur lors du chargement des attachements.</p>');
+                        console.error('ISPAG Debug - Error technique AJAX :', textStatus, errorThrown);
+                        $card.html('<p class="error" style="padding: 10px; color: #e74c3c;">Error while loading attachments.</p>');
                     }
                 });
             });
         }, 200);
 
     } else {
-        console.log('ISPAG Debug - Aucune carte .ispag-docu-card trouvée sur cette page.');
+        // console.log('ISPAG Debug - Aucune carte .ispag-docu-card trouvée sur cette page.');
     }
 });

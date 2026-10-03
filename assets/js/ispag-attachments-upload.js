@@ -34,7 +34,7 @@
                 if (selectedFiles.length === 1) {
                     $fileName.text(selectedFiles[0].name);
                 } else {
-                    $fileName.text(selectedFiles.length + ' fichiers sélectionnés');
+                    $fileName.text(selectedFiles.length + ' files selected');
                 }
 
                 $preview.prop('hidden', false);
@@ -162,7 +162,14 @@
                         setTimeout(hideProgress, 400);
                         setFiles(null);
                         $select.val('');
-                        $dz.trigger('ispag:attachment-uploaded', [response.data]);
+                        $dz.trigger('ispag:attachment-uploaded', [$.extend({}, response.data, { articleId: parseInt(articleId, 10) || 0 })]);
+
+                        // Zone de dépôt intégrée à la page (onglet Documents…) : la modal n'est pas là pour rafraîchir la liste
+                        if (!$dz.closest('.ispag-modal-overlay').length) {
+                            $('.ispag-docu-card[data-entity-type="' + $dz.data('entity-type') + '"][data-entity-id="' + $dz.data('entity-id') + '"]')
+                                .trigger('ispag:refresh-attachments');
+                            $submit.prop('disabled', false);
+                        }
                     } else {
                         hideProgress();
                         $status.text((response.data && response.data.message) || ispagAttachmentsAjax.texts.uploadError);
@@ -348,12 +355,12 @@
                         });
                     } else {
                         console.error('[attachments] delete error', response);
-                        alert((response.data && response.data.message) || 'Erreur lors de la suppression.');
+                        alert((response.data && response.data.message) || 'Error while deleting.');
                     }
                 },
                 error: function(xhr) {
                     console.error('[attachments] delete AJAX error', xhr.status, xhr.responseText);
-                    alert('Erreur lors de la suppression.');
+                    alert('Error while deleting.');
                 },
             });
         });
@@ -434,18 +441,11 @@ jQuery(function ($) {
         e.preventDefault();
     });
 
-    // --- Le drop sur la carte ---
-    $(document).on('drop', '.ispag-docu-card__body .ispag-dropzone__field', function (e) {
-        e.preventDefault();
-        dragCounter = 0;
-        $(this).removeClass('is-dragover');
+    // Ouvre la modal d'ajout de la carte et y injecte le fichier (dépôt OU choix via le sélecteur de fichiers)
+    function startUploadFromCard($card, file) {
+        if (!file) return;
+        pendingDropFile = file;
 
-        const files = e.originalEvent.dataTransfer.files;
-        if (!files || !files.length) return;
-
-        pendingDropFile = files[0];
-
-        const $card = $(this).closest('.ispag-docu-card');
         const entityType = $card.data('entity-type');
         const entityId = $card.data('entity-id');
 
@@ -455,6 +455,35 @@ jQuery(function ($) {
 
         // 2. On attend que la modal soit dans le DOM pour y injecter le fichier
         waitForModalDropzone(entityType, entityId);
+    }
+
+    // --- Le drop sur la carte ---
+    $(document).on('drop', '.ispag-docu-card__body .ispag-dropzone__field', function (e) {
+        e.preventDefault();
+        dragCounter = 0;
+        $(this).removeClass('is-dragover');
+
+        const files = e.originalEvent.dataTransfer.files;
+        if (!files || !files.length) return;
+
+        startUploadFromCard($(this).closest('.ispag-docu-card'), files[0]);
+    });
+
+    // --- Le clic sur la carte : même chose que le dépôt, avec le sélecteur de fichiers (Parcourir) ---
+    $(document).on('click', '.ispag-docu-card__body .ispag-dropzone__field', function (e) {
+        if ($(e.target).closest('a, button, input').length) return;
+        const $card = $(this).closest('.ispag-docu-card');
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.style.display = 'none';
+        document.body.appendChild(input);
+        input.addEventListener('change', function () {
+            if (input.files && input.files.length) {
+                startUploadFromCard($card, input.files[0]);
+            }
+            input.remove();
+        });
+        input.click();
     });
 
     /**

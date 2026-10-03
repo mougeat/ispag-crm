@@ -16,12 +16,12 @@ jQuery(document).ready(function($) {
                     if (response.success && response.data.html) {
                         $card.html(response.data.html);
                     } else {
-                        var errorMsg = (response.data && response.data.message) ? response.data.message : 'Erreur de chargement';
+                        var errorMsg = (response.data && response.data.message) ? response.data.message : 'Loading error';
                         $card.html('<p class="error" style="padding: 10px; color: #666;">' + errorMsg + '</p>');
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    $card.html('<p class="error" style="padding: 10px; color: #e74c3c;">Erreur lors du chargement des données.</p>');
+                    $card.html('<p class="error" style="padding: 10px; color: #e74c3c;">Error while loading data.</p>');
                 }
             });
         }

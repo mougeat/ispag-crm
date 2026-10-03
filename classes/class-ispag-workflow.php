@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Workflow
  * Représente un workflow (séquence) avec ses étapes et déclencheurs.
@@ -60,7 +61,7 @@ if (!class_exists('ISPAG_Workflow')) {
                         );
                     } catch (Exception $e) {
                         ISPAG_Workflow_Logger::error(
-                            "Erreur lors du chargement de l'étape $index pour le workflow {$this->id}: " . $e->getMessage(),
+                            "Error lors du chargement de l'étape $index pour le workflow {$this->id}: " . $e->getMessage(),
                             ['step_data' => $step_data, 'error' => $e->getMessage()]
                         );
                     }
@@ -97,7 +98,7 @@ if (!class_exists('ISPAG_Workflow')) {
                     $this->triggers[] = $trigger;
                 } catch (Exception $e) {
                     ISPAG_Workflow_Logger::error(
-                        "Erreur lors du chargement du déclencheur $index: " . $e->getMessage()
+                        "Error lors du chargement du déclencheur $index: " . $e->getMessage()
                     );
                 }
             }

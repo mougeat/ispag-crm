@@ -14,9 +14,10 @@ class ISPAG_Whatsapp_Panel_Renderer {
 
 	public function render( $contact_id, $contact_phone ) {
 		$repository   = new ISPAG_Whatsapp_Repository();
-		$messages     = $contact_id
-			? $repository->get_conversation_by_contact( $contact_id )
-			: $repository->get_conversation_by_phone( $contact_phone );
+		$messages     = $contact_phone
+			? $repository->get_conversation_by_phone( $contact_phone )
+			: $repository->get_conversation_by_contact( $contact_id );
+		$lines        = ispag_whatsapp_get_lines();
 		$nonce        = wp_create_nonce( 'ispag_whatsapp_nonce' );
 		?>
 		<div class="ispag-whatsapp-panel"
@@ -41,6 +42,13 @@ class ISPAG_Whatsapp_Panel_Renderer {
 			</div>
 
 			<div class="ispag-whatsapp-composer">
+				<?php if ( count( $lines ) > 1 ) : ?>
+					<select id="ispag-whatsapp-line" class="ispag-whatsapp-line" aria-label="<?php esc_attr_e( 'Send from', 'ispag-crm' ); ?>">
+						<?php foreach ( $lines as $line_id => $label ) : ?>
+							<option value="<?php echo esc_attr( $line_id ); ?>"><?php echo esc_html( $label ); ?></option>
+						<?php endforeach; ?>
+					</select>
+				<?php endif; ?>
 				<textarea
 					id="ispag-whatsapp-input"
 					placeholder="<?php esc_attr_e( 'Write a message…', 'ispag-crm' ); ?>"
@@ -59,8 +67,8 @@ class ISPAG_Whatsapp_Panel_Renderer {
 		$direction_class = ( $msg->direction === 'out' ) ? 'is-outgoing' : 'is-incoming';
 		?>
 		<div class="ispag-whatsapp-bubble <?php echo esc_attr( $direction_class ); ?>">
-			<div class="ispag-whatsapp-bubble-body"><?php echo esc_html( $msg->body ); ?></div>
-			<div class="ispag-whatsapp-bubble-time"><?php echo esc_html( mysql2date( 'd/m/Y H:i', $msg->created_at ) ); ?></div>
+			<div class="ispag-whatsapp-bubble-body"><?php echo $msg->has_media && '' === (string) $msg->body ? '📎 ' . esc_html( $msg->media_type ?: __( 'Attachment', 'ispag-crm' ) ) : esc_html( $msg->body ); ?></div>
+			<div class="ispag-whatsapp-bubble-time"><?php echo esc_html( mysql2date( 'd.m.Y H:i', get_date_from_gmt( $msg->created_at ) ) ); ?><?php echo ( ! empty( $msg->line_id ) && count( ispag_whatsapp_get_lines() ) > 1 ) ? ' · ' . esc_html( ispag_whatsapp_get_lines()[ $msg->line_id ] ?? $msg->line_id ) : ''; ?></div>
 		</div>
 		<?php
 	}

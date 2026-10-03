@@ -25,10 +25,18 @@
     const $taskAttachmentsContainer = $('#task-attachments-container');
     const $attachmentsWrapper = $('#sidebar-attachments-wrapper');
 
+    // Largeur réelle du panneau (max-width 1024px en CSS) : on le sort entièrement de l'écran, ombre comprise
+    function hiddenOffset() {
+        return '-' + (($sidebarContent.outerWidth() || 1024) + 60) + 'px';
+    }
+
     // --- FERMETURE ---
     window.closeSidebar = function() {
-        $sidebarContent.animate({ right: '-' + SIDEBAR_WIDTH }, 300, function() {
-            $sidebarModal.fadeOut(200, function() {
+        if (!$sidebarModal.is(':visible')) return;
+        // .active est posée par d'anciens scripts avec display:block !important : on la retire pour que la fermeture soit réelle
+        $sidebarModal.removeClass('active');
+        $sidebarContent.stop(true).animate({ right: hiddenOffset() }, 250, function() {
+            $sidebarModal.stop(true).fadeOut(150, function() {
                 $('body').removeClass('sidebar-open');
                 // Reset complet pour éviter les flashs d'anciennes données
                 $taskContent.empty();
@@ -43,8 +51,9 @@
     window.openTaskSidebar = function(sidebarTyp = 'task', taskId, field = null) {
         
         $('body').addClass('sidebar-open'); 
-        $sidebarModal.fadeIn(200, function() {
-            $sidebarContent.animate({ right: '0' }, 300); 
+        $sidebarContent.stop(true).css('right', hiddenOffset());
+        $sidebarModal.stop(true).fadeIn(150, function() {
+            $sidebarContent.animate({ right: '0' }, 250); 
         });
         if(sidebarTyp == 'task'){
             if (!taskId) return;
@@ -146,12 +155,12 @@
                     $sidebarBody.html(response.data.html);
                     $sidebarHeader.html(response.data.header);
                 } else {
-                    $sidebarBody.html('<p class="ispag-error">Erreur lors du chargement des pièces jointes.</p>');
+                    $sidebarBody.html('<p class="ispag-error">Error while loading attachments.</p>');
                     
                 }
             },
             error: function() {
-                $sidebarBody.html('<p class="ispag-error">Une erreur réseau est survenue.</p>');
+                $sidebarBody.html('<p class="ispag-error">A network error occurred.</p>');
             }
         });
     }
@@ -160,6 +169,12 @@
     $(document).on('click', '#close-task-sidebar-btn, #close-task-sidebar-footer-btn', function(e) {
         e.preventDefault(); window.closeSidebar();
     });
-    $sidebarModal.on('click', function(e) { if (e.target === this) window.closeSidebar(); });
+    // Clic en dehors du panneau (sur le fond assombri) : fermeture complète
+    $sidebarModal.on('mousedown', function(e) {
+        if (!$(e.target).closest('#ispag-task-modal-content').length) window.closeSidebar();
+    });
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape' && $sidebarModal.is(':visible')) window.closeSidebar();
+    });
 
 })(jQuery);

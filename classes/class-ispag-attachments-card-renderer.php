@@ -1,5 +1,7 @@
 <?php
+defined('ABSPATH') || exit;
 require_once __DIR__ . '/class-ispag-attachments-repository.php';
+require_once __DIR__ . '/class-ispag-attachments-modal-renderer.php';
 
 /**
  * Rend les pièces jointes sous deux formes :
@@ -18,6 +20,27 @@ class ISPAG_Attachments_Card_Renderer {
 
     public function __construct(ISPAG_Attachments_Repository $repository) {
         $this->repository = $repository;
+    }
+
+    /**
+     * Carte « Pièces jointes » sans liste : la dropzone (type de document + chargement) est directement affichée,
+     * sans passer par la modal. La liste complète reste disponible dans l'onglet Documents.
+     * NB : pas de classe .ispag-docu-card ici, sinon le rafraîchissement d'après upload remplacerait cette carte par la liste.
+     */
+    public function render_upload_card(string $entityType, $entityId): string {
+        global $wpdb;
+        $modal = new ISPAG_Attachments_Modal_Renderer(new ISPAG_Attachments_Doc_Types_Repository($wpdb));
+
+        ob_start();
+        ?>
+        <div class="ispag-card ispag-upload-card"
+             data-entity-type="<?php echo esc_attr($entityType); ?>"
+             data-entity-id="<?php echo esc_attr($entityId); ?>">
+            <h5><?php _e('Attachments', 'ispag-crm'); ?></h5>
+            <?php echo $modal->render_dropzone($entityType, $entityId); ?>
+        </div>
+        <?php
+        return ob_get_clean();
     }
 
     public function render(string $entityType, $entityId, int $limit = 3): string {
@@ -231,6 +254,7 @@ class ISPAG_Attachments_Card_Renderer {
                     <?php echo esc_html__($att->label, 'ispag-crm'); ?>
             </div>
             
+            <?php if (current_user_can('manage_order')) : // extraction de données : réservée aux gestionnaires ?>
             <span 
                     class="ispag-btn ispag-btn-grey-outlined extract-doc-btn"
                     data-doc-id="<?php echo esc_attr($att->id); ?>"
@@ -241,15 +265,18 @@ class ISPAG_Attachments_Card_Renderer {
                     data-ajax-action="<?php echo esc_attr($att->ajax_action); ?>">
                 <span class="dashicons dashicons-analytics"></span>
             </span>
+            <?php endif; ?>
             <?php
             endif;
             ?>
+            <?php if (function_exists('ispag_user_can_delete_attachment') ? ispag_user_can_delete_attachment($att->id) : current_user_can('manage_order')) : ?>
             <span
                     class="ispag-btn ispag-btn-grey-outlined ispag-docu-card__remove"
                     data-media-id="<?php echo esc_attr($att->id); ?>"
                     title="Retirer">
                 &times;
             </span>
+            <?php endif; ?>
         </li>
         <?php
         return ob_get_clean();

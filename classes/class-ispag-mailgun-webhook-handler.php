@@ -56,8 +56,8 @@ class ISPAG_Mailgun_Webhook_Handler {
 
         // LOG DES PARAMÈTRES CLÉS
         $this->_log( 'Headers essentiels :', [
-            'sender' => $params['sender'] ?? 'NON DÉFINI',
-            'To'     => $params['To'] ?? 'NON DÉFINI',
+            'sender' => $params['sender'] ?? 'NOT DEFINED',
+            'To'     => $params['To'] ?? 'NOT DEFINED',
             'subject'=> $params['subject'] ?? 'SANS OBJET'
         ]);
 
@@ -91,11 +91,10 @@ class ISPAG_Mailgun_Webhook_Handler {
             }
             $this->_log( 'Email client identifié via transfert : ' . ($client_to ?: 'AUCUN') );
         } else {
-            if ( preg_match( '/<([^>]+)>/', $raw_to, $matches ) ) {
-                $client_to = sanitize_email( $matches[1] );
-            } else {
-                $client_to = sanitize_email( $raw_to );
-            }
+            // « To » peut contenir plusieurs destinataires (« a@x.ch, Nom <b@y.ch> ») : on les retient tous
+            preg_match_all( '/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i', (string) $raw_to, $to_found );
+            $to_candidates = array_values( array_unique( array_map( 'strtolower', $to_found[0] ) ) );
+            $client_to = $to_candidates ? sanitize_email( $to_candidates[0] ) : '';
             $this->_log( 'Email client identifié via "To" direct : ' . $client_to );
         }
 
@@ -129,14 +128,30 @@ class ISPAG_Mailgun_Webhook_Handler {
         }
 
         // 4. RECHERCHE DES UTILISATEURS DANS LE CRM
+        // Mails envoyés par la plateforme (noreply@, ex. e-mails d'étape de projet) : l'auteur est l'adresse Reply-To
+        if ( strpos( $sender, 'noreply@' ) === 0 ) {
+            $reply_to = $this->get_reply_to( $params );
+            if ( $reply_to ) {
+                $this->_log( 'Expéditeur plateforme : auteur pris dans Reply-To : ' . $reply_to );
+                $sender = $reply_to;
+            }
+        }
         $user_crm = get_user_by( 'email', $sender );
         $user_id  = $user_crm ? $user_crm->ID : 1;
 
-        $client_user = get_user_by( 'email', $client_to );
+        // Tous les destinataires connus du CRM (mode direct), sinon le seul client identifié (mode transfert)
+        $client_users = [];
+        foreach ( ( ! empty( $to_candidates ) ? $to_candidates : [ $client_to ] ) as $candidate ) {
+            $u = $candidate ? get_user_by( 'email', $candidate ) : false;
+            if ( $u && ! isset( $client_users[ $u->ID ] ) && strtolower( $u->user_email ) !== strtolower( $sender ) ) {
+                $client_users[ $u->ID ] = $u;
+            }
+        }
+        $client_user = $client_users ? reset( $client_users ) : false;
 
         if ( ! $client_user ) {
              $this->_log( 'ÉCHEC : Aucun utilisateur WordPress trouvé pour l\'email : ' . $client_to );
-             return new WP_REST_Response( [ 'message' => 'Client inconnu dans la base' ], 200 );
+             return new WP_REST_Response( [ 'message' => 'Customer unknown in the database' ], 200 );
         }
 
         // 5. CRÉATION DE LA NOTE
@@ -144,7 +159,7 @@ class ISPAG_Mailgun_Webhook_Handler {
         $media_ids = $this->handle_attachments();
 
         $note_data = new stdClass();
-        $note_data->contact_id    = $client_user->ID;
+        $note_data->contact_id    = implode( ',', array_keys( $client_users ) );
         $note_data->user_id       = $user_id; 
         $note_data->company_id    = $metadata['company_id'] ?? null;
         $note_data->deal_id       = $deal_ref; 
@@ -159,7 +174,7 @@ class ISPAG_Mailgun_Webhook_Handler {
 
         if ( is_wp_error( $result ) ) {
             $this->_log( 'ERREUR lors de create_note : ' . $result->get_error_message() );
-            return new WP_REST_Response( [ 'message' => 'Erreur SQL' ], 500 );
+            return new WP_REST_Response( [ 'message' => 'SQL error' ], 500 );
         }
 
         $this->_log( '--- FIN DE TRAITEMENT (Note ID: '.$result.') ---' );
@@ -185,6 +200,19 @@ class ISPAG_Mailgun_Webhook_Handler {
             }
         }
         return ! empty( $attachment_ids ) ? implode( ',', $attachment_ids ) : null;
+    }
+
+    /** Adresse Reply-To du message (paramètre Mailgun direct, sinon dans message-headers). */
+    private function get_reply_to( $params ) {
+        $raw = $params['Reply-To'] ?? $params['reply-to'] ?? '';
+        if ( $raw === '' && ! empty( $params['message-headers'] ) ) {
+            $headers = is_array( $params['message-headers'] ) ? $params['message-headers'] : json_decode( $params['message-headers'], true );
+            foreach ( (array) $headers as $h ) {
+                if ( is_array( $h ) && isset( $h[0], $h[1] ) && strtolower( $h[0] ) === 'reply-to' ) { $raw = $h[1]; break; }
+            }
+        }
+        if ( preg_match( '/<([^>]+)>/', (string) $raw, $m ) ) $raw = $m[1];
+        return sanitize_email( trim( (string) $raw ) );
     }
 
     private function parse_metadata( $text ) {

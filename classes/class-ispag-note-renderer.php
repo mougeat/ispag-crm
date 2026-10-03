@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Gère le rendu HTML des éléments d'activité.
  */
@@ -62,7 +63,7 @@ class ISPAG_Note_Renderer {
         
         if (empty($notes_list_full))
         {
-            $notes_list_full = '<p class="ispag-no-activity">' . __('Aucune activité trouvée.', 'creation-reservoir') . '</p>';
+            $notes_list_full = '<p class="ispag-no-activity">' . __('No activity found.', 'creation-reservoir') . '</p>';
         }
 
         // Renvoi du HTML au format JSON pour jQuery

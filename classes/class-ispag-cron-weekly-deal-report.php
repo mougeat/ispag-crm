@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 // Fichier : includes/crm/class-ispag-cron-weekly-deal-report.php
 
 if ( ! class_exists( 'ISPAG_Cron_Weekly_Deal_Report' ) ) :
@@ -43,7 +44,7 @@ class ISPAG_Cron_Weekly_Deal_Report {
                 ref.stage_color AS status_color
             FROM {$this->table_deal} AS t1
             LEFT JOIN {$this->wpdb->users} AS t2 ON t1.deal_owner = t2.ID
-            LEFT JOIN {$this->table_company} AS t3 ON t1.associated_company_id = t3.viag_id
+            LEFT JOIN {$this->table_company} AS t3 ON t1.associated_company_id = t3.Id
             INNER JOIN {$this->table_status_rel} AS rel ON (t1.deal_group_ref COLLATE utf8mb4_unicode_ci) = rel.deal_group_ref
             INNER JOIN {$this->table_status_ref} AS ref ON (rel.current_stage_key COLLATE utf8mb4_unicode_ci) = ref.stage_key
             WHERE 
@@ -56,7 +57,7 @@ class ISPAG_Cron_Weekly_Deal_Report {
         $deals = $this->wpdb->get_results( $sql );
 
         if ( empty( $deals ) ) {
-            $this->log("Aucun deal trouvé.");
+            $this->log("No deal found.");
             return;
         }
 
@@ -102,10 +103,10 @@ class ISPAG_Cron_Weekly_Deal_Report {
 
     private function get_email_html_content($data) {
         $html = '<div style="font-family: Arial, sans-serif; color: #333; max-width: 750px; padding: 20px; border: 1px solid #eee;">';
-        $html .= '<h2 style="color: #2271b1;">Bonjour ' . esc_html($data['info']['name']) . ',</h2>';
-        $html .= '<p>Voici vos projets arrivant à échéance cette semaine :</p>';
+        $html .= '<h2 style="color: #2271b1;">Hello ' . esc_html($data['info']['name']) . ',</h2>';
+        $html .= '<p>Here are your projects due this week:</p>';
         $html .= '<table border="0" cellpadding="10" cellspacing="0" style="width:100%; border-collapse: collapse; margin-top:15px;">';
-        $html .= '<tr style="background:#f8f9fa; text-align:left; border-bottom:2px solid #eee;"><th>Projet</th><th>Client</th><th style="text-align:center;">Statut</th><th>Échéance</th></tr>';
+        $html .= '<tr style="background:#f8f9fa; text-align:left; border-bottom:2px solid #eee;"><th>Project</th><th>Customer</th><th style="text-align:center;">Statut</th><th>Échéance</th></tr>';
         
         foreach ($data['projects'] as $p) {
             $html .= '<tr style="border-bottom: 1px solid #eee;">';

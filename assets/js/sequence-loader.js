@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-    console.log("=== ISPAG Sequence Loader Loaded ===");
+    // console.log("=== ISPAG Sequence Loader Loaded ===");
     let currentContactId = null;
     let currentDealId = null;
 
@@ -16,7 +16,7 @@ jQuery(document).ready(function($) {
         if ($modal.length === 0) return console.error("Modal introuvable");
 
         $('#display-contact-name').text(contactName);
-        $select.html('<option value="">Chargement...</option>');
+        $select.html('<option value="">Loading...</option>');
         $modal.fadeIn();
 
         // APPEL AJAX POUR LES SEQUENCES
@@ -25,13 +25,13 @@ jQuery(document).ready(function($) {
             security: ispag_ajax.nonce // Utilise l'objet global défini dans ispag-crm.php
         }, function(response) {
             if (response.success) {
-                let options = '<option value="">-- Choisir une séquence --</option>';
+                let options = '<option value="">-- Choose a sequence --</option>';
                 response.data.forEach(function(seq) {
                     options += `<option value="${seq.id}">${seq.name}</option>`;
                 });
                 $select.html(options);
             } else {
-                $select.html('<option value="">Erreur de chargement</option>');
+                $select.html('<option value="">Loading error</option>');
             }
         });
     });
@@ -39,7 +39,7 @@ jQuery(document).ready(function($) {
     // 2. ACTION DU BOUTON START
     $('#confirm-enroll').on('click', function() {
         const sequenceId = $('#select-sequence-id').val();
-        if (!sequenceId) return alert('Veuillez sélectionner une séquence.');
+        if (!sequenceId) return alert('Please select a sequence.');
 
         const $btn = $(this);
         $btn.attr('disabled', true).text('Lancement...');
@@ -55,7 +55,7 @@ jQuery(document).ready(function($) {
                 alert(response.data);
                 $('#modal-enroll-sequence').fadeOut();
             } else {
-                alert('Erreur : ' + response.data);
+                alert('Error: ' + response.data);
             }
             $btn.attr('disabled', false).text('Start');
         });

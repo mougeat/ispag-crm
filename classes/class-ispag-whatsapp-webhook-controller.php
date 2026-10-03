@@ -43,7 +43,7 @@ class ISPAG_Whatsapp_Webhook_Controller {
 		$params = $request->get_json_params();
 
 		if ( empty( $params['phone'] ) || empty( $params['id'] ) ) {
-			return new WP_REST_Response( array( 'error' => 'Paramètres manquants (phone, id).' ), 400 );
+			return new WP_REST_Response( array( 'error' => 'Missing parameters (phone, id).' ), 400 );
 		}
 
 		$repository = new ISPAG_Whatsapp_Repository();
@@ -51,6 +51,8 @@ class ISPAG_Whatsapp_Webhook_Controller {
 		$inserted = $repository->insert_incoming(
 			array(
 				'wa_message_id' => $params['id'],
+				'direction'     => isset( $params['direction'] ) ? $params['direction'] : 'in',
+				'line'          => isset( $params['line'] ) ? $params['line'] : null,
 				'phone'         => $params['phone'],
 				'contact_name'  => isset( $params['contact_name'] ) ? $params['contact_name'] : null,
 				'body'          => isset( $params['body'] ) ? $params['body'] : '',
@@ -64,7 +66,7 @@ class ISPAG_Whatsapp_Webhook_Controller {
 		 * Hook pour brancher une notification (admin bar, e-mail interne, etc.)
 		 * quand un nouveau message WhatsApp arrive.
 		 */
-		if ( $inserted ) {
+		if ( $inserted && ( ! isset( $params['direction'] ) || 'out' !== $params['direction'] ) ) {
 			do_action( 'ispag_whatsapp_message_received', $inserted, $params );
 		}
 

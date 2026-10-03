@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Workflow_Step
  * Classe abstraite pour les étapes d'un workflow.
@@ -207,7 +208,7 @@ if (!class_exists('ISPAG_Workflow_Step')) {
                 );
 
                 if (!$deal) {
-                    ISPAG_Workflow_Logger::error("Aucun deal trouvé avec group_ref: {$group_ref}");
+                    ISPAG_Workflow_Logger::error("No deal found avec group_ref: {$group_ref}");
                     return;
                 }
                 else{
@@ -255,7 +256,7 @@ if (!class_exists('ISPAG_Workflow_Step')) {
                     'reminder_date' => current_time('mysql')
                 ];
 
-                // 6. Sauvegarder la tâche
+                // 6. Save la tâche
                 $result = $note_handler->handle_save_note($task_data, null, null, true);
 
                 if ($result) {
@@ -275,7 +276,7 @@ if (!class_exists('ISPAG_Workflow_Step')) {
                 );
             } catch (Error $e) {
                 ISPAG_Workflow_Logger::error(
-                    "Erreur fatale dans ISPAG_Task_Step::execute: " . $e->getMessage(),
+                    "Error fatale dans ISPAG_Task_Step::execute: " . $e->getMessage(),
                     ['error' => $e->getTraceAsString()]
                 );
             }

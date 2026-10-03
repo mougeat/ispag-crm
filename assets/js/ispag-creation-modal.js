@@ -54,6 +54,56 @@ jQuery(document).ready(function($) {
     let dueTime = '';      
     let reminderOffset = '';
 
+    const errorBox   = $('#ispag-note-error');
+    const typeIcons  = { note: 'edit', task: 'yes-alt', meeting: 'groups', call: 'phone', email: 'email-alt', mail: 'email-alt', log_email: 'email-alt', whatsapp: 'format-chat' };
+    let isDirty = false;
+
+    /** Titre de l'en-tête + icône du type d'activité. */
+    function setModalTitle(text, type) {
+        modalHeader.find('.ispag-modal-title-text').text(text);
+        modalHeader.find('.ispag-modal-type-icon').attr('class', 'dashicons dashicons-' + (typeIcons[type] || 'edit') + ' ispag-modal-type-icon');
+    }
+
+    function showError(message, $field) {
+        errorBox.text(message).prop('hidden', false);
+        if ($field && $field.length) { $field.addClass('ispag-field-invalid').trigger('focus'); }
+    }
+
+    function clearError() {
+        errorBox.prop('hidden', true).text('');
+        $('.ispag-field-invalid').removeClass('ispag-field-invalid');
+    }
+
+    // Toute saisie marque le formulaire comme modifié (évite de perdre un texte par un clic à côté)
+    modal.on('input change', 'input, textarea, select', function() { isDirty = true; clearError(); });
+
+    function editorHasContent() {
+        const ed = (window.tinymce && tinymce.get('note-text-area'));
+        const html = ed ? ed.getContent() : noteTextArea.val();
+        return !!html && html.trim() !== '' && html.trim() !== '<p></p>';
+    }
+
+    /** Fermeture demandée par l'utilisateur : confirmation si du texte risque d'être perdu. */
+    function requestClose() {
+        if (isDirty && (activityTitleInput.val().trim() !== '' || editorHasContent())) {
+            if (!window.confirm(ispagNoteData.textConfirmDiscard || 'Discard this draft?')) return;
+        }
+        closeModal();
+    }
+
+    // Puces d'échéance : pilotent le select #task-due-offset (qui reste la source de vérité)
+    function syncDueChips() {
+        const v = taskDueOffsetSelect.val();
+        $('.ispag-due-chips .ispag-chip').each(function() {
+            $(this).toggleClass('is-active', $(this).data('due-offset') === v);
+        });
+    }
+    $(document).on('click', '.ispag-due-chips .ispag-chip', function() {
+        taskDueOffsetSelect.val($(this).data('due-offset')).trigger('change');
+        isDirty = true;
+    });
+    taskDueOffsetSelect.on('change', syncDueChips);
+
     /* ==========================================================================
        2. FONCTIONS UTILITAIRES & RENDU
        ========================================================================== */
@@ -69,34 +119,40 @@ jQuery(document).ready(function($) {
 
     // 3. On l'exécute une fois au chargement (au cas où la modale s'ouvre avec une valeur pré-remplie)
     toggleCustomDate();
+    syncDueChips();
 
     /**
      * Ferme la modale et réinitialise le formulaire.
      */
     function closeModal() {
         modal.removeClass('is-open');
+        isDirty = false;
+        clearError();
         setTimeout(function() {
-            createNoteForm.trigger('reset');
+            if (createNoteForm.length) createNoteForm[0].reset();
             contactSelect.val(null).trigger('change');
             companySelect.val(null).trigger('change');
             dealSelect.val(null).trigger('change');
-            
+
             taskCheckbox.prop('checked', false);
             taskFields.hide();
             meetingFields.hide();
             callFields.hide();
             emailFields.hide();
-            noteFields.show(); 
-            
-            modalHeader.find('h4').text(ispagNoteData.modalTitleDefault);
-            createNoteBtn.text(ispagNoteData.textCreateNote); 
+            noteFields.show();
+
+            setModalTitle(ispagNoteData.modalTitleDefault || 'Note', 'note');
+            createNoteBtn.prop('disabled', false).text(ispagNoteData.textCreateNote);
             createNoteBtn.removeAttr('data-action');
             createNoteBtn.removeData('action');
-            
-            $('#activity-id-edit').val(''); 
-            modalActivityId.val('');
 
-            if (tinymce.get('note-text-area')) {
+            $('#activity-id-edit').val('');
+            modalActivityId.val('');
+            toggleCustomDate();
+            syncDueChips();
+            isDirty = false;
+
+            if (window.tinymce && tinymce.get('note-text-area')) {
                 tinymce.get('note-text-area').setContent('');
             }
         }, 150); // même durée que la transition CSS (0.15s)
@@ -241,7 +297,7 @@ jQuery(document).ready(function($) {
                 emailFields.show();
                 
                 createNoteBtn.attr('data-action', 'send_mail');
-                finalBtnText = originText ? (ispagNoteData.textSend + ' ' + originText) : (ispagNoteData.textSend + ' ' + type);
+                finalBtnText = ispagNoteData.textPrepareMail;
                 createNoteBtn.text(finalBtnText);
                 break;
             case 'log_email':
@@ -272,6 +328,7 @@ jQuery(document).ready(function($) {
                 createNoteBtn.text(finalBtnText);
                 break;
         }
+        if (!editMode) setModalTitle(finalBtnText || type, type);
         checkNoteTypeForTemplate();
     };
 
@@ -279,8 +336,10 @@ jQuery(document).ready(function($) {
         const type = modalActionType.val();
         if (type === 'email' || type === 'mail') {
             $('#ispag-note-template-wrapper').slideDown(200);
+            $('.ispag-eml-hint').slideDown(200);
         } else {
             $('#ispag-note-template-wrapper').slideUp(200);
+            $('.ispag-eml-hint').slideUp(200);
         }
     }
 
@@ -342,6 +401,7 @@ jQuery(document).ready(function($) {
         // On récupère le texte du bouton (en enlevant les espaces superflus)
         const buttonText = $btn.text().trim();
         
+        // extraData peut être une fonction (index) => données propres à chaque option
         const populate = (sel, ids, names, extraData = {}) => {
             const s = $(sel).val(null);
             if (ids && names) {
@@ -354,7 +414,7 @@ jQuery(document).ready(function($) {
                     const fullData = { 
                         id: id.trim(), 
                         text: nameArr[i], 
-                        ...extraData 
+                        ...(typeof extraData === 'function' ? extraData(i) : extraData)
                     };
                     
                     // On attache ces données à l'élément DOM de l'option
@@ -366,10 +426,13 @@ jQuery(document).ready(function($) {
         };
 
         // Pour les contacts (si tu as besoin de l'email/tel en direct)
-        populate(contactSelect, $btn.data('contact-ids'), $btn.data('contact-names'), {
-            email: $btn.data('contact-emails'),
-            phone: $btn.data('contact-phones')
-        });
+        // Les listes e-mails / téléphones sont dans le même ordre que les ids : une valeur par contact
+        const emailList = String($btn.data('contact-emails') || '').split(',');
+        const phoneList = String($btn.data('contact-phones') || '').split(',');
+        populate(contactSelect, $btn.data('contact-ids'), $btn.data('contact-names'), i => ({
+            email: (emailList[i] || '').trim(),
+            phone: (phoneList[i] || '').trim()
+        }));
 
         populate(companySelect, $(this).data('company-ids'), $(this).data('company-names'));
         
@@ -394,13 +457,23 @@ jQuery(document).ready(function($) {
 
         modal.addClass('is-open');
         modalContent.css('right', '0');
+        isDirty = false;
+        setTimeout(() => activityTitleInput.trigger('focus'), 200);
     });
 
     // Fermeture
-    closeButton.on('click', closeModal);
-    $('#cancel-note-btn').on('click', closeModal);
-    modal.on('click', e => { if (e.target === modal[0]) closeModal(); });
-    $(document).on('keydown', e => { if (e.key === 'Escape' && modal.is(':visible')) closeModal(); });
+    closeButton.on('click', requestClose);
+    $('#cancel-note-btn').on('click', requestClose);
+    modal.on('mousedown', e => { if (e.target === modal[0]) requestClose(); });
+    $(document).on('keydown', e => {
+        if (!modal.hasClass('is-open')) return;
+        if (e.key === 'Escape') { requestClose(); }
+        // Ctrl/Cmd + Entrée : enregistrer sans quitter le clavier
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && !createNoteBtn.prop('disabled')) {
+            e.preventDefault();
+            createNoteBtn.trigger('click');
+        }
+    });
 
     // Changements de type : On garde le type choisi (Call, Meeting, etc.)
     activityTypeSelect.on('change', function() { 
@@ -425,7 +498,7 @@ jQuery(document).ready(function($) {
     $(document).on('click', '#ispag-apply-template', function(e) {
         e.preventDefault();
         const templateId = $('#ispag-note-template-select').val();
-        if (!templateId) return alert("Sélectionnez un template.");
+        if (!templateId) return alert("Select a template.");
 
         const editor = tinymce.get('note-text-area');
         let currentContent = editor ? editor.getContent() : noteTextArea.val();
@@ -476,63 +549,78 @@ jQuery(document).ready(function($) {
         const submitMode        = createNoteBtn.attr('data-action');
         const activityId        = modalActivityId.val();
 
+        clearError();
         if (noteContentHtml.trim() === "" || noteContentHtml.trim() === "<p></p>") {
-            return alert("Veuillez saisir un contenu.");
+            showError(ispagNoteData.textErrorContent || 'Please enter some content.', editor ? $() : noteTextArea);
+            if (editor) editor.focus();
+            return;
+        }
+        if (isTask && taskDueOffsetSelect.val() === 'custom' && !taskDueDateCustom.val()) {
+            showError(ispagNoteData.textErrorDueDate || 'Please choose a due date.', taskDueDateCustom);
+            return;
         }
 
-        createNoteBtn.prop('disabled', true).text(ispagNoteData.textSaving);
+        createNoteBtn.prop('disabled', true).text(submitMode === 'send_mail' ? ispagNoteData.textPreparingMail : ispagNoteData.textSaving);
 
-        // --- CAS 1 : ENVOI VIA OUTLOOK (Pas d'enregistrement DB) ---
+        // --- CAS 1 : BROUILLON .EML (pas d'enregistrement DB : le CRM classe le mail à l'envoi via la copie cachée) ---
         if (submitMode === 'send_mail' && activityId == 0) {
-            // 1. Récupérer l'email du premier contact
-            const contactData       = contactSelect.select2('data');
-            const companyData       = companySelect.select2('data');
-            const dealData          = dealSelect.select2('data');
-            const recipientEmail    = (contactData.length > 0) ? (contactData[0].email || "") : "";
-            const offerNum          = (dealData.length > 0) ? (dealData[0].offer_num || "") : "";
-            const dealId            = (dealData.length > 0) ? (dealData[0].id || "") : "";
-            const companyId         = (companyData.length > 0) ? (companyData[0].id || "") : "";
-            const userId            = (contactData.length > 0) ? (contactData[0].id || "") : "";
+            const contactData = contactSelect.select2('data');
+            const companyData = companySelect.select2('data');
+            const dealData    = dealSelect.select2('data');
 
-            // 2. Construire le lien mailto
-            const subject = encodeURIComponent(activityTitle);
+            // Tous les destinataires sélectionnés (une adresse par contact)
+            const recipients = contactData.map(c => c.email || '').filter(Boolean).join(',');
 
-            let taskTag = ""; 
+            let taskTs = 0;
             if (isTask) {
                 let finalDate = new Date();
-                const offset = taskDueOffsetSelect.val(); // ex: "0d", "7d", "custom"
-                const timeStr = taskDueTime.val() || "08:00"; // HH:mm
+                const offset  = taskDueOffsetSelect.val();   // ex: "0d", "7d", "1m", "custom"
+                const timeStr = taskDueTime.val() || "08:00";
 
                 if (offset === 'custom') {
                     finalDate = new Date(taskDueDateCustom.val());
+                } else if (/m$/.test(offset)) {
+                    finalDate.setMonth(finalDate.getMonth() + (parseInt(offset, 10) || 0));
                 } else {
-                    // Extraction du nombre de jours depuis l'offset (ex: "14d" -> 14)
-                    const daysToAdd = parseInt(offset.replace('d', '')) || 0;
-                    finalDate.setDate(finalDate.getDate() + daysToAdd);
+                    finalDate.setDate(finalDate.getDate() + (parseInt(offset, 10) || 0));
                 }
-
-                // Appliquer l'heure choisie
                 const [hours, minutes] = timeStr.split(':');
-                finalDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-
-                // Conversion en timestamp (secondes)
-                const timestamp = Math.floor(finalDate.getTime() / 1000);
-                taskTag = ` [T-${timestamp}]`;
+                finalDate.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+                taskTs = Math.floor(finalDate.getTime() / 1000);
             }
 
-            const invisibleGap = "\n".repeat(5);
-            const trackingTag = `Ref: [D-${offerNum}] [U-${userId}] [C-${companyId}] ${taskTag}`;
-
-
-            const body = encodeURIComponent(noteContentPlain + invisibleGap + trackingTag);
-            const mailtoUrl = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
-
-            // 3. Ouvrir Outlook
-            window.location.href = mailtoUrl;
-
-            // 4. Fermer simplement la modale
-            closeModal();
-            return; // On s'arrête ici, pas d'AJAX
+            $.post(ispagNoteData.ajaxurl, {
+                action: 'ispag_build_eml',
+                security: ispagNoteData.nonce,
+                to: recipients,
+                subject: activityTitle,
+                body_html: noteContentHtml,
+                deal_ref: dealData.length ? (dealData[0].offer_num || '') : '',
+                user_id: contactData.length ? (contactData[0].id || '') : '',
+                company_id: companyData.length ? (companyData[0].id || '') : '',
+                task_ts: taskTs
+            }).done(function(response) {
+                if (!response.success) {
+                    showError((response.data && response.data.message) || 'Error');
+                    createNoteBtn.prop('disabled', false).text(ispagNoteData.textPrepareMail);
+                    return;
+                }
+                // Téléchargement du .eml : le navigateur propose de l'ouvrir dans le client de messagerie
+                const bytes = Uint8Array.from(atob(response.data.eml), ch => ch.charCodeAt(0));
+                const url   = URL.createObjectURL(new Blob([bytes], { type: 'message/rfc822' }));
+                const link  = document.createElement('a');
+                link.href = url;
+                link.download = response.data.filename;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 10000);
+                closeModal();
+            }).fail(function() {
+                showError(ispagNoteData.textErrorNetwork || 'Network error, your text has been kept. Please try again.');
+                createNoteBtn.prop('disabled', false).text(ispagNoteData.textPrepareMail);
+            });
+            return;
         }
 
         // --- CAS 2 : ENREGISTREMENT CLASSIQUE (AJAX) ---
@@ -592,19 +680,23 @@ jQuery(document).ready(function($) {
                         if (existingTaskRow.length) {
                             // Si la tâche existe (Édition), on remplace la ligne
                             existingTaskRow.replaceWith(newTaskRowHtml);
+                            $(document).trigger('ispag:tasks-changed');
                         } else {
                             // Si c'est une nouvelle tâche (Création)
                             // On vérifie si la ligne "No tasks found" est présente pour la supprimer
-                            if ($('#the-list tr').length === 1 && $('#the-list td').attr('colspan') == "8") {
-                                $('#the-list').empty();
-                            }
+                            $('#the-list .empty-msg').closest('tr:not(.empty-state-row)').remove();
                             $('#the-list').prepend(newTaskRowHtml);
+                            $(document).trigger('ispag:tasks-changed');
                         }
                     }
                 } else {
-                    alert('Erreur: ' + response.data.message);
+                    showError((response.data && response.data.message) || 'Error');
                     createNoteBtn.prop('disabled', false).text(ispagNoteData.textCreateNote);
                 }
+            })
+            .fail(function() {
+                showError(ispagNoteData.textErrorNetwork || 'Network error, your text has been kept. Please try again.');
+                createNoteBtn.prop('disabled', false).text(ispagNoteData.textCreateNote);
             });
     });
 
@@ -625,8 +717,8 @@ jQuery(document).ready(function($) {
         modalContent.css('right', '0');
 
         // 3. Remplissage des champs de base
-        modalHeader.find('h4').text(ispagNoteData.modalTitleEdit.replace('%s', activityData.id));   
-        createNoteBtn.text(ispagNoteData.textUpdate);
+        setModalTitle(ispagNoteData.modalTitleEdit.replace('%s', activityData.id), (activityData.type || 'note').toLowerCase());
+        createNoteBtn.prop('disabled', false).text(ispagNoteData.textUpdate);
         modalActivityId.val(activityData.id);
         activityTitleInput.val(window.stripslashes_js(activityData.note_title));
 
@@ -684,6 +776,8 @@ jQuery(document).ready(function($) {
 
         // 7. Mise à jour visuelle des champs selon le type
         window.toggleActivityFields(type, ispagNoteData.textUpdate, true);
+        syncDueChips();
+        isDirty = false;
 
         // 8. Remplissage des Select2 (Contacts, Entreprises, Deals)
         const forceS2 = ($s, ids, names, extraData = {}) => {
@@ -716,6 +810,9 @@ jQuery(document).ready(function($) {
             total_excl_vat: activityData.total_excl_vat,
             closing_date: activityData.closing_date,
         });
+
+        // Les remplissages ci-dessus déclenchent des 'change' : le formulaire n'est pas encore modifié
+        isDirty = false;
     };
 });
 
@@ -726,7 +823,7 @@ jQuery(document).ready(function($) {
 $(document).on('click', '#ispag-apply-article-template', function(e) {
     e.preventDefault();
     const templateId = $('#ispag-article-template-select').val();
-    if (!templateId) return alert("Veuillez sélectionner un template.");
+    if (!templateId) return alert("Please select a template.");
 
     // Ciblage direct de notre textarea pour le commentaire de la cuve
     const textArea = $('#tank-open-comment');
@@ -753,7 +850,7 @@ $(document).on('click', '#ispag-apply-article-template', function(e) {
                 const contentBody = response.data.content || "";
                 textArea.val(contentBody);
             } else {
-                alert("Erreur lors de la récupération du template.");
+                alert("Error while retrieving the template.");
             }
         },
         complete: () => $(this).prop('disabled', false).text(ispagNoteData.textApply || 'Appliquer')

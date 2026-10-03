@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Workflow_Admin_Page
  * Ajoute une page d'administration pour lister les séquences actives.

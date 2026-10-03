@@ -1,4 +1,6 @@
 <?php
+defined('ABSPATH') || exit;
+require_once __DIR__ . '/ispag-crm-card-links.php';
 
 // Fichier : includes/crm/repositories/class-ispag-crm-company-repository.php
 
@@ -89,7 +91,7 @@ class ISPAG_Crm_Company_Repository {
         }
 
         if (empty($hubspot_deal_id)) {
-            wp_send_json_error(array('message' => 'Aucun identifiant de deal fourni.'));
+            wp_send_json_error(array('message' => 'No deal ID provided.'));
         }
 
         // On récupère directement le HTML généré par votre méthode de rendu
@@ -100,27 +102,27 @@ class ISPAG_Crm_Company_Repository {
                 'html' => $html_content
             ));
         } else {
-            wp_send_json_error(array('message' => 'Aucune entreprise trouvée.'));
+            wp_send_json_error(array('message' => 'No company found.'));
         }
     }
 
     public function render_company_card($hubspot_deal_id) {
         if (empty($hubspot_deal_id)) {
-            return '<p class="ispag-no-company">Aucun identifiant de deal fourni.</p>';
+            return '<p class="ispag-no-company">No deal ID provided.</p>';
         }
 
         // On utilise notre méthode mutualisée
         $datas = $this->get_companies_data_from_db($hubspot_deal_id);
 
         if (empty($datas['companies'])) {
-            return '<p class="ispag-no-company">Aucune entreprise associée.</p>';
+            return '<p class="ispag-no-company">No associated company.</p>';
         }
 
         ob_start();
         echo ispag_get_template('ispag-template-company-card-new', [
             'datas' => $datas
         ]);
-        return ob_get_clean();
+        return ispag_crm_strip_detail_links(ob_get_clean());
     }
 
     private function get_companies_data_from_db($hubspot_deal_id) {
@@ -146,7 +148,7 @@ class ISPAG_Crm_Company_Repository {
                 $company_id = absint($company_id);
                 $associated_companies_list_full[] = $company_id;
                 if ($company_id > 0) {
-                    $companies[] = $company_repo->get_company_by_viag_id($company_id);
+                    $companies[] = $company_repo->get_company_by_id($company_id);
                 }
             }
         }
@@ -162,7 +164,7 @@ class ISPAG_Crm_Company_Repository {
         return $this->wpdb->get_col("
             SELECT DISTINCT city 
             FROM {$this->table_companies} 
-            WHERE city IS NOT NULL AND city != '' AND isSupplier = 0 
+            WHERE city IS NOT NULL AND city != '' 
             ORDER BY city ASC
         ");
     }
@@ -193,7 +195,7 @@ class ISPAG_Crm_Company_Repository {
         $types_string = "'" . implode("','", $contact_types) . "'";
 
         // 1. Validation du tri
-        $valid_orderby_cols = ['Id', 'company_name', 'viag_id', 'priority_level', 'last_contact_date', 'city', 'nb_contacts', 'nb_transactions']; 
+        $valid_orderby_cols = ['Id', 'company_name', 'priority_level', 'last_contact_date', 'city', 'nb_contacts', 'nb_transactions']; 
         $orderby = in_array( $args['orderby'], $valid_orderby_cols ) ? $args['orderby'] : 'company_name';
         
         if ($orderby === 'priority_level') {
@@ -207,7 +209,7 @@ class ISPAG_Crm_Company_Repository {
         $order = (strtoupper($args['order'] ?? 'ASC') === 'DESC') ? 'DESC' : 'ASC';
 
         // 2. Construction des clauses WHERE
-        $where_clauses = ["f.isSupplier = 0"];
+        $where_clauses = ["1=1"]; // fournisseurs inclus : une entreprise peut être à la fois cliente et fournisseuse
         $sql_args_where = []; 
 
         // Filtre Recherche textuelle
@@ -235,7 +237,7 @@ class ISPAG_Crm_Company_Repository {
         if ( ! empty( $args['owner_id'] ) ) {
             $where_clauses[] = "EXISTS (
                 SELECT 1 FROM {$table_owners} ow 
-                WHERE CAST(ow.company_id AS CHAR) = CAST(f.viag_id AS CHAR) COLLATE utf8mb4_unicode_ci
+                WHERE CAST(ow.company_id AS CHAR) = CAST(f.Id AS CHAR) COLLATE utf8mb4_unicode_ci
                 AND ow.user_id = %d 
                 AND ow.status = 'active'
             )";
@@ -253,24 +255,24 @@ class ISPAG_Crm_Company_Repository {
                 (SELECT u.display_name 
                 FROM {$table_users} u
                 JOIN {$table_owners} ow ON u.ID = ow.user_id
-                WHERE CAST(ow.company_id AS CHAR) = CAST(f.viag_id AS CHAR) COLLATE utf8mb4_unicode_ci
+                WHERE CAST(ow.company_id AS CHAR) = CAST(f.Id AS CHAR) COLLATE utf8mb4_unicode_ci
                 AND ow.status = 'active' 
                 LIMIT 1) AS current_owner_name,
                 -- Dernier contact
                 (SELECT MAX(n.created_at) FROM {$this->table_note} n 
-                WHERE n.company_id = CAST(f.viag_id AS CHAR) COLLATE utf8mb4_unicode_ci
+                WHERE n.company_id = CAST(f.Id AS CHAR) COLLATE utf8mb4_unicode_ci
                 AND n.type IN ($types_string)) AS last_contact_date,
                 -- Nombre de contacts
                 (SELECT COUNT(*) FROM `{$this->table_usermeta}` um 
                 WHERE um.meta_key = 'ispag_company_id' 
-                AND um.meta_value = CAST(f.viag_id AS CHAR) COLLATE utf8mb4_unicode_ci) AS nb_contacts,
+                AND um.meta_value = CAST(f.Id AS CHAR) COLLATE utf8mb4_unicode_ci) AS nb_contacts,
                 -- Nombre de transactions ouvertes
                 (SELECT COUNT(*) FROM `{$this->table_transactions}` t 
-                WHERE t.associated_company_id = f.viag_id 
+                WHERE t.associated_company_id = f.Id 
                 AND t.project_db_status = 0) AS nb_transactions
             FROM {$this->table_companies} f
             LEFT JOIN {$this->table_priorities} AS up 
-                ON f.viag_id = up.entity_id 
+                ON f.Id = up.entity_id 
                 AND up.entity_type = 'company' 
                 AND up.user_id = %d
             {$where_sql}
@@ -293,7 +295,7 @@ class ISPAG_Crm_Company_Repository {
 
         // 4. Calcul du total pour la pagination
         $total_sql = "SELECT COUNT(*) FROM {$this->table_companies} f 
-                    LEFT JOIN {$this->table_priorities} up ON f.viag_id = up.entity_id AND up.user_id = %d
+                    LEFT JOIN {$this->table_priorities} up ON f.Id = up.entity_id AND up.user_id = %d
                     $where_sql";
         
         // Même chose pour le total : l'utilisateur du LEFT JOIN d'abord, puis les filtres
@@ -309,84 +311,9 @@ class ISPAG_Crm_Company_Repository {
 
 
     /**
-     * Récupère les données d'une seule entreprise par son ID VIAG.
+     * Récupère les données d'une seule entreprise par son Id (ispag_companies.Id).
      *
-     * @param int|string $viag_id L'ID externe (VIAG) de l'entreprise.
-     * @return stdClass|null L'objet entreprise, ou null si non trouvé.
-     */
-    public function get_company_by_viag_id( $viag_id ) {
-
-        if ( empty( $viag_id ) ) {
-            return null;
-        }
-
-        $viag_id = absint( $viag_id );
-        if ( 0 === $viag_id ) {
-            return null;
-        }
-
-        $table_c = $this->table_companies;
-        $table_t = $this->table_transactions;
-        $table_um = $this->table_usermeta;
-        $current_user_id = get_current_user_id();
-
-        $sql = "
-            SELECT
-                f.*,
-                -- Récupération des méta-données de base
-                (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_CITY . "' ORDER BY meta_id DESC LIMIT 1) AS city,
-                (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_ADDRESS . "' ORDER BY meta_id DESC LIMIT 1) AS address,
-                (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_POSTAL_CODE . "' ORDER BY meta_id DESC LIMIT 1) AS postal_code,
-                (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_COUNTRY . "' ORDER BY meta_id DESC LIMIT 1) AS country,
-                -- (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::COMPANY_TYPE . "' ORDER BY meta_id DESC LIMIT 1) AS type,
-
-                -- Priorité personnalisée
-                (
-                    SELECT up.priority_level
-                    FROM {$this->table_priorities} up
-                    WHERE up.entity_id = f.viag_id
-                    AND up.entity_type = 'company'
-                    AND up.user_id = $current_user_id
-                    LIMIT 1
-                ) AS priority_level,
-
-                -- Compte des contacts associés
-                (
-                    SELECT COUNT(um.user_id)
-                    FROM {$table_um} um
-                    WHERE um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID . "'
-                    AND um.meta_value = f.viag_id
-                ) AS nb_contacts,
-
-                -- Compte des transactions ouvertes
-                (
-                    SELECT COUNT(t.Id)
-                    FROM {$table_t} t
-                    WHERE t.associated_company_id = f.viag_id
-                    AND t.project_db_status = 0
-                ) AS nb_transactions
-
-            FROM {$table_c} f
-            WHERE f.viag_id = %d AND f.isSupplier = 0
-            LIMIT 1
-        ";
-
-        $prepared_query = $this->wpdb->prepare( $sql, $viag_id );
-        $company = $this->wpdb->get_row( $prepared_query );
-
-        if ( $company ) {
-            $company = $this->_enrich_company_data( $company );
-        }
-
-        // error_log('[DEBUG get_company_by_viag_id ] ' . $prepared_query);
-
-        return $company;
-    }
-
-    /**
-     * Récupère les données d'une seule entreprise par son ID VIAG.
-     *
-     * @param int|string $viag_id L'ID externe (VIAG) de l'entreprise.
+     * @param int|string $id L'Id de l'entreprise.
      * @return stdClass|null L'objet entreprise, ou null si non trouvé.
      */
     public function get_company_by_id( $id ) {
@@ -409,7 +336,9 @@ class ISPAG_Crm_Company_Repository {
             SELECT
                 f.*,
                 -- Récupération des méta-données de base
-                (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_CITY . "' ORDER BY meta_id DESC LIMIT 1) AS city,
+                COALESCE(NULLIF((SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_CITY . "' ORDER BY meta_id DESC LIMIT 1), ''), f.city) AS city,
+                COALESCE(NULLIF(f.phone, ''), (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_PHONE . "' ORDER BY meta_id DESC LIMIT 1)) AS phone,
+                COALESCE(NULLIF(f.email, ''), (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_MAIL . "' ORDER BY meta_id DESC LIMIT 1)) AS email,
                 (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_ADDRESS . "' ORDER BY meta_id DESC LIMIT 1) AS address,
                 (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_POSTAL_CODE . "' ORDER BY meta_id DESC LIMIT 1) AS postal_code,
                 (SELECT um.meta_value FROM {$this->table_postmeta} um WHERE um.company_id = f.Id AND um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_COUNTRY . "' ORDER BY meta_id DESC LIMIT 1) AS country,
@@ -419,7 +348,7 @@ class ISPAG_Crm_Company_Repository {
                 (
                     SELECT up.priority_level
                     FROM {$this->table_priorities} up
-                    WHERE up.entity_id = f.viag_id
+                    WHERE up.entity_id = f.Id
                     AND up.entity_type = 'company'
                     AND up.user_id = $current_user_id
                     LIMIT 1
@@ -429,20 +358,20 @@ class ISPAG_Crm_Company_Repository {
                 (
                     SELECT COUNT(um.user_id)
                     FROM {$table_um} um
-                    WHERE um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_VIAG_ID . "'
-                    AND um.meta_value = f.viag_id
+                    WHERE um.meta_key = '" . ISPAG_Crm_Company_Constants::META_COMPANY_ID . "'
+                    AND um.meta_value = f.Id
                 ) AS nb_contacts,
 
                 -- Compte des transactions ouvertes
                 (
                     SELECT COUNT(t.Id)
                     FROM {$table_t} t
-                    WHERE t.associated_company_id = f.viag_id
+                    WHERE t.associated_company_id = f.Id
                     AND t.project_db_status = 0
                 ) AS nb_transactions
 
             FROM {$table_c} f
-            WHERE f.Id = %d AND f.isSupplier = 0
+            WHERE f.Id = %d
             LIMIT 1
         ";
 
@@ -479,11 +408,11 @@ class ISPAG_Crm_Company_Repository {
         }
 
         foreach ( $companies as &$company ) { // Utilisation de &$company pour modifier l'objet original
-            // L'ID utilisé pour lier l'entreprise dans les notes est viag_id
-            $company_id = $company->viag_id ?? null;
+            // L'ID utilisé pour lier l'entreprise (notes, contacts, projets…) est ispag_companies.Id
+            $company_id = $company->Id ?? null;
             
             if($company->compagny_domain AND !$company->favicon){
-                $company->favicon = $this->update_company_favicon($company->viag_id, $company->compagny_domain);
+                $company->favicon = $this->update_company_favicon($company->Id, $company->compagny_domain);
             }
             if(! $company->favicon ){
                 $company->initials = strtoupper( substr( $company->company_name, 0, 1 ) . substr( $company->company_name, strpos($company->company_name, ' ') + 1, 1 ) );
@@ -523,7 +452,8 @@ class ISPAG_Crm_Company_Repository {
             
             if(class_exists('ISPAG_Crm_Discount_Manager')){
                 $discount_manager = new ISPAG_Crm_Discount_Manager();
-                $company->discount_value = $discount_manager->get_current_discount_by_company_id($company->Id, 'rabais')->discount_value;
+                $current_discount = $discount_manager->get_current_discount_by_company_id($company->Id, 'rabais');
+                $company->discount_value = $current_discount->discount_value ?? 0;
                 $company->coef_value = $discount_manager->get_coef_by_company_id($company->Id);
             }
             else{
@@ -535,9 +465,11 @@ class ISPAG_Crm_Company_Repository {
                 $lifecycle_manager = new ISPAG_Crm_Lifecycle_Manager();
                 $lifecycle_data = $lifecycle_manager->get_company_lifecycle($company->Id);
                 
-                // On extrait uniquement le libellé lisible par l'humain
-                $company->type = ($lifecycle_data && !empty($lifecycle_data->phase_label)) ? $lifecycle_data->phase_label : '';
+                // Clé enregistrée (type_key) et libellé lisible : sans libellé défini dans les phases, on affiche la clé
+                $company->type_key = $lifecycle_data ? (string) $lifecycle_data->lifecycle_type : '';
+                $company->type = ($lifecycle_data && !empty($lifecycle_data->phase_label)) ? $lifecycle_data->phase_label : $company->type_key;
             } else {
+                $company->type_key = '';
                 $company->type = '';
             }
         }
@@ -673,7 +605,7 @@ class ISPAG_Crm_Company_Repository {
             $this->wpdb->update(
                 $this->table_companies,
                 array('favicon' => $favicon_url), // Colonne à modifier
-                array('viag_id' => $id),              // Condition (ID de la ligne)
+                array('Id' => $id),                   // Condition (ID de la ligne)
                 array('%s'),                     // Format de la valeur
                 array('%d')                      // Format de l'ID
             );
@@ -706,7 +638,7 @@ class ISPAG_Crm_Company_Repository {
 
         // 2. Récupération des données via le repository
         $repository = new ISPAG_Crm_Company_Repository();
-        $company = $repository->get_company_by_viag_id($company_id);
+        $company = $repository->get_company_by_id($company_id);
 
         if (!$company) {
             // error_log("[$timestamp] ERREUR : Société $company_id introuvable", 3, $log_file);
@@ -764,9 +696,8 @@ class ISPAG_Crm_Company_Repository {
         );
 
         // Vérification de la réponse
-        if (null === $ai_response || !isset($ai_response['summary'])) {
-            // error_log("[$timestamp] ERREUR : L'IA a renvoyé une réponse vide ou invalide.", 3, $log_file);
-            wp_send_json_error(['message' => 'AI processing failed.']);
+        if ( $ai_error = ISPAG_Crm_Mistral::ajax_error($ai_response) ) {
+            wp_send_json_error(['message' => $ai_error]);
         }
 
         // 4. Préparation du HTML pour le retour AJAX
@@ -811,20 +742,13 @@ class ISPAG_Crm_Company_Repository {
         $table_owners    = ISPAG_Crm_Company_Constants::TABLE_COMPANY_OWNER; 
         $table_priorities = $this->table_priorities;
 
-        $company_viag_id    = isset( $_POST['company_id'] ) ? absint( $_POST['company_id'] ) : 0;
+        $company_id    = isset( $_POST['company_id'] ) ? absint( $_POST['company_id'] ) : 0;
         $field_name    = isset( $_POST['field_name'] ) ? sanitize_text_field( $_POST['field_name'] ) : '';
         $new_value     = isset( $_POST['new_value'] ) ? wp_unslash( $_POST['new_value'] ) : '';
         $department_id = isset( $_POST['department_id'] ) ? sanitize_key( $_POST['department_id'] ) : '';
-        $company_id = 0;
 
-        
-
-        if ( $company_viag_id === 0 || empty( $field_name ) ) {
+        if ( $company_id === 0 || empty( $field_name ) ) {
             wp_send_json_error( array( 'message' => __( 'Missing ID or field name.', 'ispag-crm' ) ) );
-        }
-
-        if(! empty($company_viag_id)){
-            $company_id = $this->get_id_by_viag_id($company_viag_id);
         }
 
         $updated_successfully = false;
@@ -844,7 +768,7 @@ class ISPAG_Crm_Company_Repository {
                     'unassigned_at' => $now 
                 ),
                 array( 
-                    'company_id'     => $company_viag_id, 
+                    'company_id'     => $company_id, 
                     'department_key' => $department_id,
                     'status'         => 'active' // Important : on ne touche qu'à celui qui est actif
                 ),
@@ -857,7 +781,7 @@ class ISPAG_Crm_Company_Repository {
                 $result = $wpdb->insert(
                     $table_owners,
                     array(
-                        'company_id'     => $company_viag_id,
+                        'company_id'     => $company_id,
                         'user_id'        => $new_owner_id,
                         'department_key' => $department_id,
                         'assigned_at'    => $now,
@@ -877,10 +801,10 @@ class ISPAG_Crm_Company_Repository {
                 // --- NOTIFICATION DU NOUVEL OWNER ET DE L'ADMIN ---
                 if ( $updated_successfully && !empty( $new_owner_id ) && class_exists( 'ISPAG_Notifications_Manager' ) ) {
                     // Optionnel : Récupérer le nom de la société pour affiner le message si besoin
-                    $company_name = $wpdb->get_var( $wpdb->prepare( "SELECT company_name FROM $table_companies WHERE viag_id = %d", $company_viag_id ) );
-                    $company_label = !empty( $company_name ) ? $company_name : "ID #$company_viag_id";
+                    $company_name = $wpdb->get_var( $wpdb->prepare( "SELECT company_name FROM $table_companies WHERE Id = %d", $company_id ) );
+                    $company_label = !empty( $company_name ) ? $company_name : "ID #$company_id";
  
-                    $url = home_url('company/' . $company_viag_id);
+                    $url = home_url('company/' . $company_id);
                     ISPAG_Notifications_Manager::send(
                         [$new_owner_id, 1], // Destinataires : Le nouvel owner et l'administrateur (ID 1)
                         'company_assigned', // Type de notification
@@ -906,7 +830,7 @@ class ISPAG_Crm_Company_Repository {
                 $table_priorities,
                 array(
                     'user_id'        => $user_id,
-                    'entity_id'      => $company_viag_id,
+                    'entity_id'      => $company_id,
                     'entity_type'    => 'company',
                     'priority_level' => $new_value
                 ),
@@ -920,7 +844,7 @@ class ISPAG_Crm_Company_Repository {
         }
         
         // --- 3. TABLE PRINCIPALE ---
-        elseif ( in_array( $field_name, array( 'company_name', 'compagny_domain', 'viag_id', 'isIngenieur', 'isSupplier', 'phone', 'email', 'is_active', 'favicon' ) ) ) {
+        elseif ( in_array( $field_name, array( 'company_name', 'compagny_domain', 'isIngenieur', 'isSupplier', 'phone', 'email', 'is_active', 'favicon' ) ) ) {
             if ( in_array( $field_name, array( 'isIngenieur', 'isSupplier' ) ) ) {
                 $db_value = filter_var($new_value, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
                 $format = '%d';
@@ -945,7 +869,7 @@ class ISPAG_Crm_Company_Repository {
             $result = $wpdb->update( 
                 $table_companies, 
                 array( $field_name => $db_value ), 
-                array( 'Id' => $company_viag_id ), 
+                array( 'Id' => $company_id ), 
                 array( $format ), 
                 array( '%d' ) 
             );
@@ -953,6 +877,13 @@ class ISPAG_Crm_Company_Repository {
             if ( $result !== false ) {
                 $updated_successfully = true;
                 $db_value_to_return = $db_value;
+
+                // Téléphone / e-mail : la fiche lit la colonne puis, à défaut, la méta -> on garde les deux identiques
+                if ( $field_name === 'phone' ) {
+                    ISPAG_Crm_Company_Creator::save_company_meta( $company_id, ISPAG_Crm_Company_Constants::META_COMPANY_PHONE, $db_value );
+                } elseif ( $field_name === 'email' ) {
+                    ISPAG_Crm_Company_Creator::save_company_meta( $company_id, ISPAG_Crm_Company_Constants::META_COMPANY_MAIL, $db_value );
+                }
             }
         }
         // --- 4. RABAIS ET COEF ---
@@ -981,18 +912,38 @@ class ISPAG_Crm_Company_Repository {
 
                 if ( $result !== false ) {
                     $updated_successfully = true;
-                    $db_value_to_return = $new_value;
+                    $labels = $lifecycle_manager->get_standard_lifecycle();
+                    $db_value_to_return = isset($labels[$new_value]) ? $labels[$new_value] : $new_value; // libellé affiché
                 }
             }
 
         }
+        // --- 4b. ADRESSE (rue, code postal, ville, pays, région) : tables de l'entreprise, pas les postmeta ---
+        elseif ( in_array( $field_name, array(
+            ISPAG_Crm_Company_Constants::META_COMPANY_ADDRESS,
+            ISPAG_Crm_Company_Constants::META_COMPANY_POSTAL_CODE,
+            ISPAG_Crm_Company_Constants::META_COMPANY_CITY,
+            ISPAG_Crm_Company_Constants::META_COMPANY_COUNTRY,
+            ISPAG_Crm_Company_Constants::META_COMPANY_REGION,
+        ), true ) ) {
+            if ( ! current_user_can( 'edit_company' ) && ! current_user_can( 'manage_options' ) ) {
+                wp_send_json_error( array( 'message' => __( 'You are not allowed to edit companies.', 'ispag-crm' ) ), 403 );
+            }
+            $db_value_to_return = sanitize_text_field( $new_value );
+            if ( $field_name === ISPAG_Crm_Company_Constants::META_COMPANY_CITY ) {
+                ISPAG_Crm_Company_Creator::save_city( $company_id, $db_value_to_return ); // colonne city + méta
+            } else {
+                ISPAG_Crm_Company_Creator::save_company_meta( $company_id, $field_name, $db_value_to_return );
+            }
+            $updated_successfully = true;
+        }
         // --- 5. MÉTA ---
         else {
             $db_value_to_return = ($field_name === ISPAG_Crm_Company_Constants::META_COMPANY_OWNER) ? absint($new_value) : sanitize_text_field($new_value);
-            $updated = update_post_meta( $company_viag_id, $field_name, $db_value_to_return );
+            $updated = update_post_meta( $company_id, $field_name, $db_value_to_return );
             
             // update_post_meta renvoie true ou l'ID de la meta, mais false si la valeur est identique
-            if ( $updated !== false || get_post_meta( $company_viag_id, $field_name, true ) == $db_value_to_return ) {
+            if ( $updated !== false || get_post_meta( $company_id, $field_name, true ) == $db_value_to_return ) {
                 $updated_successfully = true;
             }
         }
@@ -1056,7 +1007,7 @@ class ISPAG_Crm_Company_Repository {
 
             // 3. Cas par défaut (Nom, Email, etc.)
             default:
-                $display_label = ! empty( $value ) ? $value : __( 'Non défini', 'ispag-crm' );
+                $display_label = ! empty( $value ) ? $value : __( 'Not defined', 'ispag-crm' );
                 break;
         }
         
@@ -1149,14 +1100,14 @@ class ISPAG_Crm_Company_Repository {
         $attachment_id = isset($_POST['attachment_id']) ? absint($_POST['attachment_id']) : 0;
 
         if (!$company_id || !$attachment_id) {
-            wp_send_json_error(['message' => 'Données manquantes (ID entreprise ou média).']);
+            wp_send_json_error(['message' => 'Missing data (company ID or media).']);
         }
 
         // 3. Récupération de l'URL du média WordPress
         $favicon_url = wp_get_attachment_url($attachment_id);
 
         if (!$favicon_url) {
-            wp_send_json_error(['message' => 'Impossible de récupérer l\'URL du média sélectionné.']);
+            wp_send_json_error(['message' => 'Unable to retrieve the URL of the selected media.']);
         }
 
         // 4. Mise à jour de la table personnalisée ISPAG
@@ -1176,43 +1127,16 @@ class ISPAG_Crm_Company_Repository {
         // Si l'URL était déjà la même, il renvoie 0, ce qui n'est pas une erreur.
         if ($updated !== false) {
             wp_send_json_success([
-                'message'       => 'Favicon mis à jour avec succès.',
+                'message'       => 'Favicon updated successfully.',
                 'url'           => $favicon_url
             ]);
         } else {
             wp_send_json_error([
-                'message'  => 'Erreur lors de la mise à jour en base de données.',
+                'message'  => 'Error while updating the database.',
                 'db_error' => $wpdb->last_error // Pour le debug si besoin
             ]);
         }
     }
 
-    /**
-     * Récupère l'ID interne (Id) à partir d'un viag_id.
-     * 
-     * @param int $viag_id
-     * @return int|null L'ID interne de l'entreprise ou null si non trouvée.
-     */
-    public function get_id_by_viag_id( $viag_id ) {
-        // error_log('[DEBUG get_id_by_viag_id ] viag_id : ' . $viag_id);
-        $viag_id = absint( $viag_id );
-        // error_log('[DEBUG get_id_by_viag_id ] absint(viag_id) : ' . $viag_id);
-        if ( ! $viag_id ) {
-            // error_log('[DEBUG get_id_by_viag_id ] RETURN');
-            return null;
-        }
-
-        $sql = $this->wpdb->prepare(
-            "SELECT Id FROM {$this->table_companies} WHERE viag_id = %d LIMIT 1",
-            $viag_id
-        );
-        // error_log('[DEBUG get_id_by_viag_id ] SQL : ' . $sql);
-
-        $id = $this->wpdb->get_var( $sql );
-
-        // error_log('[DEBUG get_id_by_viag_id ] ID : ' . $id);
-
-        return $id ? absint( $id ) : null;
-    }
 }
 endif;

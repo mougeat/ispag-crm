@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 /**
  * Gère le reporting hebdomadaire des opportunités perdues (Closed Lost).
@@ -45,7 +46,7 @@ class ISPAG_Cron_Lost_Deals_Reporting {
             LEFT JOIN {$wpdb->users} AS t2 
                 ON t1.deal_owner = t2.ID
             LEFT JOIN {$table_company} AS t3 
-                ON t1.associated_company_id = t3.viag_id
+                ON t1.associated_company_id = t3.Id
             WHERE 
                 ts.current_stage_key = 'closed_lost'
                 AND t1.project_db_status != 2
@@ -91,7 +92,7 @@ class ISPAG_Cron_Lost_Deals_Reporting {
                     'PROJECT_CLOSING_DATE' => date_i18n( get_option( 'date_format' ), strtotime( $d->closing_date ) ),
                     'PROJECT_OFFER_NUM'    => esc_html( $d->offer_num ),
                     'PROJECT_STATE'        => esc_html( $d->current_stage_key ),
-                    'PROJECT_REASON'       => !empty($d->reason_for_rejection) ? esc_html( $d->reason_for_rejection ) : 'Non spécifiée', // La nouvelle variable
+                    'PROJECT_REASON'       => !empty($d->reason_for_rejection) ? esc_html( $d->reason_for_rejection ) : 'Not specifiede', // La nouvelle variable
                     'PROJECT_LINK'         => trailingslashit( get_home_url() . '/deal/' . $d->deal_id )
                 ];
             }

@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Workflow_Manager
  * Gère la création, l'exécution et la suppression des workflows.
@@ -134,7 +135,7 @@ if (!class_exists('ISPAG_Workflow_Manager')) {
                     }
                 } catch (Exception $e) {
                     ISPAG_Workflow_Logger::error(
-                        "Erreur lors de l'exécution du workflow {$execution->workflow_id} : " . $e->getMessage(),
+                        "Error lors de l'exécution du workflow {$execution->workflow_id} : " . $e->getMessage(),
                         ['execution_id' => $execution->id, 'error' => $e->getMessage()]
                     );
                 }
@@ -196,7 +197,7 @@ if (!class_exists('ISPAG_Workflow_Manager')) {
                     ISPAG_Workflow_Logger::debug("Workflow chargé: ID={$post->ID}, Name={$post->post_title}");
                 } catch (Exception $e) {
                     ISPAG_Workflow_Logger::error(
-                        "Erreur lors du chargement du workflow {$post->ID} : " . $e->getMessage()
+                        "Error lors du chargement du workflow {$post->ID} : " . $e->getMessage()
                     );
                 }
             }
@@ -233,7 +234,7 @@ if (!class_exists('ISPAG_Workflow_Manager')) {
                     $workflows[] = $workflow;
                 } catch (Exception $e) {
                     ISPAG_Workflow_Logger::error(
-                        "Erreur lors du chargement du workflow {$post->ID}: " . $e->getMessage()
+                        "Error lors du chargement du workflow {$post->ID}: " . $e->getMessage()
                     );
                 }
             }
@@ -271,7 +272,7 @@ if (!class_exists('ISPAG_Workflow_Manager')) {
                     );
                 } catch (Exception $e) {
                     ISPAG_Workflow_Logger::error(
-                        "Erreur lors du chargement du workflow {$execution->workflow_id} : " . $e->getMessage()
+                        "Error lors du chargement du workflow {$execution->workflow_id} : " . $e->getMessage()
                     );
                 }
             }

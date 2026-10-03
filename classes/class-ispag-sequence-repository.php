@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 class ISPAG_Sequence_Repository {
     
     const TABLE_SEQUENCES = 'ispag_sequences';
@@ -72,7 +73,7 @@ class ISPAG_Sequence_Repository {
 
         } catch (Exception $e) {
             $wpdb->query('ROLLBACK');
-            // error_log("[ISPAG CRM] Erreur sauvegarde séquence : " . $e->getMessage());
+            // error_log("[ISPAG CRM] Error sauvegarde séquence : " . $e->getMessage());
             return false;
         }
     }

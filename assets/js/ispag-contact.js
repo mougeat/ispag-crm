@@ -25,18 +25,18 @@ jQuery(document).ready(function($) {
                         // console.log('ISPAG JS : Succès ! Injection du HTML des contacts dans la carte.');
                         $card.html(response.data.html);
                     } else {
-                        console.warn('ISPAG JS : Erreur ou HTML vide renvoyé pour les contacts :', response);
-                        var errorMsg = (response.data && response.data.message) ? response.data.message : 'Aucun contact trouvé.';
+                        console.warn('ISPAG JS : Error ou HTML vide renvoyé pour les contacts :', response);
+                        var errorMsg = (response.data && response.data.message) ? response.data.message : 'No contact found.';
                         $card.html('<p class="error" style="padding: 10px; color: #666;">' + errorMsg + '</p>');
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    console.error('ISPAG JS : Erreur AJAX contacts :', textStatus, errorThrown);
-                    $card.html('<p class="error" style="padding: 10px; color: #e74c3c;">Erreur lors du chargement des contacts.</p>');
+                    console.error('ISPAG JS : Error AJAX contacts :', textStatus, errorThrown);
+                    $card.html('<p class="error" style="padding: 10px; color: #e74c3c;">Error while loading contacts.</p>');
                 }
             });
         } else {
-            console.warn('ISPAG JS : La carte contact existe, mais data-deal-id est vide ou absent.');
+            // Carte contact sans data-deal-id (page entreprise, par exemple) : rien à charger
         }
     } else {
         // console.log('ISPAG JS : Aucune carte .ispag-contact-card n’est présente sur cette page.');

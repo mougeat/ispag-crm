@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Classe ISPAG_Cron_Contact_Health
  * Gère la santé des contacts, l'attribution des responsables et les rappels.
@@ -94,8 +95,8 @@ class ISPAG_Cron_Contact_Health {
                     'contact_id'   => $user->ID,
                     'user_id'      => self::DEFAULT_MANAGER_ID, 
                     'type'         => 'ASSIGNMENT_REQUIRED',
-                    'title'        => '⚠️ Attribution requise : ' . $user->display_name,
-                    'content'      => "Le contact **{$user->display_name}** est en phase qualifiée mais n'a pas de responsable.",
+                    'title'        => '⚠️ Assignment required: ' . $user->display_name,
+                    'content'      => "Le contact **{$user->display_name}** is in the qualified phase but has no owner.",
                     'is_task'      => 1,
                     'is_completed' => 0,
                     'created_at'   => current_time('mysql')
@@ -155,13 +156,13 @@ class ISPAG_Cron_Contact_Health {
 
                 if (!$existing_task) {
                     $display_last = ($last_contact_ts > 0) ? date_i18n(get_option('date_format'), $last_contact_ts) : "jamais";
-                    $prio = !empty($contact->priority_level) ? $contact->priority_level : 'Non définie'; 
+                    $prio = !empty($contact->priority_level) ? $contact->priority_level : 'Not defined'; 
 
                     // Récupération de l'ID entreprise (on prend la première si multi-sociétés)
                     $linked_company_id = 0;
                     if ( ! empty( $contact->companies ) && is_array( $contact->companies ) ) {
-                        // On récupère le viag_id de la première entreprise liée
-                        $linked_company_id = $contact->companies[0]->viag_id; 
+                        // On récupère l'Id de la première entreprise liée
+                        $linked_company_id = $contact->companies[0]->Id; 
                     }
 
                     $wpdb->insert($notes_table, array(
@@ -170,7 +171,7 @@ class ISPAG_Cron_Contact_Health {
                         'user_id'      => $contact->crm_owner_id, 
                         'type'         => 'HEALTH_REMINDER',
                         'title'        => '⏳ Relance : ' . $contact->display_name . ' (Prio ' . $prio . ')',
-                        'content'      => "Alerte Santé ISPAG : Aucun contact réel détecté depuis le **{$display_last}**. Délai de {$days}j dépassé.",
+                        'content'      => "ISPAG health alert: no real contact detected since **{$display_last}**. {$days}-day limit exceeded.",
                         'is_task'      => 1,
                         'is_completed' => 0,
                         'due_date'     => date('Y-m-d H:i:s', strtotime('+3 days')),

@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 
 
@@ -36,7 +37,7 @@ class ISPAG_Cron_Contact_Matcher {
 
         $this->log_action( "--- DÉBUT DU SCAN DE MATCHING ---" );
 
-        $meta_key_company = ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID;
+        $meta_key_company = ISPAG_Crm_Contact_Constants::META_COMPANY_ID;
         $table_companies  = ISPAG_Crm_Company_Constants::TABLE_NAME;
 
         // 1. Récupérer les IDs des contacts qui n'ont PAS encore de meta association
@@ -48,7 +49,7 @@ class ISPAG_Cron_Contact_Matcher {
         ", $meta_key_company ) );
 
         if ( $wpdb->last_error ) {
-            $this->log_action( "Erreur SQL (Récupération contacts) : " . $wpdb->last_error, 'ERROR' );
+            $this->log_action( "SQL error (Récupération contacts) : " . $wpdb->last_error, 'ERROR' );
             return;
         }
 
@@ -62,7 +63,7 @@ class ISPAG_Cron_Contact_Matcher {
         foreach ( $contact_ids as $user_id ) {
             $user_data = get_userdata( $user_id );
             if ( ! $user_data ) {
-                $this->log_action( "Erreur : Impossible de lire les données de l'utilisateur #{$user_id}", 'ERROR' );
+                $this->log_action( "Error: Impossible de lire les données de l'utilisateur #{$user_id}", 'ERROR' );
                 continue;
             }
 
@@ -73,7 +74,7 @@ class ISPAG_Cron_Contact_Matcher {
             $domain = isset( $email_parts[1] ) ? strtolower( trim( $email_parts[1] ) ) : '';
 
             if ( empty( $domain ) ) {
-                $this->log_action( "Erreur : Domaine vide pour l'email '{$user_email}' (Contact #{$user_id})", 'ERROR' );
+                $this->log_action( "Error: Domaine vide pour l'email '{$user_email}' (Contact #{$user_id})", 'ERROR' );
                 continue;
             }
 
@@ -85,26 +86,26 @@ class ISPAG_Cron_Contact_Matcher {
 
             // 2. Chercher la compagnie par son domaine (Colonne : compagny_domain)
             $company = $wpdb->get_row( $wpdb->prepare( "
-                SELECT viag_id, company_name 
+                SELECT Id, company_name 
                 FROM {$table_companies} 
                 WHERE compagny_domain = %s 
                 LIMIT 1
             ", $domain ) );
 
             if ( $wpdb->last_error ) {
-                $this->log_action( "Erreur SQL (Recherche domaine {$domain}) : " . $wpdb->last_error, 'ERROR' );
+                $this->log_action( "SQL error (Recherche domaine {$domain}) : " . $wpdb->last_error, 'ERROR' );
                 continue;
             }
 
             if ( $company ) {
                 // 3. Création de la meta association
-                $updated = update_user_meta( $user_id, $meta_key_company, $company->viag_id );
+                $updated = update_user_meta( $user_id, $meta_key_company, $company->Id );
                 
                 if ( $updated ) {
                     $count_updated++;
-                    $this->log_action( "SUCCESS : Contact #{$user_id} ({$user_email}) associé à '{$company->company_name}' (VIAG ID: {$company->viag_id})", 'SUCCESS' );
+                    $this->log_action( "SUCCESS : Contact #{$user_id} ({$user_email}) associé à '{$company->company_name}' (ID: {$company->Id})", 'SUCCESS' );
                 } else {
-                    $this->log_action( "Erreur : Échec update_user_meta pour le contact #{$user_id}", 'ERROR' );
+                    $this->log_action( "Error: Échec update_user_meta pour le contact #{$user_id}", 'ERROR' );
                 }
             }
         }

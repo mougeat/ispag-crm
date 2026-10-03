@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 if ( ! class_exists( 'ISPAG_Company_Repository' ) ) :
 
@@ -239,9 +240,9 @@ class ISPAG_Company_Repository {
     public function get_all_companies_with_meta() {
         $sql = "
             SELECT 
-                f.viag_id AS Id, 
+                f.Id, 
                 f.company_name AS Fournisseur, 
-                f.compagnyDomain, 
+                f.compagny_domain AS compagnyDomain, 
                 
                 meta_city.meta_value AS city,
                 meta_adress.meta_value AS adress,
@@ -253,22 +254,22 @@ class ISPAG_Company_Repository {
                 {$this->table_fournisseur} f
             
             LEFT JOIN {$this->table_meta} meta_city 
-                ON (f.viag_id = meta_city.company_id AND meta_city.meta_key = '" . self::META_COMPANY_CITY . "')
+                ON (f.Id = meta_city.company_id AND meta_city.meta_key = '" . self::META_COMPANY_CITY . "')
             
             LEFT JOIN {$this->table_meta} meta_adress 
-                ON (f.viag_id = meta_adress.company_id AND meta_adress.meta_key = '" . self::META_COMPANY_ADRESS . "')
+                ON (f.Id = meta_adress.company_id AND meta_adress.meta_key = '" . self::META_COMPANY_ADRESS . "')
                 
             LEFT JOIN {$this->table_meta} meta_postal_code 
-                ON (f.viag_id = meta_postal_code.company_id AND meta_postal_code.meta_key = '" . self::META_COMPANY_POSTAL_CODE . "')
+                ON (f.Id = meta_postal_code.company_id AND meta_postal_code.meta_key = '" . self::META_COMPANY_POSTAL_CODE . "')
             
             LEFT JOIN {$this->table_meta} meta_region 
-                ON (f.viag_id = meta_region.company_id AND meta_region.meta_key = '" . self::META_COMPANY_REGION . "')
+                ON (f.Id = meta_region.company_id AND meta_region.meta_key = '" . self::META_COMPANY_REGION . "')
             
             LEFT JOIN {$this->table_meta} meta_country 
-                ON (f.viag_id = meta_country.company_id AND meta_country.meta_key = '" . self::META_COMPANY_COUNTRY . "')
+                ON (f.Id = meta_country.company_id AND meta_country.meta_key = '" . self::META_COMPANY_COUNTRY . "')
             
             LEFT JOIN {$this->table_meta} meta_industry 
-                ON (f.viag_id = meta_industry.company_id AND meta_industry.meta_key = '" . self::META_COMPANY_INDUSTRY . "')
+                ON (f.Id = meta_industry.company_id AND meta_industry.meta_key = '" . self::META_COMPANY_INDUSTRY . "')
             
             ORDER BY f.company_name ASC
         ";
@@ -289,7 +290,7 @@ class ISPAG_Company_Repository {
         }
 
         $sql = $this->wpdb->prepare(
-            "SELECT viag_id AS Id, company_name AS Fournisseur, compagnyDomain FROM {$this->table_fournisseur} WHERE viag_id = %d", 
+            "SELECT Id, company_name AS Fournisseur, compagny_domain AS compagnyDomain FROM {$this->table_fournisseur} WHERE Id = %d", 
             $company_id
         );
 
@@ -320,7 +321,7 @@ class ISPAG_Company_Repository {
         }
 
         $id_placeholders = implode( ',', array_fill( 0, count( $safe_ids ), '%d' ) );
-        $query           = "SELECT viag_id AS Id, company_name FROM {$this->table_fournisseur} WHERE viag_id IN ({$id_placeholders})";
+        $query           = "SELECT Id, company_name FROM {$this->table_fournisseur} WHERE Id IN ({$id_placeholders})";
         
         $results = $this->wpdb->get_results( 
             $this->wpdb->prepare( $query, ...$safe_ids ) 

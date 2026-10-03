@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 if (false) {
     //wor9711_achats_doc_types
     __('new', 'ispag-crm');

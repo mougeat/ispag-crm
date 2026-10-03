@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 if (!class_exists('ISPAG_Workflow_Logger')) {
     class ISPAG_Workflow_Logger {
         private static $logger = null;

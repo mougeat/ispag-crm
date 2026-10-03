@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Crm_Discount_Manager
  * Gère les remises et coefficients de vente pour les entreprises dans le CRM ISPAG.
@@ -16,7 +17,6 @@ class ISPAG_Crm_Discount_Manager
     {
         // 1. TOUJOURS enregistrer les hooks AJAX tout au début du constructeur
         add_action('wp_ajax_update_company_discount_or_coef', [$this, 'handle_ajax_update_discount_or_coef']);
-        add_action('wp_ajax_nopriv_update_company_discount_or_coef', [$this, 'handle_ajax_update_discount_or_coef']);
 
         // 2. Initialisation des dépendances
         global $wpdb;

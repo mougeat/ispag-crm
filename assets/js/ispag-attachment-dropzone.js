@@ -49,24 +49,27 @@ jQuery(function ($) {
 
             if (hasNonFileData) {
                 alert(
-                    "Impossible de récupérer ce fichier directement depuis Outlook.\n\n" +
+                    "Unable to retrieve this file directly from Outlook.\n\n" +
                     "Faites d'abord glisser le mail vers votre Bureau (ou utilisez « Enregistrer sous »), " +
-                    "puis déposez le fichier .eml/.msg obtenu ici."
+                    "then drop the resulting .eml/.msg file here."
                 );
             }
             return;
         }
 
         // On prend le premier fichier (extension possible : boucle pour multi-drop)
-        const file = files[0];
+        startArticleUpload($(this), files[0]);
+    });
 
+    // Fichier déposé OU choisi via le sélecteur : même traitement
+    function startArticleUpload($field, file) {
         // Récupération du contexte depuis le bloc article parent
-        const $article = $(this).closest('.ispag-article, [data-article-id]');
+        const $article = $field.closest('.ispag-article, [data-article-id]');
         const articleId = $article.data('article-id');
         const source = $article.data('source') || 'project'; // 'project' ou 'purchase'
 
         if (!articleId) {
-            console.error('[Dropzone] article_id introuvable, drop annulé.');
+            console.error('[Dropzone] article_id introuvable, opération annulée.');
             return;
         }
 
@@ -74,6 +77,21 @@ jQuery(function ($) {
         pendingDropContext = { articleId, source };
 
         openDocTypeModalForDrop(articleId, source);
+    }
+
+    // --- Clic sur la zone d'un article : sélecteur de fichiers, puis même chose qu'un dépôt ---
+    $(document).on('click', '.ispag-article .ispag-dropzone__field', function (e) {
+        if ($(e.target).closest('a, button, input').length) return;
+        const $field = $(this);
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.style.display = 'none';
+        document.body.appendChild(input);
+        input.addEventListener('change', function () {
+            if (input.files && input.files.length) { startArticleUpload($field, input.files[0]); }
+            input.remove();
+        });
+        input.click();
     });
 
     /**
@@ -87,7 +105,7 @@ jQuery(function ($) {
             source: source
         }, function (response) {
             if (!response.success) {
-                alert('Erreur chargement modal type de document.');
+                alert('Error while loading the document type modal.');
                 return;
             }
 
@@ -120,7 +138,7 @@ jQuery(function ($) {
         formData.append('_ajax_nonce', ISPAG_TANK.nonce); // ou ton nonce dédié aux attachments
 
         const $btn = $(this);
-        $btn.prop('disabled', true).text('Envoi...');
+        $btn.prop('disabled', true).text('Sending...');
 
         $.ajax({
             url: ajaxurl,
@@ -154,11 +172,11 @@ jQuery(function ($) {
 
                     $('.ispag-modal-overlay#ispag-upload-modal').removeClass('is-open');
                 } else {
-                    alert('Erreur upload : ' + (response.data || 'inconnue'));
+                    alert('Upload error: ' + (response.data || 'inconnue'));
                 }
             },
             error: function () {
-                alert('Erreur réseau lors de l\'upload.');
+                alert('Network error lors de l\'upload.');
             },
             complete: function () {
                 pendingDropFile = null;

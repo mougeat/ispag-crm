@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Gère toutes les requêtes AJAX liées aux contacts ISPAG (notamment la sauvegarde des champs éditables).
  */
@@ -6,7 +7,7 @@ class ISPAG_Contact_Ajax_Handler {
 
     // Constantes pour les noms des meta-keys
     const META_LEAD_FUNCTION        = 'ispag_lead_function';
-    const META_COMPANY_VIAG_ID           = 'ispag_company_id';
+    const META_COMPANY_ID           = 'ispag_company_id';
     const META_LEAD_STATUS          = 'ispag_lead_status';
     const META_LEAD_LINKEDIN_PAGE   = 'ispag_linkedin_page';
     const META_LIFECYCLE_PHASE      = 'ispag_contact_lifecycle_phase'; 
@@ -52,7 +53,7 @@ class ISPAG_Contact_Ajax_Handler {
         // error_log('new_value ' . $new_value . " ---\n", 3, $log_file);
 
         if ( $contact_id === 0 || empty( $field_name ) ) {
-            wp_send_json_error( array( 'message' => 'Paramètres invalides (ID ou nom de champ manquant).' ) );
+            wp_send_json_error( array( 'message' => 'Invalid parameters (ID ou nom de champ manquant).' ) );
         }
 
         $old_value = '';
@@ -73,7 +74,7 @@ class ISPAG_Contact_Ajax_Handler {
         if ( $old_value === $new_value ) {
             // On s'assure de renvoyer le succès pour que le JS puisse quitter le mode édition.
             wp_send_json_success( array( 
-                'message' => 'Valeur inchangée. Aucune sauvegarde effectuée.',
+                'message' => 'Value unchanged. Nothing saved.',
                 'new_value' => $new_value 
             ) );
         }
@@ -138,11 +139,14 @@ class ISPAG_Contact_Ajax_Handler {
                         $contact_label = $contact_user ? $contact_user->display_name : "ID #$contact_id";
                     }
                     //On récupère l'entreprise associé
-                    $company_viag_id = get_user_meta($contact_id, ISPAG_Crm_Contact_Constants::META_COMPANY_VIAG_ID, true);
+                    $company_id = get_user_meta($contact_id, ISPAG_Crm_Contact_Constants::META_COMPANY_ID, true);
                     $company_name = __('undefined', 'ispag-crm');
                     if( !empty($company_id) && class_exists('ISPAG_Crm_Company_Repository')){
                         $company_rep = new ISPAG_Crm_Company_Repository();
-                        $company_name = $company_rep->get_company_by_viag_id($company_viag_id);
+                        $company_obj  = $company_rep->get_company_by_id($company_id);
+                        if ($company_obj && !empty($company_obj->company_name)) {
+                            $company_name = $company_obj->company_name;
+                        }
                     }
 
                     ISPAG_Notifications_Manager::send(
@@ -170,14 +174,14 @@ class ISPAG_Contact_Ajax_Handler {
                         $success = true;
                         $response_data['display_value'] = esc_html( $new_value );
                     } else {
-                        wp_send_json_error( array( 'message' => 'Erreur WP: ' . implode(', ', $result->get_error_messages()) ) );
+                        wp_send_json_error( array( 'message' => 'WP error: ' . implode(', ', $result->get_error_messages()) ) );
                     }
                 } else {
                     wp_send_json_error( array( 'message' => 'Format d\'email invalide.' ) );
                 }
                 break;
             
-            // --- CHAMPS META AVEC SÉLECTION (META_COMPANY_VIAG_ID, META_OWNER, META_LEAD_STATUS, META_LIFECYCLE_PHASE) ---
+            // --- CHAMPS META AVEC SÉLECTION (META_COMPANY_ID, META_OWNER, META_LEAD_STATUS, META_LIFECYCLE_PHASE) ---
             // La logique pour la sauvegarde des meta-champs (update_user_meta) reste ici.
             // ... (TOUT LE CODE DE VOS CASES META-CHAMPS) ...
             case 'billing_phone':
@@ -205,10 +209,10 @@ class ISPAG_Contact_Ajax_Handler {
                         
                     } else {
                         // Échec de la mise à jour (devrait être rare car déjà géré par l'ancienne/nouvelle valeur)
-                        wp_send_json_error( array( 'message' => 'Échec de la mise à jour de la meta (billing_phone).' ) );
+                        wp_send_json_error( array( 'message' => 'Failed to update the meta (billing_phone).' ) );
                     }
                 } else {
-                    wp_send_json_error( array( 'message' => 'Format de téléphone invalide après nettoyage.' ) );
+                    wp_send_json_error( array( 'message' => 'Invalid phone format after cleaning.' ) );
                 }
                 break;
             case self::META_USER_ROLE:
@@ -259,7 +263,7 @@ class ISPAG_Contact_Ajax_Handler {
                         $response_data['display_value'] = esc_html( $role_display_name );
                         
                     } else {
-                        // Erreur de sauvegarde
+                        // Error de sauvegarde
                         wp_send_json_error( array( 'message' => 'Error updating role : ' . $result->get_error_message() ) );
                     }
                     
@@ -280,7 +284,7 @@ class ISPAG_Contact_Ajax_Handler {
                     $response_data['display_value'] = esc_html( $new_value );
                     
                 } else {
-                    wp_send_json_error( array( 'message' => 'Échec de la mise à jour de la meta Fonction (problème de DB ou valeur inchangée).' ) );
+                    wp_send_json_error( array( 'message' => 'Failed to update the Function meta (DB issue or unchanged value).' ) );
                 }
                 
                 break;
@@ -296,11 +300,11 @@ class ISPAG_Contact_Ajax_Handler {
                     $response_data['display_value'] = esc_html( $new_value );
                     
                 } else {
-                    wp_send_json_error( array( 'message' => 'Échec de la mise à jour de la meta Fonction (problème de DB ou valeur inchangée).' ) );
+                    wp_send_json_error( array( 'message' => 'Failed to update the Function meta (DB issue or unchanged value).' ) );
                 }
                 
                 break;
-            case self::META_COMPANY_VIAG_ID:
+            case self::META_COMPANY_ID:
                 // La valeur doit être un ID de compagnie/fournisseur (ou 0 si géré comme tel)
                 $company_id_to_save = absint( $new_value );
                 
@@ -315,7 +319,7 @@ class ISPAG_Contact_Ajax_Handler {
                 if ( isset( $companies_map[ $company_id_to_save ] ) ) {
                     
                     // 3. Sauvegarde de la meta-donnée
-                    $result = update_user_meta( $contact_id, self::META_COMPANY_VIAG_ID, $company_id_to_save );
+                    $result = update_user_meta( $contact_id, self::META_COMPANY_ID, $company_id_to_save );
                     
                     if ( $result !== false ) {
                         $success = true;
@@ -325,7 +329,7 @@ class ISPAG_Contact_Ajax_Handler {
                         $response_data['display_value'] = esc_html( $company_data->Fournisseur );
                         
                     } else {
-                        wp_send_json_error( array( 'message' => 'Échec de la mise à jour de la meta COMPANY (problème de DB ou valeur inchangée).' ) );
+                        wp_send_json_error( array( 'message' => 'Failed to update the COMPANY meta (DB issue or unchanged value).' ) );
                     }
                     
                 } else {
@@ -335,7 +339,7 @@ class ISPAG_Contact_Ajax_Handler {
                 break;
             case self::META_OWNER:
                 // error_log("META_OWNER  ---\n", 3, $log_file);
-                // La valeur doit être un ID d'utilisateur (ou 0 pour "Aucun propriétaire")
+                // La valeur doit être un ID d'utilisateur (ou 0 pour "No owner")
                 $owner_id_to_save = absint( $new_value );
                 
                 // 1. Récupérer la map des propriétaires (y compris ceux de 'get_all_owners' + ID 0)
@@ -351,8 +355,8 @@ class ISPAG_Contact_Ajax_Handler {
                     // La clé devient l'ID de l'utilisateur (1, 512, 1477, etc.)
                     $validation_map[$owner_object->ID] = $owner_object;
                 }
-                // 3. Ajouter l'option "Aucun propriétaire" (ID 0) manuellement pour la validation.
-                $validation_map[0] = (object)['display_name' => '— Aucun propriétaire —'];
+                // 3. Ajouter l'option "No owner" (ID 0) manuellement pour la validation.
+                $validation_map[0] = (object)['display_name' => '— No owner —'];
 
                 // error_log("Owners Validation Map (ID => Object) " . print_r($validation_map, true) . " ---", 3, $log_file);
     
@@ -372,12 +376,12 @@ class ISPAG_Contact_Ajax_Handler {
                         $response_data['display_value'] = esc_html( $owner_data->display_name );
                         
                     } else {
-                        wp_send_json_error( array( 'message' => 'Échec de la mise à jour de la meta (problème de DB ou valeur inchangée).' ) );
+                        wp_send_json_error( array( 'message' => 'Failed to update the meta (DB issue or unchanged value).' ) );
                     }
                     
                 } else {
                     // ID non trouvé dans la liste des propriétaires valides.
-                    wp_send_json_error( array( 'message' => 'ID de propriétaire inconnu ou invalide.' ) );
+                    wp_send_json_error( array( 'message' => 'Unknown or invalid owner ID.' ) );
                 }
                 
                 break;
@@ -471,7 +475,7 @@ class ISPAG_Contact_Ajax_Handler {
                     
                     // Si la valeur est vide, on renvoie le placeholder pour le JS
                     if ( empty( $new_value ) ) {
-                        $placeholder = ( $field_name === 'first_name' ) ? 'Prénom' : 'Nom';
+                        $placeholder = ( $field_name === 'first_name' ) ? 'First name' : 'Last name';
                         $response_data['display_value'] = '<span class="ispag-placeholder">' . $placeholder . '</span>';
                     } else {
                         $response_data['display_value'] = esc_html( $new_value );
@@ -482,7 +486,7 @@ class ISPAG_Contact_Ajax_Handler {
                     $response_data['full_display_name'] = $updated_user->display_name;
                     
                 } else {
-                    wp_send_json_error( array( 'message' => 'Erreur lors de la mise à jour : ' . $result->get_error_message() ) );
+                    wp_send_json_error( array( 'message' => 'Error during update: ' . $result->get_error_message() ) );
                 }
                 break;
             default:
@@ -510,7 +514,7 @@ class ISPAG_Contact_Ajax_Handler {
                 'new_value' => $new_value
             ) ) );
         } else {
-            wp_send_json_error( array( 'message' => 'Échec de la mise à jour du champ. La valeur est peut-être inchangée ou invalide.' ) );
+            wp_send_json_error( array( 'message' => 'Failed to update the field. The value may be unchanged or invalid.' ) );
         }
         // error_log("--- FIN EXECUTION  ajax_save_contact_field : " . date('Y-m-d H:i:s') . " ---\n", 3, $log_file);
         
@@ -631,9 +635,9 @@ class ISPAG_Contact_Ajax_Handler {
      */
     private function get_all_companies() {
         global $wpdb;
-        $table_name_fournisseur = $wpdb->prefix . 'achats_fournisseurs';
+        $table_name_fournisseur = $wpdb->prefix . 'ispag_companies';
         // Récupère toutes les entreprises, clé Id, et ordonne par nom (Fournisseur)
-        return $wpdb->get_results( "SELECT Id, Fournisseur, compagnyDomain, NumTel FROM {$table_name_fournisseur} ORDER BY Fournisseur ASC", OBJECT_K ); 
+        return $wpdb->get_results( "SELECT Id, company_name AS Fournisseur, compagny_domain AS compagnyDomain, phone AS NumTel FROM {$table_name_fournisseur} ORDER BY company_name ASC", OBJECT_K ); 
     }
 
     /**
@@ -668,7 +672,7 @@ class ISPAG_Contact_Ajax_Handler {
         // 1. Sécurité
         if ( ! check_ajax_referer('ispag_new_contact_nonce', 'nonce', false) ) {
             // error_log('ISPAG CRM: Échec du nonce');
-            wp_send_json_error(['message' => 'Sécurité : Nonce invalide']);
+            wp_send_json_error(['message' => 'Security: Invalid nonce']);
         }
         
         // 2. Récupération des données (Attention aux noms dans $_POST)
@@ -683,7 +687,7 @@ class ISPAG_Contact_Ajax_Handler {
         // error_log("ISPAG CRM: Tentative pour $email ($first_name $last_name)");
 
         if (empty($email)) {
-            wp_send_json_error(['message' => 'L\'email est obligatoire']);
+            wp_send_json_error(['message' => 'The email is required']);
         }
 
         // 3. Logique d'entreprise
@@ -723,12 +727,12 @@ class ISPAG_Contact_Ajax_Handler {
             $redirect_url = home_url("/contact/{$contact_id}/");
 
             wp_send_json_success([
-                'message'      => 'Contact créé avec succès',
+                'message'      => 'Contact created successfully',
                 'redirect_url' => $redirect_url
             ]);
         } else {
-            // error_log('ISPAG CRM: Erreur SQL lors de l\'insert');
-            wp_send_json_error(['message' => 'Erreur lors de la création en base de données']);
+            // error_log('ISPAG CRM: SQL error lors de l\'insert');
+            wp_send_json_error(['message' => 'Error while creating in the database']);
         }
     }
     /**
@@ -748,31 +752,21 @@ class ISPAG_Contact_Ajax_Handler {
     }
 
     /**
-     * Cherche une entreprise par domaine ou la crée avec un VIAG_ID provisoire
+     * Cherche une entreprise par domaine ou la crée ; retourne son Id (ispag_companies.Id), 0 en cas d'échec.
      */
     public function ispag_find_or_create_company_by_domain($domain) {
         global $wpdb;
         $table_companies = ISPAG_Crm_Company_Constants::TABLE_NAME;
 
-        // 1. On cherche si elle existe déjà (on récupère le viag_id)
-        $existing_viag_id = $wpdb->get_var($wpdb->prepare(
-            "SELECT viag_id FROM $table_companies WHERE compagny_domain = %s LIMIT 1", 
+        // 1. On cherche si elle existe déjà (on récupère son Id)
+        $existing_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT Id FROM $table_companies WHERE compagny_domain = %s LIMIT 1", 
             $domain
         ));
 
-        if ($existing_viag_id) {
-            // error_log("ISPAG CRM: Entreprise déjà existante. VIAG_ID: $existing_viag_id");
-            return $existing_viag_id;
+        if ($existing_id) {
+            return (int) $existing_id;
         }
-
-        // 2. Génération d'un VIAG_ID provisoire (Plage 90000)
-        // On cherche le plus haut ID provisoire actuel entre 90000 et 99999
-        $last_provisional = $wpdb->get_var(
-            "SELECT MAX(viag_id) FROM $table_companies WHERE viag_id >= 90000 AND viag_id < 100000"
-        );
-
-        // Si c'est la première, on commence à 90001, sinon on incrémente
-        $new_viag_id = $last_provisional ? (int)$last_provisional + 1 : 90001;
 
         // 3. Création de la "coquille"
         $company_name = ucfirst(explode('.', $domain)[0]);
@@ -780,7 +774,8 @@ class ISPAG_Contact_Ajax_Handler {
         $insert_data = [
             'company_name'    => $company_name,
             'compagny_domain' => $domain,
-            'viag_id'         => $new_viag_id,
+            'isSupplier'      => 0,
+            'isIngenieur'     => 0,
             'is_active'       => 1,
             'created_at'      => current_time('mysql')
         ];
@@ -788,14 +783,14 @@ class ISPAG_Contact_Ajax_Handler {
         $result = $wpdb->insert($table_companies, $insert_data);
 
         if ($result === false) {
-            // error_log("ISPAG CRM: Erreur SQL lors de la création de l'entreprise : " . $wpdb->last_error);
+            error_log("ISPAG CRM: création de l'entreprise pour le domaine {$domain} impossible : " . $wpdb->last_error);
             return 0;
         }
 
-        // error_log("ISPAG CRM: Nouvelle entreprise créée : $company_name avec VIAG_ID provisoire : $new_viag_id");
+        // error_log("ISPAG CRM: Nouvelle entreprise créée : $company_name ");
 
-        // On retourne le viag_id (car c'est lui qui sert de lien dans ton CRM)
-        return $new_viag_id;
+        // On retourne l'Id (c'est lui qui sert de lien dans le CRM)
+        return (int) $wpdb->insert_id;
     }
 
     public function ispag_check_email_exists() {
@@ -839,9 +834,9 @@ class ISPAG_Contact_Ajax_Handler {
         update_user_meta($user_id, 'wp_user_avatar', $attachment_id);
 
         if ($updated !== false || get_user_meta($user_id, $meta_avatar, true) == $attachment_id) {
-            wp_send_json_success(['message' => 'Avatar mis à jour avec succès.']);
+            wp_send_json_success(['message' => 'Avatar updated successfully.']);
         } else {
-            wp_send_json_error(['message' => 'Erreur lors de la mise à jour en base de données.']);
+            wp_send_json_error(['message' => 'Error while updating the database.']);
         }
     }
 }

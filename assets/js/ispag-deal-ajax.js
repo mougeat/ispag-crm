@@ -13,13 +13,13 @@ window.sendUpdateStage = function(dealId, newStageKey, reason = '') {
         },
         success: function(r) { 
             if(r.success) {
-                console.log("[DEAL AJAX] ✅ Mise à jour réussie");
+                console.log("[DEAL AJAX] ✅ Update successful");
             } else {
-                alert("Erreur: " + (r.data ? r.data.message : 'Inconnue')); 
+                alert("Error: " + (r.data ? r.data.message : 'Inconnue')); 
             }
         },
         error: function() {
-            console.error("❌ Erreur réseau lors de l'envoi");
+            console.error("❌ Network error lors de l'envoi");
         }
     });
 };
@@ -44,11 +44,11 @@ window.executeBulkAjax = function(ids, stageKey, contactDate, reason) { // Ajout
             if(r.success) {
                 location.reload(); 
             } else {
-                alert("Erreur lors de la mise à jour groupée");
+                alert("Error during bulk update");
             }
         },
         error: function() {
-            console.error("❌ Erreur réseau lors de l'envoi Bulk");
+            console.error("❌ Network error lors de l'envoi Bulk");
         }
     });
 };

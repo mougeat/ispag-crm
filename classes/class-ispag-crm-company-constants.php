@@ -1,5 +1,5 @@
-
 <?php 
+defined('ABSPATH') || exit;
 
 // Fichier : includes/crm/class-ispag-crm-company-constants.php
 
@@ -14,8 +14,7 @@ class ISPAG_Crm_Company_Constants {
     const TABLE_COMPANY_LIFECYCLE   = 'wor9711_ispag_companies_lifecycle';
 
     // Méta-clés de l'entreprise (Post Meta)
-    // const META_COMPANY_ID          = 'ispag_company_id';
-    const META_COMPANY_VIAG_ID     = 'ispag_company_id';
+    const META_COMPANY_ID     = 'ispag_company_id';
     const META_COMPANY_CITY        = 'ispag_company_city';
     const META_COMPANY_ADDRESS     = 'ispag_company_adress';
     const META_COMPANY_POSTAL_CODE = 'ispag_company_postal_code';

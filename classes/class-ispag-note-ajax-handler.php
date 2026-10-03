@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Gère les requêtes AJAX pour les notes et tâches (Sauvegarde, Suppression, etc.).
  */
@@ -42,7 +43,7 @@ class ISPAG_Note_Ajax_Handler {
         
         $logger->log_user_action( 'note_ajax', 'save_activity_attempt', $data, $user_id );
 
-        // 2. Sauvegarder via le Repository
+        // 2. Save via le Repository
         $new_id = $this->repository->save_activity( $data, $activity_id );
 
         if ( $new_id ) {
@@ -266,7 +267,7 @@ class ISPAG_Note_Ajax_Handler {
             $data_to_save['notified_at'] = null; 
             $data_to_save['updated_at'] = current_time( 'mysql' );; 
             $result = $wpdb->update( $table_name, $data_to_save, array( 'id' => $activity_id ) );
-            $message = __( 'Activité mise à jour.', 'ispag-crm' );
+            $message = __( 'Activity updated.', 'ispag-crm' );
 
             if ( $result !== false ) {
                 $logger->log_db_change( 'note_ajax', $table_name, 'UPDATE', ['activity_id' => $activity_id, 'data' => $data_to_save], $current_user_id );
@@ -284,7 +285,7 @@ class ISPAG_Note_Ajax_Handler {
 
         if ( $result === false ) {
             $logger->log_error( 'note_ajax', 'Database error during note/activity save.', ['db_error' => $wpdb->last_error, 'data' => $data_to_save], $current_user_id );
-            wp_send_json_error( array( 'message' => 'Erreur base de données.' ) );
+            wp_send_json_error( array( 'message' => 'Database error.' ) );
         }
 
         $logger->log_user_action( 'note_ajax', "save_{$action_type}", ['activity_id' => $activity_id], $current_user_id );
@@ -297,7 +298,14 @@ class ISPAG_Note_Ajax_Handler {
         if ( class_exists( 'ISPAG_Note_Renderer' ) ) {
             $note_renderer = new ISPAG_Note_Renderer();
             $new_item_html = $note_renderer->render_activity_card( $log_entry );
-            $table_html    = $note_renderer->render_task_table_row( $log_entry );
+
+            // Ligne du tableau des tâches : seulement pour une tâche ouverte de l'utilisateur courant
+            if ( ! empty( $log_entry->is_task ) && class_exists( 'ISPAG_Note_Repository' ) && function_exists( 'ispag_get_template' ) ) {
+                $task_for_row = ( new ISPAG_Note_Repository() )->get_active_task( $activity_id );
+                if ( $task_for_row ) {
+                    $table_html = ispag_get_template( 'task-row', [ 'task' => $task_for_row ] );
+                }
+            }
         }
 
         // 7. Mise à jour des métas de dernier contact

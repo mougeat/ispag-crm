@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Workflow_Meta_Box
  * Gère les meta boxes pour les workflows dans l'admin WordPress.

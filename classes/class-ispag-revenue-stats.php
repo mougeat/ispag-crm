@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 class ISPAG_Revenue_Stats {
     private $wpdb;
@@ -70,7 +71,7 @@ class ISPAG_Revenue_Stats {
         $stats = $this->get_revenue_data($id, $type);
         
         if (!$stats || $stats->total_deals == 0) {
-            return '<div class="ispag-no-data">Aucune perspective financière.</div>';
+            return '<div class="ispag-no-data">No financial outlook.</div>';
         }
 
         ob_start(); ?>

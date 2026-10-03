@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 /**
  * Classe ISPAG_Template_Modal
@@ -29,7 +30,7 @@ class ISPAG_Template_Modal {
                         <div class="ispag-editor-main">
                             <div class="ispag-form-group">
                                 <label><?php _e('Template Name', 'ispag-crm'); ?></label>
-                                <input type="text" name="name" id="tpl-name" required placeholder="ex: Relance facture impayée">
+                                <input type="text" name="name" id="tpl-name" required placeholder="e.g. Unpaid invoice reminder">
                             </div>
 
                             <div class="ispag-form-group">

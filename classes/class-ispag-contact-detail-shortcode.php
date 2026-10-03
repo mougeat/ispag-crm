@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 class ISPAG_Contact_Detail_Shortcode {
 
@@ -8,7 +9,7 @@ class ISPAG_Contact_Detail_Shortcode {
     const META_LEAD_STATUS          = 'ispag_lead_status';
     const META_LEAD_LINKEDIN_PAGE   = 'ispag_linkedin_page';
     const META_LIFECYCLE_PHASE      = 'ispag_contact_lifecycle_phase';
-    const META_COMPANY_VIAG_ID           = 'ispag_company_id';
+    const META_COMPANY_ID           = 'ispag_company_id';
     const META_OWNER                = 'ispag_owner';
     const META_OPPORTUNITY          = 'ispag_opportunity';
     const META_BUYING_GOAL          = 'ispag_buying_goal';
@@ -67,7 +68,7 @@ class ISPAG_Contact_Detail_Shortcode {
     public function ajax_remove_company_association() {
         // Sécurité: Vérification du Nonce et des permissions
         // if ( ! check_ajax_referer( 'ispag_security_nonce', 'security', false ) || ! current_user_can( 'edit_users' ) ) {
-        //     wp_send_json_error( array( 'message' => 'Erreur de sécurité ou permissions insuffisantes.' ) );
+        //     wp_send_json_error( array( 'message' => 'Error de sécurité ou permissions insuffisantes.' ) );
         // }
 
         $contact_id = absint( filter_input( INPUT_POST, 'contact_id', FILTER_VALIDATE_INT ) );
@@ -79,19 +80,19 @@ class ISPAG_Contact_Detail_Shortcode {
 
         // Tente de supprimer la méta-donnée spécifique
         // NOTE: Pour les meta multiples, delete_user_meta supprime seulement l'occurrence ayant la valeur exacte.
-        $deleted = delete_user_meta( $contact_id, self::META_COMPANY_VIAG_ID, $company_id );
+        $deleted = delete_user_meta( $contact_id, self::META_COMPANY_ID, $company_id );
 
         if ( $deleted ) {
             wp_send_json_success( array( 
                 'message' => sprintf( 
-                    'Association de l\'entreprise ID %d retirée du contact ID %d.', 
+                    'Association of company ID %d removed from contact ID %d.', 
                     $company_id, 
                     $contact_id 
                 ) 
             ) );
         } else {
             // Cela peut signifier que la méta n'existait pas ou qu'une erreur de base de données s'est produite
-            wp_send_json_error( array( 'message' => 'Échec de la suppression de l\'association. L\'entrée n\'existait peut-être pas.' ) );
+            wp_send_json_error( array( 'message' => 'Failed to remove the association. The entry may not have existed.' ) );
         }
 
         wp_die();
@@ -361,7 +362,7 @@ class ISPAG_Contact_Detail_Shortcode {
             $note_manager = new ISPAG_Contact_Note_Manager(); // Instanciation pour l'exemple
             return $note_manager->render_activity_tab( $contact_id, 'contact' );
         }
-        return '<p>Erreur: ISPAG_Contact_Note_Manager n\'est pas accessible pour afficher les activités.</p>';
+        return '<p>Error: ISPAG_Contact_Note_Manager is not accessible to display activities.</p>';
     }
     
 
@@ -377,7 +378,7 @@ class ISPAG_Contact_Detail_Shortcode {
         }
 
         // Récupérer la liste des entreprises déjà associées pour l'affichage dans la modale
-        $company_ids = get_user_meta( $contact_id, self::META_COMPANY_VIAG_ID, false );
+        $company_ids = get_user_meta( $contact_id, self::META_COMPANY_ID, false );
         $company_ids = array_filter( array_map( 'absint', (array) $company_ids ) );
         $associated_companies = [];
         
@@ -443,7 +444,7 @@ class ISPAG_Contact_Detail_Shortcode {
                                         echo '<div class="company-tag" data-id="' . absint( $company->ID ) . '">' . esc_html( $company->display_name ) . ' <span class="remove-company">×</span></div>';
                                     }
                                 } else {
-                                    echo '<p>Aucune entreprise actuellement lié.</p>';
+                                    echo '<p>No company currently linked.</p>';
                                 }
                                 ?>
                             </div>
@@ -459,7 +460,7 @@ class ISPAG_Contact_Detail_Shortcode {
                     </div>
 
                     <div id="tab-create-new" class="ispag-tab-modal-pane">
-                        <p><?php _e( 'Formulaire de création d\'entreprise...', 'ispag-crm' ); ?></p>
+                        <p><?php _e( 'Company creation form...', 'ispag-crm' ); ?></p>
                     </div>
                 </div>
 
@@ -496,12 +497,12 @@ class ISPAG_Contact_Detail_Shortcode {
         $meta_key_city = self::META_COMPANY_CITY; // Utilisation de la constante fournie
 
         // 1. Récupérer les IDs des entreprises déjà associées (à exclure)
-        $company_ids_to_exclude = get_user_meta( $contact_id, self::META_COMPANY_VIAG_ID, false );
+        $company_ids_to_exclude = get_user_meta( $contact_id, self::META_COMPANY_ID, false );
         $company_ids_to_exclude = array_filter( array_map( 'absint', (array) $company_ids_to_exclude ) );
         
         // 2. Préparer les Jointures
         // Jointure pour récupérer la ville de l'entreprise (alias 'meta_ville')
-        $join_sql = " LEFT JOIN {$table_name_postmeta} AS meta_ville ON T1.viag_id = meta_ville.post_id AND meta_ville.meta_key = '{$meta_key_city}' ";
+        $join_sql = " LEFT JOIN {$table_name_postmeta} AS meta_ville ON T1.Id = meta_ville.post_id AND meta_ville.meta_key = '{$meta_key_city}' ";
 
 
         // 3. Préparer la clause WHERE
@@ -531,7 +532,7 @@ class ISPAG_Contact_Detail_Shortcode {
         // 4. Construction et exécution de la requête SQL
         $sql_base = "
             SELECT 
-                T1.viag_id AS Id, T1.company_name AS Fournisseur, T1.compagnyDomain, T1.NumTel, 
+                T1.Id AS Id, T1.company_name AS Fournisseur, T1.compagnyDomain, T1.NumTel, 
                 meta_ville.meta_value AS Ville 
             FROM {$table_name_fournisseur} AS T1
             {$join_sql}
@@ -580,8 +581,8 @@ class ISPAG_Contact_Detail_Shortcode {
 
         $updated_count = 0;
         foreach ( $company_ids as $company_id ) {
-            // La clé utilisée est la constante META_COMPANY_VIAG_ID de votre classe
-            add_user_meta( $contact_id, self::META_COMPANY_VIAG_ID, $company_id, false ); 
+            // La clé utilisée est la constante META_COMPANY_ID de votre classe
+            add_user_meta( $contact_id, self::META_COMPANY_ID, $company_id, false ); 
             $updated_count++;
         }
 
@@ -720,7 +721,7 @@ class ISPAG_Contact_Detail_Shortcode {
 
         // 3. Sociétés / Propriétaire / function
         $contact_function = $get_meta(self::META_LEAD_FUNCTION) ?: 'N/A';
-        $company_id = absint( $get_meta(self::META_COMPANY_VIAG_ID) );
+        $company_id = absint( $get_meta(self::META_COMPANY_ID) );
         $company_name = isset($companies_lookup[$company_id]) ? esc_html($companies_lookup[$company_id]->Fournisseur) : 'Aucune';
         $company_domain = isset($companies_lookup[$company_id]) ? esc_html($companies_lookup[$company_id]->compagnyDomain) : '-';
         $company_phone = isset($companies_lookup[$company_id]) ? esc_html($companies_lookup[$company_id]->NumTel) : '-';
@@ -731,7 +732,7 @@ class ISPAG_Contact_Detail_Shortcode {
         $company_country = get_post_meta( $company_id, self::META_COMPANY_COUNTRY, true );
         $company_industry = get_post_meta( $company_id, self::META_COMPANY_INDUSTRY, true );
 
-        $company_ids = get_user_meta( $contact_id, self::META_COMPANY_VIAG_ID, false );
+        $company_ids = get_user_meta( $contact_id, self::META_COMPANY_ID, false );
         $company_ids = array_filter( array_map( 'absint', (array) $company_ids ) );
         $associated_companies_list = [];
         if ( ! empty( $company_ids ) ) {
@@ -757,14 +758,14 @@ class ISPAG_Contact_Detail_Shortcode {
             // La clé devient l'ID de l'utilisateur (1, 512, 1477, etc.)
             $owners_lookup[$owner_object->ID] = $owner_object;
         }
-        // 3. Ajouter l'option "Aucun propriétaire" (ID 0) manuellement pour la validation.
-        $validation_map[0] = (object)['display_name' => '— Aucun propriétaire —'];
-        $owner_name = isset($owners_lookup[$owner_id]) ? esc_html($owners_lookup[$owner_id]->display_name) : 'Aucun propriétaire';
+        // 3. Ajouter l'option "No owner" (ID 0) manuellement pour la validation.
+        $validation_map[0] = (object)['display_name' => '— No owner —'];
+        $owner_name = isset($owners_lookup[$owner_id]) ? esc_html($owners_lookup[$owner_id]->display_name) : 'No owner';
         
         // Attribut data-options pour le sélecteur Owner
         $owner_options_map = [];
         // --- AJOUTER L'OPTION 0 EN PREMIER POUR GARANTIR LA DÉSÉLECTION ---
-        $owner_options_map[0] = (object)['label' => '— Aucun —'];
+        $owner_options_map[0] = (object)['label' => '— None —'];
         if (isset($owners_lookup[0])) {
             $owner_options_map[$owners_lookup[0]->ID] = (object)['label' => $owners_lookup[0]->display_name];
         }
@@ -864,7 +865,7 @@ class ISPAG_Contact_Detail_Shortcode {
         // 4. Récupérer le rôle principal actuel de l'utilisateur (Logique inchangée)
         $user_info = get_userdata($contact_id);
         $current_role_key = 'none';
-        $user_role_display = __('Non défini', 'ispag-crm');
+        $user_role_display = __('Not defined', 'ispag-crm');
 
         if ($user_info && !empty($user_info->roles)) {
             $current_role_key = array_shift($user_info->roles);
@@ -883,7 +884,7 @@ class ISPAG_Contact_Detail_Shortcode {
         }
 
         // 3. Déterminer le texte à afficher
-        $status_text = ( $is_ignored == '1' ) ? 'Oui (Ignoré)' : 'Non (Suivi Actif)';
+        $status_text = ( $is_ignored == '1' ) ? 'Yes (Ignored)' : 'No (Actively tracked)';
         
         // --- Début de la sortie HTML ---
         ob_start();

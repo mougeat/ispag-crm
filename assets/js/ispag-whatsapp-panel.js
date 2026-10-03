@@ -15,6 +15,9 @@
 		var $input = $panel.find('#ispag-whatsapp-input');
 		var $sendBtn = $panel.find('#ispag-whatsapp-send-btn');
 		var $status = $panel.find('#ispag-whatsapp-status');
+		var $line = $panel.find('#ispag-whatsapp-line');
+		var cfg = window.ispag_whatsapp || { ajax_url: window.ajaxurl, i18n: {} };
+		var t = cfg.i18n || {};
 
 		function scrollToBottom() {
 			$messages.scrollTop($messages[0].scrollHeight);
@@ -23,17 +26,17 @@
 		function renderMessages(messages) {
 			$messages.empty();
 			if (!messages || messages.length === 0) {
-				$messages.append('<p class="ispag-whatsapp-empty">No messages for the moment.</p>');
+				$messages.append($('<p class="ispag-whatsapp-empty"></p>').text(t.empty || 'No messages for the moment.'));
 				return;
 			}
 			messages.forEach(function (msg) {
 				var cls = msg.direction === 'out' ? 'is-outgoing' : 'is-incoming';
-				var time = msg.created_at ? msg.created_at.substring(0, 16).replace('T', ' ') : '';
+				var time = msg.time_label || '';
 				var $bubble = $('<div class="ispag-whatsapp-bubble ' + cls + '">' +
 					'<div class="ispag-whatsapp-bubble-body"></div>' +
 					'<div class="ispag-whatsapp-bubble-time"></div>' +
 					'</div>');
-				$bubble.find('.ispag-whatsapp-bubble-body').text(msg.body || '');
+				$bubble.find('.ispag-whatsapp-bubble-body').text(msg.body || (msg.has_media === '1' || msg.has_media === 1 ? '\uD83D\uDCCE ' + (msg.media_type || '') : ''));
 				$bubble.find('.ispag-whatsapp-bubble-time').text(time);
 				$messages.append($bubble);
 			});
@@ -41,7 +44,7 @@
 		}
 
 		function refreshConversation() {
-			$.post(ajaxurl, {
+			$.post(cfg.ajax_url, {
 				action: 'ispag_whatsapp_get_conversation',
 				nonce: nonce,
 				contact_id: contactId,
@@ -60,13 +63,14 @@
 			}
 
 			$sendBtn.prop('disabled', true);
-			$status.text('Envoi en cours…');
+			$status.text(t.sending || 'Sending…');
 
-			$.post(ajaxurl, {
+			$.post(cfg.ajax_url, {
 				action: 'ispag_whatsapp_send',
 				nonce: nonce,
 				contact_id: contactId,
 				phone: phone,
+				line: $line.length ? $line.val() : '',
 				message: text
 			}).done(function (response) {
 				if (response.success) {
@@ -74,10 +78,10 @@
 					$status.text('');
 					refreshConversation();
 				} else {
-					$status.text('Erreur : ' + (response.data && response.data.message ? response.data.message : 'échec de l\'envoi'));
+					$status.text((t.error || 'Error') + ': ' + (response.data && response.data.message ? response.data.message : (t.failed || 'Sending failed')));
 				}
 			}).fail(function () {
-				$status.text('Erreur réseau lors de l\'envoi.');
+				$status.text(t.network || 'Network error while sending.');
 			}).always(function () {
 				$sendBtn.prop('disabled', false);
 			});

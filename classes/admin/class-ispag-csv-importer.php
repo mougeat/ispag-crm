@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 if (!class_exists('ISPAG_CSV_Importer')) :
 
 /**
@@ -24,12 +25,12 @@ class ISPAG_CSV_Importer
         'project_name' => 'Nom du Projet (Requis)',
         'current_stage_key' => 'Clé de l\'Étape Kanban (Automatique)',
         'offer_num' => 'Numéro d\'Offre',
-        'deal_group_ref' => 'Référence Groupe (Auto-calculé)',
+        'deal_group_ref' => 'Group reference (auto-calculated)',
         'project_num' => 'Numéro de Projet',
         'identifiant_viag' => 'ID Viag (Clé unique)',
         'date_creation' => 'Date de Création',
         'closing_date' => 'Date de Clôture prévue',
-        'customer_order_id' => 'ID Commande Client',
+        'customer_order_id' => 'Customer order ID',
         'associated_company_id' => 'ID Entreprise Associée',
         'associated_contact_ids' => 'IDs Contacts Associés',
         'project_status' => 'Statut du Projet',
@@ -40,13 +41,13 @@ class ISPAG_CSV_Importer
         'reseller_offer' => 'Offre Revendeur (0/1)',
         'sales_coef' => 'Coeff Vente',
         'total_excl_vat' => 'Total HT',
-        'created_by' => 'Créé par (ID)',
+        'created_by' => 'Created by (ID)',
         'abonne' => 'Abonné',
         'deal_owner' => 'Propriétaire du Deal (ID)',
         'csv_owner_full_name' => '[Recherche] Nom complet Propriétaire',
         'csv_contact_lastname' => '[Recherche] Nom Contact',
         'csv_contact_firstname' => '[Recherche] Prénom Contact',
-        'is_copie' => 'Est une copie',
+        'is_copie' => 'Is a copy',
     );
 
     /**
@@ -67,7 +68,7 @@ class ISPAG_CSV_Importer
         'csv_owner_full_name' => 'Chargé de dossier',
         'csv_contact_lastname' => 'Offerte Kontakt Nachname',
         'csv_contact_firstname' => 'Offerte Kontakt Vorname',
-        'is_copie' => 'Ignorer les statistiques',
+        'is_copie' => 'Ignore statistics',
     );
 
     /**
@@ -114,7 +115,7 @@ class ISPAG_CSV_Importer
 
         add_submenu_page(
             null,
-            'Mappage des Colonnes',
+            'Column mapping',
             'Mappage',
             'manage_options',
             $this->mapping_slug,
@@ -139,7 +140,7 @@ class ISPAG_CSV_Importer
                         <td><input type="file" name="csv_file" accept=".csv" required></td>
                     </tr>
                     <tr>
-                        <th scope="row">Délimiteur</th>
+                        <th scope="row">Delimiter</th>
                         <td>
                             <select name="delimiter">
                                 <option value=";">Point-virgule (;)</option>
@@ -149,7 +150,7 @@ class ISPAG_CSV_Importer
                         </td>
                     </tr>
                 </table>
-                <?php submit_button('Téléverser et Configurer le Mappage'); ?>
+                <?php submit_button('Upload and configure mapping'); ?>
             </form>
         </div>
         <?php
@@ -161,11 +162,11 @@ class ISPAG_CSV_Importer
     public function handle_project_csv_upload()
     {
         if (!isset($_POST['ispag_csv_nonce']) || !wp_verify_nonce($_POST['ispag_csv_nonce'], 'ispag_csv_upload')) {
-            wp_die('Sécurité échouée');
+            wp_die('Security check failed');
         }
 
         if (empty($_FILES['csv_file']['tmp_name'])) {
-            wp_die('Veuillez sélectionner un fichier.');
+            wp_die('Please select a file.');
         }
 
         $upload = wp_handle_upload($_FILES['csv_file'], array('test_form' => false));
@@ -218,7 +219,7 @@ class ISPAG_CSV_Importer
 
         ?>
         <div class="wrap">
-            <h1>Étape 2 : Mappage des colonnes</h1>
+            <h1>Step 2: Column mapping</h1>
             <form method="post" action="<?php echo admin_url('admin-post.php'); ?>">
                 <input type="hidden" name="action" value="<?php echo esc_attr($this->mapping_action); ?>">
                 <input type="hidden" name="file_path" value="<?php echo esc_attr($file_path); ?>">
@@ -227,7 +228,7 @@ class ISPAG_CSV_Importer
                 <table class="widefat striped">
                     <thead>
                         <tr>
-                            <th>Champ Base de Données</th>
+                            <th>Database field</th>
                             <th>Colonne CSV</th>
                         </tr>
                     </thead>
@@ -337,7 +338,7 @@ class ISPAG_CSV_Importer
 
         $task_data = get_transient('ispag_csv_import_' . $task_id);
         if ($task_data === false) {
-            wp_send_json_error('Tâche introuvable ou expirée.');
+            wp_send_json_error('Task not found or expired.');
         }
 
         wp_send_json_success([
@@ -360,7 +361,7 @@ class ISPAG_CSV_Importer
     private function display_import_status($task_id) {
         $task_data = get_transient('ispag_csv_import_' . $task_id);
         if (!$task_data) {
-            echo '<div class="error"><p>Tâche introuvable ou expirée.</p></div>';
+            echo '<div class="error"><p>Task not found or expired.</p></div>';
             return;
         }
 
@@ -376,10 +377,10 @@ class ISPAG_CSV_Importer
         <div class="wrap">
             <h1>Statut de l'Import CSV</h1>
             <div class="card" style="background: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                <h2>Tâche : <?php echo esc_html($task_id); ?></h2>
+                <h2>Task: <?php echo esc_html($task_id); ?></h2>
                 <p><strong>Statut :</strong> <?php echo esc_html(ucfirst($status)); ?></p>
                 <p><strong>Fichier :</strong> <?php echo esc_html(basename($task_data['file_path'])); ?></p>
-                <p><strong>Début :</strong> <?php echo esc_html($task_data['start_time']); ?></p>
+                <p><strong>Start:</strong> <?php echo esc_html($task_data['start_time']); ?></p>
                 <?php if (isset($task_data['end_time'])) : ?>
                     <p><strong>Fin :</strong> <?php echo esc_html($task_data['end_time']); ?></p>
                 <?php endif; ?>
@@ -397,7 +398,7 @@ class ISPAG_CSV_Importer
                             </div>
                         </div>
                         <p style="margin: 0;">
-                            Progression : <?php echo esc_html($progress['processed_rows']); ?> / <?php echo esc_html($progress['total_rows']); ?> lignes
+                            Progress: <?php echo esc_html($progress['processed_rows']); ?> / <?php echo esc_html($progress['total_rows']); ?> lignes
                             (<?php echo esc_html(min(100, ($progress['processed_rows'] / max(1, $progress['total_rows'])) * 100)); ?>%)
                         </p>
                     </div>
@@ -405,12 +406,12 @@ class ISPAG_CSV_Importer
 
                 <div style="margin-top: 20px;">
                     <p><strong>Insertions :</strong> <?php echo esc_html($progress['insert_count']); ?></p>
-                    <p><strong>Mises à jour :</strong> <?php echo esc_html($progress['update_count']); ?></p>
+                    <p><strong>Updates:</strong> <?php echo esc_html($progress['update_count']); ?></p>
                 </div>
 
                 <?php if ($status === 'failed' && isset($task_data['error'])) : ?>
                     <div class="notice notice-error" style="margin-top: 20px;">
-                        <p><strong>Erreur :</strong> <?php echo esc_html($task_data['error']); ?></p>
+                        <p><strong>Error :</strong> <?php echo esc_html($task_data['error']); ?></p>
                     </div>
                 <?php endif; ?>
 
@@ -420,7 +421,7 @@ class ISPAG_CSV_Importer
                             id="ispag-refresh-status"
                             class="button button-secondary"
                             data-task-id="<?php echo esc_attr($task_id); ?>">
-                            <?php _e('Rafraîchir le statut', 'creation-reservoir'); ?>
+                            <?php _e('Refresh status', 'creation-reservoir'); ?>
                         </button>
                     </p>
                     <p style="margin-top: 10px; color: #666; font-style: italic;">
@@ -446,7 +447,7 @@ class ISPAG_CSV_Importer
                         nonce: '<?php echo wp_create_nonce("ispag_csv_upload"); ?>'
                     },
                     beforeSend: function() {
-                        $('#ispag-refresh-status').prop('disabled', true).text('Rafraîchissement...');
+                        $('#ispag-refresh-status').prop('disabled', true).text('Refreshing...');
                     },
                     success: function(response) {
                         if (response.success) {
@@ -459,12 +460,12 @@ class ISPAG_CSV_Importer
 
                             // Mettre à jour le texte de progression
                             progressText.html(
-                                'Progression : ' + progress.processed_rows + ' / ' + progress.total_rows + ' lignes (' + percentage.toFixed(1) + '%)'
+                                'Progress: ' + progress.processed_rows + ' / ' + progress.total_rows + ' lignes (' + percentage.toFixed(1) + '%)'
                             );
 
                             // Mettre à jour les compteurs
                             $('p:contains("Insertions")').html('<strong>Insertions :</strong> ' + progress.insert_count);
-                            $('p:contains("Mises à jour")').html('<strong>Mises à jour :</strong> ' + progress.update_count);
+                            $('p:contains("Updates")').html('<strong>Updates:</strong> ' + progress.update_count);
 
                             // Mettre à jour le statut
                             $('p:contains("Statut")').html('<strong>Statut :</strong> ' + data.status.charAt(0).toUpperCase() + data.status.slice(1));
@@ -474,20 +475,20 @@ class ISPAG_CSV_Importer
                                 $('#ispag-refresh-status').hide();
                                 $('p:contains("Vous pouvez fermer")').hide();
                             } else if (data.status === 'failed') {
-                                $('p:contains("Statut")').html('<strong>Statut :</strong> Échoué');
-                                $('.notice-error').html('<p><strong>Erreur :</strong> ' + data.error + '</p>').show();
+                                $('p:contains("Statut")').html('<strong>Status:</strong> Failed');
+                                $('.notice-error').html('<p><strong>Error :</strong> ' + data.error + '</p>').show();
                                 $('#ispag-refresh-status').hide();
                                 $('p:contains("Vous pouvez fermer")').hide();
                             }
                         } else {
-                            alert('Erreur : ' + response.data);
+                            alert('Error: ' + response.data);
                         }
                     },
                     error: function(xhr) {
-                        alert('Erreur réseau : ' + xhr.responseText);
+                        alert('Network error : ' + xhr.responseText);
                     },
                     complete: function() {
-                        $('#ispag-refresh-status').prop('disabled', false).text('Rafraîchir le statut');
+                        $('#ispag-refresh-status').prop('disabled', false).text('Refresh status');
                     }
                 });
             });
@@ -592,6 +593,11 @@ class ISPAG_CSV_Importer
 
                     $db_data['record_source'] = 'viag_crm';
 
+                    // Le CSV Viag contient des numéros d'entreprise (viag_id) : les deals sont liés par Id
+                    if (!empty($db_data['associated_company_id'])) {
+                        $db_data['associated_company_id'] = $this->viag_ids_to_company_ids($db_data['associated_company_id']);
+                    }
+
                     $existing_row = $this->wpdb->get_row($this->wpdb->prepare(
                         "SELECT id, associated_contact_ids, associated_company_id, current_stage_key FROM {$this->target_table} WHERE {$this->lookup_column} = %s",
                         $db_data[$this->lookup_column]
@@ -644,7 +650,7 @@ class ISPAG_CSV_Importer
                             );
                         } else {
                             ISPAG_Workflow_Logger::error(
-                                "Échec de l'insertion dans la table {$this->target_table}",
+                                "Insert failed in table {$this->target_table}",
                                 ['db_data' => $db_data, 'error' => $this->wpdb->last_error]
                             );
                         }
@@ -804,6 +810,16 @@ class ISPAG_CSV_Importer
     /**
      * Prépare les données du CSV pour l'insertion en base de données
      */
+    /** Convertit une liste de viag_id (« 123,456 ») en liste d'Id de ispag_companies (les inconnus sont ignorés). */
+    private function viag_ids_to_company_ids($csv_value) {
+        $viag_ids = array_filter(array_map('absint', preg_split('/[,;\s]+/', (string) $csv_value)));
+        if (!$viag_ids) return '';
+        $table = ISPAG_Crm_Company_Constants::TABLE_NAME;
+        $ph    = implode(',', array_fill(0, count($viag_ids), '%d'));
+        $ids   = $this->wpdb->get_col($this->wpdb->prepare("SELECT Id FROM {$table} WHERE viag_id IN ($ph) ORDER BY Id", ...$viag_ids));
+        return implode(',', array_map('intval', $ids));
+    }
+
     private function prepare_data_for_db($raw_data, $mapping) {
         $db_data = array();
         $owner_fn = ''; $contact_ln = ''; $contact_fn = '';
