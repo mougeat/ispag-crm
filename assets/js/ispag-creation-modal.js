@@ -1,3 +1,4 @@
+window.ispagT = window.ispagT || function (s) { return s; }; // traductions des textes JS (voir includes/js-strings.php)
 // ispag-creation-modal.js
 // Responsabilité : Gestion complète de la modale de création/édition d'activité.
 
@@ -498,7 +499,7 @@ jQuery(document).ready(function($) {
     $(document).on('click', '#ispag-apply-template', function(e) {
         e.preventDefault();
         const templateId = $('#ispag-note-template-select').val();
-        if (!templateId) return alert("Select a template.");
+        if (!templateId) return alert(ispagT("Select a template."));
 
         const editor = tinymce.get('note-text-area');
         let currentContent = editor ? editor.getContent() : noteTextArea.val();
@@ -823,7 +824,7 @@ jQuery(document).ready(function($) {
 $(document).on('click', '#ispag-apply-article-template', function(e) {
     e.preventDefault();
     const templateId = $('#ispag-article-template-select').val();
-    if (!templateId) return alert("Please select a template.");
+    if (!templateId) return alert(ispagT("Please select a template."));
 
     // Ciblage direct de notre textarea pour le commentaire de la cuve
     const textArea = $('#tank-open-comment');
@@ -850,7 +851,7 @@ $(document).on('click', '#ispag-apply-article-template', function(e) {
                 const contentBody = response.data.content || "";
                 textArea.val(contentBody);
             } else {
-                alert("Error while retrieving the template.");
+                alert(ispagT("Error while retrieving the template."));
             }
         },
         complete: () => $(this).prop('disabled', false).text(ispagNoteData.textApply || 'Appliquer')

@@ -1,3 +1,4 @@
+window.ispagT = window.ispagT || function (s) { return s; }; // traductions des textes JS (voir includes/js-strings.php)
 jQuery(document).ready(function($) {
     // console. log('[attachments] -> initialisé');
     // Clic sur "See all attachments"
@@ -54,7 +55,7 @@ jQuery(document).ready(function($) {
                             }
                         } else {
                             console.warn('ISPAG Debug - Réponse AJAX en échec :', response);
-                            var errorMsg = (response.data && response.data.message) ? response.data.message : 'No attachment found.';
+                            var errorMsg = (response.data && response.data.message) ? response.data.message : ispagT('No attachment found.');
                             $card.html('<p class="error" style="padding: 10px; color: #666;">' + errorMsg + '</p>');
                         }
                     },

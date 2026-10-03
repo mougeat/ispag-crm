@@ -595,6 +595,7 @@ class ISPAG_Contact_Ajax_Handler {
         if ( ! empty( $full_statuses ) ) {
             foreach ( $full_statuses as $status ) {
                 if ( ! empty( $status->status_key ) ) {
+                    foreach (['label', 'status_label'] as $__p) { if (isset($status->$__p)) { $status->$__p = ispag_crm_db_label($status->$__p); } }
                     $return[ $status->status_key ] = $status;
                 }
             }
@@ -621,6 +622,7 @@ class ISPAG_Contact_Ajax_Handler {
         if ( ! empty( $full_phases ) ) {
             foreach ( $full_phases as $phase ) {
                 if ( ! empty( $phase->phase_key ) ) {
+                    foreach (['label', 'phase_label'] as $__p) { if (isset($phase->$__p)) { $phase->$__p = ispag_crm_db_label($phase->$__p); } }
                     $return[ $phase->phase_key ] = $phase;
                 }
             }

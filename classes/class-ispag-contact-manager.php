@@ -165,7 +165,7 @@ class ISPAG_Contact_Manager {
         $statuses_data = $this->get_all_statuses_data();
         $options = array();
         foreach ($statuses_data as $status) {
-            $options[$status->status_key] = $status->status_label;
+            $options[$status->status_key] = ispag_crm_db_label($status->status_label);
         }
         return $options;
     }
@@ -419,7 +419,7 @@ class ISPAG_Contact_Manager {
         foreach ($lead_statuses_data as $status) {
             // Assure que l'objet a les propriétés nécessaires, même si la BDD est encore en cours de mise à jour.
             $full_statuses_map[$status->status_key] = (object) array(
-                'status_label' => $status->status_label,
+                'status_label' => ispag_crm_db_label($status->status_label),
                 'bg_color' => isset($status->bg_color) ? $status->bg_color : '#cccccc',
                 'text_color' => isset($status->text_color) ? $status->text_color : '#333333',
             );
@@ -876,7 +876,7 @@ class ISPAG_Contact_Manager {
                 if ( ! empty( $status->status_key ) ) {
                     
                     $status_data = new stdClass();
-                    $status_data->label = $status->status_label;
+                    $status_data->label = ispag_crm_db_label($status->status_label);
                     $status_data->bg_color = $status->bg_color;
                     $status_data->text_color = $status->text_color;
                     $status_data->order = $status->status_order;
@@ -909,7 +909,7 @@ class ISPAG_Contact_Manager {
                 if ( ! empty( $phase->phase_key ) ) {
                     
                     $phase_data = new stdClass();
-                    $phase_data->phase_label = $phase->phase_label;
+                    $phase_data->phase_label = ispag_crm_db_label($phase->phase_label);
                     $phase_data->bg_color = $phase->bg_color;
                     $phase_data->text_color = $phase->text_color;
                     $phase_data->phase_order = $phase->phase_order;

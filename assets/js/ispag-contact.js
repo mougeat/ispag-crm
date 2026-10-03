@@ -1,3 +1,4 @@
+window.ispagT = window.ispagT || function (s) { return s; }; // traductions des textes JS (voir includes/js-strings.php)
 jQuery(document).ready(function($) {
     // console.log('ISPAG JS : Le script jQuery des contacts est bien chargé et exécuté.');
 
@@ -26,7 +27,7 @@ jQuery(document).ready(function($) {
                         $card.html(response.data.html);
                     } else {
                         console.warn('ISPAG JS : Error ou HTML vide renvoyé pour les contacts :', response);
-                        var errorMsg = (response.data && response.data.message) ? response.data.message : 'No contact found.';
+                        var errorMsg = (response.data && response.data.message) ? response.data.message : ispagT('No contact found.');
                         $card.html('<p class="error" style="padding: 10px; color: #666;">' + errorMsg + '</p>');
                     }
                 },

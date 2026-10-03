@@ -1,3 +1,4 @@
+window.ispagT = window.ispagT || function (s) { return s; }; // traductions des textes JS (voir includes/js-strings.php)
 (function($) {
     "use strict";
 
@@ -360,7 +361,7 @@
                 },
                 error: function(xhr) {
                     console.error('[attachments] delete AJAX error', xhr.status, xhr.responseText);
-                    alert('Error while deleting.');
+                    alert(ispagT('Error while deleting.'));
                 },
             });
         });

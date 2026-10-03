@@ -1,3 +1,4 @@
+window.ispagT = window.ispagT || function (s) { return s; }; // traductions des textes JS (voir includes/js-strings.php)
 document.addEventListener('DOMContentLoaded', function() {
     const profilPlaceholder   = document.querySelector('.ispag-ai-profil-placeholder');
     const placeholder         = document.querySelector('.ispag-ai-placeholder');
@@ -38,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const infoIcon = document.querySelector('.ispag-info-icon');
                     if (infoIcon) infoIcon.title = result.data.explication_health_score;
                 } else {
-                    const msg = (result.data && result.data.message) ? result.data.message : 'Error loading AI summary.';
+                    const msg = (result.data && result.data.message) ? result.data.message : ispagT('Error loading AI summary.');
                     // Fonction réservée aux administrateurs : pour les autres, les blocs IA disparaissent sans message d'erreur
                     if (/access denied/i.test(msg)) {
                         placeholder.innerHTML = '';

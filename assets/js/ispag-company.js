@@ -1,3 +1,4 @@
+window.ispagT = window.ispagT || function (s) { return s; }; // traductions des textes JS (voir includes/js-strings.php)
 jQuery(document).ready(function($) {
     var $card = $('.ispag-company-card');
     
@@ -16,7 +17,7 @@ jQuery(document).ready(function($) {
                     if (response.success && response.data.html) {
                         $card.html(response.data.html);
                     } else {
-                        var errorMsg = (response.data && response.data.message) ? response.data.message : 'Loading error';
+                        var errorMsg = (response.data && response.data.message) ? response.data.message : ispagT('Loading error');
                         $card.html('<p class="error" style="padding: 10px; color: #666;">' + errorMsg + '</p>');
                     }
                 },

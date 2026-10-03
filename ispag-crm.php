@@ -107,6 +107,14 @@ if (!function_exists('ispag_i18n_register_dir')) {
 
 ispag_i18n_register_dir(__DIR__ . '/languages');
 
+/** Traduit un libellé stocké en base (étapes, statuts, phases…) : le texte anglais d'origine sert de clé dans languages/ispag-crm-*.mo. */
+if (!function_exists('ispag_crm_db_label')) {
+    function ispag_crm_db_label($label) {
+        return (is_string($label) && $label !== '') ? __($label, 'ispag-crm') : $label;
+    }
+}
+require_once __DIR__ . '/includes/js-strings.php';
+
 function ispag_crm_load_textdomain() {
     ispag_i18n_reload();
 }

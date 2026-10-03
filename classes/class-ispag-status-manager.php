@@ -106,7 +106,7 @@ class ISPAG_Status_Manager {
         $output = array();
         if ( $statuses ) {
             foreach ( $statuses as $status ) {
-                $output[ $status->status_key ] = $status->status_label;
+                $output[ $status->status_key ] = ispag_crm_db_label($status->status_label);
             }
         }
         return $output;

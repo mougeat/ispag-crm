@@ -110,7 +110,7 @@ class ISPAG_Crm_Deals_Repository {
             if ( $stage_details ) {
                 // Note : On vérifie les deux sources possibles (objet SQL ou objet Model du repo)
                 $deal_model->stage_key   = $stage_details->current_stage_key ?? $stage_details->stage_key ?? '';
-                $deal_model->stage_label = $stage_details->stage_label ?? $stage_details->label ?? '';
+                $deal_model->stage_label = ispag_crm_db_label($stage_details->stage_label ?? $stage_details->label ?? '');
                 $deal_model->stage_color = $stage_details->stage_color ?? $stage_details->color ?? '';
             }
 
@@ -466,7 +466,7 @@ class ISPAG_Crm_Deals_Repository {
             // Stage
             if ($stage) {
                 $deal_model->stage_key   = $stage->stage_key   ?? '';
-                $deal_model->stage_label = $stage->stage_label ?? '';
+                $deal_model->stage_label = ispag_crm_db_label($stage->stage_label ?? '');
                 $deal_model->stage_color = $stage->stage_color ?? '';
             }
 
@@ -669,7 +669,7 @@ class ISPAG_Crm_Deals_Repository {
             $m = new ISPAG_Crm_Deal_Model( $raw, false );
             if ( $raw->_stage ) {
                 $m->stage_key   = $raw->_stage->stage_key   ?? '';
-                $m->stage_label = $raw->_stage->stage_label ?? '';
+                $m->stage_label = ispag_crm_db_label($raw->_stage->stage_label ?? '');
                 $m->stage_color = $raw->_stage->stage_color ?? '';
             }
             $m->last_activity_date       = $activities_map[ $raw->_group_ref ] ?? null;

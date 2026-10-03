@@ -2882,6 +2882,162 @@ msgstr "Offener Deal"
 msgid "Modifications asked"
 msgstr "Änderungen angefordert"
 
+#: includes/js-strings.php:13
+msgid "AJAX configuration error."
+msgstr "AJAX-Konfigurationsfehler."
+
+#: includes/js-strings.php:14
+msgid "AJAX connection error."
+msgstr "AJAX-Verbindungsfehler."
+
+#: includes/js-strings.php:15
+msgid "An error occurred. Please try again."
+msgstr "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+
+#: includes/js-strings.php:16
+msgid "Are you sure you want to remove this association?"
+msgstr "Möchten Sie diese Zuordnung wirklich entfernen?"
+
+#: includes/js-strings.php:17
+msgid "Associer"
+msgstr "Verknüpfen"
+
+#: includes/js-strings.php:18
+msgid "Connection error while linking."
+msgstr "Verbindungsfehler beim Verknüpfen."
+
+#: includes/js-strings.php:19
+msgid "Delete this step?"
+msgstr "Diesen Schritt löschen?"
+
+#: includes/js-strings.php:20
+msgid "Error during bulk update"
+msgstr "Fehler bei der Sammelaktualisierung"
+
+#: includes/js-strings.php:21
+msgid "Error loading AI summary."
+msgstr "Fehler beim Laden der KI-Zusammenfassung."
+
+#: includes/js-strings.php:22
+msgid "Error marking notification as read. The page will open anyway."
+msgstr "Fehler beim Markieren der Benachrichtigung als gelesen. Die Seite wird trotzdem geöffnet."
+
+#: includes/js-strings.php:23
+msgid "Error while deleting."
+msgstr "Fehler beim Löschen."
+
+#: includes/js-strings.php:24
+msgid "Error while linking contacts."
+msgstr "Fehler beim Verknüpfen der Kontakte."
+
+#: includes/js-strings.php:25
+msgid "Error while linking: "
+msgstr "Fehler beim Verknüpfen: "
+
+#: includes/js-strings.php:26
+msgid "Error while loading the document type modal."
+msgstr "Fehler beim Laden des Fensters für den Dokumenttyp."
+
+#: includes/js-strings.php:27
+msgid "Error while retrieving the template."
+msgstr "Fehler beim Abrufen der Vorlage."
+
+#: includes/js-strings.php:28
+msgid "Error: "
+msgstr "Fehler: "
+
+#: includes/js-strings.php:29
+msgid "Error: Company ID not found."
+msgstr "Fehler: Unternehmens-ID nicht gefunden."
+
+#: includes/js-strings.php:30
+msgid "Error: The entity ID is missing."
+msgstr "Fehler: Die Entitäts-ID fehlt."
+
+#: includes/js-strings.php:31
+msgid "Error: Unable to load the company panel."
+msgstr "Fehler: Das Unternehmenspanel kann nicht geladen werden."
+
+#: includes/js-strings.php:32
+msgid "Error: Unable to load the panel."
+msgstr "Fehler: Das Panel kann nicht geladen werden."
+
+#: includes/js-strings.php:33
+msgid "Folder created!"
+msgstr "Ordner erstellt!"
+
+#: includes/js-strings.php:34
+msgid "Give your sequence a name!"
+msgstr "Geben Sie Ihrer Sequenz einen Namen!"
+
+#: includes/js-strings.php:35
+msgid "Inconnue"
+msgstr "Unbekannt"
+
+#: includes/js-strings.php:36
+msgid "Loading error"
+msgstr "Ladefehler"
+
+#: includes/js-strings.php:37
+msgid "Marquer comme lue"
+msgstr "Als gelesen markieren"
+
+#: includes/js-strings.php:38
+msgid "Network error lors de l'upload."
+msgstr "Netzwerkfehler beim Upload."
+
+#: includes/js-strings.php:39
+msgid "Network error lors de la liaison."
+msgstr "Netzwerkfehler beim Verknüpfen."
+
+#: includes/js-strings.php:40
+msgid "No attachment found."
+msgstr "Kein Anhang gefunden."
+
+#: includes/js-strings.php:41
+msgid "No contact found."
+msgstr "Kein Kontakt gefunden."
+
+#: includes/js-strings.php:42
+msgid "Please select a sequence."
+msgstr "Bitte wählen Sie eine Sequenz aus."
+
+#: includes/js-strings.php:43
+msgid "Please select a template."
+msgstr "Bitte wählen Sie eine Vorlage aus."
+
+#: includes/js-strings.php:44
+msgid "Please select at least one company."
+msgstr "Bitte wählen Sie mindestens ein Unternehmen aus."
+
+#: includes/js-strings.php:47
+msgid "Save error: "
+msgstr "Fehler beim Speichern: "
+
+#: includes/js-strings.php:48
+msgid "Save failed."
+msgstr "Speichern fehlgeschlagen."
+
+#: includes/js-strings.php:49
+msgid "Select a template."
+msgstr "Wählen Sie eine Vorlage aus."
+
+#: includes/js-strings.php:50
+msgid "Start"
+msgstr "Starten"
+
+#: includes/js-strings.php:51
+msgid "Upload error: "
+msgstr "Upload-Fehler: "
+
+#: includes/js-strings.php:52
+msgid "Valider"
+msgstr "Bestätigen"
+
+#: includes/js-strings.php:53
+msgid "You have unsaved changes. Do you really want to leave without saving?"
+msgstr "Sie haben nicht gespeicherte Änderungen. Möchten Sie wirklich ohne Speichern verlassen?"
+
 #: ispag-attachments-init.php:107
 msgid "Not authorized."
 msgstr "Nicht autorisiert."
@@ -2942,51 +3098,51 @@ msgstr "Anhänge"
 msgid "Invalid parameters."
 msgstr "Ungültige Parameter."
 
-#: ispag-crm.php:397
+#: ispag-crm.php:433
 msgid "Please select an action."
 msgstr "Bitte wählen Sie eine Aktion aus."
 
-#: ispag-crm.php:398
+#: ispag-crm.php:434
 msgid "Please select at least one contact."
 msgstr "Bitte wählen Sie mindestens einen Kontakt aus."
 
-#: ispag-crm.php:399
+#: ispag-crm.php:435
 msgid "Are you sure you want to delete the selected contacts?"
 msgstr "Möchten Sie die ausgewählten Kontakte wirklich löschen?"
 
-#: ispag-crm.php:400
+#: ispag-crm.php:436
 msgid "A - High"
 msgstr "A - Hoch"
 
-#: ispag-crm.php:401
+#: ispag-crm.php:437
 msgid "B - Medium"
 msgstr "B - Mittel"
 
-#: ispag-crm.php:402
+#: ispag-crm.php:438
 msgid "C - Low"
 msgstr "C - Tief"
 
-#: ispag-crm.php:403
+#: ispag-crm.php:439
 msgid "Company ID"
 msgstr "Unternehmens-ID"
 
-#: ispag-crm.php:404
+#: ispag-crm.php:440
 msgid "-- Select owner --"
 msgstr "-- Verantwortlichen auswählen --"
 
-#: ispag-crm.php:405
+#: ispag-crm.php:441
 msgid "Preparing..."
 msgstr "Vorbereitung..."
 
-#: ispag-crm.php:406
+#: ispag-crm.php:442
 msgid "Prepare meeting"
 msgstr "Besprechung vorbereiten"
 
-#: ispag-crm.php:421
+#: ispag-crm.php:457
 msgid "Your ISPAG account has been suspended."
 msgstr "Ihr ISPAG-Konto wurde gesperrt."
 
-#: ispag-crm.php:547
+#: ispag-crm.php:583
 msgid "Unauthorized access."
 msgstr "Nicht autorisierter Zugriff."
 
