@@ -24,7 +24,7 @@ class ISPAG_Crm_Company_Creator {
      * Modifiable : add_filter('ispag_crm_can_create_company', fn($ok) => ..., 10, 1).
      */
     public static function can_create() {
-        return (bool) apply_filters('ispag_crm_can_create_company', is_user_logged_in() && (current_user_can('add_company') || current_user_can('manage_order')));
+        return (bool) apply_filters('ispag_crm_can_create_company', is_user_logged_in() && current_user_can('add_company'));
     }
 
     /** « https://www.Exemple.ch/page », « info@exemple.ch » ou « exemple.ch » → « exemple.ch ». */
