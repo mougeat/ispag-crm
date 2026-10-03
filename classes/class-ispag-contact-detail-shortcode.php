@@ -227,6 +227,7 @@ class ISPAG_Contact_Detail_Shortcode {
         if ( ! empty( $full_statuses ) ) {
             foreach ( $full_statuses as $status ) {
                 if ( ! empty( $status->status_key ) ) {
+                    foreach (['label', 'status_label'] as $__p) { if (isset($status->$__p)) { $status->$__p = ispag_crm_db_label($status->$__p); } }
                     $return[ $status->status_key ] = $status;
                 }
             }
@@ -254,6 +255,7 @@ class ISPAG_Contact_Detail_Shortcode {
         if ( ! empty( $full_phases ) ) {
             foreach ( $full_phases as $phase ) {
                 if ( ! empty( $phase->phase_key ) ) {
+                    foreach (['label', 'phase_label'] as $__p) { if (isset($phase->$__p)) { $phase->$__p = ispag_crm_db_label($phase->$__p); } }
                     $return[ $phase->phase_key ] = $phase;
                 }
             }
@@ -323,11 +325,11 @@ class ISPAG_Contact_Detail_Shortcode {
                     if ($result->status_id >= 100) {
                         // Règle: (isQotation == 1 AND status_id >= 10) => Offre perdue (utiliser le libellé de l'audit)
                         // Note: Assurez-vous que $result->status_label est récupéré via une jointure SQL
-                        $transaction->stage_label = __('Lost offer', 'ispag-crm') . ' [ ' . $result->status_label . ' ]';
+                        $transaction->stage_label = __('Lost offer', 'ispag-crm') . ' [ ' . ispag_crm_db_label($result->status_label) . ' ]';
                         $transaction->stage_color = '#f7001dff';
                         
                     } elseif ($result->status_id >= 10) {
-                        $transaction->stage_label = $result->status_label;
+                        $transaction->stage_label = ispag_crm_db_label($result->status_label);
                         $transaction->stage_color = '#1ca921b3';
                     } 
                     elseif ($result->status_id < 10) {

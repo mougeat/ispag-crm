@@ -183,7 +183,7 @@ if (!class_exists('ISPAG_Workflow_Meta_Box')) {
                                     <option value=""><?php _e('Any Status', 'ispag-crm'); ?></option>
                                     <?php foreach ($deal_stages as $stage) : ?>
                                         <option value="<?php echo esc_attr($stage->stage_key); ?>" <?php selected($trigger['from_status'] ?? '', $stage->stage_key); ?>>
-                                            <?php echo esc_html($stage->stage_label); ?>
+                                            <?php echo esc_html(ispag_crm_db_label($stage->stage_label)); ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -195,7 +195,7 @@ if (!class_exists('ISPAG_Workflow_Meta_Box')) {
                                     <option value=""><?php _e('Any Status', 'ispag-crm'); ?></option>
                                     <?php foreach ($deal_stages as $stage) : ?>
                                         <option value="<?php echo esc_attr($stage->stage_key); ?>" <?php selected($trigger['to_status'] ?? '', $stage->stage_key); ?>>
-                                            <?php echo esc_html($stage->stage_label); ?>
+                                            <?php echo esc_html(ispag_crm_db_label($stage->stage_label)); ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>

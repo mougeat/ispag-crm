@@ -40,6 +40,11 @@ class ISPAG_Crm_Deal_Stage_Model {
                 $this->$key = $data->$key;
             }
         }
+
+        // Libellé issu de la base : traduit dans la langue du site (textes listés dans helpers/ispag-translations-support.php)
+        if ( is_string( $this->stage_label ) && $this->stage_label !== '' ) {
+            $this->stage_label = ispag_crm_db_label( $this->stage_label );
+        }
     }
 
     // ==========================================================

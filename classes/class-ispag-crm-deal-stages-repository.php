@@ -73,7 +73,7 @@ class ISPAG_Crm_Deal_Stages_Repository {
         $stages = $this->get_stages_keyed_by_stage_key();
         
         if ( isset( $stages[ $stage_key ] ) ) {
-            return $stages[ $stage_key ]->stage_label;
+            return ispag_crm_db_label($stages[ $stage_key ]->stage_label);
         }
         
         return esc_html( $stage_key ); // Retourne la clé si non trouvée

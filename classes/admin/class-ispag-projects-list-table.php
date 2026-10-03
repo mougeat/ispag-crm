@@ -54,7 +54,7 @@ class ISPAG_Projects_List_Table {
                         </td>
                         <td>
                             <span class="ispag-badge" style="background:<?php echo esc_attr($deal->stage_color); ?>; color:#fff; padding:2px 8px; border-radius:10px; font-size:11px;">
-                                <?php echo esc_html( $deal->stage_label ); ?>
+                                <?php echo esc_html( ispag_crm_db_label( $deal->stage_label ) ); ?>
                             </span>
                         </td>
                         <td><?php echo esc_html( $deal->date_creation ); ?></td>
