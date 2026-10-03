@@ -293,251 +293,251 @@ msgstr "Type de document invalide."
 msgid "Failed to create the media."
 msgstr "Échec de la création du média."
 
-#: classes/class-ispag-company-detail-shortcode.php:1011
+#: classes/class-ispag-company-detail-shortcode.php:1012
 msgid "About"
 msgstr "À propos"
 
-#: classes/class-ispag-company-detail-shortcode.php:1014
+#: classes/class-ispag-company-detail-shortcode.php:1015
 msgid "Activities"
 msgstr "Activités"
 
-#: classes/class-ispag-company-detail-shortcode.php:1020
+#: classes/class-ispag-company-detail-shortcode.php:1021
 msgid "Intelligence"
 msgstr "Intelligence"
 
-#: classes/class-ispag-company-detail-shortcode.php:1029
+#: classes/class-ispag-company-detail-shortcode.php:1030
 msgid "Company Profile"
 msgstr "Profil de l'entreprise"
 
-#: classes/class-ispag-company-detail-shortcode.php:1042
+#: classes/class-ispag-company-detail-shortcode.php:1043
 msgid "Click to edit"
 msgstr "Cliquez pour modifier"
 
-#: classes/class-ispag-company-detail-shortcode.php:1048
+#: classes/class-ispag-company-detail-shortcode.php:1049
 msgid "Street adress"
 msgstr "Adresse (rue)"
 
-#: classes/class-ispag-company-detail-shortcode.php:1062
+#: classes/class-ispag-company-detail-shortcode.php:1063
 msgid "Postal code"
 msgstr "Code postal"
 
-#: classes/class-ispag-company-detail-shortcode.php:1076
+#: classes/class-ispag-company-detail-shortcode.php:1077
 msgid "State/Region"
 msgstr "Canton / région"
 
-#: classes/class-ispag-company-detail-shortcode.php:1090
+#: classes/class-ispag-company-detail-shortcode.php:1091
 msgid "Country/Region"
 msgstr "Pays / région"
 
-#: classes/class-ispag-company-detail-shortcode.php:1104
+#: classes/class-ispag-company-detail-shortcode.php:1105
 msgid "Industry"
 msgstr "Secteur d'activité"
 
-#: classes/class-ispag-company-detail-shortcode.php:1129
+#: classes/class-ispag-company-detail-shortcode.php:1130
 msgid "Transaction information"
 msgstr "Informations sur la transaction"
 
-#: classes/class-ispag-company-detail-shortcode.php:1135
+#: classes/class-ispag-company-detail-shortcode.php:1136
 msgid "Amount"
 msgstr "Montant"
 
-#: classes/class-ispag-company-detail-shortcode.php:1136
+#: classes/class-ispag-company-detail-shortcode.php:1137
 msgid "Closing date"
 msgstr "Date de clôture"
 
-#: classes/class-ispag-company-detail-shortcode.php:1137
+#: classes/class-ispag-company-detail-shortcode.php:1138
 msgid "Transaction phase"
 msgstr "Phase de la transaction"
 
-#: classes/class-ispag-company-detail-shortcode.php:1146
+#: classes/class-ispag-company-detail-shortcode.php:1147
 msgid "Show all transactions"
 msgstr "Afficher toutes les transactions"
 
-#: classes/class-ispag-company-detail-shortcode.php:1149
+#: classes/class-ispag-company-detail-shortcode.php:1150
 msgid "No recent transactions."
 msgstr "Aucune transaction récente."
 
-#: classes/class-ispag-company-detail-shortcode.php:1161
+#: classes/class-ispag-company-detail-shortcode.php:1162
 msgid "Loading AI summary..."
 msgstr "Chargement du résumé IA..."
 
-#: classes/class-ispag-company-detail-shortcode.php:1196
+#: classes/class-ispag-company-detail-shortcode.php:1197
 msgid "Remove association"
 msgstr "Supprimer l'association"
 
-#: classes/class-ispag-company-detail-shortcode.php:1210
+#: classes/class-ispag-company-detail-shortcode.php:1211
 msgid "View all associated Contacts"
 msgstr "Voir tous les contacts associés"
 
-#: classes/class-ispag-company-detail-shortcode.php:1213
+#: classes/class-ispag-company-detail-shortcode.php:1214
 msgid "No contacts associated with this company."
 msgstr "Aucun contact associé à cette entreprise."
 
-#: classes/class-ispag-company-detail-shortcode.php:507
+#: classes/class-ispag-company-detail-shortcode.php:508
 msgid "%d contacts successfully linked to the company."
 msgstr "%d contacts liés à l'entreprise avec succès."
 
-#: classes/class-ispag-company-detail-shortcode.php:696
+#: classes/class-ispag-company-detail-shortcode.php:697
 msgid "Search Contacts"
 msgstr "Rechercher des contacts"
 
-#: classes/class-ispag-company-detail-shortcode.php:701
+#: classes/class-ispag-company-detail-shortcode.php:702
 msgid "Currently associated contacts"
 msgstr "Contacts actuellement associés"
 
-#: classes/class-ispag-company-detail-shortcode.php:730
+#: classes/class-ispag-company-detail-shortcode.php:731
 msgid "Contact creation form..."
 msgstr "Formulaire de création de contact..."
 
-#: classes/class-ispag-company-detail-shortcode.php:816
+#: classes/class-ispag-company-detail-shortcode.php:817
 msgid "Company ID is missing."
 msgstr "L'ID de l'entreprise est manquant."
 
-#: classes/class-ispag-company-detail-shortcode.php:904
+#: classes/class-ispag-company-detail-shortcode.php:905
 msgid "Add Note"
 msgstr "Ajouter une note"
 
-#: classes/class-ispag-company-detail-shortcode.php:908
+#: classes/class-ispag-company-detail-shortcode.php:909
 msgid "Log a call"
 msgstr "Consigner un appel"
 
-#: classes/class-ispag-company-detail-shortcode.php:912
+#: classes/class-ispag-company-detail-shortcode.php:913
 msgid "Create Task"
 msgstr "Créer une tâche"
 
-#: classes/class-ispag-company-detail-shortcode.php:916
+#: classes/class-ispag-company-detail-shortcode.php:917
 msgid "Create New Contact"
 msgstr "Créer un nouveau contact"
 
-#: classes/class-ispag-company-detail-shortcode.php:923
+#: classes/class-ispag-company-detail-shortcode.php:924
 msgid "Key information"
 msgstr "Informations clés"
 
-#: classes/class-ispag-company-detail-shortcode.php:926
+#: classes/class-ispag-company-detail-shortcode.php:927
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
-#: classes/class-ispag-company-detail-shortcode.php:937
+#: classes/class-ispag-company-detail-shortcode.php:938
 msgid "Address"
 msgstr "Adresse"
 
-#: classes/class-ispag-company-detail-shortcode.php:948
+#: classes/class-ispag-company-detail-shortcode.php:949
 msgid "City"
 msgstr "Ville"
 
-#: classes/class-ispag-company-detail-shortcode.php:959
+#: classes/class-ispag-company-detail-shortcode.php:960
 msgid "Company Owner"
 msgstr "Responsable de l'entreprise"
 
-#: classes/class-ispag-company-detail-shortcode.php:971
+#: classes/class-ispag-company-detail-shortcode.php:972
 msgid "Last contacted"
 msgstr "Dernier contact"
 
-#: classes/class-ispag-company-detail-shortcode.php:980
+#: classes/class-ispag-company-detail-shortcode.php:981
 msgid "Company Status"
 msgstr "Statut de l'entreprise"
 
-#: classes/class-ispag-company-detail-shortcode.php:982
+#: classes/class-ispag-company-detail-shortcode.php:983
 msgid "Company Type"
 msgstr "Type d'entreprise"
 
-#: classes/class-ispag-company-detail-shortcode.php:994
+#: classes/class-ispag-company-detail-shortcode.php:995
 msgid "Client Tier"
 msgstr "Niveau client"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1000
+#: classes/class-ispag-contact-detail-shortcode.php:1002
 msgid "Meeting"
 msgstr "Réunion"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1008
+#: classes/class-ispag-contact-detail-shortcode.php:1010
 msgid "Ignore health reminder"
 msgstr "Ignorer le rappel de suivi"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1044
+#: classes/class-ispag-contact-detail-shortcode.php:1046
 msgid "Role"
 msgstr "Rôle"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1086
+#: classes/class-ispag-contact-detail-shortcode.php:1088
 msgid "Transaction open"
 msgstr "Transaction ouverte"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1089
+#: classes/class-ispag-contact-detail-shortcode.php:1091
 msgid "Contact owner"
 msgstr "Responsable du contact"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1101
+#: classes/class-ispag-contact-detail-shortcode.php:1103
 msgid "Linkedin page"
 msgstr "Page LinkedIn"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1115
+#: classes/class-ispag-contact-detail-shortcode.php:1117
 msgid "Sales information"
 msgstr "Informations commerciales"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1117
+#: classes/class-ispag-contact-detail-shortcode.php:1119
 msgid "Opportunity value"
 msgstr "Valeur de l'opportunité"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1119
+#: classes/class-ispag-contact-detail-shortcode.php:1121
 msgid "Buying goal"
 msgstr "Objectif d'achat"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1132
+#: classes/class-ispag-contact-detail-shortcode.php:1134
 msgid "Activity"
 msgstr "Activité"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1138
+#: classes/class-ispag-contact-detail-shortcode.php:1140
 msgid "AI Intelligence"
 msgstr "Intelligence IA"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1365
+#: classes/class-ispag-contact-detail-shortcode.php:1367
 msgid "Company domain"
 msgstr "Domaine de l'entreprise"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1366
+#: classes/class-ispag-contact-detail-shortcode.php:1368
 msgid "Company phone"
 msgstr "Téléphone de l'entreprise"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1372
+#: classes/class-ispag-contact-detail-shortcode.php:1374
 msgid "No related companies."
 msgstr "Aucune entreprise liée."
 
-#: classes/class-ispag-contact-detail-shortcode.php:1374
+#: classes/class-ispag-contact-detail-shortcode.php:1376
 msgid "Show related companies"
 msgstr "Afficher les entreprises liées"
 
-#: classes/class-ispag-contact-detail-shortcode.php:326
+#: classes/class-ispag-contact-detail-shortcode.php:328
 msgid "Lost offer"
 msgstr "Offre perdue"
 
-#: classes/class-ispag-contact-detail-shortcode.php:335
+#: classes/class-ispag-contact-detail-shortcode.php:337
 msgid "Quotation"
 msgstr "Devis"
 
-#: classes/class-ispag-contact-detail-shortcode.php:635
+#: classes/class-ispag-contact-detail-shortcode.php:637
 msgid "Contact ID is missing."
 msgstr "L'ID du contact est manquant."
 
-#: classes/class-ispag-contact-detail-shortcode.php:640
+#: classes/class-ispag-contact-detail-shortcode.php:642
 msgid "Contact not found."
 msgstr "Contact introuvable."
 
-#: classes/class-ispag-contact-detail-shortcode.php:836
+#: classes/class-ispag-contact-detail-shortcode.php:838
 msgid "(No role selected)"
 msgstr "(Aucun rôle sélectionné)"
 
-#: classes/class-ispag-contact-detail-shortcode.php:939
+#: classes/class-ispag-contact-detail-shortcode.php:941
 msgid "Call this number"
 msgstr "Appeler ce numéro"
 
-#: classes/class-ispag-contact-detail-shortcode.php:973
+#: classes/class-ispag-contact-detail-shortcode.php:975
 msgid "Log an Email"
 msgstr "Consigner un e-mail"
 
-#: classes/class-ispag-contact-detail-shortcode.php:976
+#: classes/class-ispag-contact-detail-shortcode.php:978
 msgid "E-mail"
 msgstr "E-mail"
 
-#: classes/class-ispag-contact-detail-shortcode.php:997
+#: classes/class-ispag-contact-detail-shortcode.php:999
 msgid "Schedule Meeting"
 msgstr "Planifier une réunion"
 
@@ -3098,51 +3098,51 @@ msgstr "Pièces jointes"
 msgid "Invalid parameters."
 msgstr "Paramètres invalides."
 
-#: ispag-crm.php:433
+#: ispag-crm.php:440
 msgid "Please select an action."
 msgstr "Veuillez sélectionner une action."
 
-#: ispag-crm.php:434
+#: ispag-crm.php:441
 msgid "Please select at least one contact."
 msgstr "Veuillez sélectionner au moins un contact."
 
-#: ispag-crm.php:435
+#: ispag-crm.php:442
 msgid "Are you sure you want to delete the selected contacts?"
 msgstr "Voulez-vous vraiment supprimer les contacts sélectionnés ?"
 
-#: ispag-crm.php:436
+#: ispag-crm.php:443
 msgid "A - High"
 msgstr "A - Haute"
 
-#: ispag-crm.php:437
+#: ispag-crm.php:444
 msgid "B - Medium"
 msgstr "B - Moyenne"
 
-#: ispag-crm.php:438
+#: ispag-crm.php:445
 msgid "C - Low"
 msgstr "C - Basse"
 
-#: ispag-crm.php:439
+#: ispag-crm.php:446
 msgid "Company ID"
 msgstr "ID de l'entreprise"
 
-#: ispag-crm.php:440
+#: ispag-crm.php:447
 msgid "-- Select owner --"
 msgstr "-- Sélectionner un responsable --"
 
-#: ispag-crm.php:441
+#: ispag-crm.php:448
 msgid "Preparing..."
 msgstr "Préparation..."
 
-#: ispag-crm.php:442
+#: ispag-crm.php:449
 msgid "Prepare meeting"
 msgstr "Préparer la réunion"
 
-#: ispag-crm.php:457
+#: ispag-crm.php:464
 msgid "Your ISPAG account has been suspended."
 msgstr "Votre compte ISPAG a été suspendu."
 
-#: ispag-crm.php:583
+#: ispag-crm.php:590
 msgid "Unauthorized access."
 msgstr "Accès non autorisé."
 
