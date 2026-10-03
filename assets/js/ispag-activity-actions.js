@@ -1,3 +1,4 @@
+window.ispagT = window.ispagT || function (s) { return s; }; // traductions des textes JS (voir includes/js-strings.php)
 jQuery(document).ready(function($) {
 
     // --- 1. DROPDOWNS ---
@@ -84,7 +85,7 @@ jQuery(document).ready(function($) {
                 }
                 if (typeof window.closeSidebar === 'function') window.closeSidebar();
             } else {
-                alert('Error: ' + response.data.message);
+                alert(ispagT('Error: ') + response.data.message);
                 activityElement.css('opacity', 1);
             }
         });

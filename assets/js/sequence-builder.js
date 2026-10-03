@@ -1,3 +1,4 @@
+window.ispagT = window.ispagT || function (s) { return s; }; // traductions des textes JS (voir includes/js-strings.php)
 jQuery(document).ready(function($) {
     console.log("=== ISPAG Sequence Builder Loaded ===");
     let stepCount = 0;
@@ -96,7 +97,7 @@ jQuery(document).ready(function($) {
     });
 
     $(document).on('click', '.remove-step', function() {
-        if (!confirm('Delete this step?')) return;
+        if (!confirm(ispagT('Delete this step?'))) return;
         const editorId = $(this).closest('.sequence-step').find('.step-content-editor').attr('id');
         if (typeof tinymce !== 'undefined' && tinymce.get(editorId)) {
             tinymce.get(editorId).remove();
@@ -172,7 +173,7 @@ jQuery(document).ready(function($) {
         };
 
         if(!data.sequence.name) {
-            alert('Give your sequence a name!');
+            alert(ispagT('Give your sequence a name!'));
             return;
         }
 
@@ -182,8 +183,8 @@ jQuery(document).ready(function($) {
             if(response.success) {
                 window.location.href = 'admin.php?page=ispag-sequences'; 
             } else {
-                alert('Error: ' + (response.data.message || 'Inconnue'));
-                btn.attr('disabled', false).text('Save');
+                alert(ispagT('Error: ') + (response.data.message || 'Inconnue'));
+                btn.attr('disabled', false).text(ispagT('Save'));
             }
         });
     });

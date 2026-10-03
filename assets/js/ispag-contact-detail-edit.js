@@ -1,3 +1,4 @@
+window.ispagT = window.ispagT || function (s) { return s; }; // traductions des textes JS (voir includes/js-strings.php)
 /**
  * ispag-contact-detail-edit.js
  * Gère l'édition en ligne des champs (Inline Edit) sur les pages de détail.
@@ -247,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
             source = 'project';
         } else {
             console.error('Error: ID d\'entité non trouvé.');
-            alert('Error: The entity ID is missing.');
+            alert(ispagT('Error: The entity ID is missing.'));
             exitEditMode(field);
             return;
         }
@@ -259,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!entityId) {
             console.error('Error: Entity ID non trouvé.');
-            alert('Error: The entity ID is missing.');
+            alert(ispagT('Error: The entity ID is missing.'));
             exitEditMode(field);
             return;
         }
@@ -282,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (typeof ispag_ajax === 'undefined' || !ispag_ajax.ajax_url) {
             console.error('Error JS: ispag_ajax ou ajax_url est manquant.');
-            alert('AJAX configuration error.');
+            alert(ispagT('AJAX configuration error.'));
             field.classList.remove('loading');
             exitEditMode(field);
             return;
@@ -313,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 field.classList.remove('editing');
                 field.dataset.originalContent = field.innerHTML; 
             } else {
-                const errorMessage = data.data && data.data.message ? data.data.message : 'Save failed.';
+                const errorMessage = data.data && data.data.message ? data.data.message : ispagT('Save failed.');
                 console.error('Save error:', errorMessage);
                 field.innerHTML = `<span style="color: #dc3545;">Error: ${errorMessage}</span>`;
                 setTimeout(() => exitEditMode(field), 2000); 
@@ -469,7 +470,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).get();
 
         if (selectedIds.length === 0) {
-            alert('Please select at least one contact.');
+            alert(ispagT('Please select at least one contact.'));
             return;
         }
 
@@ -490,14 +491,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     closeAddContactModal();
                     window.location.reload(); 
                 } else {
-                    alert('Save error: ' + response.data.message);
+                    alert(ispagT('Save error: ') + response.data.message);
                 }
             },
             error: function() {
-                alert('Error while linking contacts.');
+                alert(ispagT('Error while linking contacts.'));
             },
             complete: function() {
-                modal.find('.ispag-modal-save').prop('disabled', false).text('Save');
+                modal.find('.ispag-modal-save').prop('disabled', false).text(ispagT('Save'));
             }
         });
     }
@@ -506,7 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         e.stopPropagation();
 
-        if (!confirm("Are you sure you want to remove this association?")) {
+        if (!confirm(ispagT("Are you sure you want to remove this association?"))) {
             return;
         }
 
@@ -554,11 +555,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         $(this).remove(); 
                     });
                 } else {
-                    alert('Error: ' + (response.data.message || 'Unable to remove the association.'));
+                    alert(ispagT('Error: ') + (response.data.message || 'Unable to remove the association.'));
                 }
             },
             error: function() {
-                alert('AJAX connection error.');
+                alert(ispagT('AJAX connection error.'));
             },
             complete: function() {
                 button.attr('disabled', false).css('opacity', 1);
@@ -632,7 +633,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 $('body').removeClass('loading-modal').addClass('ispag-sidebar-open');
             },
             error: function() {
-                alert('Error: Unable to load the company panel.');
+                alert(ispagT('Error: Unable to load the company panel.'));
                 $('body').removeClass('loading-modal');
             }
         });
@@ -676,7 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 searchSidebarContacts('', companyId);
             },
             error: function() {
-                alert('Error: Unable to load the panel.');
+                alert(ispagT('Error: Unable to load the panel.'));
                 $('body').removeClass('loading-modal');
             }
         });
@@ -730,7 +731,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isNaN(companyId)) {
             console.error("ISPAG : ID Société invalide ou manquant dans la modal.");
-            alert("Error: Company ID not found.");
+            alert(ispagT("Error: Company ID not found."));
             return;
         }
 
@@ -748,7 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).get();
 
         if (selectedIds.length === 0) {
-            alert('Please select at least one contact.');
+            alert(ispagT('Please select at least one contact.'));
             return;
         }
 
@@ -768,13 +769,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.success) {
                     location.reload(); 
                 } else {
-                    alert('Error: ' + response.data.message);
-                    btn.prop('disabled', false).text('Save');
+                    alert(ispagT('Error: ') + response.data.message);
+                    btn.prop('disabled', false).text(ispagT('Save'));
                 }
             },
             error: function() {
-                alert('Network error lors de la liaison.');
-                btn.prop('disabled', false).text('Save');
+                alert(ispagT('Network error lors de la liaison.'));
+                btn.prop('disabled', false).text(ispagT('Save'));
             }
         });
     });
@@ -866,7 +867,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).get();
 
         if (selectedIds.length === 0) {
-            alert('Please select at least one company.');
+            alert(ispagT('Please select at least one company.'));
             return;
         }
         
@@ -887,13 +888,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     closeAddCompanySidebar();
                     window.location.reload();
                 } else {
-                    alert('Error while linking: ' + response.data.message);
-                    saveBtn.prop('disabled', false).text('Associer');
+                    alert(ispagT('Error while linking: ') + response.data.message);
+                    saveBtn.prop('disabled', false).text(ispagT('Associer'));
                 }
             },
             error: function() {
-                alert('Connection error while linking.');
-                saveBtn.prop('disabled', false).text('Associer');
+                alert(ispagT('Connection error while linking.'));
+                saveBtn.prop('disabled', false).text(ispagT('Associer'));
             }
         });
     }

@@ -1,3 +1,4 @@
+window.ispagT = window.ispagT || function (s) { return s; }; // traductions des textes JS (voir includes/js-strings.php)
 // On définit la fonction à l'extérieur pour qu'elle soit globale
 window.sendUpdateStage = function(dealId, newStageKey, reason = '') {
     const $ = jQuery; 
@@ -15,7 +16,7 @@ window.sendUpdateStage = function(dealId, newStageKey, reason = '') {
             if(r.success) {
                 console.log("[DEAL AJAX] ✅ Update successful");
             } else {
-                alert("Error: " + (r.data ? r.data.message : 'Inconnue')); 
+                alert(ispagT("Error: ") + (r.data ? r.data.message : ispagT('Inconnue'))); 
             }
         },
         error: function() {
@@ -44,7 +45,7 @@ window.executeBulkAjax = function(ids, stageKey, contactDate, reason) { // Ajout
             if(r.success) {
                 location.reload(); 
             } else {
-                alert("Error during bulk update");
+                alert(ispagT("Error during bulk update"));
             }
         },
         error: function() {

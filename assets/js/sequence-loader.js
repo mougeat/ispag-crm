@@ -1,3 +1,4 @@
+window.ispagT = window.ispagT || function (s) { return s; }; // traductions des textes JS (voir includes/js-strings.php)
 jQuery(document).ready(function($) {
     // console.log("=== ISPAG Sequence Loader Loaded ===");
     let currentContactId = null;
@@ -39,7 +40,7 @@ jQuery(document).ready(function($) {
     // 2. ACTION DU BOUTON START
     $('#confirm-enroll').on('click', function() {
         const sequenceId = $('#select-sequence-id').val();
-        if (!sequenceId) return alert('Please select a sequence.');
+        if (!sequenceId) return alert(ispagT('Please select a sequence.'));
 
         const $btn = $(this);
         $btn.attr('disabled', true).text('Lancement...');
@@ -55,9 +56,9 @@ jQuery(document).ready(function($) {
                 alert(response.data);
                 $('#modal-enroll-sequence').fadeOut();
             } else {
-                alert('Error: ' + response.data);
+                alert(ispagT('Error: ') + response.data);
             }
-            $btn.attr('disabled', false).text('Start');
+            $btn.attr('disabled', false).text(ispagT('Start'));
         });
     });
 

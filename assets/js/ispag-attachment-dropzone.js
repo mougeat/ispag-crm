@@ -1,3 +1,4 @@
+window.ispagT = window.ispagT || function (s) { return s; }; // traductions des textes JS (voir includes/js-strings.php)
 jQuery(function ($) {
 
     let pendingDropFile = null;
@@ -105,7 +106,7 @@ jQuery(function ($) {
             source: source
         }, function (response) {
             if (!response.success) {
-                alert('Error while loading the document type modal.');
+                alert(ispagT('Error while loading the document type modal.'));
                 return;
             }
 
@@ -172,16 +173,16 @@ jQuery(function ($) {
 
                     $('.ispag-modal-overlay#ispag-upload-modal').removeClass('is-open');
                 } else {
-                    alert('Upload error: ' + (response.data || 'inconnue'));
+                    alert(ispagT('Upload error: ') + (response.data || 'inconnue'));
                 }
             },
             error: function () {
-                alert('Network error lors de l\'upload.');
+                alert(ispagT('Network error lors de l\'upload.'));
             },
             complete: function () {
                 pendingDropFile = null;
                 pendingDropContext = null;
-                $btn.prop('disabled', false).text('Valider');
+                $btn.prop('disabled', false).text(ispagT('Valider'));
             }
         });
     });

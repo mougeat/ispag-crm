@@ -1,3 +1,4 @@
+window.ispagT = window.ispagT || function (s) { return s; }; // traductions des textes JS (voir includes/js-strings.php)
 jQuery(document).ready(function($) {
     // --- SÉLECTEURS ---
     const $modal = $('#ispag-template-modal');
@@ -147,7 +148,7 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if(response.success) {
-                    $('#folder-status-msg').text('Folder created!').css('color', 'green');
+                    $('#folder-status-msg').text(ispagT('Folder created!')).css('color', 'green');
                     setTimeout(() => { location.reload(); }, 600);
                 } else {
                     $('#folder-status-msg').text(response.data).css('color', 'red');

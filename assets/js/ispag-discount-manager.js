@@ -1,3 +1,4 @@
+window.ispagT = window.ispagT || function (s) { return s; }; // traductions des textes JS (voir includes/js-strings.php)
 jQuery(document).ready(function($) {
     // Log initial pour vérifier que le script est chargé
 // console.log('🔹 ISPAG Discount Manager: Script loaded');
@@ -109,7 +110,7 @@ jQuery(document).ready(function($) {
                 $select.val($select.data('previous-value'));
 // console.log('🔹 Reverted to previous value after error:', $select.data('previous-value'));
 
-                alert('An error occurred. Please try again.');
+                alert(ispagT('An error occurred. Please try again.'));
             },
             complete: function() {
 // console.log('🔹 AJAX complete: Re-enabling select');

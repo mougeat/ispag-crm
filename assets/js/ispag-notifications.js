@@ -1,3 +1,4 @@
+window.ispagT = window.ispagT || function (s) { return s; }; // traductions des textes JS (voir includes/js-strings.php)
 jQuery(document).ready(function($) {
     // =========================================================================
     // 1. VARIABLES GLOBALES
@@ -414,7 +415,7 @@ jQuery(document).ready(function($) {
             error: function() {
                 // En cas d'erreur, ouvrir le lien quand même
                 window.open(url, '_blank');
-                alert('Error marking notification as read. The page will open anyway.');
+                alert(ispagT('Error marking notification as read. The page will open anyway.'));
             }
         });
     });
@@ -445,8 +446,8 @@ jQuery(document).ready(function($) {
             },
             error: function() {
                 $button.prop('disabled', false);
-                $button.html('Marquer comme lue');
-                alert('An error occurred. Please try again.');
+                $button.html(ispagT('Marquer comme lue'));
+                alert(ispagT('An error occurred. Please try again.'));
             }
         });
     });
@@ -483,7 +484,7 @@ jQuery(document).ready(function($) {
             error: function() {
                 $button.prop('disabled', false);
                 $icon.removeClass('dashicons-update spin').addClass('dashicons-trash');
-                alert('An error occurred. Please try again.');
+                alert(ispagT('An error occurred. Please try again.'));
             }
         });
     });
@@ -518,7 +519,7 @@ jQuery(document).ready(function($) {
                     });
                 } else {
                     // Fallback si ispagConfirm n'est pas défini
-                    if (confirm("You have unsaved changes. Do you really want to leave without saving?")) {
+                    if (confirm(ispagT("You have unsaved changes. Do you really want to leave without saving?"))) {
                         $('#ispag-notification-settings-modal').removeClass('active').hide();
                         isFormModified = false;
                     }
