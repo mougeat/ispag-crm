@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 require_once __DIR__ . '/ispag-crm-card-links.php';
 
 // Fichier : includes/crm/repositories/class-ispag-crm-company-repository.php

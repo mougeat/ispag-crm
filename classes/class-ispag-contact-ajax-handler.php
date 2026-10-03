@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Gère toutes les requêtes AJAX liées aux contacts ISPAG (notamment la sauvegarde des champs éditables).
  */

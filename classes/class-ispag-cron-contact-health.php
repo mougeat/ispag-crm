@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Classe ISPAG_Cron_Contact_Health
  * Gère la santé des contacts, l'attribution des responsables et les rappels.

@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 // Fichier : includes/crm/class-ispag-company-importer.php
 
 if ( ! class_exists( 'ISPAG_Company_Importer' ) ) :

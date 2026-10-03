@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 if ( ! defined( 'ISPAG_CRM_SHORTCUT_SECRET' ) ) {
     // Définissez cette clé dans votre wp-config.php

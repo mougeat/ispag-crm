@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Workflow
  * Représente un workflow (séquence) avec ses étapes et déclencheurs.

@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Service de gestion des signatures d'email ISPAG
  */

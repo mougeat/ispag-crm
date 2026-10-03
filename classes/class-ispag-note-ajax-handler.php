@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Gère les requêtes AJAX pour les notes et tâches (Sauvegarde, Suppression, etc.).
  */

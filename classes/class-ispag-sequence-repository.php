@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 class ISPAG_Sequence_Repository {
     
     const TABLE_SEQUENCES = 'ispag_sequences';

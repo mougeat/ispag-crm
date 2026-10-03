@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 /**
  * Gère le reporting hebdomadaire des opportunités perdues (Closed Lost).

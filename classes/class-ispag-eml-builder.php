@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Prépare un brouillon e-mail au format .eml (HTML + texte) à ouvrir dans le client de messagerie.
  *

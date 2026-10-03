@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Baikal_Sync
  * Gère la synchronisation des contacts entre le CRM ISPAG et Baïkal (CardDAV).

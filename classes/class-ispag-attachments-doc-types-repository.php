@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Accès à la table achats_doc_types (types de documents disponibles au chargement).
  * Gère les types de documents généraux et ceux liés aux articles, avec regroupement par optgroup.

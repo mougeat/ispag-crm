@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Classe ISPAG_Cron_LeadStatus
  * Gère l'automatisation des statuts de lead.

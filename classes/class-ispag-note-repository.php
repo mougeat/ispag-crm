@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Gère les interactions avec la base de données pour les notes et tâches.
  * Responsable de la logique CRUD (Create, Read, Update, Delete).

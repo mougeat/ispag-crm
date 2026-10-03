@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 require_once __DIR__ . '/class-ispag-attachments-repository.php';
 
 class ISPAG_Attachments_Table_Renderer {

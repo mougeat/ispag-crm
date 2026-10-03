@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Classe dédiée à la gestion des préférences de notifications dans la page de profil utilisateur.
  * Réutilise la logique de ISPAG_Notifications_Manager pour l'affichage et l'enregistrement.

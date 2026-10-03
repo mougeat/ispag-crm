@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Crm_Mistral
  * Gère les interactions avec l'API Mistral pour le CRM ISPAG.

@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Workflow_Manager
  * Gère la création, l'exécution et la suppression des workflows.

@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 
 const ISPAG_ATTACHMENTS_NONCE_ACTION = 'ispag_attachments_nonce';

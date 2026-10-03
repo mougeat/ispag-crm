@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Brevo_Webhook_Handler
  * Gère les webhooks entrants de Brevo.

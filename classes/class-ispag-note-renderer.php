@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Gère le rendu HTML des éléments d'activité.
  */

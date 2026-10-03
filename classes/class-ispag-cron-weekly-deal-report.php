@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 // Fichier : includes/crm/class-ispag-cron-weekly-deal-report.php
 
 if ( ! class_exists( 'ISPAG_Cron_Weekly_Deal_Report' ) ) :

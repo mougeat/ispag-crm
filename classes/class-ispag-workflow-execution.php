@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Workflow_Execution
  * Gère les exécutions de workflows pour les deals.

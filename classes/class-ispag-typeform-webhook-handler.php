@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 if ( ! defined( 'ISPAG_CRM_TYPEFORM_SECRET' ) ) {
     // À définir dans ton wp-config.php. 

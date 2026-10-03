@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 // Fichier : includes/crm/class-ispag-cron-task-reminder.php
 
 if ( ! class_exists( 'ISPAG_Cron_Task_Reminder' ) ) :

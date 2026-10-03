@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Classe ISPAG_Mail_Template_API
  * Expose les templates de ISPAG_Template_Repository pour l'add-in Outlook.

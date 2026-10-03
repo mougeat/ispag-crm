@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Variable_Replacer
  * Gère le remplacement des variables dynamiques dans le contenu des étapes.

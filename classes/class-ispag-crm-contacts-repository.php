@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 require_once __DIR__ . '/ispag-crm-card-links.php';
 
 if ( ! class_exists( 'ISPAG_Crm_Contacts_Repository' ) ) :

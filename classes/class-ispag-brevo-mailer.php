@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Brevo_Mailer
  * Gère l'envoi d'e-mails via l'API Brevo.

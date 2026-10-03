@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Classe dédiée au rendu des notifications (cloche, sidebar, liste, badge)
  * Utilise Dashicons pour l'icône de cloche.
@@ -30,22 +31,17 @@ class ISPAG_Notifications_Renderer {
      */
     private static function register_ajax_actions() {
         add_action('wp_ajax_ispag_get_unread_notifications', [__CLASS__, 'get_unread_notifications_ajax']);
-        add_action('wp_ajax_nopriv_ispag_get_unread_notifications', [__CLASS__, 'get_unread_notifications_ajax']);
         add_action('wp_ajax_ispag_get_unread_notification_ids', [__CLASS__, 'get_unread_notification_ids_ajax']);
         add_action('wp_ajax_ispag_get_unread_notification_count', [__CLASS__, 'get_unread_notification_count_ajax']);
-        add_action('wp_ajax_nopriv_ispag_get_unread_notification_count', [__CLASS__, 'get_unread_notification_count_ajax']);
         
 
         // Actions AJAX pour la configuration des notifications
         add_action('wp_ajax_ispag_get_notification_settings_form', [__CLASS__, 'get_notification_settings_form_ajax']);
-        add_action('wp_ajax_nopriv_ispag_get_notification_settings_form', [__CLASS__, 'get_notification_settings_form_ajax']);
         add_action('wp_ajax_ispag_save_notification_settings', [__CLASS__, 'save_notification_settings_ajax']);
-        add_action('wp_ajax_nopriv_ispag_save_notification_settings', [__CLASS__, 'save_notification_settings_ajax']);
 
         add_action('wp_ajax_ispag_mark_all_notifications_read', [__CLASS__, 'mark_all_notifications_read_ajax']);
 
         add_action('wp_ajax_ispag_get_notifications_by_tab', [__CLASS__, 'get_notifications_by_tab_ajax']);
-        add_action('wp_ajax_nopriv_ispag_get_notifications_by_tab', [__CLASS__, 'get_notifications_by_tab_ajax']);
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php 
+defined('ABSPATH') || exit;
 
 // Fichier : includes/crm/class-ispag-crm-company-constants.php
 

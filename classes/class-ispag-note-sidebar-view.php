@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Gère le rendu HTML et le JavaScript de la Sidebar de tache
  */

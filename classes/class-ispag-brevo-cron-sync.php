@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Brevo_Cron_Sync
  * Gère la synchronisation des contacts avec Brevo.

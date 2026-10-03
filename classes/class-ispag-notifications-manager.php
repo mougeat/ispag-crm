@@ -80,7 +80,6 @@ class ISPAG_Notifications_Manager
         // $logger->log_user_action('notifications_manager', 'conceptual_notification_hooks_registered', [], $user_id);
 
         add_action('wp_ajax_ispag_mark_notification_as_read', [__CLASS__, 'mark_notification_as_read_ajax']);
-        add_action('wp_ajax_nopriv_ispag_mark_notification_as_read', [__CLASS__, 'mark_notification_as_read_ajax']);
         add_action('wp_ajax_ispag_delete_notification', [__CLASS__, 'delete_notification_ajax']);
 
         // Ajouter un cron pour nettoyer les anciennes notifications lues

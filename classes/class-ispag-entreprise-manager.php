@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 class ISPAG_Entreprise_Manager {
     // Utilisation de vos constantes pour la liaison Meta

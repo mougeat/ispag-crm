@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Template for the ISPAG Sequence Builder
  * Default language: English

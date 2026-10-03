@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 // Fichier : includes/crm/repositories/class-ispag-crm-contact-modal.php
 
 if ( ! class_exists( 'ISPAG_Crm_Contact_Modal' ) ) :

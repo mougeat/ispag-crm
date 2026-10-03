@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 /**
  * Gère la planification et le traitement des rappels de tâches via WordPress Cron.

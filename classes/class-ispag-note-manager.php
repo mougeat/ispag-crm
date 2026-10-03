@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Gère les notes et tâches associées aux contacts dans l'interface ISPAG.
  * C'est le point d'entrée pour l'initialisation des autres classes.

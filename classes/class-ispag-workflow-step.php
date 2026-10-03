@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /**
  * Class ISPAG_Workflow_Step
  * Classe abstraite pour les étapes d'un workflow.

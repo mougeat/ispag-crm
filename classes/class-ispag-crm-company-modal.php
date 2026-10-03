@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 
 // Fichier : includes/crm/repositories/class-ispag-crm-company-repository.php
 
