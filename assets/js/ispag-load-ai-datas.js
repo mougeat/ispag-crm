@@ -39,6 +39,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (infoIcon) infoIcon.title = result.data.explication_health_score;
                 } else {
                     const msg = (result.data && result.data.message) ? result.data.message : 'Error loading AI summary.';
+                    // Fonction réservée aux administrateurs : pour les autres, les blocs IA disparaissent sans message d'erreur
+                    if (/access denied/i.test(msg)) {
+                        placeholder.innerHTML = '';
+                        if (actionPlaceholder) actionPlaceholder.innerHTML = '';
+                        if (profilPlaceholder) profilPlaceholder.innerHTML = '';
+                        return;
+                    }
                     const safe = document.createElement('p');
                     safe.className = 'ispag-ai-error';
                     safe.textContent = msg;
