@@ -37,6 +37,7 @@ class ISPAG_Crm_Mistral
         if (empty($key) && !empty($_ENV[$name]))    $key = $_ENV[$name];
         if (empty($key) && !empty($_SERVER[$name])) $key = $_SERVER[$name];
         if (empty($key) && defined($name))          $key = constant($name);
+        if (empty($key))                            $key = get_option('ispag_mistral_api_key', ''); // saisie dans ISPAG Settings
         return is_string($key) ? trim($key) : '';
     }
 
@@ -121,7 +122,7 @@ class ISPAG_Crm_Mistral
         {
             self::log("ERREUR: Clé API vide.");
             self::$logger->log('crm_mistral', 'ERROR: API key is empty', $user_id);
-            return self::fail('API key missing (CRM_MISTRAL_API_KEY not found in .env, environment or wp-config.php)');
+            return self::fail('API key missing (CRM_MISTRAL_API_KEY not found in .env, environment, wp-config.php or ISPAG Settings)');
         }
 
         $user_locale = get_user_locale();
