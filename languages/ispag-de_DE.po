@@ -1,0 +1,26 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ispag-crm\n"
+"Report-Msgid-Bugs-To: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de_DE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: ispag\n"
+
+#: classes/class-ispag-crm-contacts-repository.php:1667
+msgid "ISPAG settings"
+msgstr "ISPAG-Einstellungen"
+
+#: classes/class-ispag-crm-contacts-repository.php:1703
+msgid "Configuration ISPAG CRM"
+msgstr "ISPAG-CRM-Konfiguration"
+
+#: classes/class-ispag-cron-leadstatus.php:285
+msgid "The lead status of %s has changed"
+msgstr "Der Lead-Status von %s hat sich geändert"
+
+#: classes/class-ispag-cron-leadstatus.php:289
+msgid "The lead status of %s changed from <strong>%s</strong> to <strong>%s</strong>."
+msgstr "Der Lead-Status von %s hat sich von <strong>%s</strong> auf <strong>%s</strong> geändert."

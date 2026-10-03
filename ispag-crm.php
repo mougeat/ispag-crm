@@ -11,12 +11,10 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Traductions désactivées pour l'instant : tous les textes de base sont en anglais.
- * Empêche aussi le chargement de fichiers .mo posés ailleurs (wp-content/languages/plugins/…).
- * Pour réactiver plus tard : add_filter('ispag_disable_translations', '__return_false');
+ * Les traductions FR / DE sont actives. Pour les désactiver (tout en anglais) : add_filter('ispag_disable_translations', '__return_true');
  */
 add_filter('override_load_textdomain', function ($override, $domain) {
-    if (in_array($domain, ['creation-reservoir', 'ispag-crm', 'ispag'], true) && apply_filters('ispag_disable_translations', true)) {
+    if (in_array($domain, ['creation-reservoir', 'ispag-crm', 'ispag'], true) && apply_filters('ispag_disable_translations', false)) {
         return true;
     }
     return $override;
@@ -56,9 +54,26 @@ require_once plugin_dir_path(__FILE__) . 'classes/helpers/ispag-translations-sup
 
 add_action('plugins_loaded', 'ispag_crm_load_textdomain');
 
+/**
+ * Traductions FR / DE (fichiers dans languages/ : <domaine>-fr_FR.mo, <domaine>-de_DE.mo ; générés par tools/i18n/build.py d'ISPAG Project Manager).
+ * Toute variante de langue du site est couverte : fr_CH, fr_BE… utilisent le français ; de_CH, de_DE_formal, de_AT… l'allemand.
+ * Les textes de base sont en anglais : sans fichier pour la langue du site, l'anglais est affiché.
+ */
+if (!function_exists('ispag_load_translations_from')) {
+    function ispag_load_translations_from($dir) {
+        $locale   = determine_locale();
+        $fallback = ['fr' => 'fr_FR', 'de' => 'de_DE'][substr($locale, 0, 2)] ?? '';
+        if ($fallback === '' || !is_dir($dir)) return;
+        foreach ((array) glob(rtrim($dir, '/\\') . '/*-' . $fallback . '.mo') as $mo) {
+            $domain = basename($mo, '-' . $fallback . '.mo');
+            $exact  = rtrim($dir, '/\\') . '/' . $domain . '-' . $locale . '.mo';
+            load_textdomain($domain, is_readable($exact) ? $exact : $mo);
+        }
+    }
+}
+
 function ispag_crm_load_textdomain() {
-    // Le premier paramètre DOIT être identique au "Text domain" de l'image (ispag-crm)
-    load_plugin_textdomain('ispag-crm', false, dirname(plugin_basename(__FILE__)) . '/languages');
+    ispag_load_translations_from(__DIR__ . '/languages');
 }
 
 // ----------------------------------------------------------------------------

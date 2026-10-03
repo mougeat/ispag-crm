@@ -1,0 +1,3171 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ispag-crm\n"
+"Report-Msgid-Bugs-To: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr_FR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Domain: ispag-crm\n"
+
+#: classes/admin/class-ispag-company-importer.php:473
+msgid "✅ Company import completed"
+msgstr "✅ Import d'entreprises terminé"
+
+#: classes/admin/class-ispag-company-importer.php:488
+msgid "❌ Company import failed"
+msgstr "❌ Échec de l'import d'entreprises"
+
+#: classes/admin/class-ispag-projects-list-table.php:27
+msgid "No projects found for this contact."
+msgstr "Aucun projet trouvé pour ce contact."
+
+#: classes/admin/class-ispag-projects-list-table.php:34
+msgid "Ref / ID"
+msgstr "Réf. / ID"
+
+#: classes/admin/class-ispag-projects-list-table.php:36
+msgid "Project / Customer"
+msgstr "Projet / Client"
+
+#: classes/admin/class-ispag-projects-list-table.php:83
+msgid "ISPAG CRM : Associated Deals"
+msgstr "ISPAG CRM : transactions associées"
+
+#: classes/admin/class-ispag-user-display-name-regenerator.php:101
+msgid "Network or server error."
+msgstr "Erreur réseau ou serveur."
+
+#: classes/admin/class-ispag-user-display-name-regenerator.php:16
+msgid "Regenerate Display Names"
+msgstr "Régénérer les noms affichés"
+
+#: classes/admin/class-ispag-user-display-name-regenerator.php:17
+msgid "Regenerate Names"
+msgstr "Régénérer les noms"
+
+#: classes/admin/class-ispag-user-display-name-regenerator.php:171
+msgid "Display Names Regeneration Completed"
+msgstr "Régénération des noms affichés terminée"
+
+#: classes/admin/class-ispag-user-display-name-regenerator.php:172
+msgid "The bulk regeneration of user display names has been successfully completed. Total processed: %d users."
+msgstr "La régénération groupée des noms affichés des utilisateurs s'est terminée avec succès. Total traité : %d utilisateurs."
+
+#: classes/admin/class-ispag-user-display-name-regenerator.php:29
+msgid "Regenerate User Display Names"
+msgstr "Régénérer les noms affichés des utilisateurs"
+
+#: classes/admin/class-ispag-user-display-name-regenerator.php:30
+msgid "This tool updates user display names in bulk to the First Name Last Name format using batches to prevent timeout errors on large volumes."
+msgstr "Cet outil met à jour en masse les noms affichés des utilisateurs au format Prénom Nom, par lots pour éviter les erreurs de délai d'attente sur de gros volumes."
+
+#: classes/admin/class-ispag-user-display-name-regenerator.php:33
+msgid "Total Users:"
+msgstr "Total des utilisateurs :"
+
+#: classes/admin/class-ispag-user-display-name-regenerator.php:40
+msgid "Ready to start."
+msgstr "Prêt à démarrer."
+
+#: classes/admin/class-ispag-user-display-name-regenerator.php:41
+msgid "Start Regeneration"
+msgstr "Démarrer la régénération"
+
+#: classes/admin/class-ispag-user-display-name-regenerator.php:57
+msgid "No users to process."
+msgstr "Aucun utilisateur à traiter."
+
+#: classes/admin/class-ispag-user-display-name-regenerator.php:62
+msgid "Processing..."
+msgstr "Traitement en cours..."
+
+#: classes/admin/class-ispag-user-display-name-regenerator.php:87
+msgid "Processed:"
+msgstr "Traités :"
+
+#: classes/admin/class-ispag-user-display-name-regenerator.php:90
+msgid "Regeneration completed successfully!"
+msgstr "Régénération terminée avec succès !"
+
+#: classes/admin/class-ispag-user-display-name-regenerator.php:96
+msgid "Error:"
+msgstr "Erreur :"
+
+#: classes/admin/sequence-builder.php:105
+msgid "STEP"
+msgstr "ÉTAPE"
+
+#: classes/admin/sequence-builder.php:112
+msgid "Action Type:"
+msgstr "Type d'action :"
+
+#: classes/admin/sequence-builder.php:120
+msgid "Condition (Optional):"
+msgstr "Condition (facultatif) :"
+
+#: classes/admin/sequence-builder.php:122
+msgid "-- No Condition --"
+msgstr "-- Aucune condition --"
+
+#: classes/admin/sequence-builder.php:124
+msgid "If Mail Opened"
+msgstr "Si l'e-mail est ouvert"
+
+#: classes/admin/sequence-builder.php:127
+msgid "Amount of the offer"
+msgstr "Montant de l'offre"
+
+#: classes/admin/sequence-builder.php:13
+msgid "SMS"
+msgstr "SMS"
+
+#: classes/admin/sequence-builder.php:130
+msgid "Last contact > X days ago"
+msgstr "Dernier contact il y a plus de X jours"
+
+#: classes/admin/sequence-builder.php:14
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+#: classes/admin/sequence-builder.php:150
+msgid "If FALSE, skip to the next step:"
+msgstr "Si FAUX, passer à l'étape suivante :"
+
+#: classes/admin/sequence-builder.php:156
+msgid "Wait Delay (days):"
+msgstr "Délai d'attente (jours) :"
+
+#: classes/admin/sequence-builder.php:16
+msgid "Gift"
+msgstr "Cadeau"
+
+#: classes/admin/sequence-builder.php:165
+msgid "Objective:"
+msgstr "Objectif :"
+
+#: classes/admin/sequence-builder.php:166
+msgid "e.g. Schedule a meeting"
+msgstr "ex : Planifier une réunion"
+
+#: classes/admin/sequence-builder.php:169
+msgid "Value Added:"
+msgstr "Valeur ajoutée :"
+
+#: classes/admin/sequence-builder.php:170
+msgid "e.g. Send technical specs"
+msgstr "ex : Envoyer les spécifications techniques"
+
+#: classes/admin/sequence-builder.php:177
+msgid "Use a Template (Optional):"
+msgstr "Utiliser un modèle (facultatif) :"
+
+#: classes/admin/sequence-builder.php:180
+msgid "-- Custom Message --"
+msgstr "-- Message personnalisé --"
+
+#: classes/admin/sequence-builder.php:53
+msgid "Sequence Configuration"
+msgstr "Configuration de la séquence"
+
+#: classes/admin/sequence-builder.php:62
+msgid "Sequence Name:"
+msgstr "Nom de la séquence :"
+
+#: classes/admin/sequence-builder.php:65
+msgid "e.g. 48h Quote Follow-up"
+msgstr "ex : Relance de devis à 48 h"
+
+#: classes/admin/sequence-builder.php:68
+msgid "Description:"
+msgstr "Description :"
+
+#: classes/admin/sequence-builder.php:69
+msgid "Describe the purpose of this sequence..."
+msgstr "Décrivez l'objectif de cette séquence..."
+
+#: classes/admin/sequence-builder.php:75
+msgid "Sequence Steps"
+msgstr "Étapes de la séquence"
+
+#: classes/admin/sequence-builder.php:88
+msgid "Save Sequence"
+msgstr "Enregistrer la séquence"
+
+#: classes/class-ispag-attachments-card-renderer.php:101
+msgid "No attachments to display"
+msgstr "Aucune pièce jointe à afficher"
+
+#: classes/class-ispag-attachments-card-renderer.php:149
+msgid "General files"
+msgstr "Fichiers généraux"
+
+#: classes/class-ispag-attachments-card-renderer.php:161
+msgid "Unknown article"
+msgstr "Article inconnu"
+
+#: classes/class-ispag-attachments-card-renderer.php:185
+msgid "See all attachments"
+msgstr "Voir toutes les pièces jointes"
+
+#: classes/class-ispag-attachments-card-renderer.php:67
+msgid "Add"
+msgstr "Ajouter"
+
+#: classes/class-ispag-attachments-modal-renderer.php:110
+msgid "Add a document"
+msgstr "Ajouter un document"
+
+#: classes/class-ispag-attachments-modal-renderer.php:35
+msgid "General"
+msgstr "Général"
+
+#: classes/class-ispag-attachments-modal-renderer.php:47
+msgid "Drop a file or click to browse"
+msgstr "Déposez un fichier ou cliquez pour parcourir"
+
+#: classes/class-ispag-attachments-modal-renderer.php:51
+msgid "Drag a file here or"
+msgstr "Glissez un fichier ici ou"
+
+#: classes/class-ispag-attachments-modal-renderer.php:52
+msgid "browse"
+msgstr "parcourir"
+
+#: classes/class-ispag-attachments-modal-renderer.php:54
+msgid "PDF, images, Word, Excel, Mail — 20 Mo max"
+msgstr "PDF, images, Word, Excel, e-mail — 20 Mo max"
+
+#: classes/class-ispag-attachments-modal-renderer.php:60
+msgid "Revoke"
+msgstr "Révoquer"
+
+#: classes/class-ispag-attachments-modal-renderer.php:64
+msgid "Document type"
+msgstr "Type de document"
+
+#: classes/class-ispag-attachments-modal-renderer.php:66
+msgid "— Select —"
+msgstr "— Sélectionner —"
+
+#: classes/class-ispag-attachments-modal-renderer.php:87
+msgid "Load"
+msgstr "Charger"
+
+#: classes/class-ispag-attachments-repository.php:81
+msgid "Purchase"
+msgstr "Achat"
+
+#: classes/class-ispag-attachments-table-renderer.php:25
+msgid "Type"
+msgstr "Type"
+
+#: classes/class-ispag-attachments-table-renderer.php:26
+msgid "Download date"
+msgstr "Date de téléchargement"
+
+#: classes/class-ispag-attachments-table-renderer.php:27
+msgid "Source"
+msgstr "Source"
+
+#: classes/class-ispag-attachments-table-renderer.php:28
+msgid "Size"
+msgstr "Taille"
+
+#: classes/class-ispag-attachments-table-renderer.php:35
+msgid "No attachments found."
+msgstr "Aucune pièce jointe trouvée."
+
+#: classes/class-ispag-attachments-table-renderer.php:52
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: classes/class-ispag-attachments-uploader.php:35
+msgid "Invalid entity type."
+msgstr "Type d'entité invalide."
+
+#: classes/class-ispag-attachments-uploader.php:40
+msgid "Invalid document type."
+msgstr "Type de document invalide."
+
+#: classes/class-ispag-attachments-uploader.php:65
+msgid "Failed to create the media."
+msgstr "Échec de la création du média."
+
+#: classes/class-ispag-company-detail-shortcode.php:1011
+msgid "About"
+msgstr "À propos"
+
+#: classes/class-ispag-company-detail-shortcode.php:1014
+msgid "Activities"
+msgstr "Activités"
+
+#: classes/class-ispag-company-detail-shortcode.php:1020
+msgid "Intelligence"
+msgstr "Intelligence"
+
+#: classes/class-ispag-company-detail-shortcode.php:1029
+msgid "Company Profile"
+msgstr "Profil de l'entreprise"
+
+#: classes/class-ispag-company-detail-shortcode.php:1042
+msgid "Click to edit"
+msgstr "Cliquez pour modifier"
+
+#: classes/class-ispag-company-detail-shortcode.php:1048
+msgid "Street adress"
+msgstr "Adresse (rue)"
+
+#: classes/class-ispag-company-detail-shortcode.php:1062
+msgid "Postal code"
+msgstr "Code postal"
+
+#: classes/class-ispag-company-detail-shortcode.php:1076
+msgid "State/Region"
+msgstr "Canton / région"
+
+#: classes/class-ispag-company-detail-shortcode.php:1090
+msgid "Country/Region"
+msgstr "Pays / région"
+
+#: classes/class-ispag-company-detail-shortcode.php:1104
+msgid "Industry"
+msgstr "Secteur d'activité"
+
+#: classes/class-ispag-company-detail-shortcode.php:1129
+msgid "Transaction information"
+msgstr "Informations sur la transaction"
+
+#: classes/class-ispag-company-detail-shortcode.php:1135
+msgid "Amount"
+msgstr "Montant"
+
+#: classes/class-ispag-company-detail-shortcode.php:1136
+msgid "Closing date"
+msgstr "Date de clôture"
+
+#: classes/class-ispag-company-detail-shortcode.php:1137
+msgid "Transaction phase"
+msgstr "Phase de la transaction"
+
+#: classes/class-ispag-company-detail-shortcode.php:1146
+msgid "Show all transactions"
+msgstr "Afficher toutes les transactions"
+
+#: classes/class-ispag-company-detail-shortcode.php:1149
+msgid "No recent transactions."
+msgstr "Aucune transaction récente."
+
+#: classes/class-ispag-company-detail-shortcode.php:1161
+msgid "Loading AI summary..."
+msgstr "Chargement du résumé IA..."
+
+#: classes/class-ispag-company-detail-shortcode.php:1196
+msgid "Remove association"
+msgstr "Supprimer l'association"
+
+#: classes/class-ispag-company-detail-shortcode.php:1210
+msgid "View all associated Contacts"
+msgstr "Voir tous les contacts associés"
+
+#: classes/class-ispag-company-detail-shortcode.php:1213
+msgid "No contacts associated with this company."
+msgstr "Aucun contact associé à cette entreprise."
+
+#: classes/class-ispag-company-detail-shortcode.php:507
+msgid "%d contacts successfully linked to the company."
+msgstr "%d contacts liés à l'entreprise avec succès."
+
+#: classes/class-ispag-company-detail-shortcode.php:696
+msgid "Search Contacts"
+msgstr "Rechercher des contacts"
+
+#: classes/class-ispag-company-detail-shortcode.php:701
+msgid "Currently associated contacts"
+msgstr "Contacts actuellement associés"
+
+#: classes/class-ispag-company-detail-shortcode.php:730
+msgid "Contact creation form..."
+msgstr "Formulaire de création de contact..."
+
+#: classes/class-ispag-company-detail-shortcode.php:816
+msgid "Company ID is missing."
+msgstr "L'ID de l'entreprise est manquant."
+
+#: classes/class-ispag-company-detail-shortcode.php:904
+msgid "Add Note"
+msgstr "Ajouter une note"
+
+#: classes/class-ispag-company-detail-shortcode.php:908
+msgid "Log a call"
+msgstr "Consigner un appel"
+
+#: classes/class-ispag-company-detail-shortcode.php:912
+msgid "Create Task"
+msgstr "Créer une tâche"
+
+#: classes/class-ispag-company-detail-shortcode.php:916
+msgid "Create New Contact"
+msgstr "Créer un nouveau contact"
+
+#: classes/class-ispag-company-detail-shortcode.php:923
+msgid "Key information"
+msgstr "Informations clés"
+
+#: classes/class-ispag-company-detail-shortcode.php:926
+msgid "Phone number"
+msgstr "Numéro de téléphone"
+
+#: classes/class-ispag-company-detail-shortcode.php:937
+msgid "Address"
+msgstr "Adresse"
+
+#: classes/class-ispag-company-detail-shortcode.php:948
+msgid "City"
+msgstr "Ville"
+
+#: classes/class-ispag-company-detail-shortcode.php:959
+msgid "Company Owner"
+msgstr "Responsable de l'entreprise"
+
+#: classes/class-ispag-company-detail-shortcode.php:971
+msgid "Last contacted"
+msgstr "Dernier contact"
+
+#: classes/class-ispag-company-detail-shortcode.php:980
+msgid "Company Status"
+msgstr "Statut de l'entreprise"
+
+#: classes/class-ispag-company-detail-shortcode.php:982
+msgid "Company Type"
+msgstr "Type d'entreprise"
+
+#: classes/class-ispag-company-detail-shortcode.php:994
+msgid "Client Tier"
+msgstr "Niveau client"
+
+#: classes/class-ispag-contact-detail-shortcode.php:1000
+msgid "Meeting"
+msgstr "Réunion"
+
+#: classes/class-ispag-contact-detail-shortcode.php:1008
+msgid "Ignore health reminder"
+msgstr "Ignorer le rappel de suivi"
+
+#: classes/class-ispag-contact-detail-shortcode.php:1044
+msgid "Role"
+msgstr "Rôle"
+
+#: classes/class-ispag-contact-detail-shortcode.php:1086
+msgid "Transaction open"
+msgstr "Transaction ouverte"
+
+#: classes/class-ispag-contact-detail-shortcode.php:1089
+msgid "Contact owner"
+msgstr "Responsable du contact"
+
+#: classes/class-ispag-contact-detail-shortcode.php:1101
+msgid "Linkedin page"
+msgstr "Page LinkedIn"
+
+#: classes/class-ispag-contact-detail-shortcode.php:1115
+msgid "Sales information"
+msgstr "Informations commerciales"
+
+#: classes/class-ispag-contact-detail-shortcode.php:1117
+msgid "Opportunity value"
+msgstr "Valeur de l'opportunité"
+
+#: classes/class-ispag-contact-detail-shortcode.php:1119
+msgid "Buying goal"
+msgstr "Objectif d'achat"
+
+#: classes/class-ispag-contact-detail-shortcode.php:1132
+msgid "Activity"
+msgstr "Activité"
+
+#: classes/class-ispag-contact-detail-shortcode.php:1138
+msgid "AI Intelligence"
+msgstr "Intelligence IA"
+
+#: classes/class-ispag-contact-detail-shortcode.php:1365
+msgid "Company domain"
+msgstr "Domaine de l'entreprise"
+
+#: classes/class-ispag-contact-detail-shortcode.php:1366
+msgid "Company phone"
+msgstr "Téléphone de l'entreprise"
+
+#: classes/class-ispag-contact-detail-shortcode.php:1372
+msgid "No related companies."
+msgstr "Aucune entreprise liée."
+
+#: classes/class-ispag-contact-detail-shortcode.php:1374
+msgid "Show related companies"
+msgstr "Afficher les entreprises liées"
+
+#: classes/class-ispag-contact-detail-shortcode.php:326
+msgid "Lost offer"
+msgstr "Offre perdue"
+
+#: classes/class-ispag-contact-detail-shortcode.php:335
+msgid "Quotation"
+msgstr "Devis"
+
+#: classes/class-ispag-contact-detail-shortcode.php:635
+msgid "Contact ID is missing."
+msgstr "L'ID du contact est manquant."
+
+#: classes/class-ispag-contact-detail-shortcode.php:640
+msgid "Contact not found."
+msgstr "Contact introuvable."
+
+#: classes/class-ispag-contact-detail-shortcode.php:836
+msgid "(No role selected)"
+msgstr "(Aucun rôle sélectionné)"
+
+#: classes/class-ispag-contact-detail-shortcode.php:939
+msgid "Call this number"
+msgstr "Appeler ce numéro"
+
+#: classes/class-ispag-contact-detail-shortcode.php:973
+msgid "Log an Email"
+msgstr "Consigner un e-mail"
+
+#: classes/class-ispag-contact-detail-shortcode.php:976
+msgid "E-mail"
+msgstr "E-mail"
+
+#: classes/class-ispag-contact-detail-shortcode.php:997
+msgid "Schedule Meeting"
+msgstr "Planifier une réunion"
+
+#: classes/class-ispag-contact-manager.php:1127
+msgid "You do not have permission to view this content."
+msgstr "Vous n'avez pas la permission de voir ce contenu."
+
+#: classes/class-ispag-contact-manager.php:1288
+msgid "%d contact successfully updated."
+msgid_plural "%d contacts successfully updated."
+msgstr[0] "%d contact mis à jour avec succès."
+msgstr[1] "%d contacts mis à jour avec succès."
+
+#: classes/class-ispag-contact-manager.php:1291
+msgid "An unknown error occurred during the bulk action."
+msgstr "Une erreur inconnue s'est produite pendant l'action groupée."
+
+#: classes/class-ispag-contact-manager.php:1293
+msgid "Error: No contacts selected or no action chosen."
+msgstr "Erreur : aucun contact sélectionné ou aucune action choisie."
+
+#: classes/class-ispag-contact-manager.php:1295
+msgid "Error: Invalid bulk action selected."
+msgstr "Erreur : action groupée invalide."
+
+#: classes/class-ispag-contact-manager.php:1303
+msgid "ISPAG Contacts List"
+msgstr "Liste des contacts ISPAG"
+
+#: classes/class-ispag-contact-manager.php:1315
+msgid "Search (Name/Email)..."
+msgstr "Rechercher (nom / e-mail)..."
+
+#: classes/class-ispag-contact-manager.php:1356
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#: classes/class-ispag-contact-manager.php:1396
+msgid "%d contact"
+msgid_plural "%d contacts"
+msgstr[0] "%d contact"
+msgstr[1] "%d contacts"
+
+#: classes/class-ispag-contact-manager.php:1413
+msgid "Bulk Actions..."
+msgstr "Actions groupées..."
+
+#: classes/class-ispag-contact-manager.php:1414
+msgid "Change lead status"
+msgstr "Changer le statut de lead"
+
+#: classes/class-ispag-contact-manager.php:1417
+msgid "Set Status to: %s"
+msgstr "Définir le statut sur : %s"
+
+#: classes/class-ispag-contact-manager.php:1421
+msgid "Change lifecycle phase"
+msgstr "Changer la phase du cycle de vie"
+
+#: classes/class-ispag-contact-manager.php:1424
+msgid "Set Phase to: %s"
+msgstr "Définir la phase sur : %s"
+
+#: classes/class-ispag-contact-manager.php:1428
+msgid "Change Owner"
+msgstr "Changer le responsable"
+
+#: classes/class-ispag-contact-manager.php:1431
+msgid "Assign to: %s"
+msgstr "Assigner à : %s"
+
+#: classes/class-ispag-contact-manager.php:1446
+msgid "Select All"
+msgstr "Tout sélectionner"
+
+#: classes/class-ispag-contact-manager.php:1452
+msgid "Contact Name"
+msgstr "Nom du contact"
+
+#: classes/class-ispag-contact-manager.php:1453
+msgid "Function"
+msgstr "Fonction"
+
+#: classes/class-ispag-contact-manager.php:1457
+msgid "Last contact"
+msgstr "Dernier contact"
+
+#: classes/class-ispag-contact-manager.php:1458
+msgid "Transactions"
+msgstr "Transactions"
+
+#: classes/class-ispag-contact-manager.php:230
+msgid "Please select the contacts you want to edit."
+msgstr "Veuillez sélectionner les contacts à modifier."
+
+#: classes/class-ispag-contact-manager.php:367
+msgid "Manage Contacts"
+msgstr "Gérer les contacts"
+
+#: classes/class-ispag-contact-manager.php:528
+msgid "Contact Management (CRM Style)"
+msgstr "Gestion des contacts (style CRM)"
+
+#: classes/class-ispag-contact-manager.php:530
+msgid "Add New Contact"
+msgstr "Ajouter un nouveau contact"
+
+#: classes/class-ispag-contact-manager.php:536
+msgid "One contact updated successfully."
+msgid_plural "%s contacts updated successfully."
+msgstr[0] "Un contact mis à jour avec succès."
+msgstr[1] "%s contacts mis à jour avec succès."
+
+#: classes/class-ispag-contact-manager.php:568
+msgid "Search Contacts:"
+msgstr "Rechercher des contacts :"
+
+#: classes/class-ispag-contact-manager.php:570
+msgid "Search"
+msgstr "Rechercher"
+
+#: classes/class-ispag-contact-manager.php:583
+msgid "Bulk Edit Contacts"
+msgstr "Modifier les contacts en masse"
+
+#: classes/class-ispag-contact-manager.php:606
+msgid "Linked Company"
+msgstr "Entreprise liée"
+
+#: classes/class-ispag-contact-manager.php:609
+msgid "— No Change —"
+msgstr "— Aucun changement —"
+
+#: classes/class-ispag-contact-manager.php:610
+msgid "— Remove Link —"
+msgstr "— Supprimer le lien —"
+
+#: classes/class-ispag-contact-manager.php:619
+msgid "Owner"
+msgstr "Responsable"
+
+#: classes/class-ispag-contact-manager.php:62
+msgid "Contact health monitoring"
+msgstr "Suivi de la santé des contacts"
+
+#: classes/class-ispag-contact-manager.php:623
+msgid "— Remove Owner —"
+msgstr "— Supprimer le responsable —"
+
+#: classes/class-ispag-contact-manager.php:632
+msgid "Lead status"
+msgstr "Statut de lead"
+
+#: classes/class-ispag-contact-manager.php:636
+msgid "— Clear Status —"
+msgstr "— Effacer le statut —"
+
+#: classes/class-ispag-contact-manager.php:645
+msgid "Lifecycle phase"
+msgstr "Phase du cycle de vie"
+
+#: classes/class-ispag-contact-manager.php:649
+msgid "— Clear Phase —"
+msgstr "— Effacer la phase —"
+
+#: classes/class-ispag-contact-manager.php:66
+msgid "Health Check"
+msgstr "Contrôle de santé"
+
+#: classes/class-ispag-contact-manager.php:661
+msgid "Update"
+msgstr "Mettre à jour"
+
+#: classes/class-ispag-contact-manager.php:667
+msgid "Select bulk action"
+msgstr "Sélectionner une action groupée"
+
+#: classes/class-ispag-contact-manager.php:669
+msgid "Bulk Actions"
+msgstr "Actions groupées"
+
+#: classes/class-ispag-contact-manager.php:670
+msgid "Edit"
+msgstr "Modifier"
+
+#: classes/class-ispag-contact-manager.php:672
+msgid "Apply"
+msgstr "Appliquer"
+
+#: classes/class-ispag-contact-manager.php:685
+msgid "Filter by lead status"
+msgstr "Filtrer par statut de lead"
+
+#: classes/class-ispag-contact-manager.php:687
+msgid "All lead statuses"
+msgstr "Tous les statuts de lead"
+
+#: classes/class-ispag-contact-manager.php:695
+msgid "Filter by lifecycle phase"
+msgstr "Filtrer par phase du cycle de vie"
+
+#: classes/class-ispag-contact-manager.php:697
+msgid "All lifecycle phases"
+msgstr "Toutes les phases du cycle de vie"
+
+#: classes/class-ispag-contact-manager.php:705
+msgid "Filter"
+msgstr "Filtrer"
+
+#: classes/class-ispag-contact-manager.php:719
+msgid "Name"
+msgstr "Nom"
+
+#: classes/class-ispag-contact-manager.php:720
+msgid "Email"
+msgstr "E-mail"
+
+#: classes/class-ispag-contact-manager.php:721
+msgid "Company Name"
+msgstr "Nom de l'entreprise"
+
+#: classes/class-ispag-contact-manager.php:73
+msgid "Check this box to ignore this contact in the \"health\" check process (automatic reminders)."
+msgstr "Cochez cette case pour ignorer ce contact dans le processus de contrôle de « santé » (rappels automatiques)."
+
+#: classes/class-ispag-contact-manager.php:732
+msgid "No contacts found."
+msgstr "Aucun contact trouvé."
+
+#: classes/class-ispag-contact-manager.php:798
+msgid "View"
+msgstr "Voir"
+
+#: classes/class-ispag-crm-company-creator.php:104
+msgid "Security check failed. Please reload the page."
+msgstr "Échec du contrôle de sécurité. Veuillez recharger la page."
+
+#: classes/class-ispag-crm-company-creator.php:107
+msgid "You are not allowed to create companies."
+msgstr "Vous n'êtes pas autorisé à créer des entreprises."
+
+#: classes/class-ispag-crm-company-creator.php:116
+msgid "Company created."
+msgstr "Entreprise créée."
+
+#: classes/class-ispag-crm-company-creator.php:121
+msgid "A company with this domain already exists."
+msgstr "Une entreprise avec ce domaine existe déjà."
+
+#: classes/class-ispag-crm-company-creator.php:125
+msgid "The company name is required."
+msgstr "Le nom de l'entreprise est obligatoire."
+
+#: classes/class-ispag-crm-company-creator.php:127
+msgid "This email address is not valid."
+msgstr "Cette adresse e-mail n'est pas valide."
+
+#: classes/class-ispag-crm-company-creator.php:129
+msgid "The company could not be saved."
+msgstr "L'entreprise n'a pas pu être enregistrée."
+
+#: classes/class-ispag-crm-company-modal.php:130
+msgid "Add existing company"
+msgstr "Ajouter une entreprise existante"
+
+#: classes/class-ispag-crm-company-modal.php:135
+msgid "Create new"
+msgstr "Créer un nouveau"
+
+#: classes/class-ispag-crm-company-modal.php:136
+msgid "Add existing"
+msgstr "Ajouter un existant"
+
+#: classes/class-ispag-crm-company-modal.php:143
+msgid "Search companies"
+msgstr "Rechercher des entreprises"
+
+#: classes/class-ispag-crm-company-modal.php:148
+msgid "Currently associated companies"
+msgstr "Entreprises actuellement associées"
+
+#: classes/class-ispag-crm-company-modal.php:156
+msgid "Contacts"
+msgstr "Contacts"
+
+#: classes/class-ispag-crm-company-modal.php:162
+msgid "Currently no linked company"
+msgstr "Aucune entreprise liée actuellement"
+
+#: classes/class-ispag-crm-company-modal.php:168
+msgid "Companies"
+msgstr "Entreprises"
+
+#: classes/class-ispag-crm-company-modal.php:173
+msgid "10 items"
+msgstr "10 éléments"
+
+#: classes/class-ispag-crm-company-modal.php:178
+msgid "Company creation form..."
+msgstr "Formulaire de création d'entreprise..."
+
+#: classes/class-ispag-crm-company-modal.php:184
+msgid "Save"
+msgstr "Enregistrer"
+
+#: classes/class-ispag-crm-company-modal.php:218
+msgid "Association successfully updated."
+msgstr "Association mise à jour avec succès."
+
+#: classes/class-ispag-crm-company-repository.php:1000
+msgid "Unknown user"
+msgstr "Utilisateur inconnu"
+
+#: classes/class-ispag-crm-company-repository.php:1003
+msgid "Not assigned"
+msgstr "Non assigné"
+
+#: classes/class-ispag-crm-company-repository.php:1010
+msgid "Not defined"
+msgstr "Non défini"
+
+#: classes/class-ispag-crm-company-repository.php:1026
+msgid "No data to export"
+msgstr "Aucune donnée à exporter"
+
+#: classes/class-ispag-crm-company-repository.php:1054
+msgid "Project"
+msgstr "Projet"
+
+#: classes/class-ispag-crm-company-repository.php:1055
+msgid "Offer number"
+msgstr "Numéro d'offre"
+
+#: classes/class-ispag-crm-company-repository.php:1057
+msgid "Contact"
+msgstr "Contact"
+
+#: classes/class-ispag-crm-company-repository.php:1058
+msgid "Amount (CHF)"
+msgstr "Montant (CHF)"
+
+#: classes/class-ispag-crm-company-repository.php:1059
+msgid "Stage"
+msgstr "Étape"
+
+#: classes/class-ispag-crm-company-repository.php:1060
+msgid "Create  date"
+msgstr "Date de création"
+
+#: classes/class-ispag-crm-company-repository.php:1061
+msgid "Close date"
+msgstr "Date de clôture"
+
+#: classes/class-ispag-crm-company-repository.php:630
+msgid "Access denied."
+msgstr "Accès refusé."
+
+#: classes/class-ispag-crm-company-repository.php:636
+msgid "Missing company ID."
+msgstr "ID de l'entreprise manquant."
+
+#: classes/class-ispag-crm-company-repository.php:645
+msgid "Company not found."
+msgstr "Entreprise introuvable."
+
+#: classes/class-ispag-crm-company-repository.php:709
+msgid "AI Company Summary"
+msgstr "Résumé IA de l'entreprise"
+
+#: classes/class-ispag-crm-company-repository.php:719
+msgid "AI Recommended Actions"
+msgstr "Actions recommandées par l'IA"
+
+#: classes/class-ispag-crm-company-repository.php:751
+msgid "Missing ID or field name."
+msgstr "ID ou nom de champ manquant."
+
+#: classes/class-ispag-crm-company-repository.php:811
+msgid "🏢 New company assigned"
+msgstr "🏢 Nouvelle entreprise assignée"
+
+#: classes/class-ispag-crm-company-repository.php:814
+msgid "You have been assigned as the department owner for the company %1$s (Department: %2$s)."
+msgstr "Vous avez été désigné responsable de service pour l'entreprise %1$s (service : %2$s)."
+
+#: classes/class-ispag-crm-company-repository.php:930
+msgid "You are not allowed to edit companies."
+msgstr "Vous n'êtes pas autorisé à modifier les entreprises."
+
+#: classes/class-ispag-crm-company-repository.php:961
+msgid "Database update failed or no changes made."
+msgstr "La mise à jour de la base de données a échoué ou aucune modification n'a été faite."
+
+#: classes/class-ispag-crm-contact-modal.php:54
+msgid "Add existing contact"
+msgstr "Ajouter un contact existant"
+
+#: classes/class-ispag-crm-contact-modal.php:68
+msgid "Search contact name..."
+msgstr "Rechercher un nom de contact..."
+
+#: classes/class-ispag-crm-contact-modal.php:81
+msgid "Registration form coming soon..."
+msgstr "Formulaire d'inscription bientôt disponible..."
+
+#: classes/class-ispag-crm-contact-modal.php:88
+msgid "Link Selected Contacts"
+msgstr "Lier les contacts sélectionnés"
+
+#: classes/class-ispag-crm-contacts-repository.php:1494
+msgid "Missing contact ID."
+msgstr "ID du contact manquant."
+
+#: classes/class-ispag-crm-contacts-repository.php:1499
+msgid "User not found."
+msgstr "Utilisateur introuvable."
+
+#: classes/class-ispag-crm-contacts-repository.php:1588
+msgid "Meeting Preparation"
+msgstr "Préparation de la réunion"
+
+#: classes/class-ispag-crm-contacts-repository.php:1593
+msgid "Objectives"
+msgstr "Objectifs"
+
+#: classes/class-ispag-crm-contacts-repository.php:1594
+msgid "Key Questions"
+msgstr "Questions clés"
+
+#: classes/class-ispag-crm-contacts-repository.php:1595
+msgid "Attention Points"
+msgstr "Points d'attention"
+
+#: classes/class-ispag-crm-contacts-repository.php:1596
+msgid "Agenda"
+msgstr "Ordre du jour"
+
+#: classes/class-ispag-crm-contacts-repository.php:1597
+msgid "Opening Hook"
+msgstr "Accroche d'ouverture"
+
+#: classes/class-ispag-crm-contacts-repository.php:1614
+msgid "Meeting prep — %s"
+msgstr "Préparation de réunion — %s"
+
+#: classes/class-ispag-crm-contacts-repository.php:1907
+msgid "undefined"
+msgstr "non défini"
+
+#: classes/class-ispag-crm-contacts-repository.php:1919
+msgid "👤 New contact assigned"
+msgstr "👤 Nouveau contact assigné"
+
+#: classes/class-ispag-crm-contacts-repository.php:1922
+msgid "You have been assigned as the department owner for contact %1$s (%2$s)."
+msgstr "Vous avez été désigné responsable de service pour le contact %1$s (%2$s)."
+
+#: classes/class-ispag-crm-contacts-repository.php:415
+msgid "High"
+msgstr "Haute"
+
+#: classes/class-ispag-crm-contacts-repository.php:416
+msgid "Medium"
+msgstr "Moyenne"
+
+#: classes/class-ispag-crm-contacts-repository.php:417
+msgid "Low"
+msgstr "Basse"
+
+#: classes/class-ispag-crm-contacts-repository.php:428
+msgid "None"
+msgstr "Aucune"
+
+#: classes/class-ispag-crm-deal-model.php:130
+msgid "Status Inconnu"
+msgstr "Statut inconnu"
+
+#: classes/class-ispag-crm-deals-repository.php:1387
+msgid "Bulk update of contact date"
+msgstr "Mise à jour groupée de la date de contact"
+
+#: classes/class-ispag-crm-deals-repository.php:1389
+msgid "Last contact date manually modified to %s for project %s."
+msgstr "Date du dernier contact modifiée manuellement au %s pour le projet %s."
+
+#: classes/class-ispag-crm-discount-manager.php:204
+msgid "Missing company ID or field name."
+msgstr "ID de l'entreprise ou nom de champ manquant."
+
+#: classes/class-ispag-crm-discount-manager.php:354
+msgid "Failed to process discount/coefficient."
+msgstr "Échec du traitement de la remise / du coefficient."
+
+#: classes/class-ispag-crm-discount-manager.php:357
+msgid "Discount/Coefficient saved successfully."
+msgstr "Remise / coefficient enregistré avec succès."
+
+#: classes/class-ispag-crm-lifecycle-manager.php:52
+msgid "Prospect"
+msgstr "Prospect"
+
+#: classes/class-ispag-crm-lifecycle-manager.php:53
+msgid "Partner"
+msgstr "Partenaire"
+
+#: classes/class-ispag-crm-lifecycle-manager.php:54
+msgid "Reseller"
+msgstr "Revendeur"
+
+#: classes/class-ispag-crm-lifecycle-manager.php:55
+msgid "Vendor"
+msgstr "Fournisseur"
+
+#: classes/class-ispag-crm-lifecycle-manager.php:56
+msgid "Engineer"
+msgstr "Ingénieur"
+
+#: classes/class-ispag-crm-mistral.php:69
+msgid "AI processing failed."
+msgstr "Échec du traitement par l'IA."
+
+#: classes/class-ispag-crm-supplier-tab.php:110
+msgid "No contact is linked to this company yet."
+msgstr "Aucun contact n'est encore lié à cette entreprise."
+
+#: classes/class-ispag-crm-supplier-tab.php:127
+msgid "Articles supplied"
+msgstr "Articles fournis"
+
+#: classes/class-ispag-crm-supplier-tab.php:129
+msgid "The article catalogue is not available (Project Manager plugin inactive)."
+msgstr "Le catalogue d'articles n'est pas disponible (plugin Project Manager inactif)."
+
+#: classes/class-ispag-crm-supplier-tab.php:131
+msgid "No article is linked to this supplier yet. Add it from an article (Purchasing tab)."
+msgstr "Aucun article n'est encore lié à ce fournisseur. Ajoutez-le depuis un article (onglet Achats)."
+
+#: classes/class-ispag-crm-supplier-tab.php:136
+msgid "Article"
+msgstr "Article"
+
+#: classes/class-ispag-crm-supplier-tab.php:137
+msgid "Supplier reference"
+msgstr "Référence fournisseur"
+
+#: classes/class-ispag-crm-supplier-tab.php:138
+msgid "Purchase price"
+msgstr "Prix d'achat"
+
+#: classes/class-ispag-crm-supplier-tab.php:139
+msgid "Discount"
+msgstr "Remise"
+
+#: classes/class-ispag-crm-supplier-tab.php:183
+msgid "Saved"
+msgstr "Enregistré"
+
+#: classes/class-ispag-crm-supplier-tab.php:19
+msgid "Currency"
+msgstr "Devise"
+
+#: classes/class-ispag-crm-supplier-tab.php:20
+msgid "VAT number"
+msgstr "N° de TVA"
+
+#: classes/class-ispag-crm-supplier-tab.php:205
+msgid "Unauthorized"
+msgstr "Non autorisé"
+
+#: classes/class-ispag-crm-supplier-tab.php:22
+msgid "Delivery time (days)"
+msgstr "Délai de livraison (jours)"
+
+#: classes/class-ispag-crm-supplier-tab.php:23
+msgid "Transport time (days)"
+msgstr "Délai de transport (jours)"
+
+#: classes/class-ispag-crm-supplier-tab.php:230
+msgid "This contact does not belong to this company."
+msgstr "Ce contact n'appartient pas à cette entreprise."
+
+#: classes/class-ispag-crm-supplier-tab.php:235
+msgid "Invalid data"
+msgstr "Données invalides"
+
+#: classes/class-ispag-crm-supplier-tab.php:30
+msgid "Order / quotation contact"
+msgstr "Contact commande / offre"
+
+#: classes/class-ispag-crm-supplier-tab.php:31
+msgid "Drawing contact"
+msgstr "Contact plans"
+
+#: classes/class-ispag-crm-supplier-tab.php:32
+msgid "Billing contact"
+msgstr "Contact facturation"
+
+#: classes/class-ispag-crm-supplier-tab.php:33
+msgid "Delivery contact"
+msgstr "Contact livraison"
+
+#: classes/class-ispag-crm-supplier-tab.php:73
+msgid "Supplier"
+msgstr "Fournisseur"
+
+#: classes/class-ispag-crm-supplier-tab.php:96
+msgid "Purchasing information"
+msgstr "Informations d'achat"
+
+#: classes/class-ispag-deals-constants.php:130
+msgid "Price Too High"
+msgstr "Prix trop élevé"
+
+#: classes/class-ispag-deals-constants.php:131
+msgid "Timeline Problem"
+msgstr "Problème de délai"
+
+#: classes/class-ispag-deals-constants.php:132
+msgid "Dissatisfied with Last Order"
+msgstr "Insatisfait de la dernière commande"
+
+#: classes/class-ispag-deals-constants.php:133
+msgid "Competitor Chosen"
+msgstr "Concurrent choisi"
+
+#: classes/class-ispag-deals-constants.php:134
+msgid "Project Not Realized"
+msgstr "Projet non réalisé"
+
+#: classes/class-ispag-deals-constants.php:135
+msgid "Political Decision"
+msgstr "Décision politique"
+
+#: classes/class-ispag-deals-constants.php:136
+msgid "Replaced by Offer"
+msgstr "Remplacé par une offre"
+
+#: classes/class-ispag-deals-constants.php:137
+msgid "Client Did Not Receive Order"
+msgstr "Le client n'a pas reçu la commande"
+
+#: classes/class-ispag-deals-constants.php:138
+msgid "Assigned to Internal Group"
+msgstr "Assigné à un groupe interne"
+
+#: classes/class-ispag-eml-builder.php:24
+msgid "Insufficient rights."
+msgstr "Droits insuffisants."
+
+#: classes/class-ispag-entreprise-manager.php:25
+msgid "Add Company"
+msgstr "Ajouter une entreprise"
+
+#: classes/class-ispag-entreprise-manager.php:32
+msgid "Company updated."
+msgstr "Entreprise mise à jour."
+
+#: classes/class-ispag-entreprise-manager.php:33
+msgid "Company deleted."
+msgstr "Entreprise supprimée."
+
+#: classes/class-ispag-entreprise-manager.php:34
+msgid "A company with this domain already exists: nothing was created."
+msgstr "Une entreprise avec ce domaine existe déjà : rien n'a été créé."
+
+#: classes/class-ispag-lifecycle-phase-manager.php:111
+msgid "No change / None"
+msgstr "Aucun changement / aucun"
+
+#: classes/class-ispag-lifecycle-phase-manager.php:35
+msgid "ISPAG Lifecycle"
+msgstr "Cycle de vie ISPAG"
+
+#: classes/class-ispag-lifecycle-phase-manager.php:41
+msgid "Select Phase"
+msgstr "Sélectionner une phase"
+
+#: classes/class-ispag-lifecycle-phase-manager.php:49
+msgid "Phase manually defined or updated by the daily CRON job."
+msgstr "Phase définie manuellement ou mise à jour par la tâche CRON quotidienne."
+
+#: classes/class-ispag-lifecycle-phase-manager.php:72
+msgid "Phase"
+msgstr "Phase"
+
+#: classes/class-ispag-note-ajax-handler.php:177
+msgid "Missing data."
+msgstr "Données manquantes."
+
+#: classes/class-ispag-note-ajax-handler.php:270
+msgid "Activity updated."
+msgstr "Activité mise à jour."
+
+#: classes/class-ispag-note-ajax-handler.php:278
+msgid "Note recorded."
+msgstr "Note enregistrée."
+
+#: classes/class-ispag-note-ajax-handler.php:37
+msgid "Security check failed."
+msgstr "Échec du contrôle de sécurité."
+
+#: classes/class-ispag-note-ajax-handler.php:383
+msgid "Activity deleted"
+msgstr "Activité supprimée"
+
+#: classes/class-ispag-note-ajax-handler.php:388
+msgid "Failed to delete from database."
+msgstr "Échec de la suppression dans la base de données."
+
+#: classes/class-ispag-note-ajax-handler.php:57
+msgid "Activity saved successfully."
+msgstr "Activité enregistrée avec succès."
+
+#: classes/class-ispag-note-ajax-handler.php:63
+msgid "Failed to save activity."
+msgstr "Échec de l'enregistrement de l'activité."
+
+#: classes/class-ispag-note-manager.php:175
+msgid "Select one or more companies..."
+msgstr "Sélectionnez une ou plusieurs entreprises..."
+
+#: classes/class-ispag-note-manager.php:176
+msgid "Select one or more participants..."
+msgstr "Sélectionnez un ou plusieurs participants..."
+
+#: classes/class-ispag-note-manager.php:177
+msgid "Select one or more deals..."
+msgstr "Sélectionnez une ou plusieurs transactions..."
+
+#: classes/class-ispag-note-manager.php:178
+msgid "Create note"
+msgstr "Créer une note"
+
+#: classes/class-ispag-note-manager.php:180
+msgid "Send"
+msgstr "Envoyer"
+
+#: classes/class-ispag-note-manager.php:181
+msgid "Do you really want to mark this task as complete?"
+msgstr "Voulez-vous vraiment marquer cette tâche comme terminée ?"
+
+#: classes/class-ispag-note-manager.php:182
+msgid "Are you sure you want to delete this activity? This action is irreversible."
+msgstr "Voulez-vous vraiment supprimer cette activité ? Cette action est irréversible."
+
+#: classes/class-ispag-note-manager.php:183
+msgid "Edit task"
+msgstr "Modifier la tâche"
+
+#: classes/class-ispag-note-manager.php:184
+msgid "Edit activity"
+msgstr "Modifier l'activité"
+
+#: classes/class-ispag-note-manager.php:186
+msgid "Updated meeting"
+msgstr "Réunion mise à jour"
+
+#: classes/class-ispag-note-manager.php:188
+msgid "Saving..."
+msgstr "Enregistrement..."
+
+#: classes/class-ispag-note-manager.php:189
+msgid "Log meeting"
+msgstr "Consigner une réunion"
+
+#: classes/class-ispag-note-manager.php:190
+msgid "Log task"
+msgstr "Consigner une tâche"
+
+#: classes/class-ispag-note-manager.php:192
+msgid "Log mail"
+msgstr "Consigner un e-mail"
+
+#: classes/class-ispag-note-manager.php:194
+msgid "Replace the current content with the template"
+msgstr "Remplacer le contenu actuel par le modèle"
+
+#: classes/class-ispag-note-manager.php:195
+msgid "Mail subject"
+msgstr "Objet de l'e-mail"
+
+#: classes/class-ispag-note-manager.php:196
+msgid "Subject of your message"
+msgstr "Objet de votre message"
+
+#: classes/class-ispag-note-manager.php:198
+msgid "Meeting subject"
+msgstr "Objet de la réunion"
+
+#: classes/class-ispag-note-manager.php:199
+msgid "Call title"
+msgstr "Titre de l'appel"
+
+#: classes/class-ispag-note-manager.php:200
+msgid "Note title"
+msgstr "Titre de la note"
+
+#: classes/class-ispag-note-manager.php:202
+msgid "Prepare email"
+msgstr "Préparer l'e-mail"
+
+#: classes/class-ispag-note-manager.php:205
+msgid "Discard this draft?"
+msgstr "Abandonner ce brouillon ?"
+
+#: classes/class-ispag-note-manager.php:206
+msgid "Please enter some content."
+msgstr "Veuillez saisir un contenu."
+
+#: classes/class-ispag-note-manager.php:207
+msgid "Please choose a due date."
+msgstr "Veuillez choisir une échéance."
+
+#: classes/class-ispag-note-manager.php:208
+msgid "Network error, your text has been kept. Please try again."
+msgstr "Erreur réseau, votre texte a été conservé. Veuillez réessayer."
+
+#: classes/class-ispag-note-manager.php:475
+msgid "Invalid request."
+msgstr "Requête invalide."
+
+#: classes/class-ispag-note-manager.php:484
+msgid "Task not found."
+msgstr "Tâche introuvable."
+
+#: classes/class-ispag-note-manager.php:496
+msgid "Database update failed."
+msgstr "Échec de la mise à jour de la base de données."
+
+#: classes/class-ispag-note-manager.php:506
+msgid "Task postponed."
+msgstr "Tâche reportée."
+
+#: classes/class-ispag-note-manager.php:525
+msgid "Missing activity ID."
+msgstr "ID de l'activité manquant."
+
+#: classes/class-ispag-note-manager.php:540
+msgid "Database update failed or task not found."
+msgstr "Échec de la mise à jour de la base de données ou tâche introuvable."
+
+#: classes/class-ispag-note-manager.php:551
+msgid "Task marked as completed."
+msgstr "Tâche marquée comme terminée."
+
+#: classes/class-ispag-note-modal-view.php:100
+msgid "Deals"
+msgstr "Transactions"
+
+#: classes/class-ispag-note-modal-view.php:113
+msgid "Date"
+msgstr "Date"
+
+#: classes/class-ispag-note-modal-view.php:118
+msgid "Time"
+msgstr "Heure"
+
+#: classes/class-ispag-note-modal-view.php:122
+msgid "Outcome"
+msgstr "Résultat"
+
+#: classes/class-ispag-note-modal-view.php:124
+msgid "Busy"
+msgstr "Occupé"
+
+#: classes/class-ispag-note-modal-view.php:126
+msgid "Left live message"
+msgstr "Message laissé en direct"
+
+#: classes/class-ispag-note-modal-view.php:127
+msgid "Left voicemail"
+msgstr "Message laissé sur la messagerie"
+
+#: classes/class-ispag-note-modal-view.php:128
+msgid "No answer"
+msgstr "Pas de réponse"
+
+#: classes/class-ispag-note-modal-view.php:129
+msgid "Wrong number"
+msgstr "Mauvais numéro"
+
+#: classes/class-ispag-note-modal-view.php:151
+msgid "Scheduled"
+msgstr "Planifié"
+
+#: classes/class-ispag-note-modal-view.php:152
+msgid "Completed"
+msgstr "Terminé"
+
+#: classes/class-ispag-note-modal-view.php:153
+msgid "Rescheduled"
+msgstr "Reprogrammé"
+
+#: classes/class-ispag-note-modal-view.php:154
+msgid "No Show"
+msgstr "Absent"
+
+#: classes/class-ispag-note-modal-view.php:155
+msgid "Canceled"
+msgstr "Annulé"
+
+#: classes/class-ispag-note-modal-view.php:162
+msgid "Email Template"
+msgstr "Modèle d'e-mail"
+
+#: classes/class-ispag-note-modal-view.php:165
+msgid "-- Select a template --"
+msgstr "-- Sélectionner un modèle --"
+
+#: classes/class-ispag-note-modal-view.php:182
+msgid "Other"
+msgstr "Autre"
+
+#: classes/class-ispag-note-modal-view.php:199
+msgid "A draft (.eml) is downloaded: open it in your mail client to review and send. The CRM files the email automatically once sent."
+msgstr "Un brouillon (.eml) est téléchargé : ouvrez-le dans votre messagerie pour le relire et l'envoyer. Le CRM classe automatiquement l'e-mail une fois envoyé."
+
+#: classes/class-ispag-note-modal-view.php:203
+msgid "Note Title"
+msgstr "Titre de la note"
+
+#: classes/class-ispag-note-modal-view.php:204
+msgid "Quick summary"
+msgstr "Résumé rapide"
+
+#: classes/class-ispag-note-modal-view.php:207
+msgid "Start writing to leave a note..."
+msgstr "Commencez à écrire pour laisser une note..."
+
+#: classes/class-ispag-note-modal-view.php:212
+msgid "Create a task"
+msgstr "Créer une tâche"
+
+#: classes/class-ispag-note-modal-view.php:216
+msgid "To do"
+msgstr "À faire"
+
+#: classes/class-ispag-note-modal-view.php:216
+msgid "for a follow-up in"
+msgstr "pour un suivi dans"
+
+#: classes/class-ispag-note-modal-view.php:218
+msgid "Due date"
+msgstr "Échéance"
+
+#: classes/class-ispag-note-modal-view.php:220
+msgid "1 month"
+msgstr "1 mois"
+
+#: classes/class-ispag-note-modal-view.php:220
+msgid "1 week"
+msgstr "1 semaine"
+
+#: classes/class-ispag-note-modal-view.php:220
+msgid "2 weeks"
+msgstr "2 semaines"
+
+#: classes/class-ispag-note-modal-view.php:220
+msgid "3 business days"
+msgstr "3 jours ouvrables"
+
+#: classes/class-ispag-note-modal-view.php:220
+msgid "3 months"
+msgstr "3 mois"
+
+#: classes/class-ispag-note-modal-view.php:220
+msgid "Custom date"
+msgstr "Date personnalisée"
+
+#: classes/class-ispag-note-modal-view.php:220
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#: classes/class-ispag-note-modal-view.php:220
+msgid "Tomorrow"
+msgstr "Demain"
+
+#: classes/class-ispag-note-modal-view.php:235
+msgid "2 months"
+msgstr "2 mois"
+
+#: classes/class-ispag-note-modal-view.php:266
+msgid "Reminder before due date:"
+msgstr "Rappel avant l'échéance :"
+
+#: classes/class-ispag-note-modal-view.php:269
+msgid "No reminder"
+msgstr "Aucun rappel"
+
+#: classes/class-ispag-note-modal-view.php:270
+msgid "On time"
+msgstr "À l'heure prévue"
+
+#: classes/class-ispag-note-modal-view.php:271
+msgid "30 minutes before"
+msgstr "30 minutes avant"
+
+#: classes/class-ispag-note-modal-view.php:272
+msgid "1 hour before"
+msgstr "1 heure avant"
+
+#: classes/class-ispag-note-modal-view.php:273
+msgid "1 day before"
+msgstr "1 jour avant"
+
+#: classes/class-ispag-note-modal-view.php:282
+msgid "Ctrl + Enter to save"
+msgstr "Ctrl + Entrée pour enregistrer"
+
+#: classes/class-ispag-note-modal-view.php:287
+msgid "Create a Note"
+msgstr "Créer une note"
+
+#: classes/class-ispag-note-modal-view.php:69
+msgid "Note"
+msgstr "Note"
+
+#: classes/class-ispag-note-modal-view.php:70
+msgid "Close"
+msgstr "Fermer"
+
+#: classes/class-ispag-note-modal-view.php:81
+msgid "Associated with:"
+msgstr "Associé à :"
+
+#: classes/class-ispag-note-modal-view.php:84
+msgid "Attendees"
+msgstr "Participants"
+
+#: classes/class-ispag-note-renderer.php:122
+msgid "Upcoming & Overdue"
+msgstr "À venir et en retard"
+
+#: classes/class-ispag-note-renderer.php:239
+msgid "Mark as completed"
+msgstr "Marquer comme terminé"
+
+#: classes/class-ispag-note-renderer.php:258
+msgid "1 Attachment"
+msgstr "1 pièce jointe"
+
+#: classes/class-ispag-note-renderer.php:287
+msgid "Delete"
+msgstr "Supprimer"
+
+#: classes/class-ispag-note-renderer.php:294
+msgid "No outcome"
+msgstr "Aucun résultat"
+
+#: classes/class-ispag-note-renderer.php:83
+msgid "No registered activity"
+msgstr "Aucune activité enregistrée"
+
+#: classes/class-ispag-note-repository.php:586
+msgid "associations"
+msgstr "associations"
+
+#: classes/class-ispag-note-repository.php:642
+msgid "Associations"
+msgstr "Associations"
+
+#: classes/class-ispag-note-repository.php:708
+msgid "company"
+msgid_plural "companies"
+msgstr[0] "entreprise"
+msgstr[1] "entreprises"
+
+#: classes/class-ispag-note-repository.php:784
+msgid "opportunity"
+msgid_plural "opportunities"
+msgstr[0] "opportunité"
+msgstr[1] "opportunités"
+
+#: classes/class-ispag-note-sidebar-view.php:25
+msgid "Task Details"
+msgstr "Détails de la tâche"
+
+#: classes/class-ispag-note-sidebar-view.php:29
+msgid "Assigned to"
+msgstr "Assigné à"
+
+#: classes/class-ispag-note-sidebar-view.php:74
+msgid "Notes & Description"
+msgstr "Notes et description"
+
+#: classes/class-ispag-note-sidebar-view.php:80
+msgid "Meeting information"
+msgstr "Informations sur la réunion"
+
+#: classes/class-ispag-note-sidebar-view.php:83
+msgid "Participants"
+msgstr "Participants"
+
+#: classes/class-ispag-note-sidebar-view.php:84
+msgid "Schedule"
+msgstr "Planning"
+
+#: classes/class-ispag-notifications-manager.php:1026
+msgid "Hello %s,"
+msgstr "Bonjour %s,"
+
+#: classes/class-ispag-notifications-manager.php:1030
+msgid "Open in ISPAG"
+msgstr "Ouvrir dans ISPAG"
+
+#: classes/class-ispag-notifications-manager.php:1153
+msgid "Notification not found."
+msgstr "Notification introuvable."
+
+#: classes/class-ispag-notifications-manager.php:1172
+msgid "Notification marked as read."
+msgstr "Notification marquée comme lue."
+
+#: classes/class-ispag-notifications-manager.php:1173
+msgid "Notification marked as unread."
+msgstr "Notification marquée comme non lue."
+
+#: classes/class-ispag-notifications-manager.php:119
+msgid "Data import / export"
+msgstr "Import / export de données"
+
+#: classes/class-ispag-notifications-manager.php:121
+msgid "Form submission"
+msgstr "Envoi de formulaire"
+
+#: classes/class-ispag-notifications-manager.php:1215
+msgid "Error while changing the status."
+msgstr "Erreur lors du changement de statut."
+
+#: classes/class-ispag-notifications-manager.php:1219
+msgid "Notification moved to the Trash."
+msgstr "Notification déplacée dans la corbeille."
+
+#: classes/class-ispag-notifications-manager.php:122
+msgid "Invoice"
+msgstr "Facture"
+
+#: classes/class-ispag-notifications-manager.php:1220
+msgid "Notification restored."
+msgstr "Notification restaurée."
+
+#: classes/class-ispag-notifications-manager.php:124
+msgid "Automations and workflow"
+msgstr "Automatisations et workflow"
+
+#: classes/class-ispag-notifications-manager.php:1255
+msgid "ISPAG notification preferences"
+msgstr "Préférences de notification ISPAG"
+
+#: classes/class-ispag-notifications-manager.php:1315
+msgid "Weekend notifications"
+msgstr "Notifications du week-end"
+
+#: classes/class-ispag-notifications-manager.php:1324
+msgid "If left unchecked, notifications will be delayed until Monday."
+msgstr "Si la case est décochée, les notifications seront différées jusqu'au lundi."
+
+#: classes/class-ispag-notifications-manager.php:1339
+msgid "From :"
+msgstr "De :"
+
+#: classes/class-ispag-notifications-manager.php:1345
+msgid "To :"
+msgstr "À :"
+
+#: classes/class-ispag-notifications-manager.php:141
+msgid "Contact assigned to you"
+msgstr "Contact qui vous est assigné"
+
+#: classes/class-ispag-notifications-manager.php:142
+msgid "Notification sent when a contact is assigned to you."
+msgstr "Notification envoyée lorsqu'un contact vous est assigné."
+
+#: classes/class-ispag-notifications-manager.php:149
+msgid "Contact lead status"
+msgstr "Statut de lead du contact"
+
+#: classes/class-ispag-notifications-manager.php:150
+msgid "Notification sent when the lead status of a contact changes."
+msgstr "Notification envoyée lorsque le statut de lead d'un contact change."
+
+#: classes/class-ispag-notifications-manager.php:160
+msgid "Company assigned to you"
+msgstr "Entreprise qui vous est assignée"
+
+#: classes/class-ispag-notifications-manager.php:161
+msgid "Notification sent when a company is assigned to you."
+msgstr "Notification envoyée lorsqu'une entreprise vous est assignée."
+
+#: classes/class-ispag-notifications-manager.php:168
+msgid "Company monitoring"
+msgstr "Suivi d'entreprise"
+
+#: classes/class-ispag-notifications-manager.php:169
+msgid "Notification sent for company follow-ups."
+msgstr "Notification envoyée pour les suivis d'entreprise."
+
+#: classes/class-ispag-notifications-manager.php:179
+msgid "Project status tracking"
+msgstr "Suivi du statut des projets"
+
+#: classes/class-ispag-notifications-manager.php:180
+msgid "Notification sent when the status of a project changes."
+msgstr "Notification envoyée lorsque le statut d'un projet change."
+
+#: classes/class-ispag-notifications-manager.php:187
+msgid "Project tracking / Invoicing"
+msgstr "Suivi de projet / facturation"
+
+#: classes/class-ispag-notifications-manager.php:188
+msgid "Notification sent for invoicing projects."
+msgstr "Notification envoyée pour la facturation des projets."
+
+#: classes/class-ispag-notifications-manager.php:195
+msgid "Item / Deal Management"
+msgstr "Gestion des articles / transactions"
+
+#: classes/class-ispag-notifications-manager.php:196
+msgid "Notification sent for item management actions (drawing needs validation, drawing validated, etc.)."
+msgstr "Notification envoyée pour les actions de gestion des articles (plan à valider, plan validé, etc.)."
+
+#: classes/class-ispag-notifications-manager.php:203
+msgid "Item Modifications"
+msgstr "Modifications d'articles"
+
+#: classes/class-ispag-notifications-manager.php:204
+msgid "Notification sent for item management actions (product modifications, etc.)."
+msgstr "Notification envoyée pour les actions de gestion des articles (modifications de produit, etc.)."
+
+#: classes/class-ispag-notifications-manager.php:211
+msgid "Drawing to approve"
+msgstr "Plan à valider"
+
+#: classes/class-ispag-notifications-manager.php:212
+msgid "Notification sent to the people concerned by a project when a drawing is attached and waits for their approval."
+msgstr "Notification envoyée aux personnes concernées par un projet lorsqu'un plan est joint et attend leur validation."
+
+#: classes/class-ispag-notifications-manager.php:219
+msgid "Item modified by someone else"
+msgstr "Article modifié par une autre personne"
+
+#: classes/class-ispag-notifications-manager.php:220
+msgid "Notification sent to the project manager when another person creates, modifies or deletes an item of the project."
+msgstr "Notification envoyée au chef de projet lorsqu'une autre personne crée, modifie ou supprime un article du projet."
+
+#: classes/class-ispag-notifications-manager.php:227
+msgid "Project / Deal Management"
+msgstr "Gestion des projets / transactions"
+
+#: classes/class-ispag-notifications-manager.php:228
+msgid "Notification sent for project or deal management actions. (new project, etc.)"
+msgstr "Notification envoyée pour les actions de gestion de projet ou de transaction (nouveau projet, etc.)."
+
+#: classes/class-ispag-notifications-manager.php:238
+msgid "Purchase tracking"
+msgstr "Suivi des achats"
+
+#: classes/class-ispag-notifications-manager.php:239
+msgid "Notification sent for purchase follow-ups."
+msgstr "Notification envoyée pour les suivis d'achat."
+
+#: classes/class-ispag-notifications-manager.php:246
+msgid "Purchase order created"
+msgstr "Commande d'achat créée"
+
+#: classes/class-ispag-notifications-manager.php:247
+msgid "Notification sent when a new purchase order is created."
+msgstr "Notification envoyée lorsqu'une nouvelle commande d'achat est créée."
+
+#: classes/class-ispag-notifications-manager.php:257
+msgid "Data import/export report"
+msgstr "Rapport d'import / export de données"
+
+#: classes/class-ispag-notifications-manager.php:258
+msgid "Notification sent when a data import or export is completed."
+msgstr "Notification envoyée lorsqu'un import ou export de données est terminé."
+
+#: classes/class-ispag-notifications-manager.php:265
+msgid "Document upload"
+msgstr "Téléversement de document"
+
+#: classes/class-ispag-notifications-manager.php:266
+msgid "Notification sent when a document is uploaded."
+msgstr "Notification envoyée lorsqu'un document est téléversé."
+
+#: classes/class-ispag-notifications-manager.php:273
+msgid "Document AI analysis"
+msgstr "Analyse IA de document"
+
+#: classes/class-ispag-notifications-manager.php:274
+msgid "Notification sent when a document is analyzed by AI."
+msgstr "Notification envoyée lorsqu'un document est analysé par l'IA."
+
+#: classes/class-ispag-notifications-manager.php:281
+msgid "Old projects and articles cleanup"
+msgstr "Nettoyage des anciens projets et articles"
+
+#: classes/class-ispag-notifications-manager.php:282
+msgid "Notification sent when old projects or articles are cleaned up."
+msgstr "Notification envoyée lorsque d'anciens projets ou articles sont nettoyés."
+
+#: classes/class-ispag-notifications-manager.php:292
+msgid "Task notification"
+msgstr "Notification de tâche"
+
+#: classes/class-ispag-notifications-manager.php:293
+msgid "Notification sent for CRM task assignments or updates."
+msgstr "Notification envoyée pour les attributions ou mises à jour de tâches CRM."
+
+#: classes/class-ispag-notifications-manager.php:303
+msgid "New form submission"
+msgstr "Nouvel envoi de formulaire"
+
+#: classes/class-ispag-notifications-manager.php:304
+msgid "Notification sent when a new form is submitted."
+msgstr "Notification envoyée lorsqu'un nouveau formulaire est soumis."
+
+#: classes/class-ispag-notifications-manager.php:314
+msgid "Billing"
+msgstr "Facturation"
+
+#: classes/class-ispag-notifications-manager.php:315
+msgid "Notification sent for billing-related updates."
+msgstr "Notification envoyée pour les mises à jour liées à la facturation."
+
+#: classes/class-ispag-notifications-manager.php:325
+msgid "Email Activity"
+msgstr "Activité e-mail"
+
+#: classes/class-ispag-notifications-manager.php:326
+msgid "Notification sent for email-related activities."
+msgstr "Notification envoyée pour les activités liées aux e-mails."
+
+#: classes/class-ispag-notifications-manager.php:337
+msgid "Automation and workflow alerts"
+msgstr "Alertes d'automatisation et de workflow"
+
+#: classes/class-ispag-notifications-manager.php:338
+msgid "Notification sent for automation or workflow alerts."
+msgstr "Notification envoyée pour les alertes d'automatisation ou de workflow."
+
+#: classes/class-ispag-notifications-manager.php:357
+msgid "CRM (Cloche / Sidebar)"
+msgstr "CRM (cloche / barre latérale)"
+
+#: classes/class-ispag-notifications-manager.php:358
+msgid "Push (navigateur / mobile)"
+msgstr "Push (navigateur / mobile)"
+
+#: classes/class-ispag-notifications-manager.php:360
+msgid "Telegram"
+msgstr "Telegram"
+
+#: classes/class-ispag-notifications-manager.php:361
+msgid "Conceptual window"
+msgstr "Fenêtre contextuelle"
+
+#: classes/class-ispag-notifications-renderer.php:109
+msgid "🔔 Welcome to ISPAG Notifications!"
+msgstr "🔔 Bienvenue dans les notifications ISPAG !"
+
+#: classes/class-ispag-notifications-renderer.php:112
+msgid "Notifications help you stay updated on important events such as:"
+msgstr "Les notifications vous tiennent informé des événements importants, tels que :"
+
+#: classes/class-ispag-notifications-renderer.php:115
+msgid "Project status changes (e.g., new deals, updates, closures)."
+msgstr "Changements de statut de projet (nouvelles transactions, mises à jour, clôtures)."
+
+#: classes/class-ispag-notifications-renderer.php:116
+msgid "Task assignments and follow-ups."
+msgstr "Attributions de tâches et suivis."
+
+#: classes/class-ispag-notifications-renderer.php:117
+msgid "Purchase orders and supplier updates."
+msgstr "Commandes d'achat et mises à jour des fournisseurs."
+
+#: classes/class-ispag-notifications-renderer.php:118
+msgid "New document uploads."
+msgstr "Nouveaux téléversements de documents."
+
+#: classes/class-ispag-notifications-renderer.php:119
+msgid "Automation and workflow alerts."
+msgstr "Alertes d'automatisation et de workflow."
+
+#: classes/class-ispag-notifications-renderer.php:122
+msgid "Please select below how you would like to receive these notifications (e.g., via email, CRM bell, mobile push, etc.)."
+msgstr "Veuillez sélectionner ci-dessous comment vous souhaitez recevoir ces notifications (par e-mail, cloche CRM, push mobile, etc.)."
+
+#: classes/class-ispag-notifications-renderer.php:126
+msgid "⚙️ You can modify these preferences at any time by clicking the bell icon (🔔) in the top menu."
+msgstr "⚙️ Vous pouvez modifier ces préférences à tout moment en cliquant sur l'icône de cloche (🔔) dans le menu du haut."
+
+#: classes/class-ispag-notifications-renderer.php:133
+msgid "Choose the method(s) by which you wish to receive each type of notification."
+msgstr "Choisissez la ou les méthodes par lesquelles vous souhaitez recevoir chaque type de notification."
+
+#: classes/class-ispag-notifications-renderer.php:139
+msgid "Notification type"
+msgstr "Type de notification"
+
+#: classes/class-ispag-notifications-renderer.php:180
+msgid "Right to Disconnect"
+msgstr "Droit à la déconnexion"
+
+#: classes/class-ispag-notifications-renderer.php:188
+msgid "Receive notifications on weekends (Saturday and Sunday)"
+msgstr "Recevoir les notifications le week-end (samedi et dimanche)"
+
+#: classes/class-ispag-notifications-renderer.php:193
+msgid "Holiday Periods"
+msgstr "Périodes de vacances"
+
+#: classes/class-ispag-notifications-renderer.php:194
+msgid "Add periods during which you do not want to receive notifications."
+msgstr "Ajoutez les périodes pendant lesquelles vous ne souhaitez pas recevoir de notifications."
+
+#: classes/class-ispag-notifications-renderer.php:201
+msgid "Start Date:"
+msgstr "Date de début :"
+
+#: classes/class-ispag-notifications-renderer.php:207
+msgid "End Date:"
+msgstr "Date de fin :"
+
+#: classes/class-ispag-notifications-renderer.php:212
+msgid "Remove"
+msgstr "Retirer"
+
+#: classes/class-ispag-notifications-renderer.php:232
+msgid "Add Holiday Period"
+msgstr "Ajouter une période de vacances"
+
+#: classes/class-ispag-notifications-renderer.php:237
+msgid "Save preferences"
+msgstr "Enregistrer les préférences"
+
+#: classes/class-ispag-notifications-renderer.php:319
+msgid "Preferences successfully saved."
+msgstr "Préférences enregistrées avec succès."
+
+#: classes/class-ispag-notifications-renderer.php:344
+msgid "All notifications marked as read."
+msgstr "Toutes les notifications ont été marquées comme lues."
+
+#: classes/class-ispag-notifications-renderer.php:445
+msgid "Notifications"
+msgstr "Notifications"
+
+#: classes/class-ispag-notifications-renderer.php:448
+msgid "Mark all as read"
+msgstr "Tout marquer comme lu"
+
+#: classes/class-ispag-notifications-renderer.php:458
+msgid "Unread"
+msgstr "Non lues"
+
+#: classes/class-ispag-notifications-renderer.php:461
+msgid "All"
+msgstr "Toutes"
+
+#: classes/class-ispag-notifications-renderer.php:464
+msgid "Trash"
+msgstr "Corbeille"
+
+#: classes/class-ispag-notifications-renderer.php:474
+msgid "Loading"
+msgstr "Chargement"
+
+#: classes/class-ispag-notifications-renderer.php:483
+msgid "Notification preferences"
+msgstr "Préférences de notification"
+
+#: classes/class-ispag-notifications-renderer.php:502
+msgid "See details →"
+msgstr "Voir les détails →"
+
+#: classes/class-ispag-notifications-renderer.php:585
+msgid "Hooray! You’re all caught up on your unread notifications."
+msgstr "Bravo ! Vous avez lu toutes vos notifications."
+
+#: classes/class-ispag-notifications-renderer.php:586
+msgid "You can still access notifications from the last 30 days by checking the \"All\" and \"Trash\" tabs."
+msgstr "Vous pouvez toujours accéder aux notifications des 30 derniers jours dans les onglets « Toutes » et « Corbeille »."
+
+#: classes/class-ispag-notifications-renderer.php:589
+msgid "No notifications."
+msgstr "Aucune notification."
+
+#: classes/class-ispag-notifications-renderer.php:590
+msgid "There are no notifications to display here at the moment."
+msgstr "Aucune notification à afficher ici pour le moment."
+
+#: classes/class-ispag-notifications-renderer.php:706
+msgid "Open"
+msgstr "Ouvrir"
+
+#: classes/class-ispag-notifications-renderer.php:716
+msgid "Mark as read"
+msgstr "Marquer comme lu"
+
+#: classes/class-ispag-notifications-renderer.php:791
+msgid "Mark as unread"
+msgstr "Marquer comme non lu"
+
+#: classes/class-ispag-notifications-renderer.php:802
+msgid "Restore"
+msgstr "Restaurer"
+
+#: classes/class-ispag-profile-notifications-handler.php:231
+msgid "Security: Unauthorized action."
+msgstr "Sécurité : action non autorisée."
+
+#: classes/class-ispag-profile-notifications-handler.php:236
+msgid "You must be logged in."
+msgstr "Vous devez être connecté."
+
+#: classes/class-ispag-profile-notifications-handler.php:31
+msgid "You must be logged in to view this section."
+msgstr "Vous devez être connecté pour voir cette section."
+
+#: classes/class-ispag-profile-notifications-handler.php:60
+msgid "Notification Preferences"
+msgstr "Préférences de notification"
+
+#: classes/class-ispag-reminder-cron.php:51
+msgid "Every 15 Minutes"
+msgstr "Toutes les 15 minutes"
+
+#: classes/class-ispag-revenue-stats.php:104
+msgid "Open orders"
+msgstr "Commandes ouvertes"
+
+#: classes/class-ispag-revenue-stats.php:109
+msgid "Total invoices"
+msgstr "Total des factures"
+
+#: classes/class-ispag-revenue-stats.php:114
+msgid "Weighted Pipeline"
+msgstr "Pipeline pondéré"
+
+#: classes/class-ispag-revenue-stats.php:83
+msgid "Health score"
+msgstr "Score de santé"
+
+#: classes/class-ispag-revenue-stats.php:94
+msgid "Total quotes"
+msgstr "Total des devis"
+
+#: classes/class-ispag-revenue-stats.php:99
+msgid "Open Quotes"
+msgstr "Devis ouverts"
+
+#: classes/class-ispag-status-manager.php:167
+msgid "-- Select Status --"
+msgstr "-- Sélectionner un statut --"
+
+#: classes/class-ispag-status-manager.php:175
+msgid "Define the current engagement status of this contact (e.g., New, In Progress, Unqualified)."
+msgstr "Définissez le statut d'engagement actuel de ce contact (p. ex. nouveau, en cours, non qualifié)."
+
+#: classes/class-ispag-status-manager.php:244
+msgid "No changes"
+msgstr "Aucune modification"
+
+#: classes/class-ispag-task-dashboard.php:135
+msgid "You have no active tasks."
+msgstr "Vous n'avez aucune tâche active."
+
+#: classes/class-ispag-task-dashboard.php:142
+msgid "Task title"
+msgstr "Titre de la tâche"
+
+#: classes/class-ispag-task-dashboard.php:143
+msgid "Associated Contact"
+msgstr "Contact associé"
+
+#: classes/class-ispag-task-dashboard.php:144
+msgid "Reminder"
+msgstr "Rappel"
+
+#: classes/class-ispag-task-dashboard.php:145
+msgid "Due Date"
+msgstr "Échéance"
+
+#: classes/class-ispag-task-dashboard.php:146
+msgid "Actions"
+msgstr "Actions"
+
+#: classes/class-ispag-task-dashboard.php:189
+msgid "Overdue"
+msgstr "En retard"
+
+#: classes/class-ispag-task-dashboard.php:235
+msgid "Done"
+msgstr "Terminé"
+
+#: classes/class-ispag-task-dashboard.php:236
+msgid "Reschedule"
+msgstr "Reprogrammer"
+
+#: classes/class-ispag-task-dashboard.php:274
+msgid "Company"
+msgstr "Entreprise"
+
+#: classes/class-ispag-task-dashboard.php:277
+msgid "N/A"
+msgstr "N/D"
+
+#: classes/class-ispag-task-dashboard.php:316
+msgid "Security or permission check failed."
+msgstr "Échec du contrôle de sécurité ou des permissions."
+
+#: classes/class-ispag-task-dashboard.php:323
+msgid "Missing Task ID."
+msgstr "ID de la tâche manquant."
+
+#: classes/class-ispag-task-dashboard.php:333
+msgid "Task not found or already completed."
+msgstr "Tâche introuvable ou déjà terminée."
+
+#: classes/class-ispag-task-dashboard.php:350
+msgid "Task successfully marked as completed."
+msgstr "Tâche marquée comme terminée avec succès."
+
+#: classes/class-ispag-task-dashboard.php:354
+msgid "Database error. Task could not be updated."
+msgstr "Erreur de base de données. La tâche n'a pas pu être mise à jour."
+
+#: classes/class-ispag-task-dashboard.php:82
+msgid "You must be logged in to view your tasks."
+msgstr "Vous devez être connecté pour voir vos tâches."
+
+#: classes/class-ispag-task-dashboard.php:88
+msgid "My Active Tasks"
+msgstr "Mes tâches actives"
+
+#: classes/class-ispag-template-ajax.php:102
+msgid "Template saved successfully."
+msgstr "Modèle enregistré avec succès."
+
+#: classes/class-ispag-template-ajax.php:104
+msgid "Database error during save."
+msgstr "Erreur de base de données lors de l'enregistrement."
+
+#: classes/class-ispag-template-ajax.php:124
+msgid "You do not have permission to delete this template."
+msgstr "Vous n'avez pas la permission de supprimer ce modèle."
+
+#: classes/class-ispag-template-ajax.php:131
+msgid "Template deleted."
+msgstr "Modèle supprimé."
+
+#: classes/class-ispag-template-ajax.php:133
+msgid "Error during deletion."
+msgstr "Erreur lors de la suppression."
+
+#: classes/class-ispag-template-ajax.php:146
+msgid "Name is required"
+msgstr "Le nom est obligatoire"
+
+#: classes/class-ispag-template-ajax.php:165
+msgid "Database error"
+msgstr "Erreur de base de données"
+
+#: classes/class-ispag-template-ajax.php:33
+msgid "Invalid Template ID."
+msgstr "ID de modèle invalide."
+
+#: classes/class-ispag-template-ajax.php:42
+msgid "Template not found."
+msgstr "Modèle introuvable."
+
+#: classes/class-ispag-template-ajax.php:69
+msgid "Template to update not found."
+msgstr "Modèle à mettre à jour introuvable."
+
+#: classes/class-ispag-template-ajax.php:74
+msgid "Permission denied: Only administrators can modify common templates."
+msgstr "Permission refusée : seuls les administrateurs peuvent modifier les modèles communs."
+
+#: classes/class-ispag-template-ajax.php:79
+msgid "Permission denied: This is a private template."
+msgstr "Permission refusée : il s'agit d'un modèle privé."
+
+#: classes/class-ispag-template-modal.php:118
+msgid "Date created"
+msgstr "Date de création"
+
+#: classes/class-ispag-template-modal.php:119
+msgid "Date modified"
+msgstr "Date de modification"
+
+#: classes/class-ispag-template-modal.php:124
+msgid "No templates found."
+msgstr "Aucun modèle trouvé."
+
+#: classes/class-ispag-template-modal.php:130
+msgid "Shared (Admin)"
+msgstr "Partagé (admin)"
+
+#: classes/class-ispag-template-modal.php:139
+msgid "Read-only (Common template)"
+msgstr "Lecture seule (modèle commun)"
+
+#: classes/class-ispag-template-modal.php:145
+msgid "ago"
+msgstr "il y a"
+
+#: classes/class-ispag-template-modal.php:163
+msgid "Search templates..."
+msgstr "Rechercher des modèles..."
+
+#: classes/class-ispag-template-modal.php:166
+msgid "All Owners"
+msgstr "Tous les propriétaires"
+
+#: classes/class-ispag-template-modal.php:168
+msgid "My Templates"
+msgstr "Mes modèles"
+
+#: classes/class-ispag-template-modal.php:174
+msgid "Add New"
+msgstr "Ajouter"
+
+#: classes/class-ispag-template-modal.php:186
+msgid "First Name"
+msgstr "Prénom"
+
+#: classes/class-ispag-template-modal.php:187
+msgid "Last Name"
+msgstr "Nom"
+
+#: classes/class-ispag-template-modal.php:192
+msgid "Offer Name"
+msgstr "Nom de l'offre"
+
+#: classes/class-ispag-template-modal.php:193
+msgid "Offer No."
+msgstr "N° d'offre"
+
+#: classes/class-ispag-template-modal.php:194
+msgid "Project No."
+msgstr "N° de projet"
+
+#: classes/class-ispag-template-modal.php:196
+msgid "Deal total"
+msgstr "Total de la transaction"
+
+#: classes/class-ispag-template-modal.php:200
+msgid "Click to insert at cursor:"
+msgstr "Cliquez pour insérer au curseur :"
+
+#: classes/class-ispag-template-modal.php:22
+msgid "Template Editor"
+msgstr "Éditeur de modèle"
+
+#: classes/class-ispag-template-modal.php:32
+msgid "Template Name"
+msgstr "Nom du modèle"
+
+#: classes/class-ispag-template-modal.php:37
+msgid "Email Subject"
+msgstr "Objet de l'e-mail"
+
+#: classes/class-ispag-template-modal.php:42
+msgid "Message Content"
+msgstr "Contenu du message"
+
+#: classes/class-ispag-template-modal.php:53
+msgid "Folder / Category"
+msgstr "Dossier / catégorie"
+
+#: classes/class-ispag-template-modal.php:55
+msgid "No folder"
+msgstr "Aucun dossier"
+
+#: classes/class-ispag-template-modal.php:63
+msgid "Language"
+msgstr "Langue"
+
+#: classes/class-ispag-template-modal.php:81
+msgid "Private Template"
+msgstr "Modèle privé"
+
+#: classes/class-ispag-template-modal.php:87
+msgid "Shared templates are visible to the whole team but can only be modified by admins."
+msgstr "Les modèles partagés sont visibles par toute l'équipe mais ne peuvent être modifiés que par les administrateurs."
+
+#: classes/class-ispag-template-modal.php:96
+msgid "Save Template"
+msgstr "Enregistrer le modèle"
+
+#: classes/class-ispag-template-repository.php:50
+msgid "Template saved successfully!"
+msgstr "Modèle enregistré avec succès !"
+
+#: classes/class-ispag-template-repository.php:51
+msgid "Error while saving the template."
+msgstr "Erreur lors de l'enregistrement du modèle."
+
+#: classes/class-ispag-template-repository.php:52
+msgid "Are you sure you want to delete this template?"
+msgstr "Voulez-vous vraiment supprimer ce modèle ?"
+
+#: classes/class-ispag-whatsapp-ajax-handlers.php:28
+msgid "Permission denied."
+msgstr "Permission refusée."
+
+#: classes/class-ispag-whatsapp-ajax-handlers.php:33
+msgid "Unknown WhatsApp line."
+msgstr "Ligne WhatsApp inconnue."
+
+#: classes/class-ispag-whatsapp-ajax-handlers.php:40
+msgid "Number and message required."
+msgstr "Numéro et message requis."
+
+#: classes/class-ispag-whatsapp-ajax-handlers.php:53
+msgid "Message sent."
+msgstr "Message envoyé."
+
+#: classes/class-ispag-whatsapp-ajax-handlers.php:74
+msgid "contact_id or phone required."
+msgstr "contact_id ou téléphone requis."
+
+#: classes/class-ispag-whatsapp-bridge-client.php:33
+msgid "The WhatsApp bridge is not configured (URL or API key missing)."
+msgstr "Le relais WhatsApp n'est pas configuré (adresse ou clé API manquante)."
+
+#: classes/class-ispag-whatsapp-bridge-client.php:53
+msgid "Unexpected answer from the WhatsApp bridge."
+msgstr "Réponse inattendue du relais WhatsApp."
+
+#: classes/class-ispag-whatsapp-bridge-client.php:56
+msgid "Unknown error from the WhatsApp bridge."
+msgstr "Erreur inconnue du relais WhatsApp."
+
+#: classes/class-ispag-whatsapp-panel-renderer.php:30
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+#: classes/class-ispag-whatsapp-panel-renderer.php:46
+msgid "Send from"
+msgstr "Envoyer depuis"
+
+#: classes/class-ispag-whatsapp-panel-renderer.php:54
+msgid "Write a message…"
+msgstr "Écrire un message…"
+
+#: classes/class-ispag-whatsapp-panel-renderer.php:70
+msgid "Attachment"
+msgstr "Pièce jointe"
+
+#: classes/class-ispag-workflow-admin-page.php:104
+msgid "Workflow not found"
+msgstr "Workflow introuvable"
+
+#: classes/class-ispag-workflow-admin-page.php:111
+msgid "Unknown step"
+msgstr "Étape inconnue"
+
+#: classes/class-ispag-workflow-admin-page.php:24
+msgid "Active Sequences"
+msgstr "Séquences actives"
+
+#: classes/class-ispag-workflow-admin-page.php:69
+msgid "Deal Group Ref"
+msgstr "Réf. de groupe de transactions"
+
+#: classes/class-ispag-workflow-admin-page.php:70
+msgid "Deal Name"
+msgstr "Nom de la transaction"
+
+#: classes/class-ispag-workflow-admin-page.php:71
+msgid "Workflow"
+msgstr "Workflow"
+
+#: classes/class-ispag-workflow-admin-page.php:72
+msgid "Current Step"
+msgstr "Étape actuelle"
+
+#: classes/class-ispag-workflow-admin-page.php:74
+msgid "Started At"
+msgstr "Démarré le"
+
+#: classes/class-ispag-workflow-admin-page.php:81
+msgid "No active sequences found."
+msgstr "Aucune séquence active trouvée."
+
+#: classes/class-ispag-workflow-admin-page.php:95
+msgid "Deal not found"
+msgstr "Transaction introuvable"
+
+#: classes/class-ispag-workflow-cpt.php:19
+msgctxt "Post Type General Name"
+msgid "Workflows"
+msgstr "Workflows"
+
+#: classes/class-ispag-workflow-cpt.php:20
+msgctxt "Post Type Singular Name"
+msgid "Workflow"
+msgstr "Workflow"
+
+#: classes/class-ispag-workflow-cpt.php:21
+msgid "Workflows"
+msgstr "Workflows"
+
+#: classes/class-ispag-workflow-cpt.php:23
+msgctxt "Workflow"
+msgid "Add New"
+msgstr "Ajouter"
+
+#: classes/class-ispag-workflow-cpt.php:24
+msgid "Add New Workflow"
+msgstr "Ajouter un workflow"
+
+#: classes/class-ispag-workflow-cpt.php:25
+msgid "New Workflow"
+msgstr "Nouveau workflow"
+
+#: classes/class-ispag-workflow-cpt.php:26
+msgid "Edit Workflow"
+msgstr "Modifier le workflow"
+
+#: classes/class-ispag-workflow-cpt.php:27
+msgid "View Workflow"
+msgstr "Voir le workflow"
+
+#: classes/class-ispag-workflow-cpt.php:28
+msgid "All Workflows"
+msgstr "Tous les workflows"
+
+#: classes/class-ispag-workflow-cpt.php:29
+msgid "Search Workflows"
+msgstr "Rechercher des workflows"
+
+#: classes/class-ispag-workflow-cpt.php:30
+msgid "Parent Workflows:"
+msgstr "Workflows parents :"
+
+#: classes/class-ispag-workflow-cpt.php:31
+msgid "No workflows found."
+msgstr "Aucun workflow trouvé."
+
+#: classes/class-ispag-workflow-cpt.php:32
+msgid "No workflows found in Trash."
+msgstr "Aucun workflow trouvé dans la corbeille."
+
+#: classes/class-ispag-workflow-cpt.php:33
+msgid "Workflow Image"
+msgstr "Image du workflow"
+
+#: classes/class-ispag-workflow-cpt.php:34
+msgid "Set workflow image"
+msgstr "Définir l'image du workflow"
+
+#: classes/class-ispag-workflow-cpt.php:35
+msgid "Remove workflow image"
+msgstr "Retirer l'image du workflow"
+
+#: classes/class-ispag-workflow-cpt.php:36
+msgid "Use as workflow image"
+msgstr "Utiliser comme image du workflow"
+
+#: classes/class-ispag-workflow-meta-box.php:116
+msgid "Step"
+msgstr "Étape"
+
+#: classes/class-ispag-workflow-meta-box.php:118
+msgid "Step Type:"
+msgstr "Type d'étape :"
+
+#: classes/class-ispag-workflow-meta-box.php:121
+msgid "Task"
+msgstr "Tâche"
+
+#: classes/class-ispag-workflow-meta-box.php:122
+msgid "Call"
+msgstr "Appel"
+
+#: classes/class-ispag-workflow-meta-box.php:127
+msgid "Delay (e.g., 1 day, 2 hours):"
+msgstr "Délai (p. ex. 1 jour, 2 heures) :"
+
+#: classes/class-ispag-workflow-meta-box.php:132
+msgid "Title/Subject:"
+msgstr "Titre / objet :"
+
+#: classes/class-ispag-workflow-meta-box.php:137
+msgid "Content/Description:"
+msgstr "Contenu / description :"
+
+#: classes/class-ispag-workflow-meta-box.php:141
+msgid "Remove Step"
+msgstr "Retirer l'étape"
+
+#: classes/class-ispag-workflow-meta-box.php:146
+msgid "Add Step"
+msgstr "Ajouter une étape"
+
+#: classes/class-ispag-workflow-meta-box.php:168
+msgid "Trigger"
+msgstr "Déclencheur"
+
+#: classes/class-ispag-workflow-meta-box.php:170
+msgid "Trigger Type:"
+msgstr "Type de déclencheur :"
+
+#: classes/class-ispag-workflow-meta-box.php:172
+msgid "Status Change"
+msgstr "Changement de statut"
+
+#: classes/class-ispag-workflow-meta-box.php:173
+msgid "Email Response"
+msgstr "Réponse par e-mail"
+
+#: classes/class-ispag-workflow-meta-box.php:174
+msgid "Task Completed"
+msgstr "Tâche terminée"
+
+#: classes/class-ispag-workflow-meta-box.php:181
+msgid "From Status:"
+msgstr "Depuis le statut :"
+
+#: classes/class-ispag-workflow-meta-box.php:183
+msgid "Any Status"
+msgstr "Tout statut"
+
+#: classes/class-ispag-workflow-meta-box.php:193
+msgid "To Status:"
+msgstr "Vers le statut :"
+
+#: classes/class-ispag-workflow-meta-box.php:207
+msgid "No additional settings for this trigger type."
+msgstr "Aucun réglage supplémentaire pour ce type de déclencheur."
+
+#: classes/class-ispag-workflow-meta-box.php:210
+msgid "Remove Trigger"
+msgstr "Retirer le déclencheur"
+
+#: classes/class-ispag-workflow-meta-box.php:215
+msgid "Add Trigger"
+msgstr "Ajouter un déclencheur"
+
+#: classes/class-ispag-workflow-meta-box.php:26
+msgid "Workflow Settings"
+msgstr "Réglages du workflow"
+
+#: classes/class-ispag-workflow-meta-box.php:277
+msgid "Error loading stages"
+msgstr "Erreur lors du chargement des étapes"
+
+#: classes/class-ispag-workflow-meta-box.php:35
+msgid "Workflow Steps"
+msgstr "Étapes du workflow"
+
+#: classes/class-ispag-workflow-meta-box.php:44
+msgid "Workflow Triggers"
+msgstr "Déclencheurs du workflow"
+
+#: classes/class-ispag-workflow-meta-box.php:77
+msgid "Workflow Type:"
+msgstr "Type de workflow :"
+
+#: classes/class-ispag-workflow-meta-box.php:80
+msgid "Deal"
+msgstr "Transaction"
+
+#: classes/class-ispag-workflow-meta-box.php:82
+msgid "Select whether this workflow applies to contacts or deals."
+msgstr "Indiquez si ce workflow s'applique aux contacts ou aux transactions."
+
+#: classes/class-ispag-workflow-meta-box.php:88
+msgid "Active Workflow"
+msgstr "Workflow actif"
+
+#: classes/class-ispag-workflow-meta-box.php:90
+msgid "Enable this workflow to start executing its steps."
+msgstr "Activez ce workflow pour démarrer l'exécution de ses étapes."
+
+#: classes/class-ispag-workflow-meta-box.php:94
+msgid "Working Hours (e.g., 08:00-18:00):"
+msgstr "Heures de travail (p. ex. 08:00-18:00) :"
+
+#: classes/class-ispag-workflow-meta-box.php:96
+msgid "Define the working hours for sending emails or executing tasks."
+msgstr "Définissez les heures de travail pour l'envoi des e-mails ou l'exécution des tâches."
+
+#: classes/helpers/ispag-translations-support.php:10
+msgid "Attempted contact"
+msgstr "Contact tenté"
+
+#: classes/helpers/ispag-translations-support.php:12
+msgid "Bad timing"
+msgstr "Mauvais moment"
+
+#: classes/helpers/ispag-translations-support.php:13
+msgid "Not qualified"
+msgstr "Non qualifié"
+
+#: classes/helpers/ispag-translations-support.php:16
+msgid "Submission Received"
+msgstr "Soumission reçue"
+
+#: classes/helpers/ispag-translations-support.php:17
+msgid "Proposal Sent"
+msgstr "Proposition envoyée"
+
+#: classes/helpers/ispag-translations-support.php:18
+msgid "Follow-up & Negotiation"
+msgstr "Suivi et négociation"
+
+#: classes/helpers/ispag-translations-support.php:19
+msgid "Awaiting order"
+msgstr "En attente de commande"
+
+#: classes/helpers/ispag-translations-support.php:20
+msgid "Closed Won"
+msgstr "Clôturé gagné"
+
+#: classes/helpers/ispag-translations-support.php:21
+msgid "Closed Lost"
+msgstr "Clôturé perdu"
+
+#: classes/helpers/ispag-translations-support.php:22
+msgid "In accomplishement"
+msgstr "En cours de réalisation"
+
+#: classes/helpers/ispag-translations-support.php:23
+msgid "Awarded / No Contact"
+msgstr "Adjugé / sans contact"
+
+#: classes/helpers/ispag-translations-support.php:25
+msgid "Subscriber"
+msgstr "Abonné"
+
+#: classes/helpers/ispag-translations-support.php:26
+msgid "Lead"
+msgstr "Lead"
+
+#: classes/helpers/ispag-translations-support.php:27
+msgid "Qualified Lead"
+msgstr "Lead qualifié"
+
+#: classes/helpers/ispag-translations-support.php:28
+msgid "Opportunity"
+msgstr "Opportunité"
+
+#: classes/helpers/ispag-translations-support.php:29
+msgid "Customer"
+msgstr "Client"
+
+#: classes/helpers/ispag-translations-support.php:30
+msgid "Promoter"
+msgstr "Promoteur"
+
+#: classes/helpers/ispag-translations-support.php:34
+msgid "Price too high"
+msgstr "Prix trop élevé"
+
+#: classes/helpers/ispag-translations-support.php:35
+msgid "Delivery lead time too long"
+msgstr "Délai de livraison trop long"
+
+#: classes/helpers/ispag-translations-support.php:36
+msgid "Non-compliant technical specs"
+msgstr "Spécifications techniques non conformes"
+
+#: classes/helpers/ispag-translations-support.php:37
+msgid "Local competitor chosen"
+msgstr "Concurrent local choisi"
+
+#: classes/helpers/ispag-translations-support.php:38
+msgid "Project canceled by client"
+msgstr "Projet annulé par le client"
+
+#: classes/helpers/ispag-translations-support.php:39
+msgid "No response from client"
+msgstr "Pas de réponse du client"
+
+#: classes/helpers/ispag-translations-support.php:40
+msgid "Engineering proposal"
+msgstr "Proposition d'ingénierie"
+
+#: classes/helpers/ispag-translations-support.php:41
+msgid "Client lost the bid"
+msgstr "Le client a perdu l'appel d'offres"
+
+#: classes/helpers/ispag-translations-support.php:43
+msgid "A contact who has opted in to receive content but hasn’t been qualified as a lead yet."
+msgstr "Un contact qui a accepté de recevoir du contenu mais n'a pas encore été qualifié comme lead."
+
+#: classes/helpers/ispag-translations-support.php:44
+msgid "A contact who has shown interest in ISPAG products but has no project or offer yet."
+msgstr "Un contact qui a montré de l'intérêt pour les produits ISPAG mais n'a pas encore de projet ni d'offre."
+
+#: classes/helpers/ispag-translations-support.php:45
+msgid "A lead with a validated interest for which a specific offer (Offre) has been made."
+msgstr "Un lead dont l'intérêt est validé et pour lequel une offre précise a été établie."
+
+#: classes/helpers/ispag-translations-support.php:46
+msgid "A contact with a high probability of closing, linked to a formal order (Commande)."
+msgstr "Un contact avec une forte probabilité de conclusion, lié à une commande formelle."
+
+#: classes/helpers/ispag-translations-support.php:47
+msgid "An active customer with at least one finalized invoice (Facture)."
+msgstr "Un client actif avec au moins une facture finalisée."
+
+#: classes/helpers/ispag-translations-support.php:48
+msgid "A regular customer or partner who actively recommends ISPAG services."
+msgstr "Un client régulier ou un partenaire qui recommande activement les services d'ISPAG."
+
+#: classes/helpers/ispag-translations-support.php:49
+msgid "Contacts that do not fit into standard business lifecycle categories."
+msgstr "Contacts qui ne rentrent pas dans les catégories habituelles du cycle de vie commercial."
+
+#: classes/helpers/ispag-translations-support.php:5
+msgid "new"
+msgstr "nouveau"
+
+#: classes/helpers/ispag-translations-support.php:50
+msgid "Specific status for interim invoicing or project-based billing situations."
+msgstr "Statut spécifique pour la facturation intermédiaire ou les situations de facturation par projet."
+
+#: classes/helpers/ispag-translations-support.php:52
+msgid "Newly created lead with no recorded activity yet."
+msgstr "Lead nouvellement créé sans aucune activité enregistrée."
+
+#: classes/helpers/ispag-translations-support.php:53
+msgid "Active lead being handled but doesn’t fit into specific interaction categories."
+msgstr "Lead actif en cours de traitement mais ne correspondant à aucune catégorie d'interaction précise."
+
+#: classes/helpers/ispag-translations-support.php:54
+msgid "Lead does not meet the criteria or requirements for ISPAG services."
+msgstr "Le lead ne répond pas aux critères ou exigences des services ISPAG."
+
+#: classes/helpers/ispag-translations-support.php:55
+msgid "Lead is acknowledged and waiting for initial manual qualification."
+msgstr "Le lead est pris en compte et attend une première qualification manuelle."
+
+#: classes/helpers/ispag-translations-support.php:56
+msgid "A formal offer or quote has been generated for this lead."
+msgstr "Une offre ou un devis formel a été établi pour ce lead."
+
+#: classes/helpers/ispag-translations-support.php:57
+msgid "Contact attempt made via Email or Phone, but no two-way conversation yet."
+msgstr "Tentative de contact par e-mail ou téléphone, mais pas encore d'échange dans les deux sens."
+
+#: classes/helpers/ispag-translations-support.php:58
+msgid "Successful engagement via Meeting, SMS, or WhatsApp."
+msgstr "Échange abouti par réunion, SMS ou WhatsApp."
+
+#: classes/helpers/ispag-translations-support.php:59
+msgid "Prospect is interested but requested to be contacted at a later date."
+msgstr "Le prospect est intéressé mais a demandé à être recontacté plus tard."
+
+#: classes/helpers/ispag-translations-support.php:62
+msgid "Request for quotation"
+msgstr "Demande d'offre"
+
+#: classes/helpers/ispag-translations-support.php:63
+msgid "Customer request"
+msgstr "Demande client"
+
+#: classes/helpers/ispag-translations-support.php:65
+msgid "Supplier quotation"
+msgstr "Offre fournisseur"
+
+#: classes/helpers/ispag-translations-support.php:66
+msgid "Supplier order"
+msgstr "Commande fournisseur"
+
+#: classes/helpers/ispag-translations-support.php:67
+msgid "Customer order"
+msgstr "Commande client"
+
+#: classes/helpers/ispag-translations-support.php:68
+msgid "Order"
+msgstr "Commande"
+
+#: classes/helpers/ispag-translations-support.php:69
+msgid "Order confirmation"
+msgstr "Confirmation de commande"
+
+#: classes/helpers/ispag-translations-support.php:7
+msgid "In progress"
+msgstr "En cours"
+
+#: classes/helpers/ispag-translations-support.php:70
+msgid "Delivery note"
+msgstr "Bulletin de livraison"
+
+#: classes/helpers/ispag-translations-support.php:74
+msgid "Sketch"
+msgstr "Croquis"
+
+#: classes/helpers/ispag-translations-support.php:75
+msgid "Drawing"
+msgstr "Plan"
+
+#: classes/helpers/ispag-translations-support.php:76
+msgid "Drawing modification"
+msgstr "Modification de plan"
+
+#: classes/helpers/ispag-translations-support.php:77
+msgid "Drawing approval"
+msgstr "Validation du plan"
+
+#: classes/helpers/ispag-translations-support.php:78
+msgid "Documentation"
+msgstr "Documentation"
+
+#: classes/helpers/ispag-translations-support.php:79
+msgid "Spreadsheet"
+msgstr "Tableur"
+
+#: classes/helpers/ispag-translations-support.php:80
+msgid "Certificate of conformity"
+msgstr "Certificat de conformité"
+
+#: classes/helpers/ispag-translations-support.php:85
+msgid "Pending"
+msgstr "En suspens"
+
+#: classes/helpers/ispag-translations-support.php:86
+msgid "Planned"
+msgstr "Planifié"
+
+#: classes/helpers/ispag-translations-support.php:87
+msgid "NaN"
+msgstr "NaN"
+
+#: classes/helpers/ispag-translations-support.php:89
+msgid "Problem"
+msgstr "Problème"
+
+#: classes/helpers/ispag-translations-support.php:9
+msgid "Open transaction"
+msgstr "Transaction ouverte"
+
+#: classes/helpers/ispag-translations-support.php:91
+msgid "Modifications asked"
+msgstr "Modifications demandées"
+
+#: ispag-attachments-init.php:107
+msgid "Not authorized."
+msgstr "Non autorisé."
+
+#: ispag-attachments-init.php:117
+msgid "Missing parameters."
+msgstr "Paramètres manquants."
+
+#: ispag-attachments-init.php:124
+msgid "No file received."
+msgstr "Aucun fichier reçu."
+
+#: ispag-attachments-init.php:159
+msgid "Upload error"
+msgstr "Erreur de téléversement"
+
+#: ispag-attachments-init.php:188
+msgid "Files uploaded successfully."
+msgstr "Fichiers téléversés avec succès."
+
+#: ispag-attachments-init.php:194
+msgid "Upload failed."
+msgstr "Échec du téléversement."
+
+#: ispag-attachments-init.php:23
+msgid "Loading..."
+msgstr "Chargement..."
+
+#: ispag-attachments-init.php:24
+msgid "Document added."
+msgstr "Document ajouté."
+
+#: ispag-attachments-init.php:25
+msgid "Error while loading."
+msgstr "Erreur lors du chargement."
+
+#: ispag-attachments-init.php:26
+msgid "Are you sure you want to delete this document ?"
+msgstr "Voulez-vous vraiment supprimer ce document ?"
+
+#: ispag-attachments-init.php:266
+msgid "Document deleted."
+msgstr "Document supprimé."
+
+#: ispag-attachments-init.php:27
+msgid "Confirm"
+msgstr "Confirmer"
+
+#: ispag-attachments-init.php:28
+msgid "Cancel"
+msgstr "Annuler"
+
+#: ispag-attachments-init.php:76
+msgid "Attachments"
+msgstr "Pièces jointes"
+
+#: ispag-attachments-init.php:92
+msgid "Invalid parameters."
+msgstr "Paramètres invalides."
+
+#: ispag-crm.php:397
+msgid "Please select an action."
+msgstr "Veuillez sélectionner une action."
+
+#: ispag-crm.php:398
+msgid "Please select at least one contact."
+msgstr "Veuillez sélectionner au moins un contact."
+
+#: ispag-crm.php:399
+msgid "Are you sure you want to delete the selected contacts?"
+msgstr "Voulez-vous vraiment supprimer les contacts sélectionnés ?"
+
+#: ispag-crm.php:400
+msgid "A - High"
+msgstr "A - Haute"
+
+#: ispag-crm.php:401
+msgid "B - Medium"
+msgstr "B - Moyenne"
+
+#: ispag-crm.php:402
+msgid "C - Low"
+msgstr "C - Basse"
+
+#: ispag-crm.php:403
+msgid "Company ID"
+msgstr "ID de l'entreprise"
+
+#: ispag-crm.php:404
+msgid "-- Select owner --"
+msgstr "-- Sélectionner un responsable --"
+
+#: ispag-crm.php:405
+msgid "Preparing..."
+msgstr "Préparation..."
+
+#: ispag-crm.php:406
+msgid "Prepare meeting"
+msgstr "Préparer la réunion"
+
+#: ispag-crm.php:421
+msgid "Your ISPAG account has been suspended."
+msgstr "Votre compte ISPAG a été suspendu."
+
+#: ispag-crm.php:547
+msgid "Unauthorized access."
+msgstr "Accès non autorisé."
+
+#: ispag-whatsapp-init.php:105
+msgid "Give the line a name (2 characters minimum)."
+msgstr "Donnez un nom à la ligne (2 caractères minimum)."
+
+#: ispag-whatsapp-init.php:148
+msgid "Connected"
+msgstr "Connecté"
+
+#: ispag-whatsapp-init.php:149
+msgid "Waiting for QR scan"
+msgstr "En attente du scan du QR code"
+
+#: ispag-whatsapp-init.php:150
+msgid "Starting…"
+msgstr "Démarrage…"
+
+#: ispag-whatsapp-init.php:151
+msgid "Authenticated…"
+msgstr "Authentifié…"
+
+#: ispag-whatsapp-init.php:152
+msgid "Disconnected — remove and add the line again"
+msgstr "Déconnecté — retirez la ligne et ajoutez-la à nouveau"
+
+#: ispag-whatsapp-init.php:153
+msgid "Authentication failed — remove and add the line again"
+msgstr "Échec de l'authentification — retirez la ligne et ajoutez-la à nouveau"
+
+#: ispag-whatsapp-init.php:154
+msgid "Error — see the bridge logs"
+msgstr "Erreur — consultez les journaux du relais"
+
+#: ispag-whatsapp-init.php:196
+msgid "Line added. Scan the QR code below with the phone of this number: WhatsApp > Settings > Linked devices > Link a device."
+msgstr "Ligne ajoutée. Scannez le QR code ci-dessous avec le téléphone de ce numéro : WhatsApp > Réglages > Appareils liés > Associer un appareil."
+
+#: ispag-whatsapp-init.php:199
+msgid "Line removed. The message history stays in the CRM."
+msgstr "Ligne retirée. L'historique des messages reste dans le CRM."
+
+#: ispag-whatsapp-init.php:202
+msgid "1. Bridge connection"
+msgstr "1. Connexion au relais"
+
+#: ispag-whatsapp-init.php:203
+msgid "The bridge is the small free server (folder whatsapp-bridge/ of this plugin) that keeps your numbers linked to WhatsApp."
+msgstr "Le relais est le petit serveur gratuit (dossier whatsapp-bridge/ de ce plugin) qui garde vos numéros reliés à WhatsApp."
+
+#: ispag-whatsapp-init.php:208
+msgid "Bridge URL"
+msgstr "Adresse du relais"
+
+#: ispag-whatsapp-init.php:212
+msgid "Bridge API key"
+msgstr "Clé API du relais"
+
+#: ispag-whatsapp-init.php:215
+msgid "Must match BRIDGE_API_KEY in the bridge .env file."
+msgstr "Doit correspondre à BRIDGE_API_KEY dans le fichier .env du relais."
+
+#: ispag-whatsapp-init.php:219
+msgid "Webhook secret"
+msgstr "Secret du webhook"
+
+#: ispag-whatsapp-init.php:222
+msgid "Must match WP_WEBHOOK_SECRET in the bridge .env file."
+msgstr "Doit correspondre à WP_WEBHOOK_SECRET dans le fichier .env du relais."
+
+#: ispag-whatsapp-init.php:223
+msgid "Webhook address (WP_WEBHOOK_URL):"
+msgstr "Adresse du webhook (WP_WEBHOOK_URL) :"
+
+#: ispag-whatsapp-init.php:230
+msgid "2. Numbers (lines)"
+msgstr "2. Numéros (lignes)"
+
+#: ispag-whatsapp-init.php:232
+msgid "Fill in and save the bridge connection first."
+msgstr "Renseignez et enregistrez d'abord la connexion au relais."
+
+#: ispag-whatsapp-init.php:234
+msgid "Cannot reach the bridge: %s"
+msgstr "Impossible de joindre le relais : %s"
+
+#: ispag-whatsapp-init.php:237
+msgid "No number connected yet."
+msgstr "Aucun numéro connecté pour l'instant."
+
+#: ispag-whatsapp-init.php:240
+msgid "Line"
+msgstr "Ligne"
+
+#: ispag-whatsapp-init.php:240
+msgid "Number"
+msgstr "Numéro"
+
+#: ispag-whatsapp-init.php:240
+msgid "Status"
+msgstr "Statut"
+
+#: ispag-whatsapp-init.php:250
+msgid "WhatsApp on the phone > Settings > Linked devices > Link a device, then scan."
+msgstr "WhatsApp sur le téléphone > Réglages > Appareils liés > Associer un appareil, puis scannez."
+
+#: ispag-whatsapp-init.php:254
+msgid "Disconnect this number?"
+msgstr "Déconnecter ce numéro ?"
+
+#: ispag-whatsapp-init.php:258
+msgid "Disconnect"
+msgstr "Déconnecter"
+
+#: ispag-whatsapp-init.php:270
+msgid "Add a number"
+msgstr "Ajouter un numéro"
+
+#: ispag-whatsapp-init.php:271
+msgid "Name, e.g. Sales, Purchasing"
+msgstr "Nom, p. ex. Ventes, Achats"
+
+#: ispag-whatsapp-init.php:272
+msgid "Connect"
+msgstr "Connecter"
+
+#: ispag-whatsapp-init.php:279
+msgid "3. Conversations without a CRM contact"
+msgstr "3. Conversations sans contact CRM"
+
+#: ispag-whatsapp-init.php:284
+msgid "None. Every number that wrote or was written to matches a CRM contact (phone number field)."
+msgstr "Aucune. Chaque numéro qui a écrit ou à qui l'on a écrit correspond à un contact du CRM (champ téléphone)."
+
+#: ispag-whatsapp-init.php:287
+msgid "Last message"
+msgstr "Dernier message"
+
+#: ispag-whatsapp-init.php:287
+msgid "Messages"
+msgstr "Messages"
+
+#: ispag-whatsapp-init.php:287
+msgid "WhatsApp name"
+msgstr "Nom WhatsApp"
+
+#: ispag-whatsapp-init.php:299
+msgid "Create a contact with this phone number (field Phone) and the history appears on its page."
+msgstr "Créez un contact avec ce numéro de téléphone (champ Téléphone) et l'historique apparaîtra sur sa fiche."
+
+#: ispag-whatsapp-init.php:63
+msgid "No messages for the moment."
+msgstr "Aucun message pour le moment."
+
+#: ispag-whatsapp-init.php:64
+msgid "Sending…"
+msgstr "Envoi en cours…"
+
+#: ispag-whatsapp-init.php:65
+msgid "Error"
+msgstr "Erreur"
+
+#: ispag-whatsapp-init.php:66
+msgid "Network error while sending."
+msgstr "Erreur réseau lors de l'envoi."
+
+#: ispag-whatsapp-init.php:67
+msgid "Sending failed"
+msgstr "Échec de l'envoi"
+
+#: ispag-whatsapp-init.php:76
+msgid "WhatsApp Settings"
+msgstr "Réglages WhatsApp"
+
+#: ispag-whatsapp-init.php:77
+msgid "WhatsApp CRM"
+msgstr "WhatsApp CRM"
+
+#: ispag-whatsapp-init.php:97
+msgid "Access denied"
+msgstr "Accès refusé"
