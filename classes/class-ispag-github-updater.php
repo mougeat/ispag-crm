@@ -6,13 +6,17 @@ if (!class_exists('ISPAG_GitHub_Updater', false)) {
 /**
  * Mise à jour automatique d'un plugin ou d'un thème ISPAG depuis une branche GitHub.
  *
- * DÉSACTIVÉ PAR DÉFAUT. Il ne s'active que si wp-config.php définit :
+ * INACTIF tant qu'aucun jeton GitHub n'est configuré. Deux façons de le configurer :
  *
- *     define('ISPAG_GITHUB_TOKEN', 'github_pat_xxx');            // jeton en lecture seule (Contents: Read) sur les dépôts
- *     define('ISPAG_UPDATE_BRANCH', 'claude/eager-galileo-tcm8l8'); // branche suivie
- *     define('ISPAG_GITHUB_AUTO_UPDATE', false);                  // (optionnel) true par défaut : installe sans confirmation
+ *  1. wp-config.php (site de test) :
+ *       define('ISPAG_GITHUB_TOKEN', 'github_pat_xxx');            // jeton en lecture seule (Contents: Read) sur les dépôts
+ *       define('ISPAG_UPDATE_BRANCH', 'claude/eager-galileo-tcm8l8'); // branche suivie
+ *       define('ISPAG_GITHUB_AUTO_UPDATE', false);                  // (optionnel) true par défaut : installe sans confirmation
  *
- * Sans ces constantes (site de production), ce fichier ne fait strictement rien.
+ *  2. Écran « Outils → Updates ISPAG » (site de production, sans toucher à wp-config.php) :
+ *       jeton + branche (« main » par défaut) enregistrés en base. Les constantes, si elles existent, restent prioritaires.
+ *       Dans ce mode, rien n'est installé d'office : la page Extensions propose, pour chaque plugin et le thème,
+ *       le réglage natif « Activer les mises à jour automatiques ».
  *
  * Fonctionnement :
  *  - une mise à jour est proposée quand le SHA du dernier commit de la branche diffère du SHA installé
@@ -44,15 +48,43 @@ class ISPAG_GitHub_Updater {
         return defined('ISPAG_GITHUB_API_BASE') && ISPAG_GITHUB_API_BASE ? rtrim(ISPAG_GITHUB_API_BASE, '/') : 'https://api.github.com';
     }
 
+    const OPT_TOKEN  = 'ispag_gh_token';
+    const OPT_BRANCH = 'ispag_gh_branch';
+    const PAGE       = 'ispag-updates';
+
+    /** Jeton : constante wp-config.php en priorité, sinon réglage enregistré en base. */
+    public static function token() {
+        if (defined('ISPAG_GITHUB_TOKEN') && ISPAG_GITHUB_TOKEN !== '') return (string) ISPAG_GITHUB_TOKEN;
+        return (string) get_option(self::OPT_TOKEN, '');
+    }
+
+    /** Branche suivie : constante, sinon réglage, sinon « main ». */
+    public static function branch_name() {
+        if (defined('ISPAG_UPDATE_BRANCH') && ISPAG_UPDATE_BRANCH !== '') return (string) ISPAG_UPDATE_BRANCH;
+        $b = trim((string) get_option(self::OPT_BRANCH, ''));
+        return $b !== '' ? $b : 'main';
+    }
+
+    /** true si le jeton ET la branche viennent de wp-config.php (site de test : installation automatique d'office). */
+    public static function uses_constants() {
+        return defined('ISPAG_GITHUB_TOKEN') && ISPAG_GITHUB_TOKEN !== '' && defined('ISPAG_UPDATE_BRANCH') && ISPAG_UPDATE_BRANCH !== '';
+    }
+
     public static function is_configured() {
-        return defined('ISPAG_GITHUB_TOKEN') && ISPAG_GITHUB_TOKEN !== ''
-            && defined('ISPAG_UPDATE_BRANCH') && ISPAG_UPDATE_BRANCH !== '';
+        return self::token() !== '';
+    }
+
+    public static function plugin_action_links($links) {
+        array_unshift($links, '<a href="' . esc_url(admin_url('tools.php?page=' . self::PAGE)) . '">Updates</a>');
+        return $links;
     }
 
     /** @param string $main_file __FILE__ du fichier principal du plugin */
     public static function plugin($main_file, $repo) {
-        if (!self::is_configured()) return null;
         $basename = plugin_basename($main_file);
+        // Lien « Updates » dans la liste des extensions, même tant que le jeton n'est pas saisi
+        add_filter('plugin_action_links_' . $basename, [self::class, 'plugin_action_links']);
+        if (!self::is_configured()) return null;
         return new self('plugin', dirname($basename), $basename, $repo);
     }
 
@@ -98,14 +130,14 @@ class ISPAG_GitHub_Updater {
 
     // ------------------------------------------------------------------ détection
 
-    private function branch() { return (string) ISPAG_UPDATE_BRANCH; }
+    private function branch() { return self::branch_name(); }
     private function sha_option() { return 'ispag_gh_sha_' . $this->slug; }
     private function installed_sha() { return (string) get_option($this->sha_option(), ''); }
     private function cache_key() { return 'ispag_gh_head_' . md5($this->repo . '|' . $this->branch()); }
 
     private function api_headers($accept = 'application/vnd.github+json') {
         return [
-            'Authorization'        => 'Bearer ' . ISPAG_GITHUB_TOKEN,
+            'Authorization'        => 'Bearer ' . self::token(),
             'Accept'               => $accept,
             'X-GitHub-Api-Version' => '2022-11-28',
             'User-Agent'           => 'ISPAG-Updater',
@@ -221,6 +253,8 @@ class ISPAG_GitHub_Updater {
     public function maybe_auto_update($update, $item) {
         $id = ($this->type === 'plugin') ? ($item->plugin ?? '') : ($item->theme ?? '');
         if ($id !== $this->basename) return $update;
+        // Réglage enregistré en base (production) : on laisse le choix natif de WordPress (Extensions → mises à jour automatiques)
+        if (!self::uses_constants()) return $update;
         if (defined('ISPAG_GITHUB_AUTO_UPDATE') && !ISPAG_GITHUB_AUTO_UPDATE) return $update;
         return true;
     }
@@ -335,14 +369,37 @@ class ISPAG_GitHub_Updater {
     // ------------------------------------------------------------------ diagnostic (Outils → Updates ISPAG)
 
     public static function admin_menu() {
-        add_management_page('Updates ISPAG', 'Updates ISPAG', 'manage_options', 'ispag-updates', [self::class, 'render_admin']);
+        add_management_page('Updates ISPAG', 'Updates ISPAG', 'manage_options', self::PAGE, [self::class, 'render_admin']);
+    }
+
+    /** Enregistrement du jeton / de la branche (écran « Updates ISPAG »), avant tout affichage pour pouvoir rediriger. */
+    public static function handle_settings_save() {
+        if (empty($_POST['ispag_save_updater']) || !current_user_can('manage_options')) return;
+        check_admin_referer('ispag_save_updater');
+
+        if (!empty($_POST['ispag_gh_remove_token'])) {
+            delete_option(self::OPT_TOKEN);
+        } elseif (isset($_POST['ispag_gh_token']) && trim((string) wp_unslash($_POST['ispag_gh_token'])) !== '') {
+            update_option(self::OPT_TOKEN, trim(sanitize_text_field(wp_unslash($_POST['ispag_gh_token']))), false);
+        }
+        $branch = isset($_POST['ispag_gh_branch']) ? trim(sanitize_text_field(wp_unslash($_POST['ispag_gh_branch']))) : '';
+        if (preg_match('#^[A-Za-z0-9._/\-]+$#', $branch)) {
+            update_option(self::OPT_BRANCH, $branch, false);
+        }
+        // Les mémorisations de commits distants dépendent du jeton/de la branche
+        global $wpdb;
+        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '\_transient\_ispag\_gh\_head\_%' OR option_name LIKE '\_transient\_timeout\_ispag\_gh\_head\_%'");
+        delete_site_transient('update_plugins');
+        delete_site_transient('update_themes');
+        wp_safe_redirect(add_query_arg('saved', 1, admin_url('tools.php?page=' . self::PAGE)));
+        exit;
     }
 
     private static function hint($code, $error) {
         if ($code === 0)   return 'Le serveur ne peut pas joindre GitHub (' . $error . '). Vérifiez que l\'hébergement autorise les connexions sortantes HTTPS.';
-        if ($code === 401) return 'Jeton refusé par GitHub : il est invalide, expiré ou mal copié dans wp-config.php.';
+        if ($code === 401) return 'Jeton refusé par GitHub : il est invalide, expiré ou mal copié.';
         if ($code === 403) return 'Access denied (ou limite de requêtes atteinte) : le jeton n\'a pas le droit « Contents : lecture » sur ce dépôt.';
-        if ($code === 404) return 'Dépôt ou branche introuvable : le jeton n\'a pas accès à ce dépôt, ou la branche « ' . (defined('ISPAG_UPDATE_BRANCH') ? ISPAG_UPDATE_BRANCH : '') . ' » n\'existe pas.';
+        if ($code === 404) return 'Dépôt ou branche introuvable : le jeton n\'a pas accès à ce dépôt, ou la branche « ' . self::branch_name() . ' » n\'existe pas.';
         return 'Réponse inattendue de GitHub.';
     }
 
@@ -356,11 +413,34 @@ class ISPAG_GitHub_Updater {
         echo '<p>Mise à jour automatique des plugins et du thème ISPAG depuis une branche GitHub. Cet écran indique ce qui fonctionne et ce qui bloque.</p>';
 
         // --- 1. configuration
-        echo '<h2>1. Configuration (wp-config.php)</h2><table class="widefat striped" style="max-width:900px"><tbody>';
-        $token = defined('ISPAG_GITHUB_TOKEN') ? (string) ISPAG_GITHUB_TOKEN : '';
-        printf('<tr><td>ISPAG_GITHUB_TOKEN défini</td><td>%s%s</td></tr>', $token !== '' ? $yes : $no, $token !== '' ? ' — ' . esc_html(substr($token, 0, 11)) . '… (' . strlen($token) . ' caractères)' : '');
-        printf('<tr><td>ISPAG_UPDATE_BRANCH défini</td><td>%s%s</td></tr>', defined('ISPAG_UPDATE_BRANCH') && ISPAG_UPDATE_BRANCH !== '' ? $yes : $no, defined('ISPAG_UPDATE_BRANCH') && ISPAG_UPDATE_BRANCH !== '' ? ' — ' . esc_html(ISPAG_UPDATE_BRANCH) : '');
-        printf('<tr><td>Installation automatique</td><td>%s</td></tr>', defined('ISPAG_GITHUB_AUTO_UPDATE') && !ISPAG_GITHUB_AUTO_UPDATE ? 'désactivée (ISPAG_GITHUB_AUTO_UPDATE = false) : les mises à jour sont proposées mais à valider à la main' : 'activée');
+        if (!empty($_GET['saved'])) echo '<div class="notice notice-success is-dismissible"><p>Réglages enregistrés.</p></div>';
+
+        echo '<h2>1. Configuration</h2>';
+        $by_const = self::uses_constants();
+        $token    = self::token();
+        $stored   = (string) get_option(self::OPT_TOKEN, '');
+        if ($by_const) {
+            echo '<p class="description">Le jeton et la branche sont définis dans <code>wp-config.php</code> (ISPAG_GITHUB_TOKEN, ISPAG_UPDATE_BRANCH) : ils sont prioritaires sur les réglages ci-dessous.</p>';
+        } else {
+            echo '<form method="post" action="' . esc_url(admin_url('tools.php?page=' . self::PAGE)) . '">';
+            wp_nonce_field('ispag_save_updater');
+            echo '<table class="form-table" style="max-width:900px"><tbody>';
+            printf('<tr><th><label for="ispag_gh_token">Jeton GitHub</label></th><td><input type="password" id="ispag_gh_token" name="ispag_gh_token" class="regular-text" autocomplete="new-password" placeholder="%s"> <p class="description">Jeton en lecture seule (<em>Contents : Read</em>) sur les dépôts ISPAG. Laissez vide pour conserver le jeton enregistré.%s</p>%s</td></tr>',
+                $stored !== '' ? '•••••••• (enregistré)' : 'github_pat_…',
+                defined('ISPAG_GITHUB_TOKEN') && ISPAG_GITHUB_TOKEN !== '' ? ' <strong>Le jeton de wp-config.php est utilisé.</strong>' : '',
+                $stored !== '' ? '<label><input type="checkbox" name="ispag_gh_remove_token" value="1"> Supprimer le jeton enregistré</label>' : '');
+            printf('<tr><th><label for="ispag_gh_branch">Branche suivie</label></th><td><input type="text" id="ispag_gh_branch" name="ispag_gh_branch" class="regular-text" value="%s"> <p class="description">« main » en production.</p></td></tr>', esc_attr(self::branch_name()));
+            echo '</tbody></table><p><input type="submit" name="ispag_save_updater" class="button button-primary" value="Enregistrer"></p></form>';
+        }
+
+        echo '<table class="widefat striped" style="max-width:900px"><tbody>';
+        printf('<tr><td>Jeton GitHub</td><td>%s%s</td></tr>', $token !== '' ? $yes : $no, $token !== '' ? ' — ' . esc_html(substr($token, 0, 11)) . '… (' . strlen($token) . ' caractères, ' . ($by_const || (defined('ISPAG_GITHUB_TOKEN') && ISPAG_GITHUB_TOKEN !== '') ? 'wp-config.php' : 'réglage enregistré') . ')' : '');
+        printf('<tr><td>Branche suivie</td><td>%s</td></tr>', esc_html(self::branch_name()));
+        if ($by_const) {
+            printf('<tr><td>Installation automatique</td><td>%s</td></tr>', defined('ISPAG_GITHUB_AUTO_UPDATE') && !ISPAG_GITHUB_AUTO_UPDATE ? 'désactivée (ISPAG_GITHUB_AUTO_UPDATE = false) : les mises à jour sont proposées mais à valider à la main' : 'activée');
+        } else {
+            echo '<tr><td>Installation automatique</td><td>au choix, plugin par plugin : <a href="' . esc_url(admin_url('plugins.php')) . '">Extensions</a> → « Activer les mises à jour automatiques »</td></tr>';
+        }
         $cron_off = defined('DISABLE_WP_CRON') && DISABLE_WP_CRON;
         printf('<tr><td>Tâches planifiées WordPress (WP-Cron) actives</td><td>%s%s</td></tr>', $cron_off ? $no : $yes, $cron_off ? ' — DISABLE_WP_CRON est à true : la vérification automatique ne se déclenche pas, seul le bouton ci-dessous fonctionne' : '');
         $updater_off = defined('AUTOMATIC_UPDATER_DISABLED') && AUTOMATIC_UPDATER_DISABLED;
@@ -371,9 +451,7 @@ class ISPAG_GitHub_Updater {
         echo '</tbody></table>';
 
         if (!$configured) {
-            echo '<div class="notice notice-warning inline" style="max-width:900px"><p><strong>L\'updater est inactif</strong> : il manque au moins une des deux constantes. Ajoutez dans <code>wp-config.php</code>, <em>avant</em> la ligne « That\'s all, stop editing! » :</p>';
-            echo '<pre style="background:#f6f7f7;padding:10px;overflow:auto">define(\'ISPAG_GITHUB_TOKEN\', \'github_pat_...\');
-define(\'ISPAG_UPDATE_BRANCH\', \'claude/eager-galileo-tcm8l8\');</pre></div></div>';
+            echo '<div class="notice notice-warning inline" style="max-width:900px"><p><strong>L\'updater est inactif</strong> : saisissez un jeton GitHub ci-dessus (ou définissez <code>ISPAG_GITHUB_TOKEN</code> dans wp-config.php).</p></div></div>';
             return;
         }
 
@@ -414,5 +492,6 @@ define(\'ISPAG_UPDATE_BRANCH\', \'claude/eager-galileo-tcm8l8\');</pre></div></d
 
 
 add_action('admin_menu', ['ISPAG_GitHub_Updater', 'admin_menu']);
+add_action('admin_init', ['ISPAG_GitHub_Updater', 'handle_settings_save']);
 
 }

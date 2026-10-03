@@ -107,7 +107,7 @@ spl_autoload_register(function($class) {
 // 3. ACTIVATION DU PLUGIN
 // ----------------------------------------------------------------------------
 
-// Mise à jour depuis une branche GitHub : inactif sauf si wp-config.php définit ISPAG_GITHUB_TOKEN et ISPAG_UPDATE_BRANCH
+// Mise à jour depuis une branche GitHub (jeton + branche : wp-config.php ou Outils → Updates ISPAG ; « main » par défaut)
 require_once ISPAG_CRM_PLUGIN_DIR . 'classes/class-ispag-github-updater.php';
 ISPAG_GitHub_Updater::plugin(__FILE__, 'mougeat/ispag-crm');
 
