@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ispag-crm\n"
+"Report-Msgid-Bugs-To: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de_DE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: creation-reservoir\n"
+
+#: classes/admin/class-ispag-csv-importer.php:424
+msgid "Refresh status"
+msgstr "Status aktualisieren"
+
+#: classes/admin/class-ispag-csv-importer.php:699
+msgid "✅ CSV Import Completed"
+msgstr "✅ CSV-Import abgeschlossen"
+
+#: classes/admin/class-ispag-csv-importer.php:701
+msgid "Your CSV import has been completed successfully.<br>\n                    - Total rows processed: %1$d<br>\n                    - Insertions: %2$d<br>\n                    - Updates: %3$d<br>\n                    - File: %4$s<br>\n                    - Task ID: %5$s"
+msgstr "Ihr CSV-Import wurde erfolgreich abgeschlossen.<br>\n                    - Verarbeitete Zeilen: %1$d<br>\n                    - Einfügungen: %2$d<br>\n                    - Aktualisierungen: %3$d<br>\n                    - Datei: %4$s<br>\n                    - Aufgaben-ID: %5$s"
+
+#: classes/admin/class-ispag-csv-importer.php:717
+msgid "❌ CSV Import Failed"
+msgstr "❌ CSV-Import fehlgeschlagen"
+
+#: classes/admin/class-ispag-csv-importer.php:719
+msgid "Your CSV import has failed.<br>\n                    - Processed rows: %1$d<br>\n                    - Insertions: %2$d<br>\n                    - Updates: %3$d<br>\n                    - File: %4$s<br>\n                    - Task ID: %5$s<br>\n                    - Error: %6$s"
+msgstr "Ihr CSV-Import ist fehlgeschlagen.<br>\n                    - Verarbeitete Zeilen: %1$d<br>\n                    - Einfügungen: %2$d<br>\n                    - Aktualisierungen: %3$d<br>\n                    - Datei: %4$s<br>\n                    - Aufgaben-ID: %5$s<br>\n                    - Fehler: %6$s"
+
+#: classes/class-ispag-note-renderer.php:29
+msgid "Invalid request."
+msgstr "Ungültige Anfrage."
+
+#: classes/class-ispag-note-renderer.php:66
+msgid "No activity found."
+msgstr "Keine Aktivität gefunden."
+
+#: ispag-attachments-init.php:180
+msgid "Upload successful"
+msgstr "Upload erfolgreich"
+
+#: ispag-attachments-init.php:181
+msgid "Your documents have been uploaded successfully!"
+msgstr "Ihre Dokumente wurden erfolgreich hochgeladen!"

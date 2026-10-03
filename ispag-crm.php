@@ -11,12 +11,10 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Traductions désactivées pour l'instant : tous les textes de base sont en anglais.
- * Empêche aussi le chargement de fichiers .mo posés ailleurs (wp-content/languages/plugins/…).
- * Pour réactiver plus tard : add_filter('ispag_disable_translations', '__return_false');
+ * Les traductions FR / DE sont actives. Pour les désactiver (tout en anglais) : add_filter('ispag_disable_translations', '__return_true');
  */
 add_filter('override_load_textdomain', function ($override, $domain) {
-    if (in_array($domain, ['creation-reservoir', 'ispag-crm', 'ispag'], true) && apply_filters('ispag_disable_translations', true)) {
+    if (in_array($domain, ['creation-reservoir', 'ispag-crm', 'ispag'], true) && apply_filters('ispag_disable_translations', false)) {
         return true;
     }
     return $override;
@@ -56,9 +54,61 @@ require_once plugin_dir_path(__FILE__) . 'classes/helpers/ispag-translations-sup
 
 add_action('plugins_loaded', 'ispag_crm_load_textdomain');
 
+/**
+ * Traductions FR / DE (fichiers dans languages/ : <domaine>-fr_FR.mo, <domaine>-de_DE.mo ; générés par tools/i18n/build.py d'ISPAG Project Manager).
+ * Toute variante de langue du site est couverte : fr_CH, fr_BE… utilisent le français ; de_CH, de_DE_formal, de_AT… l'allemand.
+ * Les textes de base sont en anglais : sans fichier pour la langue du site, l'anglais est affiché.
+ * Le chargement est refait quand la langue change (Polylang la fixe après le chargement des plugins, switch_to_locale…).
+ */
+if (!function_exists('ispag_i18n_register_dir')) {
+    /** Dossiers languages/ enregistrés par les plugins et le thème ISPAG. */
+    function ispag_i18n_dirs($add = null) {
+        static $dirs = [];
+        if ($add !== null && !in_array($add, $dirs, true)) $dirs[] = $add;
+        return $dirs;
+    }
+    function ispag_i18n_register_dir($dir) {
+        ispag_i18n_dirs($dir);
+        if (!did_action('ispag_i18n_hooked')) {
+            do_action('ispag_i18n_hooked');
+            add_action('plugins_loaded', 'ispag_i18n_reload', 20);
+            add_action('after_setup_theme', 'ispag_i18n_reload', 20);
+            add_action('init', 'ispag_i18n_reload', 1);
+            add_action('pll_language_defined', 'ispag_i18n_reload', 1);
+            add_action('change_locale', 'ispag_i18n_reload', 20);
+            add_action('restore_previous_locale', 'ispag_i18n_reload', 20);
+        }
+    }
+    /** (Re)charge les traductions pour la langue courante, uniquement si elle a changé depuis le dernier chargement. */
+    function ispag_i18n_reload() {
+        static $done = null;
+        $locale   = determine_locale();
+        $fallback = ['fr' => 'fr_FR', 'de' => 'de_DE'][substr($locale, 0, 2)] ?? '';
+        $signature = $locale . '|' . implode(',', ispag_i18n_dirs()); // langue + dossiers connus (le thème s'enregistre après les plugins)
+        if ($done === $signature) return;
+        if ($done !== null) {
+            foreach (ispag_i18n_dirs() as $dir) {
+                foreach ((array) glob(rtrim($dir, '/\\') . '/*-{fr_FR,de_DE}.mo', GLOB_BRACE) as $mo) {
+                    unload_textdomain(preg_replace('/-(fr_FR|de_DE)\.mo$/', '', basename($mo)), true);
+                }
+            }
+        }
+        $done = $signature;
+        if ($fallback === '') return;
+        foreach (ispag_i18n_dirs() as $dir) {
+            foreach ((array) glob(rtrim($dir, '/\\') . '/*-' . $fallback . '.mo') as $mo) {
+                $domain = basename($mo, '-' . $fallback . '.mo');
+                $exact  = rtrim($dir, '/\\') . '/' . $domain . '-' . $locale . '.mo';
+                load_textdomain($domain, is_readable($exact) ? $exact : $mo);
+            }
+        }
+    }
+}
+
+ispag_i18n_register_dir(__DIR__ . '/languages');
+
 function ispag_crm_load_textdomain() {
-    // Le premier paramètre DOIT être identique au "Text domain" de l'image (ispag-crm)
-    load_plugin_textdomain('ispag-crm', false, dirname(plugin_basename(__FILE__)) . '/languages');
+    ispag_i18n_reload();
 }
 
 // ----------------------------------------------------------------------------
