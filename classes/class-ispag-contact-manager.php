@@ -103,7 +103,8 @@ class ISPAG_Contact_Manager {
     public function enqueue_ispag_assets() {
         // Ne charge le CSS que si le shortcode est sur la page pour des raisons de performance.
         // Cette vérification est essentielle si le plugin est lourd.
-        if ( ! has_shortcode( get_post( get_the_ID() )->post_content, 'ispag_contact_list' ) ) {
+        $current_post = get_post( get_the_ID() );
+        if ( ! $current_post || ! has_shortcode( $current_post->post_content, 'ispag_contact_list' ) ) {
             return;
         }
         

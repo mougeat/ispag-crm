@@ -93,7 +93,7 @@ class ISPAG_Crm_Deals_Repository {
 
         foreach ( $projects as $project_raw_data ) {
             $deal_model = new ISPAG_Crm_Deal_Model( $project_raw_data );
-            $group_ref = !empty($project_raw_data->deal_group_ref) ? $project_raw_data->deal_group_ref : $this->get_root_offer_number($project_raw_data->offer_number);
+            $group_ref = !empty($project_raw_data->deal_group_ref) ? $project_raw_data->deal_group_ref : $this->get_root_offer_number($project_raw_data->offer_number ?? '');
 
             // Injection Stage
             // 1. Récupération des détails (Cache ou Repo)
@@ -113,7 +113,7 @@ class ISPAG_Crm_Deals_Repository {
                 $deal_model->stage_color = $stage_details->stage_color ?? $stage_details->color ?? '';
             }
 
-            $group_ref = !empty($project_raw_data->deal_group_ref) ? $project_raw_data->deal_group_ref : $this->get_root_offer_number($project_raw_data->offer_number);
+            $group_ref = !empty($project_raw_data->deal_group_ref) ? $project_raw_data->deal_group_ref : $this->get_root_offer_number($project_raw_data->offer_number ?? '');
 
             if ( $note_manager && !empty($group_ref) ) {
                 // On passe bien la référence (ex: OF26-11102)

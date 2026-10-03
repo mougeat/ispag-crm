@@ -10,7 +10,7 @@ function ispag_enqueue_attachments_assets() {
 
     wp_enqueue_script('ispag-attachments-js', plugins_url('/assets/js/ispag-attachments.js', __FILE__), ['jquery'], '1.1', true);
     wp_enqueue_script('ispag-attachments-upload-js', plugins_url('/assets/js/ispag-attachments-upload.js', __FILE__), ['jquery'], '1.0', true);
-    wp_enqueue_script('ispag-attachment-dropzone-js', plugins_url('/assets/js/ispag-attachment-dropzone.jss', __FILE__), ['jquery'], '1.0', true);
+    wp_enqueue_script('ispag-attachment-dropzone-js', plugins_url('/assets/js/ispag-attachment-dropzone.js', __FILE__), ['jquery'], '1.0', true);
 
     // NB : avant cette version, 'nonce' n'était pas passé ici du tout,
     // alors que le JS l'utilisait déjà (ispagAttachmentsAjax.nonce) —

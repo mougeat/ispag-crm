@@ -1,4 +1,4 @@
-console.log('[ISPAG Activity ] fichier JS chargé');
+// console.log('[ISPAG Activity ] fichier JS chargé');
 
 jQuery(function ($) {
     'use strict';

@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-    console.log("=== ISPAG Sequence Loader Loaded ===");
+    // console.log("=== ISPAG Sequence Loader Loaded ===");
     let currentContactId = null;
     let currentDealId = null;
 

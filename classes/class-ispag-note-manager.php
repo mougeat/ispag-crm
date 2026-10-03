@@ -582,9 +582,6 @@ class ISPAG_Note_Manager {
         // La table des notes doit être accessible
         $table_notes = self::TABLE_NOTE; 
 
-        // 2. Préparation du pattern de recherche pour les IDs multiples (comme fait précédemment)
-        $like_pattern = $wpdb->esc_like( $safe_entity_id );
-        
         // Définir les types d'activités de contact à rechercher
         $contact_types = ['MEETING', 'CALL', 'EMAIL', 'LOG_EMAIL', 'EMAIL_CAMPAIGN', 'EMAIL_TRANSACTIONAL', 'CHRISTMAS_PRESENT', 'WHATSAPP', 'SMS'];
         $type_placeholders = implode( ',', array_fill( 0, count( $contact_types ), '%s' ) );
@@ -605,18 +602,8 @@ class ISPAG_Note_Manager {
             LIMIT 1
         ";
 
-        // 5. Préparation de la requête avec les valeurs de remplacement
-        $prepared_values = array_merge(
-            // Valeurs pour la condition de recherche d'ID
-            [ 
-                $safe_entity_id, 
-                $like_pattern . ',%', 
-                '%,' . $like_pattern, 
-                '%,' . $like_pattern . ',%' 
-            ],
-            // Valeurs pour la condition IN (MEETING, CALL, EMAIL)
-            $contact_types 
-        );
+        // 5. Valeurs de remplacement : deux fois l'ID (égalité, FIND_IN_SET) puis les types d'activité
+        $prepared_values = array_merge( [ (string) $safe_entity_id, (string) $safe_entity_id ], $contact_types );
         
         $sql_prepared = $wpdb->prepare( $sql, ...$prepared_values );
 

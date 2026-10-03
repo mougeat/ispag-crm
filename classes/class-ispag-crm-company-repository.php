@@ -451,7 +451,8 @@ class ISPAG_Crm_Company_Repository {
             
             if(class_exists('ISPAG_Crm_Discount_Manager')){
                 $discount_manager = new ISPAG_Crm_Discount_Manager();
-                $company->discount_value = $discount_manager->get_current_discount_by_company_id($company->Id, 'rabais')->discount_value;
+                $current_discount = $discount_manager->get_current_discount_by_company_id($company->Id, 'rabais');
+                $company->discount_value = $current_discount->discount_value ?? 0;
                 $company->coef_value = $discount_manager->get_coef_by_company_id($company->Id);
             }
             else{

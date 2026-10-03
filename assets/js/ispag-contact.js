@@ -36,7 +36,7 @@ jQuery(document).ready(function($) {
                 }
             });
         } else {
-            console.warn('ISPAG JS : La carte contact existe, mais data-deal-id est vide ou absent.');
+            // Carte contact sans data-deal-id (page entreprise, par exemple) : rien à charger
         }
     } else {
         // console.log('ISPAG JS : Aucune carte .ispag-contact-card n’est présente sur cette page.');
