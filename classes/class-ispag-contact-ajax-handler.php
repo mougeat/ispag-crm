@@ -489,6 +489,15 @@ class ISPAG_Contact_Ajax_Handler {
                     wp_send_json_error( array( 'message' => 'Error during update: ' . $result->get_error_message() ) );
                 }
                 break;
+            case 'locale':
+                $choices = ISPAG_Crm_Supplier_Tab::language_choices();
+                if ( ! isset( $choices[ $new_value ] ) ) {
+                    wp_send_json_error( array( 'message' => 'Langue inconnue.' ) );
+                }
+                update_user_meta( $contact_id, 'locale', $new_value );
+                $success = true;
+                $response_data['display_value'] = esc_html( $choices[ $new_value ] );
+                break;
             default:
                 wp_send_json_error( array( 'message' => 'Champ inconnu: ' . $field_name ) );
                 break;

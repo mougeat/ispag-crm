@@ -1055,6 +1055,26 @@ class ISPAG_Contact_Detail_Shortcode {
                             <span class="edit-icon">✏️</span>
                         </dd>
 
+                        <?php
+                        $lang_choices = ISPAG_Crm_Supplier_Tab::language_choices();
+                        $lang_current = ISPAG_Crm_Supplier_Tab::normalize_language( get_user_meta( $contact->ID, 'locale', true ) );
+                        $lang_options = array();
+                        foreach ( $lang_choices as $lang_code => $lang_label ) {
+                            $lang_options[] = $lang_code . ':' . $lang_label;
+                        }
+                        ?>
+                        <dt><?php _e( 'Language', 'ispag-crm' ); ?></dt>
+                        <dd
+                            class="ispag-editable-field"
+                            data-type="select"
+                            data-name="locale"
+                            data-value="<?php echo esc_attr( $lang_current ); ?>"
+                            data-options="<?php echo esc_attr( implode( ';', $lang_options ) ); ?>"
+                        >
+                            <?php echo isset( $lang_choices[ $lang_current ] ) ? esc_html( $lang_choices[ $lang_current ] ) : '<span class="ispag-placeholder">—</span>'; ?>
+                            <span class="edit-icon">✏️</span>
+                        </dd>
+
                         <dt><?php _e( 'Last contacted', 'ispag-crm' ); ?></dt>
                         <dd >
                             <?php echo date_i18n( 'j F Y', strtotime( $last_contact_date ) ); ?>
