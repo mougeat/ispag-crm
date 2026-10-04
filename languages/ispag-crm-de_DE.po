@@ -783,19 +783,19 @@ msgstr "Sie sind nicht berechtigt, Unternehmen zu erstellen."
 msgid "Company created."
 msgstr "Unternehmen erstellt."
 
-#: classes/class-ispag-crm-company-creator.php:121
+#: classes/class-ispag-crm-company-creator.php:124
 msgid "A company with this domain already exists."
 msgstr "Ein Unternehmen mit dieser Domain existiert bereits."
 
-#: classes/class-ispag-crm-company-creator.php:125
+#: classes/class-ispag-crm-company-creator.php:128
 msgid "The company name is required."
 msgstr "Der Unternehmensname ist erforderlich."
 
-#: classes/class-ispag-crm-company-creator.php:127
+#: classes/class-ispag-crm-company-creator.php:130
 msgid "This email address is not valid."
 msgstr "Diese E-Mail-Adresse ist ungültig."
 
-#: classes/class-ispag-crm-company-creator.php:129
+#: classes/class-ispag-crm-company-creator.php:132
 msgid "The company could not be saved."
 msgstr "Das Unternehmen konnte nicht gespeichert werden."
 
@@ -1059,41 +1059,49 @@ msgstr "Ingenieur"
 msgid "AI processing failed."
 msgstr "KI-Verarbeitung fehlgeschlagen."
 
-#: classes/class-ispag-crm-supplier-tab.php:110
+#: classes/class-ispag-crm-supplier-tab.php:116
+msgid "Purchasing information"
+msgstr "Einkaufsinformationen"
+
+#: classes/class-ispag-crm-supplier-tab.php:125
+msgid "Default (%s)"
+msgstr "Standard (%s)"
+
+#: classes/class-ispag-crm-supplier-tab.php:130
+msgid "Language of the e-mails sent to this supplier (order, quotation…)."
+msgstr "Sprache der E-Mails an diesen Lieferanten (Bestellung, Anfrage…)."
+
+#: classes/class-ispag-crm-supplier-tab.php:143
 msgid "No contact is linked to this company yet."
 msgstr "Diesem Unternehmen ist noch kein Kontakt zugeordnet."
 
-#: classes/class-ispag-crm-supplier-tab.php:127
+#: classes/class-ispag-crm-supplier-tab.php:160
 msgid "Articles supplied"
 msgstr "Gelieferte Artikel"
 
-#: classes/class-ispag-crm-supplier-tab.php:129
+#: classes/class-ispag-crm-supplier-tab.php:162
 msgid "The article catalogue is not available (Project Manager plugin inactive)."
 msgstr "Der Artikelkatalog ist nicht verfügbar (Plugin Project Manager inaktiv)."
 
-#: classes/class-ispag-crm-supplier-tab.php:131
+#: classes/class-ispag-crm-supplier-tab.php:164
 msgid "No article is linked to this supplier yet. Add it from an article (Purchasing tab)."
 msgstr "Diesem Lieferanten ist noch kein Artikel zugeordnet. Fügen Sie ihn über einen Artikel hinzu (Registerkarte Einkauf)."
 
-#: classes/class-ispag-crm-supplier-tab.php:136
+#: classes/class-ispag-crm-supplier-tab.php:169
 msgid "Article"
 msgstr "Artikel"
 
-#: classes/class-ispag-crm-supplier-tab.php:137
+#: classes/class-ispag-crm-supplier-tab.php:170
 msgid "Supplier reference"
 msgstr "Lieferantenreferenz"
 
-#: classes/class-ispag-crm-supplier-tab.php:138
+#: classes/class-ispag-crm-supplier-tab.php:171
 msgid "Purchase price"
 msgstr "Einkaufspreis"
 
-#: classes/class-ispag-crm-supplier-tab.php:139
+#: classes/class-ispag-crm-supplier-tab.php:172
 msgid "Discount"
 msgstr "Rabatt"
-
-#: classes/class-ispag-crm-supplier-tab.php:183
-msgid "Saved"
-msgstr "Gespeichert"
 
 #: classes/class-ispag-crm-supplier-tab.php:19
 msgid "Currency"
@@ -1103,9 +1111,9 @@ msgstr "Währung"
 msgid "VAT number"
 msgstr "MwSt.-Nr."
 
-#: classes/class-ispag-crm-supplier-tab.php:205
-msgid "Unauthorized"
-msgstr "Nicht autorisiert"
+#: classes/class-ispag-crm-supplier-tab.php:216
+msgid "Saved"
+msgstr "Gespeichert"
 
 #: classes/class-ispag-crm-supplier-tab.php:22
 msgid "Delivery time (days)"
@@ -1115,37 +1123,37 @@ msgstr "Lieferzeit (Tage)"
 msgid "Transport time (days)"
 msgstr "Transportzeit (Tage)"
 
-#: classes/class-ispag-crm-supplier-tab.php:230
+#: classes/class-ispag-crm-supplier-tab.php:238
+msgid "Unauthorized"
+msgstr "Nicht autorisiert"
+
+#: classes/class-ispag-crm-supplier-tab.php:264
 msgid "This contact does not belong to this company."
 msgstr "Dieser Kontakt gehört nicht zu diesem Unternehmen."
 
-#: classes/class-ispag-crm-supplier-tab.php:235
+#: classes/class-ispag-crm-supplier-tab.php:269
 msgid "Invalid data"
 msgstr "Ungültige Daten"
 
-#: classes/class-ispag-crm-supplier-tab.php:30
+#: classes/class-ispag-crm-supplier-tab.php:50
 msgid "Order / quotation contact"
 msgstr "Kontakt Bestellung / Offerte"
 
-#: classes/class-ispag-crm-supplier-tab.php:31
+#: classes/class-ispag-crm-supplier-tab.php:51
 msgid "Drawing contact"
 msgstr "Kontakt Zeichnungen"
 
-#: classes/class-ispag-crm-supplier-tab.php:32
+#: classes/class-ispag-crm-supplier-tab.php:52
 msgid "Billing contact"
 msgstr "Kontakt Rechnungsstellung"
 
-#: classes/class-ispag-crm-supplier-tab.php:33
+#: classes/class-ispag-crm-supplier-tab.php:53
 msgid "Delivery contact"
 msgstr "Kontakt Lieferung"
 
-#: classes/class-ispag-crm-supplier-tab.php:73
+#: classes/class-ispag-crm-supplier-tab.php:93
 msgid "Supplier"
 msgstr "Lieferant"
-
-#: classes/class-ispag-crm-supplier-tab.php:96
-msgid "Purchasing information"
-msgstr "Einkaufsinformationen"
 
 #: classes/class-ispag-deals-constants.php:130
 msgid "Price Too High"
