@@ -692,6 +692,18 @@ class ISPAG_Contact_Ajax_Handler {
             wp_send_json_error(['message' => 'The email is required']);
         }
 
+        // Doublon : un contact (compte WordPress) avec cet email existe déjà -> on ne crée rien et on renvoie le contact existant
+        $existing = get_user_by('email', $email);
+        if ($existing) {
+            wp_send_json_error([
+                'message'  => 'A contact with this email already exists',
+                'existing' => [
+                    'id'   => (int) $existing->ID,
+                    'text' => $existing->display_name . ' (' . $existing->user_email . ')',
+                ],
+            ]);
+        }
+
         // 3. Logique d'entreprise
         $domain = $this->ispag_get_domain_from_email($email);
         $company_id = 0;
