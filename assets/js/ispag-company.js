@@ -22,6 +22,8 @@ jQuery(document).ready(function($) {
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
+                    // Droit manquant (403) : la carte n'a pas à s'afficher
+                    if (jqXHR && jqXHR.status === 403) { $card.remove(); return; }
                     $card.html('<p class="error" style="padding: 10px; color: #e74c3c;">Error while loading data.</p>');
                 }
             });
