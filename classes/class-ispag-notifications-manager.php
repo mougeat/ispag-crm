@@ -223,6 +223,22 @@ class ISPAG_Notifications_Manager
                 'default_channels' => ['crm', 'push', 'mail'],
                 'retain_during_disconnection' => true, // ⬅️ À retenir
             ],
+            'site_info_completed' => [
+                'label' => __('Site information completed', 'ispag-crm'),
+                'description' => __('Notification sent to the project manager when a visitor completes the site information of the welding sheet from the QR code.', 'ispag-crm'),
+                'group' => 'deal',
+                'capability' => 'manage_order',
+                'default_channels' => ['crm', 'push', 'mail'],
+                'retain_during_disconnection' => true, // ⬅️ À retenir
+            ],
+            'delivery_note_signed' => [
+                'label' => __('Delivery note signed', 'ispag-crm'),
+                'description' => __('Notification sent when the recipient signs a delivery note with the QR code (items are marked as delivered).', 'ispag-crm'),
+                'group' => 'deal',
+                'capability' => 'manage_order',
+                'default_channels' => ['crm', 'push', 'mail'],
+                'retain_during_disconnection' => true, // ⬅️ À retenir
+            ],
             'deal_manager' => [
                 'label' => __('Project / Deal Management', 'ispag-crm'),
                 'description' => __('Notification sent for project or deal management actions. (new project, etc.)', 'ispag-crm'),
@@ -234,6 +250,14 @@ class ISPAG_Notifications_Manager
             //*************
             /*Purchase */
             //*************
+            'supplier_order_confirmed' => [
+                'label' => __('Order confirmed by the supplier', 'ispag-crm'),
+                'description' => __('Notification sent to the person in charge of a purchase order when the supplier confirms it online (QR code of the purchase order).', 'ispag-crm'),
+                'group' => 'purchase',
+                'capability' => 'manage_order',
+                'default_channels' => ['crm', 'push', 'mail'],
+                'retain_during_disconnection' => true, // ⬅️ À retenir
+            ],
             'purchase_followup' => [
                 'label' => __('Purchase tracking', 'ispag-crm'),
                 'description' => __('Notification sent for purchase follow-ups.', 'ispag-crm'),
