@@ -18,10 +18,30 @@ class ISPAG_Crm_Supplier_Tab {
         return [
             'currency'       => ['ispag_supplier_currency',      __('Currency', 'ispag-crm'),                'text'],
             'tva'            => ['ispag_supplier_tva',           __('VAT number', 'ispag-crm'),              'text'],
-            'lang'           => ['ispag_supplier_lang',          __('Language', 'ispag-crm'),                'text'],
+            'lang'           => ['ispag_supplier_lang',          __('Language', 'ispag-crm'),                'language'],
             'delivery_days'  => ['ispag_supplier_delivery_days', __('Delivery time (days)', 'ispag-crm'),    'number'],
             'transport_time' => ['ispag_supplier_transport_time', __('Transport time (days)', 'ispag-crm'),  'number'],
         ];
+    }
+
+    /** Langues proposées pour les e-mails au fournisseur (code de locale => libellé) ; ce code choisit le modèle d'e-mail. */
+    public static function language_choices() {
+        $langs = class_exists('ISPAG_Achat_Mail_Templates') ? ISPAG_Achat_Mail_Templates::languages()
+               : ['en_US' => 'English', 'fr_FR' => 'Français', 'de_DE' => 'Deutsch', 'it_IT' => 'Italiano'];
+        return $langs;
+    }
+
+    /** Ancienne saisie libre (« fr », « FR », « Français », « Deutsch »…) ramenée à un code de locale connu, sinon telle quelle. */
+    public static function normalize_language($value) {
+        $value = trim((string) $value);
+        if ($value === '') return '';
+        $choices = self::language_choices();
+        if (isset($choices[$value])) return $value;
+        $v = strtolower($value);
+        foreach ($choices as $code => $label) {
+            if ($v === strtolower($code) || $v === strtolower(substr($code, 0, 2)) || $v === strtolower($label)) return $code;
+        }
+        return $value;
     }
 
     /** rôle => [clé meta, libellé] : chaque valeur est l'ID d'un utilisateur WordPress lié à l'entreprise. */
@@ -96,6 +116,19 @@ class ISPAG_Crm_Supplier_Tab {
                 <h5><?php esc_html_e('Purchasing information', 'ispag-crm'); ?> <span class="ispag-supplier-msg" aria-live="polite"></span></h5>
                 <div class="ispag-supplier-grid">
                     <?php foreach (self::fields() as $key => $def): ?>
+                        <?php if ($def[2] === 'language'):
+                            $lang_now = self::normalize_language(self::get_meta($company_id, $def[0]));
+                            $choices  = self::language_choices();
+                            if ($lang_now !== '' && !isset($choices[$lang_now])) $choices[$lang_now] = $lang_now; // valeur ancienne non reconnue : conservée ?>
+                        <label><span><?php echo esc_html($def[1]); ?></span>
+                            <select class="ispag-supplier-field" data-field="<?php echo esc_attr($key); ?>">
+                                <option value="">— <?php echo esc_html(sprintf(__('Default (%s)', 'ispag-crm'), $choices['fr_FR'] ?? 'Français')); ?></option>
+                                <?php foreach ($choices as $code => $label): ?>
+                                    <option value="<?php echo esc_attr($code); ?>" <?php selected($lang_now, $code); ?>><?php echo esc_html($label); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <small class="description" style="display:block;color:#6b7480;"><?php esc_html_e('Language of the e-mails sent to this supplier (order, quotation…).', 'ispag-crm'); ?></small></label>
+                        <?php continue; endif; ?>
                         <label><span><?php echo esc_html($def[1]); ?></span>
                             <input type="<?php echo esc_attr($def[2]); ?>" <?php echo $def[2] === 'number' ? 'min="0" step="1"' : ''; ?>
                                    class="ispag-supplier-field" data-field="<?php echo esc_attr($key); ?>"
@@ -219,6 +252,7 @@ class ISPAG_Crm_Supplier_Tab {
         if (isset($fields[$field])) {
             $meta_key = $fields[$field][0];
             $value    = $fields[$field][2] === 'number' ? (string) absint($raw) : sanitize_text_field($raw);
+            if ($fields[$field][2] === 'language') { $value = self::normalize_language($value); }
             if ($value === '0') { $value = ''; }
         } elseif (isset($roles[$field])) {
             $meta_key = $roles[$field][0];
