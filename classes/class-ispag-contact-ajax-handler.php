@@ -730,7 +730,11 @@ class ISPAG_Contact_Ajax_Handler {
 
             wp_send_json_success([
                 'message'      => 'Contact created successfully',
-                'redirect_url' => $redirect_url
+                'redirect_url' => $redirect_url,
+                // Identifiant, libellé et entreprise : permettent à un formulaire (ex. nouveau projet) de sélectionner le contact sans quitter la page
+                'id'           => (int) $contact_id,
+                'text'         => trim($first_name . ' ' . $last_name) . ' (' . $email . ')',
+                'company_id'   => (int) $company_id,
             ]);
         } else {
             // error_log('ISPAG CRM: SQL error lors de l\'insert');

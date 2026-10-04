@@ -115,6 +115,9 @@ class ISPAG_Crm_Company_Creator {
                 wp_send_json_success(array(
                     'message'      => __('Company created.', 'ispag-crm'),
                     'redirect_url' => home_url('/company/' . $result['id'] . '/'),
+                    // Identifiant et nom : permettent à un formulaire (ex. nouveau projet) de sélectionner l'entreprise sans quitter la page
+                    'id'           => (int) $result['id'],
+                    'name'         => sanitize_text_field(wp_unslash(isset($_POST['company_name']) ? $_POST['company_name'] : '')),
                 ));
             case 'exists':
                 wp_send_json_error(array(
