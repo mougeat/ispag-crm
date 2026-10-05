@@ -426,7 +426,7 @@ add_action( 'wp_enqueue_scripts', function() {
 
     if ( is_page( $crm_pages ) ) {
         wp_enqueue_style( 'ispag-crm-main', ISPAG_CRM_PLUGIN_URL . 'assets/css/ispag-crm-styles.css' );
-        wp_enqueue_script( 'ispag-crm-js', ISPAG_CRM_PLUGIN_URL . 'assets/js/ispag-contact-detail-edit.js', ['jquery'], '1.2.0', true );
+        wp_enqueue_script( 'ispag-crm-js', ISPAG_CRM_PLUGIN_URL . 'assets/js/ispag-contact-detail-edit.js', ['jquery'], '1.2.0.' . (int) @filemtime( ISPAG_CRM_PLUGIN_DIR . 'assets/js/ispag-contact-detail-edit.js' ), true );   // version = date du fichier : le navigateur recharge le script après chaque mise à jour
         wp_enqueue_script( 'ispag-ai-loader', ISPAG_CRM_PLUGIN_URL . 'assets/js/ispag-load-ai-datas.js', ['jquery'], '1.2.0', true );
         wp_enqueue_script( 'ispag-drag-drop', ISPAG_CRM_PLUGIN_URL . 'assets/js/ispag-drag-and-drop-deals.js', ['jquery'], (int) @filemtime( ISPAG_CRM_PLUGIN_DIR . 'assets/js/ispag-drag-and-drop-deals.js' ), true );
         wp_enqueue_script( 'ispag-sequence-loader-js', ISPAG_CRM_PLUGIN_URL . 'assets/js/sequence-loader.js', ['jquery', 'ispag-crm-js'], '1.2.1', true );
