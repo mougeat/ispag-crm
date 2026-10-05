@@ -9,11 +9,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Domain: ispag\n"
 
-#: classes/class-ispag-crm-contacts-repository.php:1667
+#: classes/class-ispag-crm-contacts-repository.php:1679
 msgid "ISPAG settings"
 msgstr "Réglages ISPAG"
 
-#: classes/class-ispag-crm-contacts-repository.php:1693
+#: classes/class-ispag-crm-contacts-repository.php:1705
 msgid "Configuration ISPAG CRM"
 msgstr "Configuration ISPAG CRM"
 
