@@ -8,8 +8,10 @@ defined('ABSPATH') || exit;
  *     https://<votre-site>/carddav/            (serveur : le nom du site ; utilisateur : l'identifiant WordPress)
  * avec un MOT DE PASSE D'APPLICATION WordPress (Profil → Mots de passe d'application) : il se révoque à tout moment et
  * ne donne jamais accès au compte WordPress lui-même.
- * Contacts proposés : ceux des départements cochés (ISPAG Settings → Calendar sync), pour les utilisateurs ayant le droit view_contact.
+ * Contacts proposés (avec leur photo) : ceux des départements cochés (ISPAG Settings → Calendar sync), pour les utilisateurs ayant le droit view_contact.
  * Mise à jour : les modifications faites dans le CRM arrivent sur le téléphone ; l'inverse (modifier sur le téléphone) n'est pas pris en charge.
+ * Photos : la photo du contact (version « moyenne » de la médiathèque) est ajoutée à la fiche au moment de l'envoi ; le carnet en cache ne contient
+ * que son identifiant, jamais l'image (le cache reste léger).
  */
 class ISPAG_Crm_Carddav_Server {
 
@@ -73,7 +75,43 @@ class ISPAG_Crm_Carddav_Server {
         return $v . "END:VCARD\r\n";
     }
 
-    /** Reconstruit le carnet : [id => ['etag' => md5, 'vcf' => texte]] + ctag global. */
+    /** Fichier de la photo d'un contact (version moyenne si elle existe) : [chemin, type MIME, jeton de version] ou null. */
+    private static function photo_file($contact_id): ?array {
+        $att = (int) get_user_meta($contact_id, ISPAG_Crm_Contact_Constants::USER_AVATAR, true);
+        if (!$att) return null;
+        $path = '';
+        $m = function_exists('image_get_intermediate_size') ? image_get_intermediate_size($att, 'medium') : false;
+        if (is_array($m) && !empty($m['path'])) {
+            $up = wp_get_upload_dir();
+            $cand = trailingslashit($up['basedir']) . $m['path'];
+            if (is_readable($cand)) $path = $cand;
+        }
+        if ($path === '') { $orig = get_attached_file($att); if ($orig && is_readable($orig)) $path = $orig; }
+        if ($path === '') return null;
+        $ext  = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $type = ['jpg' => 'JPEG', 'jpeg' => 'JPEG', 'png' => 'PNG', 'gif' => 'GIF'][$ext] ?? '';
+        if ($type === '') return null;
+        return [$path, $type, $att . ':' . (int) @filemtime($path) . ':' . (int) @filesize($path)];
+    }
+
+    /** Ligne PHOTO (base64 repliée à 75 caractères) ; '' si pas de photo. */
+    private static function photo_line($contact_id): string {
+        $f = self::photo_file($contact_id);
+        if (!$f) return '';
+        $data = @file_get_contents($f[0]);
+        if ($data === false || $data === '') return '';
+        $b64 = chunk_split(base64_encode($data), 74, "\r\n ");
+        return 'PHOTO;ENCODING=b;TYPE=' . $f[1] . ':' . rtrim($b64) . "\r\n";
+    }
+
+    /** Fiche à servir : la vCard du cache + la photo (ajoutée avant END:VCARD). */
+    private static function card_text(int $id, array $card): string {
+        if (empty($card['photo'])) return $card['vcf'];
+        $line = self::photo_line($id);
+        return $line === '' ? $card['vcf'] : preg_replace('/END:VCARD\r\n$/', $line . "END:VCARD\r\n", $card['vcf']);
+    }
+
+    /** Reconstruit le carnet : [id => ['etag' => md5, 'vcf' => texte sans photo, 'photo' => 0|1]] + ctag global. */
     public static function rebuild(): array {
         if (function_exists('set_time_limit')) @set_time_limit(0);
         $repo  = new ISPAG_Crm_Contacts_Repository();
@@ -81,8 +119,10 @@ class ISPAG_Crm_Carddav_Server {
         foreach (self::contact_ids() as $id) {
             $c = $repo->get_contact_by_id($id);
             if (!$c) continue;
-            $vcf = self::vcard($c);
-            $cards[$id] = ['etag' => md5($vcf), 'vcf' => $vcf];
+            $vcf   = self::vcard($c);
+            $photo = self::photo_file($id);
+            // l'empreinte porte sur le texte et sur la version de la photo (pas sur l'image elle-même)
+            $cards[$id] = ['etag' => md5($vcf . '|' . ($photo ? $photo[2] : '')), 'vcf' => $vcf, 'photo' => $photo ? 1 : 0];
         }
         $cache = ['built' => time(), 'ctag' => md5(implode('|', array_map(function ($c) { return $c['etag']; }, $cards))), 'cards' => $cards];
         update_option(self::OPT_CACHE, $cache, false);
@@ -184,11 +224,12 @@ class ISPAG_Crm_Carddav_Server {
                 $book = self::book();
                 $id = (int) $m[1];
                 if (!isset($book['cards'][$id])) { status_header(404); exit; }
+                $text = self::card_text($id, $book['cards'][$id]);
                 status_header(200);
                 header('Content-Type: text/vcard; charset=utf-8');
                 header('ETag: "' . $book['cards'][$id]['etag'] . '"');
-                header('Content-Length: ' . strlen($book['cards'][$id]['vcf']));
-                if ($method === 'GET') echo $book['cards'][$id]['vcf'];
+                header('Content-Length: ' . strlen($text));
+                if ($method === 'GET') echo $text;
                 exit;
             }
             status_header(200); header('Content-Type: text/plain; charset=utf-8');
@@ -322,10 +363,9 @@ class ISPAG_Crm_Carddav_Server {
             'DAV:|getetag'        => '<d:getetag>"' . self::x($card['etag']) . '"</d:getetag>',
             'DAV:|getcontenttype' => '<d:getcontenttype>text/vcard; charset=utf-8</d:getcontenttype>',
             'DAV:|resourcetype'   => '<d:resourcetype/>',
-            'DAV:|getcontentlength' => '<d:getcontentlength>' . strlen($card['vcf']) . '</d:getcontentlength>',
             'DAV:|current-user-privilege-set' => self::privileges(),
         ];
-        if ($withData) $known[self::NS_C . '|address-data'] = '<card:address-data>' . self::x($card['vcf']) . '</card:address-data>';
+        if ($withData) $known[self::NS_C . '|address-data'] = '<card:address-data>' . self::x(self::card_text($id, $card)) . '</card:address-data>';
         return self::response($bookHref . 'contact-' . $id . '.vcf', $known, $wanted);
     }
 
