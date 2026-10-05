@@ -3194,51 +3194,51 @@ msgstr "Pièces jointes"
 msgid "Invalid parameters."
 msgstr "Paramètres invalides."
 
-#: ispag-crm.php:442
+#: ispag-crm.php:443
 msgid "Please select an action."
 msgstr "Veuillez sélectionner une action."
 
-#: ispag-crm.php:443
+#: ispag-crm.php:444
 msgid "Please select at least one contact."
 msgstr "Veuillez sélectionner au moins un contact."
 
-#: ispag-crm.php:444
+#: ispag-crm.php:445
 msgid "Are you sure you want to delete the selected contacts?"
 msgstr "Voulez-vous vraiment supprimer les contacts sélectionnés ?"
 
-#: ispag-crm.php:445
+#: ispag-crm.php:446
 msgid "A - High"
 msgstr "A - Haute"
 
-#: ispag-crm.php:446
+#: ispag-crm.php:447
 msgid "B - Medium"
 msgstr "B - Moyenne"
 
-#: ispag-crm.php:447
+#: ispag-crm.php:448
 msgid "C - Low"
 msgstr "C - Basse"
 
-#: ispag-crm.php:448
+#: ispag-crm.php:449
 msgid "Company ID"
 msgstr "ID de l'entreprise"
 
-#: ispag-crm.php:449
+#: ispag-crm.php:450
 msgid "-- Select owner --"
 msgstr "-- Sélectionner un responsable --"
 
-#: ispag-crm.php:450
+#: ispag-crm.php:451
 msgid "Preparing..."
 msgstr "Préparation..."
 
-#: ispag-crm.php:451
+#: ispag-crm.php:452
 msgid "Prepare meeting"
 msgstr "Préparer la réunion"
 
-#: ispag-crm.php:466
+#: ispag-crm.php:467
 msgid "Your ISPAG account has been suspended."
 msgstr "Votre compte ISPAG a été suspendu."
 
-#: ispag-crm.php:592
+#: ispag-crm.php:593
 msgid "Unauthorized access."
 msgstr "Accès non autorisé."
 
