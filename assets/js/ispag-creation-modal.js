@@ -393,7 +393,7 @@ jQuery(document).ready(function($) {
        ========================================================================== */
 
     // Ouverture Modale (Boutons d'action)
-    $(document).on('click', '.ispag-action-btn[data-action]', function(e) { 
+    $(document).on('click', '.ispag-action-btn[data-action], .ispag-dropdown-item[data-action]:not([data-action="delete"])', function(e) { 
         e.preventDefault();
         e.stopPropagation();
 
