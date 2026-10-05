@@ -97,7 +97,8 @@ class ISPAG_Crm_Deal_Follow_Up {
             ));
             $last_ts  = $last ? strtotime(wp_date('Y-m-d', strtotime($last)) . ' 00:00:00') : 0;
             $offer_ts = !empty($deal->date_creation) ? strtotime($deal->date_creation . ' 00:00:00') : 0;
-            $due_ts   = self::next_due($decision['date'] ? strtotime($decision['date'] . ' 00:00:00') : 0, $offer_ts, $last_ts, $cfg, $today);
+            $rhythm   = ISPAG_Crm_Follow_Up_Settings::rhythm_for($role, $ctype, $cfg);   // rythme propre au rôle / type d'entreprise
+            $due_ts   = self::next_due($decision['date'] ? strtotime($decision['date'] . ' 00:00:00') : 0, $offer_ts, $last_ts, $rhythm, $today);
             if ($due_ts === null) continue;
 
             $user = get_userdata((int) $deal->deal_owner);

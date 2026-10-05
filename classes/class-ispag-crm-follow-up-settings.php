@@ -10,6 +10,7 @@ class ISPAG_Crm_Follow_Up_Settings {
 
     const OPTION       = 'ispag_crm_follow_up_days';
     const OPT_ROLES    = 'ispag_crm_follow_up_roles';          // [rôle WordPress => jours | 0 = aucune relance]
+    const OPT_RHYTHM   = 'ispag_crm_follow_up_rhythm';         // ['roles'|'company' => [clé => ['lead'=>, 'first'=>, 'repeat'=>]]] (clé de paramètre absente = réglage général)
     const OPT_COMPANY  = 'ispag_crm_follow_up_company_types';  // [type d'entreprise => jours | 0 = aucune relance]
     const DEFAULTS = ['A' => 90, 'B' => 180, 'C' => 240, 'none' => 180, 'entity' => 90];
 
@@ -73,6 +74,22 @@ class ISPAG_Crm_Follow_Up_Settings {
         return self::days_for_priority($priority);
     }
 
+    /**
+     * Rythme de relance des offres pour un contact : paramètre par paramètre, rôle → type d'entreprise → réglage général.
+     * @param array $base réglages généraux ['lead','first','repeat'] ; @return array ['lead','first','repeat']
+     */
+    public static function rhythm_for(string $role, string $company_type, array $base): array {
+        $all = (array) get_option(self::OPT_RHYTHM, []);
+        $out = ['lead' => (int) $base['lead'], 'first' => (int) $base['first'], 'repeat' => (int) $base['repeat']];
+        foreach ([['company', $company_type], ['roles', $role]] as [$group, $key]) {   // le rôle passe en dernier : il l'emporte
+            $o = ($key !== '' && isset($all[$group][$key]) && is_array($all[$group][$key])) ? $all[$group][$key] : [];
+            foreach (['lead', 'first', 'repeat'] as $k) {
+                if (isset($o[$k]) && $o[$k] !== '' && (int) $o[$k] >= ($k === 'repeat' ? 1 : 0)) $out[$k] = (int) $o[$k];
+            }
+        }
+        return $out;
+    }
+
     /** Délai (jours) pour une entreprise ou un deal. */
     public static function days_for_entity(): int {
         return self::all()['entity'];
@@ -121,7 +138,7 @@ class ISPAG_Crm_Follow_Up_Settings {
                 </table>
 
                 <h2><?php esc_html_e('By contact role', 'ispag-crm'); ?></h2>
-                <p><?php esc_html_e('Overrides the delay above for all contacts with this role. Leave empty to use the priority delay; tick "No follow-up" for roles that do not order (the contact is never flagged).', 'ispag-crm'); ?></p>
+                <p><?php esc_html_e('Overrides the delay above for all contacts with this role. Leave empty to use the priority delay; tick "No follow-up" for roles that do not order (the contact is never flagged). The three right-hand columns set the rhythm of the automatic offer follow-up for this role; empty = the general setting above.', 'ispag-crm'); ?></p>
                 <?php $this->override_table('roles', $this->role_options(), self::overrides(self::OPT_ROLES)); ?>
                 <h2><?php esc_html_e('By company type', 'ispag-crm'); ?></h2>
                 <p><?php esc_html_e('Used when the role has no delay of its own.', 'ispag-crm'); ?></p>
@@ -152,16 +169,35 @@ class ISPAG_Crm_Follow_Up_Settings {
     }
 
     private function override_table(string $group, array $options, array $current) {
-        echo '<table class="widefat striped" style="max-width:640px"><tbody>';
+        $rhythm = (array) (((array) get_option(self::OPT_RHYTHM, []))[$group] ?? []);
+        echo '<table class="widefat striped" style="max-width:980px"><thead><tr><th>' . esc_html__('Contact role / company type', 'ispag-crm') . '</th><th>' . esc_html__('Delay without contact', 'ispag-crm') . '</th>'
+           . '<th>' . esc_html__('Offers: days before decision', 'ispag-crm') . '</th><th>' . esc_html__('Not before (days after offer)', 'ispag-crm') . '</th><th>' . esc_html__('Repeat every (days)', 'ispag-crm') . '</th></tr></thead><tbody>';
         foreach ($options as $key => $label) {
             $has   = array_key_exists($key, $current);
             $never = $has && $current[$key] === 0;
-            echo '<tr><td style="width:240px"><strong>' . esc_html($label) . '</strong> <code>' . esc_html($key) . '</code></td><td>';
-            printf('<input type="number" min="1" max="1000" name="%1$s[days][%2$s]" value="%3$s" style="width:90px" placeholder="—"> %4$s &nbsp; ', esc_attr($group), esc_attr($key), $has && !$never ? (int) $current[$key] : '', esc_html__('days', 'ispag-crm'));
+            echo '<tr><td><strong>' . esc_html($label) . '</strong> <code>' . esc_html($key) . '</code></td><td style="white-space:nowrap">';
+            printf('<input type="number" min="1" max="1000" name="%1$s[days][%2$s]" value="%3$s" style="width:70px" placeholder="—"> ', esc_attr($group), esc_attr($key), $has && !$never ? (int) $current[$key] : '');
             printf('<label><input type="checkbox" name="%1$s[never][%2$s]" value="1" %3$s> %4$s</label>', esc_attr($group), esc_attr($key), checked($never, true, false), esc_html__('No follow-up', 'ispag-crm'));
-            echo '</td></tr>';
+            echo '</td>';
+            foreach (['lead' => 0, 'first' => 0, 'repeat' => 1] as $k => $min) {
+                $val = $rhythm[$key][$k] ?? '';
+                printf('<td><input type="number" min="%1$d" max="365" name="%2$s[%3$s][%4$s]" value="%5$s" style="width:70px" placeholder="—"></td>', $min, esc_attr($group), esc_attr($k), esc_attr($key), $val === '' ? '' : (int) $val);
+            }
+            echo '</tr>';
         }
         echo '</tbody></table>';
+    }
+
+    /** Rythme saisi pour un groupe ('roles' / 'company') : seuls les paramètres remplis sont gardés. */
+    private function collect_rhythm(string $group, array $options): array {
+        $out = [];
+        foreach ($options as $key => $_) {
+            foreach (['lead' => 0, 'first' => 0, 'repeat' => 1] as $k => $min) {
+                $raw = $_POST[$group][$k][$key] ?? '';
+                if ($raw !== '' && (int) $raw >= $min) $out[$key][$k] = min(365, (int) $raw);
+            }
+        }
+        return $out;
     }
 
     private function collect_overrides(string $group, array $options): array {
@@ -189,6 +225,10 @@ class ISPAG_Crm_Follow_Up_Settings {
             'lead'    => max(0, min(365, (int) ($_POST['fu_lead'] ?? 7))),
             'first'   => max(0, min(365, (int) ($_POST['fu_first'] ?? 10))),
             'repeat'  => max(1, min(365, (int) ($_POST['fu_repeat'] ?? 14))),
+        ], false);
+        update_option(self::OPT_RHYTHM, [
+            'roles'   => $this->collect_rhythm('roles', $this->role_options()),
+            'company' => $this->collect_rhythm('company', $this->company_type_options()),
         ], false);
         update_option(self::OPT_ROLES, $this->collect_overrides('roles', $this->role_options()), false);
         update_option(self::OPT_COMPANY, $this->collect_overrides('company', $this->company_type_options()), false);
