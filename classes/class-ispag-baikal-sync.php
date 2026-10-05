@@ -283,10 +283,15 @@ class ISPAG_Baikal_Sync
         $company =$c->company_name ?? '';
         $job =$c->lead_function ?? '';
 
+        // Échappement vCard (virgule, point-virgule, antislash, retour à la ligne) : un « , » ou « ; » non échappé casse le champ
+        $e = static function ($t) { return str_replace(["\\", ";", ",", "\r\n", "\n", "\r"], ["\\\\", "\\;", "\\,", "\\n", "\\n", "\\n"], (string) $t); };
+
         $v = "BEGIN:VCARD\r\n";
         $v .= "VERSION:3.0\r\n";
-        $v .= "N;CHARSET=UTF-8:{$last_name};{$first_name};;;\r\n";
-        $v .= "FN;CHARSET=UTF-8:{$display_name}\r\n";
+        // UID stable : sans lui, Baïkal en invente un nouveau à CHAQUE envoi et l'iPhone voit un « autre » contact (doublons, contacts manquants)
+        $v .= "UID:ispag-crm-contact-" . (int) $c->ID . "\r\n";
+        $v .= "N;CHARSET=UTF-8:" . $e($last_name) . ";" . $e($first_name) . ";;;\r\n";
+        $v .= "FN;CHARSET=UTF-8:" . $e($display_name) . "\r\n";
 
         $avatar_id = get_user_meta($c->ID, ISPAG_Crm_Contact_Constants::USER_AVATAR, true);
         if ($avatar_id) {
@@ -296,11 +301,11 @@ class ISPAG_Baikal_Sync
             }
         }
 
-        if (!empty($company)) $v .= "ORG;CHARSET=UTF-8:{$company}\r\n";
-        if (!empty($job)) $v .= "TITLE;CHARSET=UTF-8:{$job}\r\n";
+        if (!empty($company)) $v .= "ORG;CHARSET=UTF-8:" . $e($company) . "\r\n";
+        if (!empty($job)) $v .= "TITLE;CHARSET=UTF-8:" . $e($job) . "\r\n";
 
-        $v .= "EMAIL;TYPE=INTERNET,WORK:{$email}\r\n";
-        if (!empty($phone)) $v .= "TEL;TYPE=CELL,VOICE:{$phone}\r\n";
+        if (!empty($email)) $v .= "EMAIL;TYPE=INTERNET,WORK:" . $e($email) . "\r\n";
+        if (!empty($phone)) $v .= "TEL;TYPE=CELL,VOICE:" . $e($phone) . "\r\n";
 
         $v .= "REV:" . date('Ymd\THis\Z') . "\r\n";
         $v .= "END:VCARD";
@@ -628,7 +633,7 @@ class ISPAG_Baikal_Sync
             $phone = trim($m[1]);
         }
         if (preg_match('/^TITLE(?:;.*)?:(.*)$/m', $vcard_content,$m)) {
-            $job = trim($m[1]);
+            $job = trim(str_replace(['\\n', '\\N', '\\,', '\\;', '\\\\'], [' ', ' ', ',', ';', '\\'], $m[1]));   // retire l'échappement vCard
         }
 
         remove_action('updated_user_meta', [$this, 'trigger_sync_on_meta_update']);
