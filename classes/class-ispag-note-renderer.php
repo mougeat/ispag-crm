@@ -55,6 +55,12 @@ class ISPAG_Note_Renderer {
             $all_deal_identifiers[] = $hubspot_deal_id;
         }
 
+        // Référence du deal envoyée par la page : c'est elle qui rattache les notes (le deal_id seul ne les retrouve pas toujours)
+        $page_ref = isset($_POST['deal_group_ref']) ? sanitize_text_field(wp_unslash($_POST['deal_group_ref'])) : '';
+        if ($page_ref !== '' && !in_array($page_ref, $all_deal_identifiers, true)) {
+            $all_deal_identifiers[] = $page_ref;
+        }
+
         if (!empty($all_deal_identifiers))
         {
             $activity_detail = $note_repository->get_activities_for_entity('deal', $all_deal_identifiers);

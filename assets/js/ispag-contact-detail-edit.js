@@ -281,7 +281,9 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('new_value', newValue);
         formData.append('field', fieldName);
         formData.append('value', newValue);
-        if (ispag_ajax.nonce) formData.append('nonce', ispag_ajax.nonce);
+        // jeton propre au champ s'il en porte un (ex. date de décision) ; sinon celui du CRM
+        if (field.dataset.nonce) formData.append('nonce', field.dataset.nonce);
+        else if (ispag_ajax.nonce) formData.append('nonce', ispag_ajax.nonce);
         
         if (field.dataset.departmentId) {
             formData.append('department_id', field.dataset.departmentId);
@@ -300,10 +302,8 @@ document.addEventListener('DOMContentLoaded', () => {
             body: formData,
         })
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
+            // on lit le message JSON même si le serveur répond 403 / 400 : l'erreur affichée est alors la vraie cause
+            return response.json().catch(() => ({ success: false, data: { message: `HTTP ${response.status}` } }));
         })
         .then(data => {
             field.classList.remove('loading');

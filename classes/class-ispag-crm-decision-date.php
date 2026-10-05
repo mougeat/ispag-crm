@@ -51,7 +51,7 @@ class ISPAG_Crm_Decision_Date {
     /** Édition en ligne d'un champ de la fiche deal (même protocole que les champs contact / entreprise). Champ géré : expected_decision_date. */
     public static function ajax_save_field() {
         if (!current_user_can('manage_order')) wp_send_json_error(['message' => 'Droits insuffisants'], 403);
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'ispag_crm_nonce')) wp_send_json_error(['message' => 'Invalid nonce'], 403);
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', self::NONCE)) wp_send_json_error(['message' => 'Invalid nonce — reload the page'], 403);
         if (sanitize_key($_POST['field_name'] ?? '') !== self::COLUMN) wp_send_json_error(['message' => 'Unsupported field'], 400);
         self::save(absint($_POST['deal_id'] ?? 0), sanitize_text_field(wp_unslash($_POST['new_value'] ?? '')));
     }

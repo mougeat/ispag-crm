@@ -137,7 +137,7 @@ class ISPAG_Note_Manager {
             $plugin_url . 'assets/js/ispag-activities.js', 
             // Dépend de JQuery et de l'initialisation des données
             array( 'jquery' ), 
-            '1.0', 
+            '1.0.' . (int) @filemtime( dirname( __DIR__ ) . '/assets/js/ispag-activities.js' ),   // version = date du fichier (cache navigateur)
             true 
         );
 
