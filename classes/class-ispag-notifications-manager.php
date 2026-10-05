@@ -116,6 +116,7 @@ class ISPAG_Notifications_Manager
             'company'           => __('Company', 'ispag-crm'),
             'deal'              => __('Deal', 'ispag-crm'),
             'purchase'          => __('Purchase', 'ispag-crm'),
+            'stock'             => __('Stock', 'ispag-crm'),
             'datas'             => __('Data import / export', 'ispag-crm'),
             'task'              => __('Task', 'ispag-crm'),
             'form_submission'   => __('Form submission', 'ispag-crm'),
@@ -257,6 +258,14 @@ class ISPAG_Notifications_Manager
                 'capability' => 'manage_order',
                 'default_channels' => ['crm', 'push', 'mail'],
                 'retain_during_disconnection' => true, // ⬅️ À retenir
+            ],
+            'stock_to_process' => [
+                'label' => __('Stock movements to process', 'ispag-crm'),
+                'description' => __('Daily reminder (5:30) while stock receipts or deliveries are waiting for confirmation on the Stock page.', 'ispag-crm'),
+                'group' => 'stock',
+                'capability' => 'manage_stock',
+                'default_channels' => ['crm', 'push', 'mail'],
+                'retain_during_disconnection' => false, // ⬅️ Ignorer : le rappel revient le lendemain
             ],
             'purchase_followup' => [
                 'label' => __('Purchase tracking', 'ispag-crm'),
