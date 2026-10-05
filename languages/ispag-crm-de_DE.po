@@ -1039,37 +1039,61 @@ msgstr "Verarbeitung von Rabatt / Koeffizient fehlgeschlagen."
 msgid "Discount/Coefficient saved successfully."
 msgstr "Rabatt / Koeffizient erfolgreich gespeichert."
 
-#: classes/class-ispag-crm-follow-up-settings.php:42
+#: classes/class-ispag-crm-follow-up-settings.php:106
+msgid "days"
+msgstr "Tage"
+
+#: classes/class-ispag-crm-follow-up-settings.php:109
+msgid "By contact role"
+msgstr "Nach Rolle des Kontakts"
+
+#: classes/class-ispag-crm-follow-up-settings.php:110
+msgid "Overrides the delay above for all contacts with this role. Leave empty to use the priority delay; tick \"No follow-up\" for roles that do not order (the contact is never flagged)."
+msgstr "Ersetzt die obige Frist für alle Kontakte dieser Rolle. Leer lassen für die Frist der Priorität; «Kein Nachfassen» ankreuzen für Rollen, die nicht bestellen (der Kontakt wird nie markiert)."
+
+#: classes/class-ispag-crm-follow-up-settings.php:112
+msgid "By company type"
+msgstr "Nach Unternehmenstyp"
+
+#: classes/class-ispag-crm-follow-up-settings.php:113
+msgid "Used when the role has no delay of its own."
+msgstr "Wird verwendet, wenn die Rolle keine eigene Frist hat."
+
+#: classes/class-ispag-crm-follow-up-settings.php:147
+msgid "No follow-up"
+msgstr "Kein Nachfassen"
+
+#: classes/class-ispag-crm-follow-up-settings.php:82
 msgid "CRM follow-up"
 msgstr "CRM-Nachfassen"
 
-#: classes/class-ispag-crm-follow-up-settings.php:49
+#: classes/class-ispag-crm-follow-up-settings.php:89
 msgid "Contacts with priority A (high)"
 msgstr "Kontakte mit Priorität A (hoch)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:50
+#: classes/class-ispag-crm-follow-up-settings.php:90
 msgid "Contacts with priority B (medium)"
 msgstr "Kontakte mit Priorität B (mittel)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:51
+#: classes/class-ispag-crm-follow-up-settings.php:91
 msgid "Contacts with priority C (low)"
 msgstr "Kontakte mit Priorität C (niedrig)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:52
+#: classes/class-ispag-crm-follow-up-settings.php:92
 msgid "Contacts without priority"
 msgstr "Kontakte ohne Priorität"
 
-#: classes/class-ispag-crm-follow-up-settings.php:53
+#: classes/class-ispag-crm-follow-up-settings.php:93
 msgid "Companies and deals"
 msgstr "Unternehmen und Deals"
 
-#: classes/class-ispag-crm-follow-up-settings.php:58
+#: classes/class-ispag-crm-follow-up-settings.php:98
 msgid "Number of days without contact before the alert \"No contact for over N days\" is shown on the pages, and before the automatic follow-up task is created. The alert turns orange after two thirds of the delay and red once it is exceeded."
 msgstr "Anzahl Tage ohne Kontakt, bevor die Warnung «Seit über N Tagen kein Kontakt» auf den Seiten erscheint und bevor die automatische Nachfass-Aufgabe erstellt wird. Die Warnung wird nach zwei Dritteln der Frist orange und rot, sobald sie überschritten ist."
 
-#: classes/class-ispag-crm-follow-up-settings.php:66
-msgid "days"
-msgstr "Tage"
+#: classes/class-ispag-crm-follow-up-settings.php:99
+msgid "Settings saved."
+msgstr "Einstellungen gespeichert."
 
 #: classes/class-ispag-crm-lifecycle-manager.php:52
 msgid "Prospect"

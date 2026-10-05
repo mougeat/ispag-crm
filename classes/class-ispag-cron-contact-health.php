@@ -139,7 +139,8 @@ class ISPAG_Cron_Contact_Health {
             }
 
             // 4. Seuil et calcul (ex: 90 jours)
-            $days = $this->get_threshold($contact->ID);
+            $days = $this->get_threshold($contact->ID, $contact);
+            if ($days <= 0) continue; // rôle / type d'entreprise sans relance (ex. ingénieurs)
             $threshold_timestamp = strtotime("-$days days");
 
             // 5. Comparaison avec la date enrichie par le repo
@@ -189,10 +190,14 @@ class ISPAG_Cron_Contact_Health {
     /**
      * Détermine le seuil en jours selon la priorité ISPAG (A, B ou C)
      */
-    private function get_threshold($contact_id) {
+    private function get_threshold($contact_id, $contact = null) {
         $priority = strtoupper(get_user_meta($contact_id, 'ispag_priority_level', true));
+        $role  = ISPAG_Crm_Follow_Up_Settings::contact_role((int) $contact_id);
+        $ctype = '';
+        if ($contact && !empty($contact->companies) && is_array($contact->companies)) {
+            $ctype = ISPAG_Crm_Follow_Up_Settings::company_type((int) ($contact->companies[0]->Id ?? 0));
+        }
+        return ISPAG_Crm_Follow_Up_Settings::days_for_contact($priority, $role, $ctype);
 
-        // Délais réglables : Réglages → Relances CRM (par défaut 90 / 180 / 240 jours, 180 sans priorité)
-        return ISPAG_Crm_Follow_Up_Settings::days_for_priority($priority);
     }
 }
