@@ -192,11 +192,7 @@ class ISPAG_Cron_Contact_Health {
     private function get_threshold($contact_id) {
         $priority = strtoupper(get_user_meta($contact_id, 'ispag_priority_level', true));
 
-        switch ($priority) {
-            case 'A': return self::DELAY_PRIORITY_A; // 3 mois
-            case 'B': return self::DELAY_PRIORITY_B; // 6 mois
-            case 'C': return self::DELAY_PRIORITY_C; // 8 mois
-            default:  return 180; // Par défaut 6 mois si non renseigné
-        }
+        // Délais réglables : Réglages → Relances CRM (par défaut 90 / 180 / 240 jours, 180 sans priorité)
+        return ISPAG_Crm_Follow_Up_Settings::days_for_priority($priority);
     }
 }

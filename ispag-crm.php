@@ -280,6 +280,7 @@ function ispag_run_crm_manager() {
         'ISPAG_Cron_Task_Reminder',
         'ISPAG_Cron_Weekly_Deal_Report',
         'ISPAG_Cron_Contact_Health',
+        'ISPAG_Crm_Follow_Up_Settings',
         'ISPAG_Cron_Lost_Deals_Reporting',
         'ISPAG_Cron_Contact_Matcher',
         'ISPAG_Cron_Lifecycle',
