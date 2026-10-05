@@ -18,6 +18,7 @@ class ISPAG_Crm_Decision_Date {
     public function __construct() {
         add_action('init', [self::class, 'ensure_column'], 30);
         add_action('wp_ajax_' . self::ACTION, [self::class, 'ajax_set']);
+        add_action('wp_ajax_ispag_crm_save_deal_field', [self::class, 'ajax_save_field']);   // édition en ligne (✏️) de la fiche deal
     }
 
     /** Ajoute la colonne une seule fois (sans toucher aux données existantes). */
@@ -47,8 +48,18 @@ class ISPAG_Crm_Decision_Date {
         return ['date' => '', 'source' => ''];
     }
 
-    public static function ajax_set() {
-        check_ajax_referer(self::NONCE, 'nonce');
+    /** Édition en ligne d'un champ de la fiche deal (même protocole que les champs contact / entreprise). Champ géré : expected_decision_date. */
+    public static function ajax_save_field() {
+        if (!current_user_can('manage_order')) wp_send_json_error(['message' => 'Droits insuffisants'], 403);
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'ispag_crm_nonce')) wp_send_json_error(['message' => 'Invalid nonce'], 403);
+        if (sanitize_key($_POST['field_name'] ?? '') !== self::COLUMN) wp_send_json_error(['message' => 'Unsupported field'], 400);
+        $_POST['date']  = $_POST['new_value'] ?? '';
+        $_POST['nonce'] = wp_create_nonce(self::NONCE);   // réutilise la logique d'ajax_set
+        self::ajax_set(true);
+    }
+
+    public static function ajax_set($inline = false) {
+        check_ajax_referer(self::NONCE, 'nonce');   // (l'édition en ligne a déjà vérifié le nonce CRM)
         if (!current_user_can('manage_order')) wp_send_json_error(['message' => 'Droits insuffisants'], 403);
         $deal_id = absint($_POST['deal_id'] ?? 0);
         $raw     = sanitize_text_field(wp_unslash($_POST['date'] ?? ''));
@@ -65,6 +76,12 @@ class ISPAG_Crm_Decision_Date {
         if ($ok === false) wp_send_json_error(['message' => 'Database error'], 500);
         $deal = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . ISPAG_Crm_Deal_Constants::TABLE_NAME . " WHERE id = %d", $deal_id));
         $eff  = $deal ? self::effective($deal) : ['date' => '', 'source' => ''];
-        wp_send_json_success(['date' => $eff['date'], 'source' => $eff['source'], 'label' => $eff['date'] ? date_i18n('d.m.Y', strtotime($eff['date'])) : '—']);
+        $label = $eff['date'] ? date_i18n('d.m.Y', strtotime($eff['date'])) : '—';
+        $hint  = ['expected' => '', 'closing' => __('closing date', 'ispag-crm'), 'created' => __('offer date + 30 days', 'ispag-crm')][$eff['source']] ?? '';
+        wp_send_json_success([
+            'date' => $eff['date'], 'source' => $eff['source'], 'label' => $label,
+            // affichage du champ éditable (valeur + crayon) quand c'est l'édition en ligne qui appelle
+            'display_value' => esc_html($label) . ($hint ? ' <small style="color:#6b7280">(' . esc_html($hint) . ')</small>' : '') . ' <span class="edit-icon">✏️</span>',
+        ]);
     }
 }

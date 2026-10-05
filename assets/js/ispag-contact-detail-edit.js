@@ -224,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const companyContainer = field.closest('[data-company-id]');
         const contactContainer = field.closest('[data-contact-id]');
         const projectContainer = field.closest('[data-project-id]');
+        const dealContainer = field.closest('[data-deal-id]');
         const userDepartment = field.dataset.departmentId;
 
         let entityId = null;
@@ -246,6 +247,10 @@ document.addEventListener('DOMContentLoaded', () => {
             ajaxAction = 'ispag_inline_edit_field'; 
             idKey = 'deal_id';
             source = 'project';
+        } else if (dealContainer) {   // fiche deal (ex. décision attendue)
+            entityId = dealContainer.dataset.dealId;
+            ajaxAction = 'ispag_crm_save_deal_field';
+            idKey = 'deal_id';
         } else {
             console.error('Error: ID d\'entité non trouvé.');
             alert(ispagT('Error: The entity ID is missing.'));
@@ -276,6 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('new_value', newValue);
         formData.append('field', fieldName);
         formData.append('value', newValue);
+        if (ispag_ajax.nonce) formData.append('nonce', ispag_ajax.nonce);
         
         if (field.dataset.departmentId) {
             formData.append('department_id', field.dataset.departmentId);
@@ -313,6 +319,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 field.classList.remove('editing');
                 field.dataset.originalContent = field.innerHTML; 
+                // La date de décision alimente la tuile du bandeau et les alertes : on recharge la page pour tout remettre à jour
+                if (fieldName === 'expected_decision_date') setTimeout(() => location.reload(), 300);
             } else {
                 const errorMessage = data.data && data.data.message ? data.data.message : ispagT('Save failed.');
                 console.error('Save error:', errorMessage);
