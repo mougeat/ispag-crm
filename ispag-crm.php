@@ -282,6 +282,7 @@ function ispag_run_crm_manager() {
         'ISPAG_Cron_Contact_Health',
         'ISPAG_Crm_Follow_Up_Settings',
         'ISPAG_Crm_Decision_Date',
+        'ISPAG_Crm_Carddav_Server',
         'ISPAG_Crm_Deal_Follow_Up',
         'ISPAG_Cron_Lost_Deals_Reporting',
         'ISPAG_Cron_Contact_Matcher',
