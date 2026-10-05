@@ -35,7 +35,8 @@ jQuery(function ($) {
         $.post(ispagPhaseTracker.ajaxUrl, {
             action: 'ispag_render_activity_tab',
             _ajax_nonce: ispagPhaseTracker.nonce,
-            hubspot_deal_id: dealId
+            hubspot_deal_id: dealId,
+            deal_group_ref: $pane.attr('data-deal-ref') || ''   // les notes d'un deal sont rattachées à cette référence
         })
         .done(function (response) {
             // console.log('[ISPAG Activity Tracker] réponse AJAX reçue :', response);
