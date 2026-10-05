@@ -34,12 +34,26 @@ class ISPAG_Attachments_Doc_Types_Repository {
         }
 
         // 2. Récupérer les types de documents liés aux articles (for_article_type = 1)
-        $articleTypes = $this->get_article_doc_list($includeRestricted, $deal_id);
+        $articleTypes = $this->get_article_doc_list($includeRestricted, $deal_id, $entityType === 'purchase');
 
         // 3. Fusionner les résultats
         $allTypes = array_merge($generalTypes ?: [], $articleTypes ?: []);
 
         return $allTypes ?: [];
+    }
+
+    /** Articles de projet liés aux lignes d'une commande d'achat (un document d'article d'achat se rattache à l'article du projet). */
+    private function get_purchase_project_articles(int $purchase_id): array {
+        $lines = $this->wpdb->prefix . 'achats_articles_cmd_fournisseurs';
+        $sql = $this->wpdb->prepare(
+            "SELECT DISTINCT d.Id, d.Groupe, d.Article, d.Type
+            FROM {$this->article_table} d
+            JOIN {$lines} l ON l.IdCommandeClient = d.Id
+            WHERE l.IdCommande = %d AND l.IdCommandeClient > 0
+            ORDER BY d.Groupe ASC, d.Id ASC",
+            $purchase_id
+        );
+        return $this->wpdb->get_results($sql) ?: [];
     }
 
     private function get_project_main_article($deal_id = null) {
@@ -63,13 +77,14 @@ class ISPAG_Attachments_Doc_Types_Repository {
         return $this->wpdb->get_results($sql) ?: [];
     }
 
-    private function get_article_doc_list(bool $includeRestricted = false, $deal_id = null): array {
+    private function get_article_doc_list(bool $includeRestricted = false, $deal_id = null, bool $isPurchase = false): array {
         if (empty($deal_id)) {
             return [];
         }
 
         $restriction = $includeRestricted ? '' : ' AND restricted = 0';
-        $articleList = $this->get_project_main_article($deal_id);
+        // Achat : $deal_id est l'identifiant de la commande d'achat → articles du projet liés à ses lignes
+        $articleList = $isPurchase ? $this->get_purchase_project_articles((int) $deal_id) : $this->get_project_main_article($deal_id);
         $articleTypes = [];
 
         // Types de documents liés aux article : identiques pour tous les articles, une seule requête (aucune variable : pas de prepare)
