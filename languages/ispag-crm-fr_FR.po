@@ -457,51 +457,55 @@ msgstr "Ignorer le rappel de suivi"
 msgid "Role"
 msgstr "Rôle"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1088
+#: classes/class-ispag-contact-detail-shortcode.php:1066
+msgid "Language"
+msgstr "Langue"
+
+#: classes/class-ispag-contact-detail-shortcode.php:1108
 msgid "Transaction open"
 msgstr "Transaction ouverte"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1091
+#: classes/class-ispag-contact-detail-shortcode.php:1111
 msgid "Contact owner"
 msgstr "Responsable du contact"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1103
+#: classes/class-ispag-contact-detail-shortcode.php:1123
 msgid "Linkedin page"
 msgstr "Page LinkedIn"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1117
+#: classes/class-ispag-contact-detail-shortcode.php:1137
 msgid "Sales information"
 msgstr "Informations commerciales"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1119
+#: classes/class-ispag-contact-detail-shortcode.php:1139
 msgid "Opportunity value"
 msgstr "Valeur de l'opportunité"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1121
+#: classes/class-ispag-contact-detail-shortcode.php:1141
 msgid "Buying goal"
 msgstr "Objectif d'achat"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1134
+#: classes/class-ispag-contact-detail-shortcode.php:1154
 msgid "Activity"
 msgstr "Activité"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1140
+#: classes/class-ispag-contact-detail-shortcode.php:1160
 msgid "AI Intelligence"
 msgstr "Intelligence IA"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1367
+#: classes/class-ispag-contact-detail-shortcode.php:1387
 msgid "Company domain"
 msgstr "Domaine de l'entreprise"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1368
+#: classes/class-ispag-contact-detail-shortcode.php:1388
 msgid "Company phone"
 msgstr "Téléphone de l'entreprise"
 
-#: classes/class-ispag-contact-detail-shortcode.php:1374
+#: classes/class-ispag-contact-detail-shortcode.php:1394
 msgid "No related companies."
 msgstr "Aucune entreprise liée."
 
-#: classes/class-ispag-contact-detail-shortcode.php:1376
+#: classes/class-ispag-contact-detail-shortcode.php:1396
 msgid "Show related companies"
 msgstr "Afficher les entreprises liées"
 
@@ -2346,10 +2350,6 @@ msgstr "Dossier / catégorie"
 #: classes/class-ispag-template-modal.php:55
 msgid "No folder"
 msgstr "Aucun dossier"
-
-#: classes/class-ispag-template-modal.php:63
-msgid "Language"
-msgstr "Langue"
 
 #: classes/class-ispag-template-modal.php:81
 msgid "Private Template"
