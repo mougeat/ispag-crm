@@ -18,14 +18,15 @@ class ISPAG_Baikal_Sync
         if (class_exists('ISPAG_Baikal_Settings')) {
             return ISPAG_Baikal_Settings::contacts();
         }
-        return ['enabled' => 0, 'host' => '', 'addressbook' => 'ispag', 'users' => [], 'department' => 'vaulruz_ispag', 'interval' => 'hourly', 'password' => ''];
+        return ['enabled' => 0, 'host' => '', 'addressbook' => 'ispag', 'users' => [], 'departments' => ['vaulruz_ispag'], 'interval' => 'hourly', 'password' => ''];
     }
     private function pass(): string { return (string) $this->cfg()['password']; }
     private function targets(): array { return (array) $this->cfg()['users']; }
-    private function dept(): string { return (string) $this->cfg()['department']; }
+    /** Départements synchronisés (clés). */
+    private function depts(): array { return array_values((array) $this->cfg()['departments']); }
     private function is_enabled(): bool {
         $c = $this->cfg();
-        return !empty($c['enabled']) && $c['host'] !== '' && $c['password'] !== '' && $c['users'];
+        return !empty($c['enabled']) && $c['host'] !== '' && $c['password'] !== '' && $c['users'] && $c['departments'];
     }
     private function ab_url(string $user, string $file = ''): string {
         $c = $this->cfg();
@@ -125,7 +126,7 @@ class ISPAG_Baikal_Sync
 
     private function is_contact_in_sync_scope($contact_id)
     {
-        return $this->get_contact_department($contact_id) === $this->dept();
+        return in_array($this->get_contact_department($contact_id), $this->depts(), true);
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -197,7 +198,7 @@ class ISPAG_Baikal_Sync
         if (!$this->is_enabled()) {
             return;
         }
-        if (!$this->is_contact_in_sync_scope($contact_id)) {$this->logger->log($this->log_file, "INFO : Contact {$contact_id} hors périmètre (" . $this->dept() . ") — synchro ignorée.", get_current_user_id());
+        if (!$this->is_contact_in_sync_scope($contact_id)) {$this->logger->log($this->log_file, "INFO : Contact {$contact_id} hors périmètre (" . implode(', ', $this->depts()) . ") — synchro ignorée.", get_current_user_id());
             return;
         }
 
@@ -353,11 +354,12 @@ class ISPAG_Baikal_Sync
         ignore_user_abort(true);
         set_time_limit(0);
 
-        $contact_ids = $this->wpdb->get_col($this->wpdb->prepare(
-            "SELECT contact_id FROM {$this->table_owners}
-             WHERE department_key = %s AND status = 'active'",
-            $this->dept()
-        ));
+        $depts = $this->depts();
+        $contact_ids = $depts ? $this->wpdb->get_col($this->wpdb->prepare(
+            "SELECT DISTINCT contact_id FROM {$this->table_owners}
+             WHERE department_key IN (" . implode(',', array_fill(0, count($depts), '%s')) . ") AND status = 'active'",
+            $depts
+        )) : [];
 
         $total = count($contact_ids);
         $this->logger->log_user_action($this->log_file, 'manual_sync_all_start', ['total_contacts' =>$total], get_current_user_id());
@@ -446,7 +448,7 @@ class ISPAG_Baikal_Sync
         }
 
         if (total === 0) {
-            statsEl.innerHTML = '⚠️ No active contact found for " . $this->dept() . ".';
+            statsEl.innerHTML = '⚠️ No active contact found for " . esc_js(implode(', ', $this->depts())) . ".';
         } else {
             processBatch();
         }

@@ -1686,17 +1686,7 @@ class ISPAG_Crm_Contacts_Repository {
     }
 
     public function ispag_add_user_department_field( $user ) {
-        // Liste de vos départements / succursales
-        // À terme, cela pourrait venir d'une table SQL, mais commençons par un tableau simple
-        $departments = array(
-            'vaulruz_ispag' => 'Vaulruz - ISPAG',
-            'issa_isol'     => 'ISSA - Isolation',
-            'issa_co'       => 'ISSA - Coupe feu',
-            'lambda_isol'   => 'Lambda - Isolation',
-            'lambda_plaf'   => 'Lambda - Plafond',
-            'werner_isol'   => 'Werner - Isolation',
-            'werner_cp'     => 'Werner - Coupe feu',
-        );
+        $departments = ISPAG_Crm_Contact_Constants::departments();
 
         $current_dept = get_user_meta( $user->ID, ISPAG_Crm_Contact_Constants::USER_DEPARTMENT, true );
         ?>
