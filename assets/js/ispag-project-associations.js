@@ -29,6 +29,16 @@ jQuery(function ($) {
             .fail(function (x) { alert(failMsg(x)); $b.css('opacity', 1); });
     });
 
+    // ---------------------------------------------------------------- contact principal (placé en tête de liste)
+    $(document).on('click', '.ispag-proj-assoc-primary', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const $b = $(this).css('opacity', 0.4);
+        post({ action: 'ispag_project_assoc_primary', id: $b.data('id'), deal_id: $b.data('deal-id') })
+            .done(function (r) { r && r.success ? location.reload() : (alert(failMsg(r)), $b.css('opacity', 1)); })
+            .fail(function (x) { alert(failMsg(x)); $b.css('opacity', 1); });
+    });
+
     // ---------------------------------------------------------------- ajout (fenêtre de recherche)
     let $overlay = null, timer = null, current = null;
 
@@ -96,6 +106,8 @@ jQuery(function ($) {
         '.ia-term{width:100%;padding:10px;font-size:15px;border:1px solid #d1d5db;border-radius:8px}' +
         '.ia-only-wrap{display:block;margin:8px 0;font-size:13px}.ia-note{font-size:13px;color:#b45309;margin:8px 0}' +
         '.ia-list{overflow:auto;margin-top:8px}.ia-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 2px;border-bottom:1px solid #eef0f2}' +
+        '.ispag-main-contact-badge{display:inline-block;margin-left:6px;font-size:11px;font-weight:600;color:#b45309;background:#fef3c7;border-radius:99px;padding:1px 8px;white-space:nowrap}' +
+        '.ispag-proj-assoc-primary{margin-left:6px;cursor:pointer;color:#9ca3af;font-size:15px}.ispag-proj-assoc-primary:hover{color:#f59e0b}' +
         '.ia-row small,.ia-muted{color:#6b7280}.ia-pick{background:#c80000;color:#fff;border:0;border-radius:8px;padding:6px 14px;cursor:pointer;font-weight:600}.ia-pick:disabled{opacity:.5}'
     ).appendTo('head');
 });

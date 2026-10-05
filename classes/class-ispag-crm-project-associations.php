@@ -6,7 +6,8 @@ defined('ABSPATH') || exit;
  *
  *  - Entreprise : colonne AssociatedCompanyID de achats_liste_commande (un seul identifiant ; si la colonne est de type texte,
  *    plusieurs identifiants séparés par des virgules sont acceptés).
- *  - Contacts : colonne AssociatedContactIDs (identifiants séparés par des virgules).
+ *  - Contacts : colonne AssociatedContactIDs (identifiants séparés par des virgules). Le PREMIER est le contact principal
+ *    (déjà la convention du reste du code : listes de projets, e-mails…) ; « principal » = placé en tête de liste.
  *  Droit requis : manage_order ; nonce : ispag_crm_nonce.
  */
 class ISPAG_Crm_Project_Associations {
@@ -15,6 +16,7 @@ class ISPAG_Crm_Project_Associations {
         add_action('wp_ajax_ispag_project_assoc_search', [$this, 'ajax_search']);
         add_action('wp_ajax_ispag_project_assoc_add',    [$this, 'ajax_add']);
         add_action('wp_ajax_ispag_project_assoc_remove', [$this, 'ajax_remove']);
+        add_action('wp_ajax_ispag_project_assoc_primary', [$this, 'ajax_primary']);
     }
 
     private function table(): string {
@@ -128,6 +130,22 @@ class ISPAG_Crm_Project_Associations {
             wp_send_json_error(['message' => 'Invalid type.']);
         }
         do_action('ispag_project_association_changed', $deal_id, $type, $id, 'remove');
+        wp_send_json_success();
+    }
+
+    /** Définit le contact principal : son identifiant passe en tête de la liste. */
+    public function ajax_primary() {
+        $this->guard();
+        global $wpdb;
+        $id      = absint($_POST['id'] ?? 0);
+        $deal_id = absint($_POST['deal_id'] ?? 0);
+        $project = $this->project($deal_id);
+        $ids     = self::id_list($project->AssociatedContactIDs);
+        if (!in_array($id, $ids, true)) wp_send_json_error(['message' => 'Contact not linked to this project.']);
+
+        $ordered = array_merge([$id], array_values(array_diff($ids, [$id])));
+        $wpdb->update($this->table(), ['AssociatedContactIDs' => implode(',', $ordered)], ['id' => $project->id]);
+        do_action('ispag_project_association_changed', $deal_id, 'contact', $id, 'primary');
         wp_send_json_success();
     }
 }
