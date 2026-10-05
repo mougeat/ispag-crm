@@ -775,6 +775,54 @@ msgstr "Keine Kontakte gefunden."
 msgid "View"
 msgstr "Ansehen"
 
+#: classes/class-ispag-crm-carddav-server.php:362
+msgid "iPhone contacts (CardDAV)"
+msgstr "iPhone-Kontakte (CardDAV)"
+
+#: classes/class-ispag-crm-carddav-server.php:379
+msgid "The CRM contacts of the selected departments are offered by this website as a CardDAV address book: no separate server is needed. It is read-only: changes made in the CRM arrive on the phone, not the other way round."
+msgstr "Die CRM-Kontakte der gewählten Abteilungen werden von dieser Website als CardDAV-Adressbuch angeboten: kein separater Server nötig. Es ist schreibgeschützt: Änderungen im CRM erscheinen auf dem Telefon, nicht umgekehrt."
+
+#: classes/class-ispag-crm-carddav-server.php:385
+msgid "Address book"
+msgstr "Adressbuch"
+
+#: classes/class-ispag-crm-carddav-server.php:387
+msgid "%d contacts are offered (departments checked in ISPAG Settings → Calendar sync)."
+msgstr "%d Kontakte werden angeboten (in ISPAG Settings → Calendar sync angekreuzte Abteilungen)."
+
+#: classes/class-ispag-crm-carddav-server.php:390
+msgid "Rebuild the address book now"
+msgstr "Adressbuch jetzt neu aufbauen"
+
+#: classes/class-ispag-crm-carddav-server.php:392
+msgid "Add the account on the iPhone"
+msgstr "Konto auf dem iPhone hinzufügen"
+
+#: classes/class-ispag-crm-carddav-server.php:394
+msgid "Each person creates an <a href=\"%s\">application password</a> in his WordPress profile (name it « iPhone »). It is shown only once."
+msgstr "Jede Person erstellt in ihrem WordPress-Profil ein <a href=\"%s\">Anwendungspasswort</a> (Name: «iPhone»). Es wird nur einmal angezeigt."
+
+#: classes/class-ispag-crm-carddav-server.php:395
+msgid "iPhone: Settings → Contacts → Accounts → Add account → Other → Add CardDAV account."
+msgstr "iPhone: Einstellungen → Kontakte → Accounts → Account hinzufügen → Andere → CardDAV-Account hinzufügen."
+
+#: classes/class-ispag-crm-carddav-server.php:396
+msgid "Server:"
+msgstr "Server:"
+
+#: classes/class-ispag-crm-carddav-server.php:396
+msgid "User: your WordPress login. Password: the application password."
+msgstr "Benutzer: Ihr WordPress-Login. Passwort: das Anwendungspasswort."
+
+#: classes/class-ispag-crm-carddav-server.php:397
+msgid "If the account is refused, use the full address as server:"
+msgstr "Wird das Konto abgelehnt, verwenden Sie die vollständige Adresse als Server:"
+
+#: classes/class-ispag-crm-carddav-server.php:399
+msgid "To stop a phone: delete its application password in the WordPress profile."
+msgstr "Um ein Telefon zu sperren: Anwendungspasswort im WordPress-Profil löschen."
+
 #: classes/class-ispag-crm-company-creator.php:104
 msgid "Security check failed. Please reload the page."
 msgstr "Sicherheitsprüfung fehlgeschlagen. Bitte laden Sie die Seite neu."
@@ -1027,6 +1075,14 @@ msgstr "Sammelaktualisierung des Kontaktdatums"
 msgid "Last contact date manually modified to %s for project %s."
 msgstr "Datum des letzten Kontakts manuell auf %s geändert für das Projekt %s."
 
+#: classes/class-ispag-crm-decision-date.php:83
+msgid "closing date"
+msgstr "Abschlussdatum"
+
+#: classes/class-ispag-crm-decision-date.php:83
+msgid "offer date + 30 days"
+msgstr "Offertdatum + 30 Tage"
+
 #: classes/class-ispag-crm-discount-manager.php:204
 msgid "Missing company ID or field name."
 msgstr "Unternehmens-ID oder Feldname fehlt."
@@ -1039,115 +1095,115 @@ msgstr "Verarbeitung von Rabatt / Koeffizient fehlgeschlagen."
 msgid "Discount/Coefficient saved successfully."
 msgstr "Rabatt / Koeffizient erfolgreich gespeichert."
 
-#: classes/class-ispag-crm-follow-up-settings.php:106
+#: classes/class-ispag-crm-follow-up-settings.php:112
 msgid "Contacts with priority A (high)"
 msgstr "Kontakte mit Priorität A (hoch)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:107
+#: classes/class-ispag-crm-follow-up-settings.php:113
 msgid "Contacts with priority B (medium)"
 msgstr "Kontakte mit Priorität B (mittel)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:108
+#: classes/class-ispag-crm-follow-up-settings.php:114
 msgid "Contacts with priority C (low)"
 msgstr "Kontakte mit Priorität C (niedrig)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:109
+#: classes/class-ispag-crm-follow-up-settings.php:115
 msgid "Contacts without priority"
 msgstr "Kontakte ohne Priorität"
 
-#: classes/class-ispag-crm-follow-up-settings.php:110
+#: classes/class-ispag-crm-follow-up-settings.php:116
 msgid "Companies and deals"
 msgstr "Unternehmen und Deals"
 
-#: classes/class-ispag-crm-follow-up-settings.php:115
+#: classes/class-ispag-crm-follow-up-settings.php:121
 msgid "Number of days without contact before the alert \"No contact for over N days\" is shown on the pages, and before the automatic follow-up task is created. The alert turns orange after two thirds of the delay and red once it is exceeded."
 msgstr "Anzahl Tage ohne Kontakt, bevor die Warnung «Seit über N Tagen kein Kontakt» auf den Seiten erscheint und bevor die automatische Nachfass-Aufgabe erstellt wird. Die Warnung wird nach zwei Dritteln der Frist orange und rot, sobald sie überschritten ist."
 
-#: classes/class-ispag-crm-follow-up-settings.php:116
+#: classes/class-ispag-crm-follow-up-settings.php:122
 msgid "Settings saved."
 msgstr "Einstellungen gespeichert."
 
-#: classes/class-ispag-crm-follow-up-settings.php:123
+#: classes/class-ispag-crm-follow-up-settings.php:129
 msgid "days"
 msgstr "Tage"
 
-#: classes/class-ispag-crm-follow-up-settings.php:127
+#: classes/class-ispag-crm-follow-up-settings.php:133
 msgid "Automatic follow-up of open offers"
 msgstr "Automatisches Nachfassen offener Offerten"
 
-#: classes/class-ispag-crm-follow-up-settings.php:128
+#: classes/class-ispag-crm-follow-up-settings.php:134
 msgid "Every day, each open offer gets a follow-up task for its owner, based on the expected decision date (or the closing date when none is set). The next task is created once the previous one is completed. Contacts set to \"No follow-up\" below are ignored."
 msgstr "Jeden Tag erhält jede offene Offerte eine Nachfass-Aufgabe für ihren Verantwortlichen, abgestimmt auf das erwartete Entscheidungsdatum (sonst das Abschlussdatum). Die nächste Aufgabe wird erstellt, sobald die vorherige erledigt ist. Unten auf «Kein Nachfassen» gestellte Kontakte werden ignoriert."
 
-#: classes/class-ispag-crm-follow-up-settings.php:130
+#: classes/class-ispag-crm-follow-up-settings.php:136
 msgid "Automatic follow-up"
 msgstr "Automatisches Nachfassen"
 
-#: classes/class-ispag-crm-follow-up-settings.php:131
+#: classes/class-ispag-crm-follow-up-settings.php:137
 msgid "Enabled"
 msgstr "Aktiviert"
 
-#: classes/class-ispag-crm-follow-up-settings.php:132
+#: classes/class-ispag-crm-follow-up-settings.php:138
 msgid "Follow up before the decision"
 msgstr "Vor dem Entscheid nachfassen"
 
-#: classes/class-ispag-crm-follow-up-settings.php:133
+#: classes/class-ispag-crm-follow-up-settings.php:139
 msgid "days before the expected decision"
 msgstr "Tage vor dem erwarteten Entscheid"
 
-#: classes/class-ispag-crm-follow-up-settings.php:134
+#: classes/class-ispag-crm-follow-up-settings.php:140
 msgid "Not before"
 msgstr "Nicht vor"
 
-#: classes/class-ispag-crm-follow-up-settings.php:135
+#: classes/class-ispag-crm-follow-up-settings.php:141
 msgid "days after the offer"
 msgstr "Tage nach der Offerte"
 
-#: classes/class-ispag-crm-follow-up-settings.php:136
+#: classes/class-ispag-crm-follow-up-settings.php:142
 msgid "Then repeat every"
 msgstr "Dann wiederholen alle"
 
-#: classes/class-ispag-crm-follow-up-settings.php:137
+#: classes/class-ispag-crm-follow-up-settings.php:143
 msgid "days (also used once the decision date is past)"
 msgstr "Tage (auch nach Überschreiten des Entscheidungsdatums)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:140
+#: classes/class-ispag-crm-follow-up-settings.php:146
 msgid "By contact role"
 msgstr "Nach Rolle des Kontakts"
 
-#: classes/class-ispag-crm-follow-up-settings.php:141
+#: classes/class-ispag-crm-follow-up-settings.php:147
 msgid "Overrides the delay above for all contacts with this role. Leave empty to use the priority delay; tick \"No follow-up\" for roles that do not order (the contact is never flagged). The three right-hand columns set the rhythm of the automatic offer follow-up for this role; empty = the general setting above."
 msgstr "Ersetzt die obige Frist für alle Kontakte dieser Rolle. Leer lassen für die Frist der Priorität; «Kein Nachfassen» ankreuzen für Rollen, die nicht bestellen (der Kontakt wird nie markiert). Die drei rechten Spalten legen den Rhythmus des automatischen Nachfassens von Offerten für diese Rolle fest; leer = allgemeine Einstellung oben."
 
-#: classes/class-ispag-crm-follow-up-settings.php:143
+#: classes/class-ispag-crm-follow-up-settings.php:149
 msgid "By company type"
 msgstr "Nach Unternehmenstyp"
 
-#: classes/class-ispag-crm-follow-up-settings.php:144
+#: classes/class-ispag-crm-follow-up-settings.php:150
 msgid "Used when the role has no delay of its own."
 msgstr "Wird verwendet, wenn die Rolle keine eigene Frist hat."
 
-#: classes/class-ispag-crm-follow-up-settings.php:173
+#: classes/class-ispag-crm-follow-up-settings.php:179
 msgid "Contact role / company type"
 msgstr "Rolle des Kontakts / Unternehmenstyp"
 
-#: classes/class-ispag-crm-follow-up-settings.php:173
+#: classes/class-ispag-crm-follow-up-settings.php:179
 msgid "Delay without contact"
 msgstr "Frist ohne Kontakt"
 
-#: classes/class-ispag-crm-follow-up-settings.php:174
+#: classes/class-ispag-crm-follow-up-settings.php:180
 msgid "Not before (days after offer)"
 msgstr "Nicht vor (Tage nach Offerte)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:174
+#: classes/class-ispag-crm-follow-up-settings.php:180
 msgid "Offers: days before decision"
 msgstr "Offerten: Tage vor Entscheid"
 
-#: classes/class-ispag-crm-follow-up-settings.php:174
+#: classes/class-ispag-crm-follow-up-settings.php:180
 msgid "Repeat every (days)"
 msgstr "Wiederholen alle (Tage)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:180
+#: classes/class-ispag-crm-follow-up-settings.php:186
 msgid "No follow-up"
 msgstr "Kein Nachfassen"
 
@@ -1695,27 +1751,27 @@ msgstr "Zugeordnet zu:"
 msgid "Attendees"
 msgstr "Teilnehmer"
 
-#: classes/class-ispag-note-renderer.php:122
+#: classes/class-ispag-note-renderer.php:128
 msgid "Upcoming & Overdue"
 msgstr "Anstehend und überfällig"
 
-#: classes/class-ispag-note-renderer.php:239
+#: classes/class-ispag-note-renderer.php:245
 msgid "Mark as completed"
 msgstr "Als erledigt markieren"
 
-#: classes/class-ispag-note-renderer.php:258
+#: classes/class-ispag-note-renderer.php:264
 msgid "1 Attachment"
 msgstr "1 Anhang"
 
-#: classes/class-ispag-note-renderer.php:287
+#: classes/class-ispag-note-renderer.php:293
 msgid "Delete"
 msgstr "Löschen"
 
-#: classes/class-ispag-note-renderer.php:294
+#: classes/class-ispag-note-renderer.php:300
 msgid "No outcome"
 msgstr "Kein Ergebnis"
 
-#: classes/class-ispag-note-renderer.php:83
+#: classes/class-ispag-note-renderer.php:89
 msgid "No registered activity"
 msgstr "Keine erfasste Aktivität"
 
@@ -3278,199 +3334,199 @@ msgstr "Anhänge"
 msgid "Invalid parameters."
 msgstr "Ungültige Parameter."
 
-#: ispag-crm.php:444
+#: ispag-crm.php:445
 msgid "Please select an action."
 msgstr "Bitte wählen Sie eine Aktion aus."
 
-#: ispag-crm.php:445
+#: ispag-crm.php:446
 msgid "Please select at least one contact."
 msgstr "Bitte wählen Sie mindestens einen Kontakt aus."
 
-#: ispag-crm.php:446
+#: ispag-crm.php:447
 msgid "Are you sure you want to delete the selected contacts?"
 msgstr "Möchten Sie die ausgewählten Kontakte wirklich löschen?"
 
-#: ispag-crm.php:447
+#: ispag-crm.php:448
 msgid "A - High"
 msgstr "A - Hoch"
 
-#: ispag-crm.php:448
+#: ispag-crm.php:449
 msgid "B - Medium"
 msgstr "B - Mittel"
 
-#: ispag-crm.php:449
+#: ispag-crm.php:450
 msgid "C - Low"
 msgstr "C - Tief"
 
-#: ispag-crm.php:450
+#: ispag-crm.php:451
 msgid "Company ID"
 msgstr "Unternehmens-ID"
 
-#: ispag-crm.php:451
+#: ispag-crm.php:452
 msgid "-- Select owner --"
 msgstr "-- Verantwortlichen auswählen --"
 
-#: ispag-crm.php:452
+#: ispag-crm.php:453
 msgid "Preparing..."
 msgstr "Vorbereitung..."
 
-#: ispag-crm.php:453
+#: ispag-crm.php:454
 msgid "Prepare meeting"
 msgstr "Besprechung vorbereiten"
 
-#: ispag-crm.php:468
+#: ispag-crm.php:469
 msgid "Your ISPAG account has been suspended."
 msgstr "Ihr ISPAG-Konto wurde gesperrt."
 
-#: ispag-crm.php:594
+#: ispag-crm.php:595
 msgid "Unauthorized access."
 msgstr "Nicht autorisierter Zugriff."
 
-#: ispag-whatsapp-init.php:105
+#: ispag-whatsapp-init.php:104
 msgid "Give the line a name (2 characters minimum)."
 msgstr "Geben Sie der Leitung einen Namen (mindestens 2 Zeichen)."
 
-#: ispag-whatsapp-init.php:148
+#: ispag-whatsapp-init.php:147
 msgid "Connected"
 msgstr "Verbunden"
 
-#: ispag-whatsapp-init.php:149
+#: ispag-whatsapp-init.php:148
 msgid "Waiting for QR scan"
 msgstr "Wartet auf QR-Code-Scan"
 
-#: ispag-whatsapp-init.php:150
+#: ispag-whatsapp-init.php:149
 msgid "Starting…"
 msgstr "Wird gestartet…"
 
-#: ispag-whatsapp-init.php:151
+#: ispag-whatsapp-init.php:150
 msgid "Authenticated…"
 msgstr "Authentifiziert…"
 
-#: ispag-whatsapp-init.php:152
+#: ispag-whatsapp-init.php:151
 msgid "Disconnected — remove and add the line again"
 msgstr "Getrennt — Leitung entfernen und erneut hinzufügen"
 
-#: ispag-whatsapp-init.php:153
+#: ispag-whatsapp-init.php:152
 msgid "Authentication failed — remove and add the line again"
 msgstr "Authentifizierung fehlgeschlagen — Leitung entfernen und erneut hinzufügen"
 
-#: ispag-whatsapp-init.php:154
+#: ispag-whatsapp-init.php:153
 msgid "Error — see the bridge logs"
 msgstr "Fehler — siehe Relay-Protokolle"
 
-#: ispag-whatsapp-init.php:196
+#: ispag-whatsapp-init.php:195
 msgid "Line added. Scan the QR code below with the phone of this number: WhatsApp > Settings > Linked devices > Link a device."
 msgstr "Leitung hinzugefügt. Scannen Sie den untenstehenden QR-Code mit dem Telefon dieser Nummer: WhatsApp > Einstellungen > Verknüpfte Geräte > Gerät hinzufügen."
 
-#: ispag-whatsapp-init.php:199
+#: ispag-whatsapp-init.php:198
 msgid "Line removed. The message history stays in the CRM."
 msgstr "Leitung entfernt. Der Nachrichtenverlauf bleibt im CRM erhalten."
 
-#: ispag-whatsapp-init.php:202
+#: ispag-whatsapp-init.php:201
 msgid "1. Bridge connection"
 msgstr "1. Verbindung zum Relay"
 
-#: ispag-whatsapp-init.php:203
+#: ispag-whatsapp-init.php:202
 msgid "The bridge is the small free server (folder whatsapp-bridge/ of this plugin) that keeps your numbers linked to WhatsApp."
 msgstr "Das Relay ist der kleine kostenlose Server (Ordner whatsapp-bridge/ dieses Plugins), der Ihre Nummern mit WhatsApp verbunden hält."
 
-#: ispag-whatsapp-init.php:208
+#: ispag-whatsapp-init.php:207
 msgid "Bridge URL"
 msgstr "Relay-Adresse"
 
-#: ispag-whatsapp-init.php:212
+#: ispag-whatsapp-init.php:211
 msgid "Bridge API key"
 msgstr "API-Schlüssel des Relays"
 
-#: ispag-whatsapp-init.php:215
+#: ispag-whatsapp-init.php:214
 msgid "Must match BRIDGE_API_KEY in the bridge .env file."
 msgstr "Muss mit BRIDGE_API_KEY in der .env-Datei des Relays übereinstimmen."
 
-#: ispag-whatsapp-init.php:219
+#: ispag-whatsapp-init.php:218
 msgid "Webhook secret"
 msgstr "Webhook-Geheimnis"
 
-#: ispag-whatsapp-init.php:222
+#: ispag-whatsapp-init.php:221
 msgid "Must match WP_WEBHOOK_SECRET in the bridge .env file."
 msgstr "Muss mit WP_WEBHOOK_SECRET in der .env-Datei des Relays übereinstimmen."
 
-#: ispag-whatsapp-init.php:223
+#: ispag-whatsapp-init.php:222
 msgid "Webhook address (WP_WEBHOOK_URL):"
 msgstr "Webhook-Adresse (WP_WEBHOOK_URL):"
 
-#: ispag-whatsapp-init.php:230
+#: ispag-whatsapp-init.php:229
 msgid "2. Numbers (lines)"
 msgstr "2. Nummern (Leitungen)"
 
-#: ispag-whatsapp-init.php:232
+#: ispag-whatsapp-init.php:231
 msgid "Fill in and save the bridge connection first."
 msgstr "Füllen Sie zuerst die Verbindung zum Relay aus und speichern Sie sie."
 
-#: ispag-whatsapp-init.php:234
+#: ispag-whatsapp-init.php:233
 msgid "Cannot reach the bridge: %s"
 msgstr "Das Relay ist nicht erreichbar: %s"
 
-#: ispag-whatsapp-init.php:237
+#: ispag-whatsapp-init.php:236
 msgid "No number connected yet."
 msgstr "Noch keine Nummer verbunden."
 
-#: ispag-whatsapp-init.php:240
+#: ispag-whatsapp-init.php:239
 msgid "Line"
 msgstr "Leitung"
 
-#: ispag-whatsapp-init.php:240
+#: ispag-whatsapp-init.php:239
 msgid "Number"
 msgstr "Nummer"
 
-#: ispag-whatsapp-init.php:240
+#: ispag-whatsapp-init.php:239
 msgid "Status"
 msgstr "Status"
 
-#: ispag-whatsapp-init.php:250
+#: ispag-whatsapp-init.php:249
 msgid "WhatsApp on the phone > Settings > Linked devices > Link a device, then scan."
 msgstr "WhatsApp auf dem Telefon > Einstellungen > Verknüpfte Geräte > Gerät hinzufügen, dann scannen."
 
-#: ispag-whatsapp-init.php:254
+#: ispag-whatsapp-init.php:253
 msgid "Disconnect this number?"
 msgstr "Diese Nummer trennen?"
 
-#: ispag-whatsapp-init.php:258
+#: ispag-whatsapp-init.php:257
 msgid "Disconnect"
 msgstr "Trennen"
 
-#: ispag-whatsapp-init.php:270
+#: ispag-whatsapp-init.php:269
 msgid "Add a number"
 msgstr "Nummer hinzufügen"
 
-#: ispag-whatsapp-init.php:271
+#: ispag-whatsapp-init.php:270
 msgid "Name, e.g. Sales, Purchasing"
 msgstr "Name, z. B. Verkauf, Einkauf"
 
-#: ispag-whatsapp-init.php:272
+#: ispag-whatsapp-init.php:271
 msgid "Connect"
 msgstr "Verbinden"
 
-#: ispag-whatsapp-init.php:279
+#: ispag-whatsapp-init.php:278
 msgid "3. Conversations without a CRM contact"
 msgstr "3. Konversationen ohne CRM-Kontakt"
 
-#: ispag-whatsapp-init.php:284
+#: ispag-whatsapp-init.php:283
 msgid "None. Every number that wrote or was written to matches a CRM contact (phone number field)."
 msgstr "Keine. Jede Nummer, die geschrieben hat oder der geschrieben wurde, entspricht einem CRM-Kontakt (Feld Telefon)."
 
-#: ispag-whatsapp-init.php:287
+#: ispag-whatsapp-init.php:286
 msgid "Last message"
 msgstr "Letzte Nachricht"
 
-#: ispag-whatsapp-init.php:287
+#: ispag-whatsapp-init.php:286
 msgid "Messages"
 msgstr "Nachrichten"
 
-#: ispag-whatsapp-init.php:287
+#: ispag-whatsapp-init.php:286
 msgid "WhatsApp name"
 msgstr "WhatsApp-Name"
 
-#: ispag-whatsapp-init.php:299
+#: ispag-whatsapp-init.php:298
 msgid "Create a contact with this phone number (field Phone) and the history appears on its page."
 msgstr "Erstellen Sie einen Kontakt mit dieser Telefonnummer (Feld Telefon), und der Verlauf erscheint auf seiner Seite."
 
@@ -3494,14 +3550,14 @@ msgstr "Netzwerkfehler beim Senden."
 msgid "Sending failed"
 msgstr "Senden fehlgeschlagen"
 
-#: ispag-whatsapp-init.php:76
-msgid "WhatsApp Settings"
-msgstr "WhatsApp-Einstellungen"
-
-#: ispag-whatsapp-init.php:77
+#: ispag-whatsapp-init.php:75
 msgid "WhatsApp CRM"
 msgstr "WhatsApp CRM"
 
-#: ispag-whatsapp-init.php:97
+#: ispag-whatsapp-init.php:77
+msgid "WhatsApp Settings"
+msgstr "WhatsApp-Einstellungen"
+
+#: ispag-whatsapp-init.php:96
 msgid "Access denied"
 msgstr "Zugriff verweigert"

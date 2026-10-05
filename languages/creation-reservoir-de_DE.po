@@ -37,7 +37,7 @@ msgstr "Sie sind nicht berechtigt"
 msgid "Invalid request."
 msgstr "Ungültige Anfrage."
 
-#: classes/class-ispag-note-renderer.php:66
+#: classes/class-ispag-note-renderer.php:72
 msgid "No activity found."
 msgstr "Keine Aktivität gefunden."
 

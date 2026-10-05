@@ -37,7 +37,7 @@ msgstr "Vous n'y êtes pas autorisé"
 msgid "Invalid request."
 msgstr "Requête invalide."
 
-#: classes/class-ispag-note-renderer.php:66
+#: classes/class-ispag-note-renderer.php:72
 msgid "No activity found."
 msgstr "Aucune activité trouvée."
 
