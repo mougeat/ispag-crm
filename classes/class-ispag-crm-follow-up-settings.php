@@ -106,6 +106,20 @@ class ISPAG_Crm_Follow_Up_Settings {
                         <td><input type="number" min="1" max="1000" id="fu_<?php echo esc_attr($k); ?>" name="days[<?php echo esc_attr($k); ?>]" value="<?php echo (int) $v[$k]; ?>" style="width:90px"> <?php esc_html_e('days', 'ispag-crm'); ?></td></tr>
                 <?php endforeach; ?>
                 </table>
+                <?php $fu = ISPAG_Crm_Deal_Follow_Up::settings(); ?>
+                <h2><?php esc_html_e('Automatic follow-up of open offers', 'ispag-crm'); ?></h2>
+                <p><?php esc_html_e('Every day, each open offer gets a follow-up task for its owner, based on the expected decision date (or the closing date when none is set). The next task is created once the previous one is completed. Contacts set to "No follow-up" below are ignored.', 'ispag-crm'); ?></p>
+                <table class="form-table">
+                    <tr><th scope="row"><?php esc_html_e('Automatic follow-up', 'ispag-crm'); ?></th>
+                        <td><label><input type="checkbox" name="fu_enabled" value="1" <?php checked($fu['enabled']); ?>> <?php esc_html_e('Enabled', 'ispag-crm'); ?></label></td></tr>
+                    <tr><th scope="row"><label for="fu_lead"><?php esc_html_e('Follow up before the decision', 'ispag-crm'); ?></label></th>
+                        <td><input type="number" min="0" max="365" id="fu_lead" name="fu_lead" value="<?php echo (int) $fu['lead']; ?>" style="width:90px"> <?php esc_html_e('days before the expected decision', 'ispag-crm'); ?></td></tr>
+                    <tr><th scope="row"><label for="fu_first"><?php esc_html_e('Not before', 'ispag-crm'); ?></label></th>
+                        <td><input type="number" min="0" max="365" id="fu_first" name="fu_first" value="<?php echo (int) $fu['first']; ?>" style="width:90px"> <?php esc_html_e('days after the offer', 'ispag-crm'); ?></td></tr>
+                    <tr><th scope="row"><label for="fu_repeat"><?php esc_html_e('Then repeat every', 'ispag-crm'); ?></label></th>
+                        <td><input type="number" min="1" max="365" id="fu_repeat" name="fu_repeat" value="<?php echo (int) $fu['repeat']; ?>" style="width:90px"> <?php esc_html_e('days (also used once the decision date is past)', 'ispag-crm'); ?></td></tr>
+                </table>
+
                 <h2><?php esc_html_e('By contact role', 'ispag-crm'); ?></h2>
                 <p><?php esc_html_e('Overrides the delay above for all contacts with this role. Leave empty to use the priority delay; tick "No follow-up" for roles that do not order (the contact is never flagged).', 'ispag-crm'); ?></p>
                 <?php $this->override_table('roles', $this->role_options(), self::overrides(self::OPT_ROLES)); ?>
@@ -170,6 +184,12 @@ class ISPAG_Crm_Follow_Up_Settings {
             $out[$k] = max(1, min(1000, (int) ($in[$k] ?? $def)));
         }
         update_option(self::OPTION, $out, false);
+        update_option(ISPAG_Crm_Deal_Follow_Up::OPTION, [
+            'enabled' => empty($_POST['fu_enabled']) ? 0 : 1,
+            'lead'    => max(0, min(365, (int) ($_POST['fu_lead'] ?? 7))),
+            'first'   => max(0, min(365, (int) ($_POST['fu_first'] ?? 10))),
+            'repeat'  => max(1, min(365, (int) ($_POST['fu_repeat'] ?? 14))),
+        ], false);
         update_option(self::OPT_ROLES, $this->collect_overrides('roles', $this->role_options()), false);
         update_option(self::OPT_COMPANY, $this->collect_overrides('company', $this->company_type_options()), false);
         wp_safe_redirect(admin_url('options-general.php?page=ispag-crm-follow-up&saved=1'));

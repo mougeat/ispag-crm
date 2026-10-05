@@ -1,0 +1,127 @@
+<?php
+defined('ABSPATH') || exit;
+
+/**
+ * Relance automatique des offres ouvertes, calée sur la date de décision attendue.
+ *
+ * Chaque jour, pour chaque offre ouverte, on s'assure qu'il existe une tâche de relance ouverte pour son responsable :
+ *  - décision à venir : relance « N jours avant » la décision (jamais avant « première relance » jours après l'offre) ;
+ *  - décision dépassée : relance toutes les « répétition » jours, jusqu'à ce que l'offre soit gagnée, perdue ou déplacée.
+ * La tâche suivante n'est créée qu'une fois la précédente terminée. Les contacts dont le rôle / type d'entreprise est
+ * réglé « Aucune relance » (ex. ingénieurs) sont ignorés. La date de décision n'est jamais obligatoire (voir ISPAG_Crm_Decision_Date).
+ */
+class ISPAG_Crm_Deal_Follow_Up {
+
+    const CRON_HOOK = 'ispag_crm_deal_follow_up';
+    const OPTION    = 'ispag_crm_deal_follow_up_settings';
+    const MARKER    = '[auto-deal-followup]';
+    const MAX_PER_RUN = 25;
+    const DEFAULTS  = ['enabled' => 1, 'lead' => 7, 'repeat' => 14, 'first' => 10];
+
+    public function __construct() {
+        add_action(self::CRON_HOOK, [$this, 'run']);
+        add_action('init', function () {
+            if (!wp_next_scheduled(self::CRON_HOOK)) wp_schedule_event(time() + 600, 'daily', self::CRON_HOOK);
+        }, 25);
+    }
+
+    public static function settings(): array {
+        $saved = (array) get_option(self::OPTION, []);
+        $out = [];
+        foreach (self::DEFAULTS as $k => $def) {
+            $out[$k] = isset($saved[$k]) ? max($k === 'enabled' ? 0 : 0, (int) $saved[$k]) : $def;
+        }
+        $out['repeat'] = max(1, $out['repeat']);
+        return $out;
+    }
+
+    /**
+     * Prochaine date de relance (timestamp, début de journée du site) d'une offre, ou null si rien à planifier.
+     * @param int $decision_ts date de décision effective ; $offer_ts date de l'offre ; $last_ts dernière relance terminée (0 si aucune)
+     */
+    public static function next_due(int $decision_ts, int $offer_ts, int $last_ts, array $cfg, int $today_ts): ?int {
+        $earliest_first = $offer_ts ? $offer_ts + $cfg['first'] * DAY_IN_SECONDS : 0;
+        $after_last     = $last_ts ? $last_ts + $cfg['repeat'] * DAY_IN_SECONDS : 0;
+        if ($decision_ts && $decision_ts >= $today_ts) {
+            $due = $decision_ts - $cfg['lead'] * DAY_IN_SECONDS;      // juste avant la décision
+            if ($due < $earliest_first) $due = $earliest_first;        // pas trop tôt après l'offre
+            if ($due < $after_last)     $due = $after_last;            // pas deux relances rapprochées
+            if ($due > $decision_ts)    $due = $decision_ts;           // et au plus tard le jour de la décision
+        } else {
+            $due = max($after_last, $earliest_first);                  // décision dépassée / inconnue : rythme régulier
+        }
+        return max($due, $today_ts);
+    }
+
+    public function run() {
+        $cfg = self::settings();
+        if (!$cfg['enabled']) return;
+        global $wpdb;
+        $deals  = ISPAG_Crm_Deal_Constants::TABLE_NAME;
+        $stages = ISPAG_Crm_Deal_Constants::TABLE_DEAL_STAGES;
+        $notes  = ISPAG_Note_Manager::TABLE_NOTE;
+        $today  = strtotime(wp_date('Y-m-d') . ' 00:00:00');
+
+        ISPAG_Crm_Decision_Date::ensure_column();
+        $rows = $wpdb->get_results("
+            SELECT d.* FROM {$deals} d
+            LEFT JOIN {$stages} s ON s.stage_key = d.current_stage_key
+            WHERE d.project_db_status = " . (int) ISPAG_Crm_Deal_Constants::STATUS_OPEN . "
+              AND d.deal_owner > 0 AND d.associated_contact_ids <> ''
+              AND (s.id IS NULL OR (s.is_closed = 0 AND s.probability < 100))
+            ORDER BY d.id DESC");
+        $created = 0;
+        foreach ((array) $rows as $deal) {
+            if ($created >= self::MAX_PER_RUN) break;
+            $ref = (string) $deal->deal_group_ref;
+            if ($ref === '') continue;
+
+            // Une tâche de relance déjà ouverte pour cette offre ? alors rien à faire
+            $open = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$notes} WHERE is_task = 1 AND is_completed = 0 AND deal_id = %s AND content LIKE %s",
+                $ref, '%' . $wpdb->esc_like(self::MARKER) . '%'
+            ));
+            if ($open) continue;
+
+            // Contact principal (le premier) ; rôle / type d'entreprise « sans relance » : on ignore l'offre
+            $contact_id = (int) trim((string) strtok((string) $deal->associated_contact_ids, ','));
+            if (!$contact_id) continue;
+            $role  = ISPAG_Crm_Follow_Up_Settings::contact_role($contact_id);
+            $ctype = ISPAG_Crm_Follow_Up_Settings::company_type((int) $deal->associated_company_id);
+            if (ISPAG_Crm_Follow_Up_Settings::days_for_contact('', $role, $ctype) === 0) continue;
+
+            $decision = ISPAG_Crm_Decision_Date::effective($deal);
+            $last = (string) $wpdb->get_var($wpdb->prepare(
+                "SELECT completed_at FROM {$notes} WHERE is_task = 1 AND is_completed = 1 AND deal_id = %s AND content LIKE %s AND completed_at IS NOT NULL ORDER BY completed_at DESC LIMIT 1",
+                $ref, '%' . $wpdb->esc_like(self::MARKER) . '%'
+            ));
+            $last_ts  = $last ? strtotime(wp_date('Y-m-d', strtotime($last)) . ' 00:00:00') : 0;
+            $offer_ts = !empty($deal->date_creation) ? strtotime($deal->date_creation . ' 00:00:00') : 0;
+            $due_ts   = self::next_due($decision['date'] ? strtotime($decision['date'] . ' 00:00:00') : 0, $offer_ts, $last_ts, $cfg, $today);
+            if ($due_ts === null) continue;
+
+            $user = get_userdata((int) $deal->deal_owner);
+            if (!$user) continue;
+            $contact = get_userdata($contact_id);
+            $cname   = $contact ? $contact->display_name : '#' . $contact_id;
+            $due_day = wp_date('Y-m-d', $due_ts);
+            $when    = $decision['date'] ? sprintf('décision attendue le %s', wp_date('d.m.Y', strtotime($decision['date']))) : 'pas de date de décision';
+            $ok = $wpdb->insert($notes, [
+                'contact_id'    => $contact_id,
+                'company_id'    => (string) (int) $deal->associated_company_id,
+                'deal_id'       => $ref,
+                'user_id'       => (int) $deal->deal_owner,
+                'type'          => 'TASK',
+                'title'         => '📞 Relance offre : ' . $deal->project_name . ' (' . $cname . ')',
+                'content'       => "Relance de l'offre auprès de {$cname} ({$when}). " . self::MARKER,
+                'is_task'       => 1,
+                'is_completed'  => 0,
+                'due_date'      => $due_day . ' 17:00:00',
+                'reminder_date' => $due_day . ' 08:00:00',
+                'reminder_offset' => 'none',
+                'created_at'    => current_time('mysql'),
+            ]);
+            if ($ok) $created++;
+        }
+    }
+}

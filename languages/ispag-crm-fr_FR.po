@@ -1043,23 +1043,63 @@ msgstr "Remise / coefficient enregistré avec succès."
 msgid "days"
 msgstr "jours"
 
-#: classes/class-ispag-crm-follow-up-settings.php:109
+#: classes/class-ispag-crm-follow-up-settings.php:110
+msgid "Automatic follow-up of open offers"
+msgstr "Relance automatique des offres ouvertes"
+
+#: classes/class-ispag-crm-follow-up-settings.php:111
+msgid "Every day, each open offer gets a follow-up task for its owner, based on the expected decision date (or the closing date when none is set). The next task is created once the previous one is completed. Contacts set to \"No follow-up\" below are ignored."
+msgstr "Chaque jour, chaque offre ouverte reçoit une tâche de relance pour son responsable, calée sur la date de décision attendue (ou la date de clôture à défaut). La tâche suivante est créée une fois la précédente terminée. Les contacts réglés « Aucune relance » ci-dessous sont ignorés."
+
+#: classes/class-ispag-crm-follow-up-settings.php:113
+msgid "Automatic follow-up"
+msgstr "Relance automatique"
+
+#: classes/class-ispag-crm-follow-up-settings.php:114
+msgid "Enabled"
+msgstr "Activée"
+
+#: classes/class-ispag-crm-follow-up-settings.php:115
+msgid "Follow up before the decision"
+msgstr "Relancer avant la décision"
+
+#: classes/class-ispag-crm-follow-up-settings.php:116
+msgid "days before the expected decision"
+msgstr "jours avant la décision attendue"
+
+#: classes/class-ispag-crm-follow-up-settings.php:117
+msgid "Not before"
+msgstr "Pas avant"
+
+#: classes/class-ispag-crm-follow-up-settings.php:118
+msgid "days after the offer"
+msgstr "jours après l'offre"
+
+#: classes/class-ispag-crm-follow-up-settings.php:119
+msgid "Then repeat every"
+msgstr "Puis répéter tous les"
+
+#: classes/class-ispag-crm-follow-up-settings.php:120
+msgid "days (also used once the decision date is past)"
+msgstr "jours (aussi utilisé une fois la date de décision dépassée)"
+
+#: classes/class-ispag-crm-follow-up-settings.php:123
 msgid "By contact role"
 msgstr "Par rôle du contact"
 
-#: classes/class-ispag-crm-follow-up-settings.php:110
+#: classes/class-ispag-crm-follow-up-settings.php:124
 msgid "Overrides the delay above for all contacts with this role. Leave empty to use the priority delay; tick \"No follow-up\" for roles that do not order (the contact is never flagged)."
 msgstr "Remplace le délai ci-dessus pour tous les contacts de ce rôle. Laissez vide pour utiliser le délai de la priorité ; cochez « Aucune relance » pour les rôles qui ne commandent pas (le contact n'est jamais signalé)."
 
-#: classes/class-ispag-crm-follow-up-settings.php:112
+#: classes/class-ispag-crm-follow-up-settings.php:126
 msgid "By company type"
 msgstr "Par type d'entreprise"
 
-#: classes/class-ispag-crm-follow-up-settings.php:113
+#: classes/class-ispag-crm-follow-up-settings.php:127
 msgid "Used when the role has no delay of its own."
 msgstr "Utilisé quand le rôle n'a pas de délai propre."
 
-#: classes/class-ispag-crm-follow-up-settings.php:147
+#: classes/class-ispag-crm-follow-up-settings.php:161
 msgid "No follow-up"
 msgstr "Aucune relance"
 
@@ -3218,51 +3258,51 @@ msgstr "Pièces jointes"
 msgid "Invalid parameters."
 msgstr "Paramètres invalides."
 
-#: ispag-crm.php:443
+#: ispag-crm.php:444
 msgid "Please select an action."
 msgstr "Veuillez sélectionner une action."
 
-#: ispag-crm.php:444
+#: ispag-crm.php:445
 msgid "Please select at least one contact."
 msgstr "Veuillez sélectionner au moins un contact."
 
-#: ispag-crm.php:445
+#: ispag-crm.php:446
 msgid "Are you sure you want to delete the selected contacts?"
 msgstr "Voulez-vous vraiment supprimer les contacts sélectionnés ?"
 
-#: ispag-crm.php:446
+#: ispag-crm.php:447
 msgid "A - High"
 msgstr "A - Haute"
 
-#: ispag-crm.php:447
+#: ispag-crm.php:448
 msgid "B - Medium"
 msgstr "B - Moyenne"
 
-#: ispag-crm.php:448
+#: ispag-crm.php:449
 msgid "C - Low"
 msgstr "C - Basse"
 
-#: ispag-crm.php:449
+#: ispag-crm.php:450
 msgid "Company ID"
 msgstr "ID de l'entreprise"
 
-#: ispag-crm.php:450
+#: ispag-crm.php:451
 msgid "-- Select owner --"
 msgstr "-- Sélectionner un responsable --"
 
-#: ispag-crm.php:451
+#: ispag-crm.php:452
 msgid "Preparing..."
 msgstr "Préparation..."
 
-#: ispag-crm.php:452
+#: ispag-crm.php:453
 msgid "Prepare meeting"
 msgstr "Préparer la réunion"
 
-#: ispag-crm.php:467
+#: ispag-crm.php:468
 msgid "Your ISPAG account has been suspended."
 msgstr "Votre compte ISPAG a été suspendu."
 
-#: ispag-crm.php:593
+#: ispag-crm.php:594
 msgid "Unauthorized access."
 msgstr "Accès non autorisé."
 
