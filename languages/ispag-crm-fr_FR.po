@@ -775,51 +775,139 @@ msgstr "Aucun contact trouvé."
 msgid "View"
 msgstr "Voir"
 
-#: classes/class-ispag-crm-carddav-server.php:362
+#: classes/class-ispag-crm-call-brief.php:108
+msgid "Task overdue: %1$s (%2$s)."
+msgstr "Tâche en retard : %1$s (%2$s)."
+
+#: classes/class-ispag-crm-call-brief.php:130
+msgid "Write a few words first."
+msgstr "Écrivez d'abord quelques mots."
+
+#: classes/class-ispag-crm-call-brief.php:177
+msgid "Contact not found"
+msgstr "Contact introuvable"
+
+#: classes/class-ispag-crm-call-brief.php:191
+msgid "Last contact: %s"
+msgstr "Dernier contact : %s"
+
+#: classes/class-ispag-crm-call-brief.php:195
+msgid "Open in the CRM"
+msgstr "Ouvrir dans le CRM"
+
+#: classes/class-ispag-crm-call-brief.php:198
+msgid "To keep in mind"
+msgstr "À garder en tête"
+
+#: classes/class-ispag-crm-call-brief.php:203
+msgid "Open offers"
+msgstr "Offres en cours"
+
+#: classes/class-ispag-crm-call-brief.php:205
+msgid "(approx.)"
+msgstr "(approx.)"
+
+#: classes/class-ispag-crm-call-brief.php:205
+msgid "decision"
+msgstr "décision"
+
+#: classes/class-ispag-crm-call-brief.php:210
+msgid "Projects: deliveries to come"
+msgstr "Projets : livraisons à venir"
+
+#: classes/class-ispag-crm-call-brief.php:220
+msgid "Next tasks"
+msgstr "Prochaines tâches"
+
+#: classes/class-ispag-crm-call-brief.php:225
+msgid "Latest actions"
+msgstr "Dernières actions"
+
+#: classes/class-ispag-crm-call-brief.php:229
+msgid "No action recorded yet."
+msgstr "Aucune action enregistrée."
+
+#: classes/class-ispag-crm-call-brief.php:234
+msgid "Record an action"
+msgstr "Consigner une action"
+
+#: classes/class-ispag-crm-call-brief.php:239
+msgid "What was said, what to do…"
+msgstr "Ce qui a été dit, ce qu'il faut faire…"
+
+#: classes/class-ispag-crm-call-brief.php:241
+msgid "Not linked to an offer"
+msgstr "Non liée à une offre"
+
+#: classes/class-ispag-crm-call-brief.php:254
+msgid "Before the call — %s"
+msgstr "Avant l'appel — %s"
+
+#: classes/class-ispag-crm-call-brief.php:44
+msgid "Restricted"
+msgstr "Accès restreint"
+
+#: classes/class-ispag-crm-call-brief.php:44
+msgid "This page is reserved to ISPAG sales."
+msgstr "Cette page est réservée aux commerciaux ISPAG."
+
+#: classes/class-ispag-crm-call-brief.php:75
+msgid "Offer \"%s\": expected decision date is past (%s)."
+msgstr "Offre « %s » : la date de décision attendue est dépassée (%s)."
+
+#: classes/class-ispag-crm-call-brief.php:92
+msgid "Late delivery — %1$s (%2$s): was due %3$s."
+msgstr "Livraison en retard — %1$s (%2$s) : prévue le %3$s."
+
+#: classes/class-ispag-crm-call-brief.php:97
+msgid "Supplier late — %1$s (%2$s): confirmed date has passed."
+msgstr "Fournisseur en retard — %1$s (%2$s) : la date confirmée est dépassée."
+
+#: classes/class-ispag-crm-carddav-server.php:406
 msgid "iPhone contacts (CardDAV)"
 msgstr "Contacts iPhone (CardDAV)"
 
-#: classes/class-ispag-crm-carddav-server.php:379
+#: classes/class-ispag-crm-carddav-server.php:423
 msgid "The CRM contacts of the selected departments are offered by this website as a CardDAV address book: no separate server is needed. It is read-only: changes made in the CRM arrive on the phone, not the other way round."
 msgstr "Les contacts du CRM des départements choisis sont proposés par ce site comme carnet d'adresses CardDAV : aucun serveur séparé n'est nécessaire. Il est en lecture seule : les modifications faites dans le CRM arrivent sur le téléphone, pas l'inverse."
 
-#: classes/class-ispag-crm-carddav-server.php:385
+#: classes/class-ispag-crm-carddav-server.php:429
 msgid "Address book"
 msgstr "Carnet d'adresses"
 
-#: classes/class-ispag-crm-carddav-server.php:387
+#: classes/class-ispag-crm-carddav-server.php:431
 msgid "%d contacts are offered (departments checked in ISPAG Settings → Calendar sync)."
 msgstr "%d contacts sont proposés (départements cochés dans ISPAG Settings → Calendar sync)."
 
-#: classes/class-ispag-crm-carddav-server.php:390
+#: classes/class-ispag-crm-carddav-server.php:434
 msgid "Rebuild the address book now"
 msgstr "Reconstruire le carnet d'adresses maintenant"
 
-#: classes/class-ispag-crm-carddav-server.php:392
+#: classes/class-ispag-crm-carddav-server.php:436
 msgid "Add the account on the iPhone"
 msgstr "Ajouter le compte sur l'iPhone"
 
-#: classes/class-ispag-crm-carddav-server.php:394
+#: classes/class-ispag-crm-carddav-server.php:438
 msgid "Each person creates an <a href=\"%s\">application password</a> in his WordPress profile (name it « iPhone »). It is shown only once."
 msgstr "Chaque personne crée un <a href=\"%s\">mot de passe d'application</a> dans son profil WordPress (nom : « iPhone »). Il n'est affiché qu'une seule fois."
 
-#: classes/class-ispag-crm-carddav-server.php:395
+#: classes/class-ispag-crm-carddav-server.php:439
 msgid "iPhone: Settings → Contacts → Accounts → Add account → Other → Add CardDAV account."
 msgstr "iPhone : Réglages → Contacts → Comptes → Ajouter un compte → Autre → Ajouter un compte CardDAV."
 
-#: classes/class-ispag-crm-carddav-server.php:396
+#: classes/class-ispag-crm-carddav-server.php:440
 msgid "Server:"
 msgstr "Serveur :"
 
-#: classes/class-ispag-crm-carddav-server.php:396
+#: classes/class-ispag-crm-carddav-server.php:440
 msgid "User: your WordPress login. Password: the application password."
 msgstr "Utilisateur : votre identifiant WordPress. Mot de passe : le mot de passe d'application."
 
-#: classes/class-ispag-crm-carddav-server.php:397
+#: classes/class-ispag-crm-carddav-server.php:441
 msgid "If the account is refused, use the full address as server:"
 msgstr "Si le compte est refusé, utilisez l'adresse complète comme serveur :"
 
-#: classes/class-ispag-crm-carddav-server.php:399
+#: classes/class-ispag-crm-carddav-server.php:443
 msgid "To stop a phone: delete its application password in the WordPress profile."
 msgstr "Pour couper un téléphone : supprimez son mot de passe d'application dans le profil WordPress."
 
@@ -3334,51 +3422,51 @@ msgstr "Pièces jointes"
 msgid "Invalid parameters."
 msgstr "Paramètres invalides."
 
-#: ispag-crm.php:445
+#: ispag-crm.php:446
 msgid "Please select an action."
 msgstr "Veuillez sélectionner une action."
 
-#: ispag-crm.php:446
+#: ispag-crm.php:447
 msgid "Please select at least one contact."
 msgstr "Veuillez sélectionner au moins un contact."
 
-#: ispag-crm.php:447
+#: ispag-crm.php:448
 msgid "Are you sure you want to delete the selected contacts?"
 msgstr "Voulez-vous vraiment supprimer les contacts sélectionnés ?"
 
-#: ispag-crm.php:448
+#: ispag-crm.php:449
 msgid "A - High"
 msgstr "A - Haute"
 
-#: ispag-crm.php:449
+#: ispag-crm.php:450
 msgid "B - Medium"
 msgstr "B - Moyenne"
 
-#: ispag-crm.php:450
+#: ispag-crm.php:451
 msgid "C - Low"
 msgstr "C - Basse"
 
-#: ispag-crm.php:451
+#: ispag-crm.php:452
 msgid "Company ID"
 msgstr "ID de l'entreprise"
 
-#: ispag-crm.php:452
+#: ispag-crm.php:453
 msgid "-- Select owner --"
 msgstr "-- Sélectionner un responsable --"
 
-#: ispag-crm.php:453
+#: ispag-crm.php:454
 msgid "Preparing..."
 msgstr "Préparation..."
 
-#: ispag-crm.php:454
+#: ispag-crm.php:455
 msgid "Prepare meeting"
 msgstr "Préparer la réunion"
 
-#: ispag-crm.php:469
+#: ispag-crm.php:470
 msgid "Your ISPAG account has been suspended."
 msgstr "Votre compte ISPAG a été suspendu."
 
-#: ispag-crm.php:595
+#: ispag-crm.php:596
 msgid "Unauthorized access."
 msgstr "Accès non autorisé."
 

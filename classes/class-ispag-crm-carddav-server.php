@@ -72,6 +72,10 @@ class ISPAG_Crm_Carddav_Server {
         if (!empty($c->lead_function)) $v .= 'TITLE;CHARSET=UTF-8:' . self::esc($c->lead_function) . "\r\n";
         if (!empty($c->email))         $v .= 'EMAIL;TYPE=INTERNET,WORK:' . self::esc($c->email) . "\r\n";
         if (!empty($c->phone))         $v .= 'TEL;TYPE=CELL,VOICE:' . self::esc($c->phone) . "\r\n";
+        // Lien « Fiche CRM ISPAG » : ouvre la fiche avant l'appel (ISPAG_Crm_Call_Brief), réservée aux commerciaux
+        if (class_exists('ISPAG_Crm_Call_Brief')) {
+            $v .= 'item1.URL;TYPE=pref:' . ISPAG_Crm_Call_Brief::url((int) $c->ID) . "\r\n" . "item1.X-ABLabel:Fiche CRM ISPAG\r\n";
+        }
         return $v . "END:VCARD\r\n";
     }
 
