@@ -93,6 +93,13 @@ class ISPAG_Attachments_Uploader {
         }
     }
 
+    /** Types de documents d'achat jamais partagés avec le projet (montants, prix d'achat, confirmation de commande…). */
+    public static function types_not_shared_with_project(): array {
+        return (array) apply_filters('ispag_purchase_doc_types_not_shared', [
+            'invoice', 'proforma_invoice', 'quotation', 'request_supplier_quotation', 'ccmd', 'customer_order', 'drawingApproval',
+        ]);
+    }
+
     private function linkToAchatsHistorique(int $mediaId, string $entityType, $entityId, object $docType, $article_id = null): void {
         $table = $this->wpdb->prefix . 'achats_historique';
 
@@ -113,6 +120,18 @@ class ISPAG_Attachments_Uploader {
 
         if ($entityType === 'purchase') {
             $data['purchase_order'] = (int) $entityId;
+
+            // Document lié à un article (note de calcul, plan…) : l'article d'achat est lié à un article du projet → même ligne, visible aussi
+            // sur le projet. Les documents financiers (facture, offre, confirmation…) ne sont jamais partagés avec le projet.
+            if (!empty($article_id) && !in_array((string) ($docType->slug ?? ''), self::types_not_shared_with_project(), true)) {
+                $deal = (int) $this->wpdb->get_var($this->wpdb->prepare(
+                    "SELECT hubspot_deal_id FROM {$this->wpdb->prefix}achats_details_commande WHERE Id = %d",
+                    (int) $article_id
+                ));
+                if ($deal > 0) {
+                    $data['hubspot_deal_id'] = $deal;
+                }
+            }
         } else { // 'deal' ou 'project'
             $data['hubspot_deal_id'] = (int) $entityId;
 
