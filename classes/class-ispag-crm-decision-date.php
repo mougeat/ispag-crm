@@ -53,16 +53,18 @@ class ISPAG_Crm_Decision_Date {
         if (!current_user_can('manage_order')) wp_send_json_error(['message' => 'Droits insuffisants'], 403);
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'ispag_crm_nonce')) wp_send_json_error(['message' => 'Invalid nonce'], 403);
         if (sanitize_key($_POST['field_name'] ?? '') !== self::COLUMN) wp_send_json_error(['message' => 'Unsupported field'], 400);
-        $_POST['date']  = $_POST['new_value'] ?? '';
-        $_POST['nonce'] = wp_create_nonce(self::NONCE);   // réutilise la logique d'ajax_set
-        self::ajax_set(true);
+        self::save(absint($_POST['deal_id'] ?? 0), sanitize_text_field(wp_unslash($_POST['new_value'] ?? '')));
     }
 
-    public static function ajax_set($inline = false) {
-        check_ajax_referer(self::NONCE, 'nonce');   // (l'édition en ligne a déjà vérifié le nonce CRM)
+    /** Appel direct (ancienne action) : nonce propre à la date de décision. */
+    public static function ajax_set() {
+        check_ajax_referer(self::NONCE, 'nonce');
         if (!current_user_can('manage_order')) wp_send_json_error(['message' => 'Droits insuffisants'], 403);
-        $deal_id = absint($_POST['deal_id'] ?? 0);
-        $raw     = sanitize_text_field(wp_unslash($_POST['date'] ?? ''));
+        self::save(absint($_POST['deal_id'] ?? 0), sanitize_text_field(wp_unslash($_POST['date'] ?? '')));
+    }
+
+    /** Enregistre la date ('' = effacer) et répond en JSON (valeur effective + affichage du champ éditable). */
+    private static function save(int $deal_id, string $raw) {
         if (!$deal_id) wp_send_json_error(['message' => 'Missing deal'], 400);
         $date = null;
         if ($raw !== '') {
@@ -72,15 +74,15 @@ class ISPAG_Crm_Decision_Date {
         }
         self::ensure_column();
         global $wpdb;
-        $ok = $wpdb->update(ISPAG_Crm_Deal_Constants::TABLE_NAME, [self::COLUMN => $date], ['id' => $deal_id], ['%s'], ['%d']);
-        if ($ok === false) wp_send_json_error(['message' => 'Database error'], 500);
-        $deal = $wpdb->get_row($wpdb->prepare("SELECT * FROM " . ISPAG_Crm_Deal_Constants::TABLE_NAME . " WHERE id = %d", $deal_id));
+        $table = ISPAG_Crm_Deal_Constants::TABLE_NAME;
+        $ok = $wpdb->update($table, [self::COLUMN => $date], ['id' => $deal_id], ['%s'], ['%d']);
+        if ($ok === false) wp_send_json_error(['message' => 'Database error: ' . $wpdb->last_error], 500);
+        $deal = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE id = %d", $deal_id));
         $eff  = $deal ? self::effective($deal) : ['date' => '', 'source' => ''];
         $label = $eff['date'] ? date_i18n('d.m.Y', strtotime($eff['date'])) : '—';
         $hint  = ['expected' => '', 'closing' => __('closing date', 'ispag-crm'), 'created' => __('offer date + 30 days', 'ispag-crm')][$eff['source']] ?? '';
         wp_send_json_success([
             'date' => $eff['date'], 'source' => $eff['source'], 'label' => $label,
-            // affichage du champ éditable (valeur + crayon) quand c'est l'édition en ligne qui appelle
             'display_value' => esc_html($label) . ($hint ? ' <small style="color:#6b7280">(' . esc_html($hint) . ')</small>' : '') . ' <span class="edit-icon">✏️</span>',
         ]);
     }
