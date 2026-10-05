@@ -69,17 +69,16 @@ add_action( 'wp_enqueue_scripts', function () {
 	) );
 } );
 
-// --- Réglages : CRM ISPAG > WhatsApp ---
+// --- Réglages WhatsApp : menu « ISPAG Settings » (avec Calendar sync, Relances CRM…) ---
 add_action( 'admin_menu', function () {
-	// Réglages > WhatsApp CRM : accessible à tout administrateur (le menu « CRM ISPAG » dépend d'un droit CRM spécifique)
-	add_options_page(
-		__( 'WhatsApp Settings', 'ispag-crm' ),
-		__( 'WhatsApp CRM', 'ispag-crm' ),
-		'manage_options',
-		'ispag-whatsapp-settings',
-		'ispag_whatsapp_render_settings_page'
-	);
-} );
+	// Accessible à tout administrateur (le menu « CRM ISPAG » dépend d'un droit CRM spécifique)
+	$title = __( 'WhatsApp CRM', 'ispag-crm' );
+	if ( ! empty( $GLOBALS['admin_page_hooks']['ispag-settings'] ) ) {
+		add_submenu_page( 'ispag-settings', __( 'WhatsApp Settings', 'ispag-crm' ), $title, 'manage_options', 'ispag-whatsapp-settings', 'ispag_whatsapp_render_settings_page' );
+	} else {   // Project Manager inactif : Réglages > WhatsApp CRM
+		add_options_page( __( 'WhatsApp Settings', 'ispag-crm' ), $title, 'manage_options', 'ispag-whatsapp-settings', 'ispag_whatsapp_render_settings_page' );
+	}
+}, 30 );
 
 add_action( 'admin_init', function () {
 	register_setting( 'ispag_whatsapp_settings_group', 'ispag_whatsapp_bridge_url', array( 'sanitize_callback' => 'esc_url_raw' ) );
@@ -88,7 +87,7 @@ add_action( 'admin_init', function () {
 } );
 
 function ispag_whatsapp_settings_url( $args = array() ) {
-	return add_query_arg( array_merge( array( 'page' => 'ispag-whatsapp-settings' ), $args ), admin_url( 'options-general.php' ) );
+	return add_query_arg( array_merge( array( 'page' => 'ispag-whatsapp-settings' ), $args ), admin_url( 'admin.php' ) );
 }
 
 // Ajout d'une ligne : le relais démarre une session et fournit un QR code à scanner

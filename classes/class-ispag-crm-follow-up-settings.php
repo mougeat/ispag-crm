@@ -15,7 +15,7 @@ class ISPAG_Crm_Follow_Up_Settings {
     const DEFAULTS = ['A' => 90, 'B' => 180, 'C' => 240, 'none' => 180, 'entity' => 90];
 
     public function __construct() {
-        add_action('admin_menu', [$this, 'menu']);
+        add_action('admin_menu', [$this, 'menu'], 30);   // après le menu « ISPAG Settings » du plugin Project Manager
         add_action('admin_post_ispag_crm_follow_up_save', [$this, 'save']);
     }
 
@@ -96,7 +96,13 @@ class ISPAG_Crm_Follow_Up_Settings {
     }
 
     public function menu() {
-        add_options_page(__('CRM follow-up', 'ispag-crm'), __('CRM follow-up', 'ispag-crm'), 'manage_options', 'ispag-crm-follow-up', [$this, 'page']);
+        $title = __('CRM follow-up', 'ispag-crm');
+        // Rangé avec « Calendar sync » dans le menu « ISPAG Settings » ; à défaut (Project Manager inactif) : Réglages → Relances CRM
+        if (!empty($GLOBALS['admin_page_hooks']['ispag-settings'])) {
+            add_submenu_page('ispag-settings', $title, $title, 'manage_options', 'ispag-crm-follow-up', [$this, 'page']);
+        } else {
+            add_options_page($title, $title, 'manage_options', 'ispag-crm-follow-up', [$this, 'page']);
+        }
     }
 
     public function page() {
@@ -232,7 +238,7 @@ class ISPAG_Crm_Follow_Up_Settings {
         ], false);
         update_option(self::OPT_ROLES, $this->collect_overrides('roles', $this->role_options()), false);
         update_option(self::OPT_COMPANY, $this->collect_overrides('company', $this->company_type_options()), false);
-        wp_safe_redirect(admin_url('options-general.php?page=ispag-crm-follow-up&saved=1'));
+        wp_safe_redirect(add_query_arg('saved', 1, wp_get_referer() ?: admin_url('admin.php?page=ispag-crm-follow-up')));
         exit;
     }
 }
