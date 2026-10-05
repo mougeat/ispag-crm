@@ -10,16 +10,27 @@ defined('ABSPATH') || exit;
  */
 class ISPAG_Baikal_Sync
 {
-    private $baikal_ip = 'contacts.barthels.duckdns.org';
-    private $addressbook_token = 'ispag';
-    private $baikal_pass = 'IsPaG2026SecureSync';
     private $log_file = 'ispag_baikal_sync';
 
-    /** Seul département synchronisé avec Baïkal. */
-    private const DEPARTMENT_KEY = 'vaulruz_ispag';
-
-    /** Carnets Baïkal cibles pour ce département. */
-    private const TARGETS = ['cyril', 'claudio'];
+    // Réglages (serveur, carnet, utilisateurs cibles, département, mot de passe) : ISPAG Settings → Calendar sync
+    // (plugin Project Manager, classe ISPAG_Baikal_Settings). Le mot de passe n'est plus dans le code.
+    private function cfg(): array {
+        if (class_exists('ISPAG_Baikal_Settings')) {
+            return ISPAG_Baikal_Settings::contacts();
+        }
+        return ['enabled' => 0, 'host' => '', 'addressbook' => 'ispag', 'users' => [], 'department' => 'vaulruz_ispag', 'interval' => 'hourly', 'password' => ''];
+    }
+    private function pass(): string { return (string) $this->cfg()['password']; }
+    private function targets(): array { return (array) $this->cfg()['users']; }
+    private function dept(): string { return (string) $this->cfg()['department']; }
+    private function is_enabled(): bool {
+        $c = $this->cfg();
+        return !empty($c['enabled']) && $c['host'] !== '' && $c['password'] !== '' && $c['users'];
+    }
+    private function ab_url(string $user, string $file = ''): string {
+        $c = $this->cfg();
+        return apply_filters('ispag_baikal_scheme', 'https') . '://' . $c['host'] . '/dav.php/addressbooks/' . rawurlencode($user) . '/' . rawurlencode($c['addressbook']) . '/' . $file;
+    }
 
     /** Meta locale trackant le dernier changement "pertinent" du contact. */
     private const META_LOCAL_MODIFIED = '_ispag_baikal_local_modified';
@@ -44,22 +55,38 @@ class ISPAG_Baikal_Sync
         add_action('updated_user_meta', [$this, 'trigger_sync_on_meta_update'], 10, 4);
         add_action('added_user_meta', [$this, 'trigger_sync_on_meta_update'], 10, 4);
 
-        // Synchro entrante (Baïkal -> CRM), planifiée
-        if (!wp_next_scheduled('ispag_sync_from_baikal_cron')) {
-            wp_schedule_event(time(), 'hourly', 'ispag_sync_from_baikal_cron');
-            $this->logger->log_user_action($this->log_file, 'cron_scheduled', ['event' => 'ispag_sync_from_baikal_cron'], get_current_user_id());
-        }
+        // Synchro entrante (Baïkal -> CRM), planifiée (activation et fréquence : ISPAG Settings → Calendar sync)
         add_action('ispag_sync_from_baikal_cron', [$this, 'sync_all_from_baikal']);
+        add_action('init', [$this, 'ensure_scheduled'], 20);
 
         // Suppression : on nettoie les deux carnets sans condition de département
         add_action('delete_user', function ($user_id) {
-            foreach (self::TARGETS as $baikal_user) {
+            if (!$this->is_enabled()) return;
+            foreach ($this->targets() as $baikal_user) {
                 $this->delete_from_baikal($user_id, $baikal_user);
             }
         });
 
         // Point d'entrée AJAX pour le traitement par lots
         add_action('wp_ajax_ispag_sync_batch', [$this, 'ajax_sync_batch']);
+    }
+
+    /** Planifie / replanifie / supprime le cron entrant selon les réglages. */
+    public function ensure_scheduled()
+    {
+        $hook    = 'ispag_sync_from_baikal_cron';
+        $next    = wp_next_scheduled($hook);
+        $current = $next ? wp_get_schedule($hook) : false;
+        if (!$this->is_enabled()) {
+            if ($next) wp_clear_scheduled_hook($hook);
+            return;
+        }
+        $interval = (string) $this->cfg()['interval'];
+        $interval = in_array($interval, ['hourly', 'twicedaily', 'daily'], true) ? $interval : 'hourly';
+        if ($current !== $interval) {
+            if ($next) wp_clear_scheduled_hook($hook);
+            wp_schedule_event(time() + 120, $interval, $hook);
+        }
     }
 
     /**
@@ -98,7 +125,7 @@ class ISPAG_Baikal_Sync
 
     private function is_contact_in_sync_scope($contact_id)
     {
-        return $this->get_contact_department($contact_id) === self::DEPARTMENT_KEY;
+        return $this->get_contact_department($contact_id) === $this->dept();
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -148,6 +175,10 @@ class ISPAG_Baikal_Sync
             return;
         }
 
+        if (!$this->is_enabled()) {
+            return;
+        }
+
         if (!in_array($meta_key,$keys_to_watch, true)) {
             return;
         }
@@ -163,7 +194,10 @@ class ISPAG_Baikal_Sync
 
     public function sync_contact_to_baikal($contact_id)
     {
-        if (!$this->is_contact_in_sync_scope($contact_id)) {$this->logger->log($this->log_file, "INFO : Contact {$contact_id} hors périmètre (" . self::DEPARTMENT_KEY . ") — synchro ignorée.", get_current_user_id());
+        if (!$this->is_enabled()) {
+            return;
+        }
+        if (!$this->is_contact_in_sync_scope($contact_id)) {$this->logger->log($this->log_file, "INFO : Contact {$contact_id} hors périmètre (" . $this->dept() . ") — synchro ignorée.", get_current_user_id());
             return;
         }
 
@@ -175,7 +209,7 @@ class ISPAG_Baikal_Sync
 
         $local_vcard =$this->generate_vcard($contact);$local_ts = $this->get_local_modified($contact_id);
 
-        foreach (self::TARGETS as $baikal_user) {$this->resolve_and_push($contact_id,$baikal_user, $local_vcard,$local_ts);
+        foreach ($this->targets() as $baikal_user) {$this->resolve_and_push($contact_id,$baikal_user, $local_vcard,$local_ts);
         }
     }
 
@@ -183,7 +217,7 @@ class ISPAG_Baikal_Sync
     {
         $remote_vcard =$this->fetch_remote_vcard($contact_id,$baikal_user);
 
-        if ($remote_vcard === null) {$this->push_to_baikal($contact_id,$baikal_user, $this->baikal_pass,$local_vcard);
+        if ($remote_vcard === null) {$this->push_to_baikal($contact_id,$baikal_user, $this->pass(),$local_vcard);
             return;
         }
 
@@ -204,15 +238,15 @@ class ISPAG_Baikal_Sync
             return;
         }
 
-        $this->push_to_baikal($contact_id,$baikal_user, $this->baikal_pass,$local_vcard);
+        $this->push_to_baikal($contact_id,$baikal_user, $this->pass(),$local_vcard);
     }
 
     private function fetch_remote_vcard($contact_id,$baikal_user)
     {
-        $url = "https://{$this->baikal_ip}/dav.php/addressbooks/{$baikal_user}/{$this->addressbook_token}/contact-{$contact_id}.vcf";
+        $url = $this->ab_url($baikal_user, "contact-{$contact_id}.vcf");
 
         $response = wp_remote_get($url, [
-            'headers' => ['Authorization' => 'Basic ' . base64_encode("{$baikal_user}:{$this->baikal_pass}")],
+            'headers' => ['Authorization' => 'Basic ' . base64_encode("{$baikal_user}:{$this->pass()}")],
             'timeout' => 15,
         ]);
 
@@ -275,7 +309,7 @@ class ISPAG_Baikal_Sync
 
     private function push_to_baikal($id,$user, $pass,$vcard)
     {
-        $url = "https://{$this->baikal_ip}/dav.php/addressbooks/{$user}/{$this->addressbook_token}/contact-{$id}.vcf";
+        $url = $this->ab_url($user, "contact-{$id}.vcf");
 
         $response = wp_remote_request($url, [
             'method' => 'PUT',
@@ -322,7 +356,7 @@ class ISPAG_Baikal_Sync
         $contact_ids = $this->wpdb->get_col($this->wpdb->prepare(
             "SELECT contact_id FROM {$this->table_owners}
              WHERE department_key = %s AND status = 'active'",
-            self::DEPARTMENT_KEY
+            $this->dept()
         ));
 
         $total = count($contact_ids);
@@ -412,7 +446,7 @@ class ISPAG_Baikal_Sync
         }
 
         if (total === 0) {
-            statsEl.innerHTML = '⚠️ No active contact found for " . self::DEPARTMENT_KEY . ".';
+            statsEl.innerHTML = '⚠️ No active contact found for " . $this->dept() . ".';
         } else {
             processBatch();
         }
@@ -459,17 +493,25 @@ class ISPAG_Baikal_Sync
 
     public function sync_all_from_baikal()
     {
+        if (!$this->is_enabled()) {
+            return;
+        }
         $this->logger->log_user_action($this->log_file, 'cron_sync_from_baikal_start', [], get_current_user_id());
 
-        foreach (self::TARGETS as $user) {$this->pull_addressbook_from_baikal($user,$this->baikal_pass);
+        $sum = ['time' => time(), 'found' => 0, 'unchanged' => 0, 'processed' => 0, 'errors' => 0];
+        foreach ($this->targets() as $user) {
+            $r = $this->pull_addressbook_from_baikal($user, $this->pass());
+            if ($r === null) { $sum['errors']++; continue; }
+            $sum['found'] += $r['found']; $sum['unchanged'] += $r['skipped']; $sum['processed'] += $r['updated'];
         }
+        update_option('ispag_baikal_contacts_last_run', $sum, false); // affiché dans ISPAG Settings → Calendar sync
 
         $this->logger->log_user_action($this->log_file, 'cron_sync_from_baikal_end', [], get_current_user_id());
     }
 
     private function pull_addressbook_from_baikal($user,$pass)
     {
-        $url = "https://{$this->baikal_ip}/dav.php/addressbooks/{$user}/{$this->addressbook_token}/";
+        $url = $this->ab_url($user);
 
         $response = wp_remote_request($url, [
             'method' => 'PROPFIND',
@@ -486,20 +528,20 @@ class ISPAG_Baikal_Sync
             $this->logger->log_error($this->log_file, "Error PROPFIND pour l'utilisateur [{$user}]", [
                 'error' => $response->get_error_message()
             ], get_current_user_id());
-            return;
+            return null;
         }
 
         if (wp_remote_retrieve_response_code($response) !== 207) {
             $this->logger->log_error($this->log_file, "Réponse PROPFIND inattendue pour [{$user}]", [
                 'response_code' => wp_remote_retrieve_response_code($response)
             ], get_current_user_id());
-            return;
+            return null;
         }
 
         $xml = simplexml_load_string(wp_remote_retrieve_body($response));
         if ($xml === false) {
             $this->logger->log_error($this->log_file, "Error parsing XML PROPFIND pour [{$user}]", [], get_current_user_id());
-            return;
+            return null;
         }
 
         $xml->registerXPathNamespace('d', 'DAV:');
@@ -528,11 +570,12 @@ class ISPAG_Baikal_Sync
         }
 
         $this->logger->log($this->log_file, "[{$user}] BILAN PULL : {$found} vcf | {$skipped} inchangés | {$updated} traités", get_current_user_id());
+        return ['found' => $found, 'skipped' => $skipped, 'updated' => $updated];
     }
 
     private function handle_remote_change($contact_id, $user,$pass, $href,$etag)
     {
-        $url = "https://{$this->baikal_ip}{$href}";
+        $url = apply_filters('ispag_baikal_scheme', 'https') . '://' . $this->cfg()['host'] . $href;
 
         $response = wp_remote_get($url, [
             'headers' => ['Authorization' => 'Basic ' . base64_encode("$user:$pass")],
@@ -617,7 +660,7 @@ class ISPAG_Baikal_Sync
 
         $vcard = $this->generate_vcard($contact);
 
-        foreach (self::TARGETS as $target_user) {
+        foreach ($this->targets() as $target_user) {
             if ($target_user ===$from_user) continue;
             $this->resolve_and_push($contact_id, $target_user,$vcard, $this->get_local_modified($contact_id));
         }
@@ -629,11 +672,11 @@ class ISPAG_Baikal_Sync
 
     public function delete_from_baikal($id,$user)
     {
-        $url = "https://{$this->baikal_ip}/dav.php/addressbooks/{$user}/{$this->addressbook_token}/contact-{$id}.vcf";
+        $url = $this->ab_url($user, "contact-{$id}.vcf");
 
         $response = wp_remote_request($url, [
             'method' => 'DELETE',
-            'headers' => ['Authorization' => 'Basic ' . base64_encode("$user:{$this->baikal_pass}")],
+            'headers' => ['Authorization' => 'Basic ' . base64_encode("$user:{$this->pass()}")],
             'timeout' => 10,
         ]);
 
