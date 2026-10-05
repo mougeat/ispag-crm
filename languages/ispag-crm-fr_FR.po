@@ -987,15 +987,15 @@ msgstr "Accroche d'ouverture"
 msgid "Meeting prep — %s"
 msgstr "Préparation de réunion — %s"
 
-#: classes/class-ispag-crm-contacts-repository.php:1907
+#: classes/class-ispag-crm-contacts-repository.php:1897
 msgid "undefined"
 msgstr "non défini"
 
-#: classes/class-ispag-crm-contacts-repository.php:1919
+#: classes/class-ispag-crm-contacts-repository.php:1909
 msgid "👤 New contact assigned"
 msgstr "👤 Nouveau contact assigné"
 
-#: classes/class-ispag-crm-contacts-repository.php:1922
+#: classes/class-ispag-crm-contacts-repository.php:1912
 msgid "You have been assigned as the department owner for contact %1$s (%2$s)."
 msgstr "Vous avez été désigné responsable de service pour le contact %1$s (%2$s)."
 
@@ -1647,287 +1647,287 @@ msgstr "Participants"
 msgid "Schedule"
 msgstr "Planning"
 
-#: classes/class-ispag-notifications-manager.php:1050
+#: classes/class-ispag-notifications-manager.php:1059
 msgid "Hello %s,"
 msgstr "Bonjour %s,"
 
-#: classes/class-ispag-notifications-manager.php:1054
+#: classes/class-ispag-notifications-manager.php:1063
 msgid "Open in ISPAG"
 msgstr "Ouvrir dans ISPAG"
 
-#: classes/class-ispag-notifications-manager.php:1177
+#: classes/class-ispag-notifications-manager.php:1186
 msgid "Notification not found."
 msgstr "Notification introuvable."
 
-#: classes/class-ispag-notifications-manager.php:119
+#: classes/class-ispag-notifications-manager.php:120
 msgid "Data import / export"
 msgstr "Import / export de données"
 
-#: classes/class-ispag-notifications-manager.php:1196
+#: classes/class-ispag-notifications-manager.php:1205
 msgid "Notification marked as read."
 msgstr "Notification marquée comme lue."
 
-#: classes/class-ispag-notifications-manager.php:1197
+#: classes/class-ispag-notifications-manager.php:1206
 msgid "Notification marked as unread."
 msgstr "Notification marquée comme non lue."
 
-#: classes/class-ispag-notifications-manager.php:121
+#: classes/class-ispag-notifications-manager.php:122
 msgid "Form submission"
 msgstr "Envoi de formulaire"
 
-#: classes/class-ispag-notifications-manager.php:122
+#: classes/class-ispag-notifications-manager.php:123
 msgid "Invoice"
 msgstr "Facture"
 
-#: classes/class-ispag-notifications-manager.php:1239
+#: classes/class-ispag-notifications-manager.php:1248
 msgid "Error while changing the status."
 msgstr "Erreur lors du changement de statut."
 
-#: classes/class-ispag-notifications-manager.php:124
+#: classes/class-ispag-notifications-manager.php:125
 msgid "Automations and workflow"
 msgstr "Automatisations et workflow"
 
-#: classes/class-ispag-notifications-manager.php:1243
+#: classes/class-ispag-notifications-manager.php:1252
 msgid "Notification moved to the Trash."
 msgstr "Notification déplacée dans la corbeille."
 
-#: classes/class-ispag-notifications-manager.php:1244
+#: classes/class-ispag-notifications-manager.php:1253
 msgid "Notification restored."
 msgstr "Notification restaurée."
 
-#: classes/class-ispag-notifications-manager.php:1279
+#: classes/class-ispag-notifications-manager.php:1288
 msgid "ISPAG notification preferences"
 msgstr "Préférences de notification ISPAG"
 
-#: classes/class-ispag-notifications-manager.php:1339
+#: classes/class-ispag-notifications-manager.php:1348
 msgid "Weekend notifications"
 msgstr "Notifications du week-end"
 
-#: classes/class-ispag-notifications-manager.php:1348
+#: classes/class-ispag-notifications-manager.php:1357
 msgid "If left unchecked, notifications will be delayed until Monday."
 msgstr "Si la case est décochée, les notifications seront différées jusqu'au lundi."
 
-#: classes/class-ispag-notifications-manager.php:1363
+#: classes/class-ispag-notifications-manager.php:1372
 msgid "From :"
 msgstr "De :"
 
-#: classes/class-ispag-notifications-manager.php:1369
+#: classes/class-ispag-notifications-manager.php:1378
 msgid "To :"
 msgstr "À :"
 
-#: classes/class-ispag-notifications-manager.php:141
+#: classes/class-ispag-notifications-manager.php:142
 msgid "Contact assigned to you"
 msgstr "Contact qui vous est assigné"
 
-#: classes/class-ispag-notifications-manager.php:142
+#: classes/class-ispag-notifications-manager.php:143
 msgid "Notification sent when a contact is assigned to you."
 msgstr "Notification envoyée lorsqu'un contact vous est assigné."
 
-#: classes/class-ispag-notifications-manager.php:149
+#: classes/class-ispag-notifications-manager.php:150
 msgid "Contact lead status"
 msgstr "Statut de lead du contact"
 
-#: classes/class-ispag-notifications-manager.php:150
+#: classes/class-ispag-notifications-manager.php:151
 msgid "Notification sent when the lead status of a contact changes."
 msgstr "Notification envoyée lorsque le statut de lead d'un contact change."
 
-#: classes/class-ispag-notifications-manager.php:160
+#: classes/class-ispag-notifications-manager.php:161
 msgid "Company assigned to you"
 msgstr "Entreprise qui vous est assignée"
 
-#: classes/class-ispag-notifications-manager.php:161
+#: classes/class-ispag-notifications-manager.php:162
 msgid "Notification sent when a company is assigned to you."
 msgstr "Notification envoyée lorsqu'une entreprise vous est assignée."
 
-#: classes/class-ispag-notifications-manager.php:168
+#: classes/class-ispag-notifications-manager.php:169
 msgid "Company monitoring"
 msgstr "Suivi d'entreprise"
 
-#: classes/class-ispag-notifications-manager.php:169
+#: classes/class-ispag-notifications-manager.php:170
 msgid "Notification sent for company follow-ups."
 msgstr "Notification envoyée pour les suivis d'entreprise."
 
-#: classes/class-ispag-notifications-manager.php:179
+#: classes/class-ispag-notifications-manager.php:180
 msgid "Project status tracking"
 msgstr "Suivi du statut des projets"
 
-#: classes/class-ispag-notifications-manager.php:180
+#: classes/class-ispag-notifications-manager.php:181
 msgid "Notification sent when the status of a project changes."
 msgstr "Notification envoyée lorsque le statut d'un projet change."
 
-#: classes/class-ispag-notifications-manager.php:187
+#: classes/class-ispag-notifications-manager.php:188
 msgid "Project tracking / Invoicing"
 msgstr "Suivi de projet / facturation"
 
-#: classes/class-ispag-notifications-manager.php:188
+#: classes/class-ispag-notifications-manager.php:189
 msgid "Notification sent for invoicing projects."
 msgstr "Notification envoyée pour la facturation des projets."
 
-#: classes/class-ispag-notifications-manager.php:195
+#: classes/class-ispag-notifications-manager.php:196
 msgid "Item / Deal Management"
 msgstr "Gestion des articles / transactions"
 
-#: classes/class-ispag-notifications-manager.php:196
+#: classes/class-ispag-notifications-manager.php:197
 msgid "Notification sent for item management actions (drawing needs validation, drawing validated, etc.)."
 msgstr "Notification envoyée pour les actions de gestion des articles (plan à valider, plan validé, etc.)."
 
-#: classes/class-ispag-notifications-manager.php:203
+#: classes/class-ispag-notifications-manager.php:204
 msgid "Item Modifications"
 msgstr "Modifications d'articles"
 
-#: classes/class-ispag-notifications-manager.php:204
+#: classes/class-ispag-notifications-manager.php:205
 msgid "Notification sent for item management actions (product modifications, etc.)."
 msgstr "Notification envoyée pour les actions de gestion des articles (modifications de produit, etc.)."
 
-#: classes/class-ispag-notifications-manager.php:211
+#: classes/class-ispag-notifications-manager.php:212
 msgid "Drawing to approve"
 msgstr "Plan à valider"
 
-#: classes/class-ispag-notifications-manager.php:212
+#: classes/class-ispag-notifications-manager.php:213
 msgid "Notification sent to the people concerned by a project when a drawing is attached and waits for their approval."
 msgstr "Notification envoyée aux personnes concernées par un projet lorsqu'un plan est joint et attend leur validation."
 
-#: classes/class-ispag-notifications-manager.php:219
+#: classes/class-ispag-notifications-manager.php:220
 msgid "Item modified by someone else"
 msgstr "Article modifié par une autre personne"
 
-#: classes/class-ispag-notifications-manager.php:220
+#: classes/class-ispag-notifications-manager.php:221
 msgid "Notification sent to the project manager when another person creates, modifies or deletes an item of the project."
 msgstr "Notification envoyée au chef de projet lorsqu'une autre personne crée, modifie ou supprime un article du projet."
 
-#: classes/class-ispag-notifications-manager.php:227
+#: classes/class-ispag-notifications-manager.php:228
 msgid "Site information completed"
 msgstr "Informations de chantier complétées"
 
-#: classes/class-ispag-notifications-manager.php:228
+#: classes/class-ispag-notifications-manager.php:229
 msgid "Notification sent to the project manager when a visitor completes the site information of the welding sheet from the QR code."
 msgstr "Notification envoyée au chef de projet lorsqu'un visiteur complète les informations de chantier de la fiche de soudure depuis le QR code."
 
-#: classes/class-ispag-notifications-manager.php:235
+#: classes/class-ispag-notifications-manager.php:236
 msgid "Delivery note signed"
 msgstr "Bulletin de livraison signé"
 
-#: classes/class-ispag-notifications-manager.php:236
+#: classes/class-ispag-notifications-manager.php:237
 msgid "Notification sent when the recipient signs a delivery note with the QR code (items are marked as delivered)."
 msgstr "Notification envoyée lorsque le réceptionnaire signe un bulletin de livraison avec le QR code (les articles sont marqués comme livrés)."
 
-#: classes/class-ispag-notifications-manager.php:243
+#: classes/class-ispag-notifications-manager.php:244
 msgid "Project / Deal Management"
 msgstr "Gestion des projets / transactions"
 
-#: classes/class-ispag-notifications-manager.php:244
+#: classes/class-ispag-notifications-manager.php:245
 msgid "Notification sent for project or deal management actions. (new project, etc.)"
 msgstr "Notification envoyée pour les actions de gestion de projet ou de transaction (nouveau projet, etc.)."
 
-#: classes/class-ispag-notifications-manager.php:254
+#: classes/class-ispag-notifications-manager.php:255
 msgid "Order confirmed by the supplier"
 msgstr "Commande confirmée par le fournisseur"
 
-#: classes/class-ispag-notifications-manager.php:255
+#: classes/class-ispag-notifications-manager.php:256
 msgid "Notification sent to the person in charge of a purchase order when the supplier confirms it online (QR code of the purchase order)."
 msgstr "Notification envoyée à la personne responsable d'une commande lorsque le fournisseur la confirme en ligne (QR code du bon de commande)."
 
-#: classes/class-ispag-notifications-manager.php:262
+#: classes/class-ispag-notifications-manager.php:271
 msgid "Purchase tracking"
 msgstr "Suivi des achats"
 
-#: classes/class-ispag-notifications-manager.php:263
+#: classes/class-ispag-notifications-manager.php:272
 msgid "Notification sent for purchase follow-ups."
 msgstr "Notification envoyée pour les suivis d'achat."
 
-#: classes/class-ispag-notifications-manager.php:270
+#: classes/class-ispag-notifications-manager.php:279
 msgid "Purchase order created"
 msgstr "Commande d'achat créée"
 
-#: classes/class-ispag-notifications-manager.php:271
+#: classes/class-ispag-notifications-manager.php:280
 msgid "Notification sent when a new purchase order is created."
 msgstr "Notification envoyée lorsqu'une nouvelle commande d'achat est créée."
 
-#: classes/class-ispag-notifications-manager.php:281
+#: classes/class-ispag-notifications-manager.php:290
 msgid "Data import/export report"
 msgstr "Rapport d'import / export de données"
 
-#: classes/class-ispag-notifications-manager.php:282
+#: classes/class-ispag-notifications-manager.php:291
 msgid "Notification sent when a data import or export is completed."
 msgstr "Notification envoyée lorsqu'un import ou export de données est terminé."
 
-#: classes/class-ispag-notifications-manager.php:289
+#: classes/class-ispag-notifications-manager.php:298
 msgid "Document upload"
 msgstr "Téléversement de document"
 
-#: classes/class-ispag-notifications-manager.php:290
+#: classes/class-ispag-notifications-manager.php:299
 msgid "Notification sent when a document is uploaded."
 msgstr "Notification envoyée lorsqu'un document est téléversé."
 
-#: classes/class-ispag-notifications-manager.php:297
+#: classes/class-ispag-notifications-manager.php:306
 msgid "Document AI analysis"
 msgstr "Analyse IA de document"
 
-#: classes/class-ispag-notifications-manager.php:298
+#: classes/class-ispag-notifications-manager.php:307
 msgid "Notification sent when a document is analyzed by AI."
 msgstr "Notification envoyée lorsqu'un document est analysé par l'IA."
 
-#: classes/class-ispag-notifications-manager.php:305
+#: classes/class-ispag-notifications-manager.php:314
 msgid "Old projects and articles cleanup"
 msgstr "Nettoyage des anciens projets et articles"
 
-#: classes/class-ispag-notifications-manager.php:306
+#: classes/class-ispag-notifications-manager.php:315
 msgid "Notification sent when old projects or articles are cleaned up."
 msgstr "Notification envoyée lorsque d'anciens projets ou articles sont nettoyés."
 
-#: classes/class-ispag-notifications-manager.php:316
+#: classes/class-ispag-notifications-manager.php:325
 msgid "Task notification"
 msgstr "Notification de tâche"
 
-#: classes/class-ispag-notifications-manager.php:317
+#: classes/class-ispag-notifications-manager.php:326
 msgid "Notification sent for CRM task assignments or updates."
 msgstr "Notification envoyée pour les attributions ou mises à jour de tâches CRM."
 
-#: classes/class-ispag-notifications-manager.php:327
+#: classes/class-ispag-notifications-manager.php:336
 msgid "New form submission"
 msgstr "Nouvel envoi de formulaire"
 
-#: classes/class-ispag-notifications-manager.php:328
+#: classes/class-ispag-notifications-manager.php:337
 msgid "Notification sent when a new form is submitted."
 msgstr "Notification envoyée lorsqu'un nouveau formulaire est soumis."
 
-#: classes/class-ispag-notifications-manager.php:338
+#: classes/class-ispag-notifications-manager.php:347
 msgid "Billing"
 msgstr "Facturation"
 
-#: classes/class-ispag-notifications-manager.php:339
+#: classes/class-ispag-notifications-manager.php:348
 msgid "Notification sent for billing-related updates."
 msgstr "Notification envoyée pour les mises à jour liées à la facturation."
 
-#: classes/class-ispag-notifications-manager.php:349
+#: classes/class-ispag-notifications-manager.php:358
 msgid "Email Activity"
 msgstr "Activité e-mail"
 
-#: classes/class-ispag-notifications-manager.php:350
+#: classes/class-ispag-notifications-manager.php:359
 msgid "Notification sent for email-related activities."
 msgstr "Notification envoyée pour les activités liées aux e-mails."
 
-#: classes/class-ispag-notifications-manager.php:361
+#: classes/class-ispag-notifications-manager.php:370
 msgid "Automation and workflow alerts"
 msgstr "Alertes d'automatisation et de workflow"
 
-#: classes/class-ispag-notifications-manager.php:362
+#: classes/class-ispag-notifications-manager.php:371
 msgid "Notification sent for automation or workflow alerts."
 msgstr "Notification envoyée pour les alertes d'automatisation ou de workflow."
 
-#: classes/class-ispag-notifications-manager.php:381
+#: classes/class-ispag-notifications-manager.php:390
 msgid "CRM (Cloche / Sidebar)"
 msgstr "CRM (cloche / barre latérale)"
 
-#: classes/class-ispag-notifications-manager.php:382
+#: classes/class-ispag-notifications-manager.php:391
 msgid "Push (navigateur / mobile)"
 msgstr "Push (navigateur / mobile)"
 
-#: classes/class-ispag-notifications-manager.php:384
+#: classes/class-ispag-notifications-manager.php:393
 msgid "Telegram"
 msgstr "Telegram"
 
-#: classes/class-ispag-notifications-manager.php:385
+#: classes/class-ispag-notifications-manager.php:394
 msgid "Conceptual window"
 msgstr "Fenêtre contextuelle"
 

@@ -13,7 +13,7 @@ msgstr ""
 msgid "ISPAG settings"
 msgstr "Réglages ISPAG"
 
-#: classes/class-ispag-crm-contacts-repository.php:1703
+#: classes/class-ispag-crm-contacts-repository.php:1693
 msgid "Configuration ISPAG CRM"
 msgstr "Configuration ISPAG CRM"
 

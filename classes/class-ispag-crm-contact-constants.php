@@ -32,6 +32,22 @@ class ISPAG_Crm_Contact_Constants {
     const USER_DEPARTMENT           = 'ispag_user_department';
     const USER_BIRTHDAY             = 'billing_birthdate';
     const USER_AVATAR               = 'ispag_avatar_id';
+
+    /**
+     * Départements / succursales : clé => libellé. Source unique (profil utilisateur, synchro Baïkal…) ;
+     * extensible avec le filtre « ispag_crm_departments ».
+     */
+    public static function departments(): array {
+        return apply_filters('ispag_crm_departments', array(
+            'vaulruz_ispag' => 'Vaulruz - ISPAG',
+            'issa_isol'     => 'ISSA - Isolation',
+            'issa_co'       => 'ISSA - Coupe feu',
+            'lambda_isol'   => 'Lambda - Isolation',
+            'lambda_plaf'   => 'Lambda - Plafond',
+            'werner_isol'   => 'Werner - Isolation',
+            'werner_cp'     => 'Werner - Coupe feu',
+        ));
+    }
     
 }
 endif;
