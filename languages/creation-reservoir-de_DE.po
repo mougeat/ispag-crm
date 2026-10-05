@@ -29,6 +29,10 @@ msgstr "❌ CSV-Import fehlgeschlagen"
 msgid "Your CSV import has failed.<br>\n                    - Processed rows: %1$d<br>\n                    - Insertions: %2$d<br>\n                    - Updates: %3$d<br>\n                    - File: %4$s<br>\n                    - Task ID: %5$s<br>\n                    - Error: %6$s"
 msgstr "Ihr CSV-Import ist fehlgeschlagen.<br>\n                    - Verarbeitete Zeilen: %1$d<br>\n                    - Einfügungen: %2$d<br>\n                    - Aktualisierungen: %3$d<br>\n                    - Datei: %4$s<br>\n                    - Aufgaben-ID: %5$s<br>\n                    - Fehler: %6$s"
 
+#: classes/class-ispag-crm-project-associations.php:27
+msgid "You are not allowed"
+msgstr "Sie sind nicht berechtigt"
+
 #: classes/class-ispag-note-renderer.php:29
 msgid "Invalid request."
 msgstr "Ungültige Anfrage."

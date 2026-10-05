@@ -81,6 +81,16 @@ class ISPAG_Crm_Contacts_Repository {
             true 
         );
 
+        // Ajout / retrait de l'entreprise et des contacts d'un projet (cartes de la page projet)
+        if ( current_user_can( 'manage_order' ) ) {
+            $assoc_js = dirname( __DIR__ ) . '/assets/js/ispag-project-associations.js';
+            wp_enqueue_script( 'ispag-project-associations', $plugin_url . 'assets/js/ispag-project-associations.js', array( 'jquery' ), (string) @filemtime( $assoc_js ), true );
+            wp_localize_script( 'ispag-project-associations', 'ispagProjAssoc', array(
+                'ajax_url' => admin_url( 'admin-ajax.php' ),
+                'nonce'    => wp_create_nonce( 'ispag_crm_nonce' ),
+            ) );
+        }
+
         
         
         // // Passage de la variable AJAX pour que le JS sache où envoyer les requêtes
@@ -112,7 +122,7 @@ class ISPAG_Crm_Contacts_Repository {
 
             $html_content = $this->render_contact_card($hubspot_deal_id);
 
-            if (!empty($html_content) && strpos($html_content, 'ispag-no-contact') === false) {
+            if (!empty($html_content) && (strpos($html_content, 'ispag-no-contact') === false || strpos($html_content, 'ispag-proj-assoc-add') !== false)) {
                 wp_send_json_success(array(
                     'html' => $html_content
                 ));
@@ -138,7 +148,8 @@ class ISPAG_Crm_Contacts_Repository {
         // Récupération des données contacts depuis la BDD
         $datas = $this->get_contacts_data_from_db($hubspot_deal_id);
 
-        if (empty($datas['contacts'])) {
+        // Sans contact : qui peut modifier le projet garde la carte (avec « + Ajouter »)
+        if (empty($datas['contacts']) && !current_user_can('manage_order')) {
             return '<p class="ispag-no-contact">No associated contact.</p>';
         }
 
@@ -180,7 +191,8 @@ class ISPAG_Crm_Contacts_Repository {
 
         return array(
             'contacts' => $contacts,
-            'associated_ids' => $associated_contacts_list_full
+            'associated_ids' => $associated_contacts_list_full,
+            'deal_id' => absint($hubspot_deal_id),
         );
     }
 

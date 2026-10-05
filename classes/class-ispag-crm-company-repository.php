@@ -97,7 +97,7 @@ class ISPAG_Crm_Company_Repository {
         // On récupère directement le HTML généré par votre méthode de rendu
         $html_content = $this->render_company_card($hubspot_deal_id);
 
-        if (!empty($html_content) && strpos($html_content, 'ispag-no-company') === false) {
+        if (!empty($html_content) && (strpos($html_content, 'ispag-no-company') === false || strpos($html_content, 'ispag-proj-assoc-add') !== false)) {
             wp_send_json_success(array(
                 'html' => $html_content
             ));
@@ -114,7 +114,8 @@ class ISPAG_Crm_Company_Repository {
         // On utilise notre méthode mutualisée
         $datas = $this->get_companies_data_from_db($hubspot_deal_id);
 
-        if (empty($datas['companies'])) {
+        // Sans entreprise : qui peut modifier le projet garde la carte (avec « + Ajouter »)
+        if (empty($datas['companies']) && !current_user_can('manage_order')) {
             return '<p class="ispag-no-company">No associated company.</p>';
         }
 
@@ -155,7 +156,8 @@ class ISPAG_Crm_Company_Repository {
 
         return array(
             'companies' => $companies,
-            'associated_ids' => $associated_companies_list_full
+            'associated_ids' => $associated_companies_list_full,
+            'deal_id' => absint($hubspot_deal_id),
         );
     }
 

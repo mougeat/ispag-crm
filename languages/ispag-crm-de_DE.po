@@ -851,87 +851,87 @@ msgstr "Speichern"
 msgid "Association successfully updated."
 msgstr "Zuordnung erfolgreich aktualisiert."
 
-#: classes/class-ispag-crm-company-repository.php:1000
+#: classes/class-ispag-crm-company-repository.php:1002
 msgid "Unknown user"
 msgstr "Unbekannter Benutzer"
 
-#: classes/class-ispag-crm-company-repository.php:1003
+#: classes/class-ispag-crm-company-repository.php:1005
 msgid "Not assigned"
 msgstr "Nicht zugewiesen"
 
-#: classes/class-ispag-crm-company-repository.php:1010
+#: classes/class-ispag-crm-company-repository.php:1012
 msgid "Not defined"
 msgstr "Nicht definiert"
 
-#: classes/class-ispag-crm-company-repository.php:1026
+#: classes/class-ispag-crm-company-repository.php:1028
 msgid "No data to export"
 msgstr "Keine Daten zum Exportieren"
 
-#: classes/class-ispag-crm-company-repository.php:1054
+#: classes/class-ispag-crm-company-repository.php:1056
 msgid "Project"
 msgstr "Projekt"
 
-#: classes/class-ispag-crm-company-repository.php:1055
+#: classes/class-ispag-crm-company-repository.php:1057
 msgid "Offer number"
 msgstr "Offertnummer"
 
-#: classes/class-ispag-crm-company-repository.php:1057
+#: classes/class-ispag-crm-company-repository.php:1059
 msgid "Contact"
 msgstr "Kontakt"
 
-#: classes/class-ispag-crm-company-repository.php:1058
+#: classes/class-ispag-crm-company-repository.php:1060
 msgid "Amount (CHF)"
 msgstr "Betrag (CHF)"
 
-#: classes/class-ispag-crm-company-repository.php:1059
+#: classes/class-ispag-crm-company-repository.php:1061
 msgid "Stage"
 msgstr "Phase"
 
-#: classes/class-ispag-crm-company-repository.php:1060
+#: classes/class-ispag-crm-company-repository.php:1062
 msgid "Create  date"
 msgstr "Erstellungsdatum"
 
-#: classes/class-ispag-crm-company-repository.php:1061
+#: classes/class-ispag-crm-company-repository.php:1063
 msgid "Close date"
 msgstr "Abschlussdatum"
 
-#: classes/class-ispag-crm-company-repository.php:630
+#: classes/class-ispag-crm-company-repository.php:632
 msgid "Access denied."
 msgstr "Zugriff verweigert."
 
-#: classes/class-ispag-crm-company-repository.php:636
+#: classes/class-ispag-crm-company-repository.php:638
 msgid "Missing company ID."
 msgstr "Unternehmens-ID fehlt."
 
-#: classes/class-ispag-crm-company-repository.php:645
+#: classes/class-ispag-crm-company-repository.php:647
 msgid "Company not found."
 msgstr "Unternehmen nicht gefunden."
 
-#: classes/class-ispag-crm-company-repository.php:709
+#: classes/class-ispag-crm-company-repository.php:711
 msgid "AI Company Summary"
 msgstr "KI-Zusammenfassung des Unternehmens"
 
-#: classes/class-ispag-crm-company-repository.php:719
+#: classes/class-ispag-crm-company-repository.php:721
 msgid "AI Recommended Actions"
 msgstr "Von der KI empfohlene Aktionen"
 
-#: classes/class-ispag-crm-company-repository.php:751
+#: classes/class-ispag-crm-company-repository.php:753
 msgid "Missing ID or field name."
 msgstr "ID oder Feldname fehlt."
 
-#: classes/class-ispag-crm-company-repository.php:811
+#: classes/class-ispag-crm-company-repository.php:813
 msgid "🏢 New company assigned"
 msgstr "🏢 Neues Unternehmen zugewiesen"
 
-#: classes/class-ispag-crm-company-repository.php:814
+#: classes/class-ispag-crm-company-repository.php:816
 msgid "You have been assigned as the department owner for the company %1$s (Department: %2$s)."
 msgstr "Sie wurden als Abteilungsverantwortlicher für das Unternehmen %1$s bestimmt (Abteilung: %2$s)."
 
-#: classes/class-ispag-crm-company-repository.php:930
+#: classes/class-ispag-crm-company-repository.php:932
 msgid "You are not allowed to edit companies."
 msgstr "Sie sind nicht berechtigt, Unternehmen zu bearbeiten."
 
-#: classes/class-ispag-crm-company-repository.php:961
+#: classes/class-ispag-crm-company-repository.php:963
 msgid "Database update failed or no changes made."
 msgstr "Die Datenbankaktualisierung ist fehlgeschlagen oder es wurden keine Änderungen vorgenommen."
 
@@ -951,67 +951,67 @@ msgstr "Anmeldeformular demnächst verfügbar..."
 msgid "Link Selected Contacts"
 msgstr "Ausgewählte Kontakte verknüpfen"
 
-#: classes/class-ispag-crm-contacts-repository.php:1494
+#: classes/class-ispag-crm-contacts-repository.php:1506
 msgid "Missing contact ID."
 msgstr "Kontakt-ID fehlt."
 
-#: classes/class-ispag-crm-contacts-repository.php:1499
+#: classes/class-ispag-crm-contacts-repository.php:1511
 msgid "User not found."
 msgstr "Benutzer nicht gefunden."
 
-#: classes/class-ispag-crm-contacts-repository.php:1588
+#: classes/class-ispag-crm-contacts-repository.php:1600
 msgid "Meeting Preparation"
 msgstr "Besprechungsvorbereitung"
 
-#: classes/class-ispag-crm-contacts-repository.php:1593
+#: classes/class-ispag-crm-contacts-repository.php:1605
 msgid "Objectives"
 msgstr "Ziele"
 
-#: classes/class-ispag-crm-contacts-repository.php:1594
+#: classes/class-ispag-crm-contacts-repository.php:1606
 msgid "Key Questions"
 msgstr "Schlüsselfragen"
 
-#: classes/class-ispag-crm-contacts-repository.php:1595
+#: classes/class-ispag-crm-contacts-repository.php:1607
 msgid "Attention Points"
 msgstr "Beachtenswerte Punkte"
 
-#: classes/class-ispag-crm-contacts-repository.php:1596
+#: classes/class-ispag-crm-contacts-repository.php:1608
 msgid "Agenda"
 msgstr "Traktanden"
 
-#: classes/class-ispag-crm-contacts-repository.php:1597
+#: classes/class-ispag-crm-contacts-repository.php:1609
 msgid "Opening Hook"
 msgstr "Einstieg"
 
-#: classes/class-ispag-crm-contacts-repository.php:1614
+#: classes/class-ispag-crm-contacts-repository.php:1626
 msgid "Meeting prep — %s"
 msgstr "Besprechungsvorbereitung — %s"
 
-#: classes/class-ispag-crm-contacts-repository.php:1897
+#: classes/class-ispag-crm-contacts-repository.php:1909
 msgid "undefined"
 msgstr "nicht definiert"
 
-#: classes/class-ispag-crm-contacts-repository.php:1909
+#: classes/class-ispag-crm-contacts-repository.php:1921
 msgid "👤 New contact assigned"
 msgstr "👤 Neuer Kontakt zugewiesen"
 
-#: classes/class-ispag-crm-contacts-repository.php:1912
+#: classes/class-ispag-crm-contacts-repository.php:1924
 msgid "You have been assigned as the department owner for contact %1$s (%2$s)."
 msgstr "Sie wurden als Abteilungsverantwortlicher für den Kontakt %1$s bestimmt (%2$s)."
 
-#: classes/class-ispag-crm-contacts-repository.php:415
+#: classes/class-ispag-crm-contacts-repository.php:427
 msgid "High"
 msgstr "Hoch"
 
-#: classes/class-ispag-crm-contacts-repository.php:416
+#: classes/class-ispag-crm-contacts-repository.php:428
 msgid "Medium"
 msgstr "Mittel"
 
-#: classes/class-ispag-crm-contacts-repository.php:417
+#: classes/class-ispag-crm-contacts-repository.php:429
 msgid "Low"
 msgstr "Tief"
 
-#: classes/class-ispag-crm-contacts-repository.php:428
+#: classes/class-ispag-crm-contacts-repository.php:440
 msgid "None"
 msgstr "Keine"
 
@@ -2915,158 +2915,190 @@ msgid "Modifications asked"
 msgstr "Änderungen angefordert"
 
 #: includes/js-strings.php:13
+msgid "Add a company to the project"
+msgstr "Firma zum Projekt hinzufügen"
+
+#: includes/js-strings.php:14
+msgid "Add a contact to the project"
+msgstr "Kontakt zum Projekt hinzufügen"
+
+#: includes/js-strings.php:15
+msgid "Only the contacts of the project company"
+msgstr "Nur die Kontakte der Projektfirma"
+
+#: includes/js-strings.php:16
+msgid "No result."
+msgstr "Kein Ergebnis."
+
+#: includes/js-strings.php:17
+msgid "Remove this company from the project?"
+msgstr "Diese Firma aus dem Projekt entfernen?"
+
+#: includes/js-strings.php:18
+msgid "Remove this contact from the project?"
+msgstr "Diesen Kontakt aus dem Projekt entfernen?"
+
+#: includes/js-strings.php:19
+msgid "This replaces the current company of the project."
+msgstr "Dies ersetzt die aktuelle Firma des Projekts."
+
+#: includes/js-strings.php:20
+msgid "Search…"
+msgstr "Suchen…"
+
+#: includes/js-strings.php:23
 msgid "AJAX configuration error."
 msgstr "AJAX-Konfigurationsfehler."
 
-#: includes/js-strings.php:14
+#: includes/js-strings.php:24
 msgid "AJAX connection error."
 msgstr "AJAX-Verbindungsfehler."
 
-#: includes/js-strings.php:15
+#: includes/js-strings.php:25
 msgid "An error occurred. Please try again."
 msgstr "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
 
-#: includes/js-strings.php:16
+#: includes/js-strings.php:26
 msgid "Are you sure you want to remove this association?"
 msgstr "Möchten Sie diese Zuordnung wirklich entfernen?"
 
-#: includes/js-strings.php:17
+#: includes/js-strings.php:27
 msgid "Associer"
 msgstr "Verknüpfen"
 
-#: includes/js-strings.php:18
+#: includes/js-strings.php:28
 msgid "Connection error while linking."
 msgstr "Verbindungsfehler beim Verknüpfen."
 
-#: includes/js-strings.php:19
+#: includes/js-strings.php:29
 msgid "Delete this step?"
 msgstr "Diesen Schritt löschen?"
 
-#: includes/js-strings.php:20
+#: includes/js-strings.php:30
 msgid "Error during bulk update"
 msgstr "Fehler bei der Sammelaktualisierung"
 
-#: includes/js-strings.php:21
+#: includes/js-strings.php:31
 msgid "Error loading AI summary."
 msgstr "Fehler beim Laden der KI-Zusammenfassung."
 
-#: includes/js-strings.php:22
+#: includes/js-strings.php:32
 msgid "Error marking notification as read. The page will open anyway."
 msgstr "Fehler beim Markieren der Benachrichtigung als gelesen. Die Seite wird trotzdem geöffnet."
 
-#: includes/js-strings.php:23
+#: includes/js-strings.php:33
 msgid "Error while deleting."
 msgstr "Fehler beim Löschen."
 
-#: includes/js-strings.php:24
+#: includes/js-strings.php:34
 msgid "Error while linking contacts."
 msgstr "Fehler beim Verknüpfen der Kontakte."
 
-#: includes/js-strings.php:25
+#: includes/js-strings.php:35
 msgid "Error while linking: "
 msgstr "Fehler beim Verknüpfen: "
 
-#: includes/js-strings.php:26
+#: includes/js-strings.php:36
 msgid "Error while loading the document type modal."
 msgstr "Fehler beim Laden des Fensters für den Dokumenttyp."
 
-#: includes/js-strings.php:27
+#: includes/js-strings.php:37
 msgid "Error while retrieving the template."
 msgstr "Fehler beim Abrufen der Vorlage."
 
-#: includes/js-strings.php:28
+#: includes/js-strings.php:38
 msgid "Error: "
 msgstr "Fehler: "
 
-#: includes/js-strings.php:29
+#: includes/js-strings.php:39
 msgid "Error: Company ID not found."
 msgstr "Fehler: Unternehmens-ID nicht gefunden."
 
-#: includes/js-strings.php:30
+#: includes/js-strings.php:40
 msgid "Error: The entity ID is missing."
 msgstr "Fehler: Die Entitäts-ID fehlt."
 
-#: includes/js-strings.php:31
+#: includes/js-strings.php:41
 msgid "Error: Unable to load the company panel."
 msgstr "Fehler: Das Unternehmenspanel kann nicht geladen werden."
 
-#: includes/js-strings.php:32
+#: includes/js-strings.php:42
 msgid "Error: Unable to load the panel."
 msgstr "Fehler: Das Panel kann nicht geladen werden."
 
-#: includes/js-strings.php:33
+#: includes/js-strings.php:43
 msgid "Folder created!"
 msgstr "Ordner erstellt!"
 
-#: includes/js-strings.php:34
+#: includes/js-strings.php:44
 msgid "Give your sequence a name!"
 msgstr "Geben Sie Ihrer Sequenz einen Namen!"
 
-#: includes/js-strings.php:35
+#: includes/js-strings.php:45
 msgid "Inconnue"
 msgstr "Unbekannt"
 
-#: includes/js-strings.php:36
+#: includes/js-strings.php:46
 msgid "Loading error"
 msgstr "Ladefehler"
 
-#: includes/js-strings.php:37
+#: includes/js-strings.php:47
 msgid "Marquer comme lue"
 msgstr "Als gelesen markieren"
 
-#: includes/js-strings.php:38
+#: includes/js-strings.php:48
 msgid "Network error lors de l'upload."
 msgstr "Netzwerkfehler beim Upload."
 
-#: includes/js-strings.php:39
+#: includes/js-strings.php:49
 msgid "Network error lors de la liaison."
 msgstr "Netzwerkfehler beim Verknüpfen."
 
-#: includes/js-strings.php:40
+#: includes/js-strings.php:50
 msgid "No attachment found."
 msgstr "Kein Anhang gefunden."
 
-#: includes/js-strings.php:41
+#: includes/js-strings.php:51
 msgid "No contact found."
 msgstr "Kein Kontakt gefunden."
 
-#: includes/js-strings.php:42
+#: includes/js-strings.php:52
 msgid "Please select a sequence."
 msgstr "Bitte wählen Sie eine Sequenz aus."
 
-#: includes/js-strings.php:43
+#: includes/js-strings.php:53
 msgid "Please select a template."
 msgstr "Bitte wählen Sie eine Vorlage aus."
 
-#: includes/js-strings.php:44
+#: includes/js-strings.php:54
 msgid "Please select at least one company."
 msgstr "Bitte wählen Sie mindestens ein Unternehmen aus."
 
-#: includes/js-strings.php:47
+#: includes/js-strings.php:57
 msgid "Save error: "
 msgstr "Fehler beim Speichern: "
 
-#: includes/js-strings.php:48
+#: includes/js-strings.php:58
 msgid "Save failed."
 msgstr "Speichern fehlgeschlagen."
 
-#: includes/js-strings.php:49
+#: includes/js-strings.php:59
 msgid "Select a template."
 msgstr "Wählen Sie eine Vorlage aus."
 
-#: includes/js-strings.php:50
+#: includes/js-strings.php:60
 msgid "Start"
 msgstr "Starten"
 
-#: includes/js-strings.php:51
+#: includes/js-strings.php:61
 msgid "Upload error: "
 msgstr "Upload-Fehler: "
 
-#: includes/js-strings.php:52
+#: includes/js-strings.php:62
 msgid "Valider"
 msgstr "Bestätigen"
 
-#: includes/js-strings.php:53
+#: includes/js-strings.php:63
 msgid "You have unsaved changes. Do you really want to leave without saving?"
 msgstr "Sie haben nicht gespeicherte Änderungen. Möchten Sie wirklich ohne Speichern verlassen?"
 
@@ -3130,51 +3162,51 @@ msgstr "Anhänge"
 msgid "Invalid parameters."
 msgstr "Ungültige Parameter."
 
-#: ispag-crm.php:440
+#: ispag-crm.php:441
 msgid "Please select an action."
 msgstr "Bitte wählen Sie eine Aktion aus."
 
-#: ispag-crm.php:441
+#: ispag-crm.php:442
 msgid "Please select at least one contact."
 msgstr "Bitte wählen Sie mindestens einen Kontakt aus."
 
-#: ispag-crm.php:442
+#: ispag-crm.php:443
 msgid "Are you sure you want to delete the selected contacts?"
 msgstr "Möchten Sie die ausgewählten Kontakte wirklich löschen?"
 
-#: ispag-crm.php:443
+#: ispag-crm.php:444
 msgid "A - High"
 msgstr "A - Hoch"
 
-#: ispag-crm.php:444
+#: ispag-crm.php:445
 msgid "B - Medium"
 msgstr "B - Mittel"
 
-#: ispag-crm.php:445
+#: ispag-crm.php:446
 msgid "C - Low"
 msgstr "C - Tief"
 
-#: ispag-crm.php:446
+#: ispag-crm.php:447
 msgid "Company ID"
 msgstr "Unternehmens-ID"
 
-#: ispag-crm.php:447
+#: ispag-crm.php:448
 msgid "-- Select owner --"
 msgstr "-- Verantwortlichen auswählen --"
 
-#: ispag-crm.php:448
+#: ispag-crm.php:449
 msgid "Preparing..."
 msgstr "Vorbereitung..."
 
-#: ispag-crm.php:449
+#: ispag-crm.php:450
 msgid "Prepare meeting"
 msgstr "Besprechung vorbereiten"
 
-#: ispag-crm.php:464
+#: ispag-crm.php:465
 msgid "Your ISPAG account has been suspended."
 msgstr "Ihr ISPAG-Konto wurde gesperrt."
 
-#: ispag-crm.php:590
+#: ispag-crm.php:591
 msgid "Unauthorized access."
 msgstr "Nicht autorisierter Zugriff."
 

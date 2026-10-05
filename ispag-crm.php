@@ -286,6 +286,7 @@ function ispag_run_crm_manager() {
         'ISPAG_Cron_LeadStatus',
         'ISPAG_CSV_Importer',
         'ISPAG_Baikal_Sync',
+        'ISPAG_Crm_Project_Associations',
         'ISPAG_Sequence_Admin',
         'ISPAG_Sequence_Repository',
         'ISPAG_WebPush_Handler',

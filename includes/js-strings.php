@@ -10,6 +10,16 @@ defined('ABSPATH') || exit;
 if (!function_exists('ispag_crm_js_strings')) {
     function ispag_crm_js_strings() {
         return [
+        'Add a company to the project' => __('Add a company to the project', 'ispag-crm'),
+        'Add a contact to the project' => __('Add a contact to the project', 'ispag-crm'),
+        'Only the contacts of the project company' => __('Only the contacts of the project company', 'ispag-crm'),
+        'No result.' => __('No result.', 'ispag-crm'),
+        'Remove this company from the project?' => __('Remove this company from the project?', 'ispag-crm'),
+        'Remove this contact from the project?' => __('Remove this contact from the project?', 'ispag-crm'),
+        'This replaces the current company of the project.' => __('This replaces the current company of the project.', 'ispag-crm'),
+        'Search…' => __('Search…', 'ispag-crm'),
+        'Close' => __('Close', 'ispag-crm'),
+        'Add' => __('Add', 'ispag-crm'),
         'AJAX configuration error.' => __('AJAX configuration error.', 'ispag-crm'),
         'AJAX connection error.' => __('AJAX connection error.', 'ispag-crm'),
         'An error occurred. Please try again.' => __('An error occurred. Please try again.', 'ispag-crm'),
