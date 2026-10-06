@@ -64,7 +64,7 @@ class ISPAG_Crm_Call_Brief {
         $stages = [];
         foreach ((array) $wpdb->get_results('SELECT stage_key, stage_label FROM ' . ISPAG_Crm_Deal_Constants::TABLE_DEAL_STAGES) as $s) $stages[$s->stage_key] = $s->stage_label;
         $rows = $wpdb->get_results($wpdb->prepare(
-            'SELECT * FROM ' . ISPAG_Crm_Deal_Constants::TABLE_NAME . " WHERE (project_db_status = 0 OR (project_db_status = 1 AND database_status = 11)) AND FIND_IN_SET(%d, REPLACE(associated_contact_ids, ' ', '')) > 0 ORDER BY closing_date ASC", $cid));
+            'SELECT * FROM ' . ISPAG_Crm_Deal_Constants::TABLE_NAME . " WHERE project_db_status = 0 AND FIND_IN_SET(%d, REPLACE(associated_contact_ids, ' ', '')) > 0 ORDER BY closing_date ASC", $cid));
         foreach ((array) $rows as $d) {
             $eff = ISPAG_Crm_Decision_Date::effective($d);
             $skey = (string) $wpdb->get_var($wpdb->prepare('SELECT current_stage_key FROM ' . ISPAG_Crm_Deal_Constants::TABLE_DEALS_STAGES . ' WHERE deal_group_ref = %s', (string) $d->deal_group_ref));
