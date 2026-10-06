@@ -53,9 +53,20 @@ class ISPAG_Crm_Deal_Follow_Up {
         return max($due, $today_ts);
     }
 
+    const OPT_LAST = 'ispag_crm_deal_follow_up_last';
+
+    /** Dernier passage : date + compteurs par motif (affiché dans Réglages → Relances CRM). */
+    public static function last_run(): array { return (array) get_option(self::OPT_LAST, []); }
+
     public function run() {
         $cfg = self::settings();
-        if (!$cfg['enabled']) return;
+        $sum = ['time' => time(), 'enabled' => (int) $cfg['enabled'], 'seen' => 0, 'has_open_task' => 0, 'no_contact' => 0, 'no_follow_up_role' => 0, 'no_owner_user' => 0, 'insert_failed' => 0, 'created' => 0, 'cap_reached' => 0, 'error' => ''];
+        if (!$cfg['enabled']) { update_option(self::OPT_LAST, $sum, false); return; }
+        try { $this->run_inner($cfg, $sum); } catch (Throwable $e) { $sum['error'] = $e->getMessage(); }
+        update_option(self::OPT_LAST, $sum, false);
+    }
+
+    private function run_inner(array $cfg, array &$sum) {
         global $wpdb;
         $deals  = ISPAG_Crm_Deal_Constants::TABLE_NAME;
         $stages = ISPAG_Crm_Deal_Constants::TABLE_DEAL_STAGES;
@@ -72,7 +83,8 @@ class ISPAG_Crm_Deal_Follow_Up {
             ORDER BY d.id DESC");
         $created = 0;
         foreach ((array) $rows as $deal) {
-            if ($created >= self::MAX_PER_RUN) break;
+            $sum['seen']++;
+            if ($created >= self::MAX_PER_RUN) { $sum['cap_reached']++; continue; }
             $ref = (string) $deal->deal_group_ref;
             if ($ref === '') continue;
 
@@ -81,14 +93,14 @@ class ISPAG_Crm_Deal_Follow_Up {
                 "SELECT COUNT(*) FROM {$notes} WHERE is_task = 1 AND is_completed = 0 AND deal_id = %s AND content LIKE %s",
                 $ref, '%' . $wpdb->esc_like(self::MARKER) . '%'
             ));
-            if ($open) continue;
+            if ($open) { $sum['has_open_task']++; continue; }
 
             // Contact principal (le premier) ; rôle / type d'entreprise « sans relance » : on ignore l'offre
             $contact_id = (int) trim((string) strtok((string) $deal->associated_contact_ids, ','));
-            if (!$contact_id) continue;
+            if (!$contact_id) { $sum['no_contact']++; continue; }
             $role  = ISPAG_Crm_Follow_Up_Settings::contact_role($contact_id);
             $ctype = ISPAG_Crm_Follow_Up_Settings::company_type((int) $deal->associated_company_id);
-            if (ISPAG_Crm_Follow_Up_Settings::days_for_contact('', $role, $ctype) === 0) continue;
+            if (ISPAG_Crm_Follow_Up_Settings::days_for_contact('', $role, $ctype) === 0) { $sum['no_follow_up_role']++; continue; }
 
             $decision = ISPAG_Crm_Decision_Date::effective($deal);
             $last = (string) $wpdb->get_var($wpdb->prepare(
@@ -102,7 +114,7 @@ class ISPAG_Crm_Deal_Follow_Up {
             if ($due_ts === null) continue;
 
             $user = get_userdata((int) $deal->deal_owner);
-            if (!$user) continue;
+            if (!$user) { $sum['no_owner_user']++; continue; }
             $contact = get_userdata($contact_id);
             $cname   = $contact ? $contact->display_name : '#' . $contact_id;
             $due_day = wp_date('Y-m-d', $due_ts);
@@ -122,7 +134,7 @@ class ISPAG_Crm_Deal_Follow_Up {
                 'reminder_offset' => 'none',
                 'created_at'    => current_time('mysql'),
             ]);
-            if ($ok) $created++;
+            if ($ok) { $created++; $sum['created']++; } else { $sum['insert_failed']++; $sum['error'] = $wpdb->last_error ?: $sum['error']; }
         }
     }
 }

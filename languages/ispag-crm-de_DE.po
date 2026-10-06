@@ -1199,121 +1199,153 @@ msgstr "Verarbeitung von Rabatt / Koeffizient fehlgeschlagen."
 msgid "Discount/Coefficient saved successfully."
 msgstr "Rabatt / Koeffizient erfolgreich gespeichert."
 
-#: classes/class-ispag-crm-follow-up-settings.php:112
+#: classes/class-ispag-crm-follow-up-settings.php:100
+msgid "CRM follow-up"
+msgstr "CRM-Nachfassen"
+
+#: classes/class-ispag-crm-follow-up-settings.php:113
 msgid "Contacts with priority A (high)"
 msgstr "Kontakte mit Priorität A (hoch)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:113
+#: classes/class-ispag-crm-follow-up-settings.php:114
 msgid "Contacts with priority B (medium)"
 msgstr "Kontakte mit Priorität B (mittel)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:114
+#: classes/class-ispag-crm-follow-up-settings.php:115
 msgid "Contacts with priority C (low)"
 msgstr "Kontakte mit Priorität C (niedrig)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:115
+#: classes/class-ispag-crm-follow-up-settings.php:116
 msgid "Contacts without priority"
 msgstr "Kontakte ohne Priorität"
 
-#: classes/class-ispag-crm-follow-up-settings.php:116
+#: classes/class-ispag-crm-follow-up-settings.php:117
 msgid "Companies and deals"
 msgstr "Unternehmen und Deals"
 
-#: classes/class-ispag-crm-follow-up-settings.php:121
+#: classes/class-ispag-crm-follow-up-settings.php:122
 msgid "Number of days without contact before the alert \"No contact for over N days\" is shown on the pages, and before the automatic follow-up task is created. The alert turns orange after two thirds of the delay and red once it is exceeded."
 msgstr "Anzahl Tage ohne Kontakt, bevor die Warnung «Seit über N Tagen kein Kontakt» auf den Seiten erscheint und bevor die automatische Nachfass-Aufgabe erstellt wird. Die Warnung wird nach zwei Dritteln der Frist orange und rot, sobald sie überschritten ist."
 
-#: classes/class-ispag-crm-follow-up-settings.php:122
+#: classes/class-ispag-crm-follow-up-settings.php:123
 msgid "Settings saved."
 msgstr "Einstellungen gespeichert."
 
-#: classes/class-ispag-crm-follow-up-settings.php:129
+#: classes/class-ispag-crm-follow-up-settings.php:130
 msgid "days"
 msgstr "Tage"
 
-#: classes/class-ispag-crm-follow-up-settings.php:133
+#: classes/class-ispag-crm-follow-up-settings.php:134
 msgid "Automatic follow-up of open offers"
 msgstr "Automatisches Nachfassen offener Offerten"
 
-#: classes/class-ispag-crm-follow-up-settings.php:134
+#: classes/class-ispag-crm-follow-up-settings.php:135
 msgid "Every day, each open offer gets a follow-up task for its owner, based on the expected decision date (or the closing date when none is set). The next task is created once the previous one is completed. Contacts set to \"No follow-up\" below are ignored."
 msgstr "Jeden Tag erhält jede offene Offerte eine Nachfass-Aufgabe für ihren Verantwortlichen, abgestimmt auf das erwartete Entscheidungsdatum (sonst das Abschlussdatum). Die nächste Aufgabe wird erstellt, sobald die vorherige erledigt ist. Unten auf «Kein Nachfassen» gestellte Kontakte werden ignoriert."
 
-#: classes/class-ispag-crm-follow-up-settings.php:136
+#: classes/class-ispag-crm-follow-up-settings.php:137
 msgid "Automatic follow-up"
 msgstr "Automatisches Nachfassen"
 
-#: classes/class-ispag-crm-follow-up-settings.php:137
+#: classes/class-ispag-crm-follow-up-settings.php:138
 msgid "Enabled"
 msgstr "Aktiviert"
 
-#: classes/class-ispag-crm-follow-up-settings.php:138
+#: classes/class-ispag-crm-follow-up-settings.php:139
 msgid "Follow up before the decision"
 msgstr "Vor dem Entscheid nachfassen"
 
-#: classes/class-ispag-crm-follow-up-settings.php:139
+#: classes/class-ispag-crm-follow-up-settings.php:140
 msgid "days before the expected decision"
 msgstr "Tage vor dem erwarteten Entscheid"
 
-#: classes/class-ispag-crm-follow-up-settings.php:140
+#: classes/class-ispag-crm-follow-up-settings.php:141
 msgid "Not before"
 msgstr "Nicht vor"
 
-#: classes/class-ispag-crm-follow-up-settings.php:141
+#: classes/class-ispag-crm-follow-up-settings.php:142
 msgid "days after the offer"
 msgstr "Tage nach der Offerte"
 
-#: classes/class-ispag-crm-follow-up-settings.php:142
+#: classes/class-ispag-crm-follow-up-settings.php:143
 msgid "Then repeat every"
 msgstr "Dann wiederholen alle"
 
-#: classes/class-ispag-crm-follow-up-settings.php:143
+#: classes/class-ispag-crm-follow-up-settings.php:144
 msgid "days (also used once the decision date is past)"
 msgstr "Tage (auch nach Überschreiten des Entscheidungsdatums)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:146
+#: classes/class-ispag-crm-follow-up-settings.php:148
+msgid "Last run"
+msgstr "Letzter Durchlauf"
+
+#: classes/class-ispag-crm-follow-up-settings.php:150
+msgid "The automatic follow-up has not run yet."
+msgstr "Das automatische Nachfassen wurde noch nicht ausgeführt."
+
+#: classes/class-ispag-crm-follow-up-settings.php:151
+msgid "%1$s — offers examined: %2$d, tasks created: %3$d, already have an open follow-up task: %4$d, no contact: %5$d, contact set to \"No follow-up\": %6$d, owner not found: %7$d, over the daily limit: %8$d."
+msgstr "%1$s — geprüfte Offerten: %2$d, erstellte Aufgaben: %3$d, haben bereits eine offene Nachfass-Aufgabe: %4$d, ohne Kontakt: %5$d, Kontakt auf «Kein Nachfassen»: %6$d, Verantwortlicher nicht gefunden: %7$d, über dem Tageslimit: %8$d."
+
+#: classes/class-ispag-crm-follow-up-settings.php:153
+msgid "Error: %s"
+msgstr "Fehler: %s"
+
+#: classes/class-ispag-crm-follow-up-settings.php:155
+msgid "Next scheduled run: %s"
+msgstr "Nächster geplanter Durchlauf: %s"
+
+#: classes/class-ispag-crm-follow-up-settings.php:155
+msgid "No run is scheduled."
+msgstr "Es ist kein Durchlauf geplant."
+
+#: classes/class-ispag-crm-follow-up-settings.php:156
+msgid "(WordPress cron is disabled on this site: a server task must call it.)"
+msgstr "(WordPress-Cron ist auf dieser Website deaktiviert: ein Serveraufgabe muss ihn aufrufen.)"
+
+#: classes/class-ispag-crm-follow-up-settings.php:157
+msgid "Run the follow-up now"
+msgstr "Nachfassen jetzt ausführen"
+
+#: classes/class-ispag-crm-follow-up-settings.php:159
 msgid "By contact role"
 msgstr "Nach Rolle des Kontakts"
 
-#: classes/class-ispag-crm-follow-up-settings.php:147
+#: classes/class-ispag-crm-follow-up-settings.php:160
 msgid "Overrides the delay above for all contacts with this role. Leave empty to use the priority delay; tick \"No follow-up\" for roles that do not order (the contact is never flagged). The three right-hand columns set the rhythm of the automatic offer follow-up for this role; empty = the general setting above."
 msgstr "Ersetzt die obige Frist für alle Kontakte dieser Rolle. Leer lassen für die Frist der Priorität; «Kein Nachfassen» ankreuzen für Rollen, die nicht bestellen (der Kontakt wird nie markiert). Die drei rechten Spalten legen den Rhythmus des automatischen Nachfassens von Offerten für diese Rolle fest; leer = allgemeine Einstellung oben."
 
-#: classes/class-ispag-crm-follow-up-settings.php:149
+#: classes/class-ispag-crm-follow-up-settings.php:162
 msgid "By company type"
 msgstr "Nach Unternehmenstyp"
 
-#: classes/class-ispag-crm-follow-up-settings.php:150
+#: classes/class-ispag-crm-follow-up-settings.php:163
 msgid "Used when the role has no delay of its own."
 msgstr "Wird verwendet, wenn die Rolle keine eigene Frist hat."
 
-#: classes/class-ispag-crm-follow-up-settings.php:179
+#: classes/class-ispag-crm-follow-up-settings.php:192
 msgid "Contact role / company type"
 msgstr "Rolle des Kontakts / Unternehmenstyp"
 
-#: classes/class-ispag-crm-follow-up-settings.php:179
+#: classes/class-ispag-crm-follow-up-settings.php:192
 msgid "Delay without contact"
 msgstr "Frist ohne Kontakt"
 
-#: classes/class-ispag-crm-follow-up-settings.php:180
+#: classes/class-ispag-crm-follow-up-settings.php:193
 msgid "Not before (days after offer)"
 msgstr "Nicht vor (Tage nach Offerte)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:180
+#: classes/class-ispag-crm-follow-up-settings.php:193
 msgid "Offers: days before decision"
 msgstr "Offerten: Tage vor Entscheid"
 
-#: classes/class-ispag-crm-follow-up-settings.php:180
+#: classes/class-ispag-crm-follow-up-settings.php:193
 msgid "Repeat every (days)"
 msgstr "Wiederholen alle (Tage)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:186
+#: classes/class-ispag-crm-follow-up-settings.php:199
 msgid "No follow-up"
 msgstr "Kein Nachfassen"
-
-#: classes/class-ispag-crm-follow-up-settings.php:99
-msgid "CRM follow-up"
-msgstr "CRM-Nachfassen"
 
 #: classes/class-ispag-crm-lifecycle-manager.php:52
 msgid "Prospect"
