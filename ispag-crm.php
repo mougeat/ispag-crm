@@ -51,6 +51,7 @@ function crm_ispag_load_env( $path ) {
 
 // Fichier dummy pour traduire les textes de la base de donnée
 require_once plugin_dir_path(__FILE__) . 'classes/helpers/ispag-translations-support.php';
+require_once plugin_dir_path(__FILE__) . 'classes/helpers/ispag-phone.php';
 
 add_action('plugins_loaded', 'ispag_crm_load_textdomain');
 

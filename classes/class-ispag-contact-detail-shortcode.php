@@ -937,7 +937,7 @@ class ISPAG_Contact_Detail_Shortcode {
 
                     <?php if ( ! empty( $contact->billing_phone ) ) : ?>
                         <a 
-                            href="tel:<?php echo esc_attr( $contact->billing_phone ); ?>" 
+                            href="<?php echo esc_attr( ispag_phone_href( $contact->billing_phone ) ); ?>" 
                             title="<?php esc_attr_e( 'Call this number', 'ispag-crm' ); ?>"
                         >
                             <button class="ispag-action-btn"
@@ -1038,7 +1038,7 @@ class ISPAG_Contact_Detail_Shortcode {
                             style="display: flex; align-items: center; justify-content: space-between;"
                         >
                             <span class="ispag-phone-display-value">
-                                <?php echo $contact->billing_phone; ?>
+                                <?php echo esc_html( ispag_format_phone( $contact->billing_phone ) ); ?>
                             </span>
                         </dd>
 
