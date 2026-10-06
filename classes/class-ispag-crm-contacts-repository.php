@@ -28,6 +28,7 @@ class ISPAG_Crm_Contacts_Repository {
         $this->table_companies = ISPAG_Crm_Company_Constants::TABLE_NAME; 
 
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_ispag_assets' ) );
+        add_action( 'admin_init', array( __CLASS__, 'backfill_owner_departments' ) );
 
         add_action( 'wp_ajax_ispag_load_gemini_contact_summary', array( $this, 'ajax_load_contact_ai_summary' ) );
         add_action('wp_ajax_ispag_load_contact_meeting_prep', [$this, 'ajax_load_contact_meeting_prep']);
@@ -1810,6 +1811,30 @@ class ISPAG_Crm_Contacts_Repository {
      * * @param array $data Les données du contact (email, first_name, last_name, phone, etc.)
      * @return int|false L'ID du nouveau contact ou false en cas d'échec.
      */
+    /** Département d'un nouveau contact : celui du responsable, sinon celui de l'utilisateur connecté, sinon le département par défaut. */
+    public static function default_department_for( $owner_id, $use_current_user = true ): string {
+        $key = ISPAG_Crm_Contact_Constants::USER_DEPARTMENT;
+        foreach ( [ (int) $owner_id, $use_current_user ? get_current_user_id() : 0 ] as $uid ) {
+            if ( $uid > 0 ) {
+                $d = sanitize_key( (string) get_user_meta( $uid, $key, true ) );
+                if ( $d !== '' ) return $d;
+            }
+        }
+        return class_exists( 'ISPAG_Baikal_Settings' ) ? ISPAG_Baikal_Settings::DEFAULT_DEPARTMENT : 'vaulruz_ispag';
+    }
+
+    /** Une seule fois : renseigne le département des responsables déjà enregistrés sans département (celui du responsable, sinon par défaut). */
+    public static function backfill_owner_departments() {
+        global $wpdb;
+        if ( get_option( 'ispag_contact_owner_dept_backfill' ) ) return;
+        $t = ISPAG_Crm_Contact_Constants::TABLE_CONTACT_OWNER;
+        foreach ( (array) $wpdb->get_results( "SELECT DISTINCT user_id FROM {$t} WHERE department_key = ''" ) as $r ) {
+            $dept = self::default_department_for( (int) $r->user_id, false );
+            $wpdb->query( $wpdb->prepare( "UPDATE {$t} SET department_key = %s WHERE department_key = '' AND user_id = %d", $dept, (int) $r->user_id ) );
+        }
+        update_option( 'ispag_contact_owner_dept_backfill', time(), false );
+    }
+
     public function insert( $data ) {
         // 1. Préparation des données de base WordPress
         global $wpdb;
@@ -1850,6 +1875,7 @@ class ISPAG_Crm_Contacts_Repository {
         if ( ! empty( $data['owner_id'] ) ) {
             $table_owners    = ISPAG_Crm_Contact_Constants::TABLE_CONTACT_OWNER; 
             $department_id = isset( $data['department_id'] ) ? sanitize_key( $data['department_id'] ) : '';
+            if ( $department_id === '' ) $department_id = self::default_department_for( absint( $data['owner_id'] ) );
 
             // update_user_meta( $user_id, ISPAG_Crm_Contact_Constants::META_OWNER, $data['owner_id'] ); 
             $new_owner_id = absint( $data['owner_id'] );
