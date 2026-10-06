@@ -33,9 +33,8 @@ class ISPAG_Crm_Call_Brief {
         $path = (string) wp_parse_url((string) ($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH);
         $base = rtrim((string) wp_parse_url(home_url('/'), PHP_URL_PATH), '/') . '/' . self::SLUG . '/';
         if (strpos($path, $base) !== 0) return;
-        $tail = trim(substr($path, strlen($base)), '/');
-        if ($tail !== '' && !ctype_digit($tail)) return;
-        $id = (int) $tail;
+        $id = (int) trim(substr($path, strlen($base)), '/');
+        if ($id <= 0) return;
         if (!is_user_logged_in()) {
             wp_safe_redirect(wp_login_url(home_url(add_query_arg([]))));
             exit;
@@ -43,49 +42,7 @@ class ISPAG_Crm_Call_Brief {
         nocache_headers();
         header('X-Robots-Tag: noindex, nofollow');
         if (!self::eligible()) { status_header(403); self::shell(__('Restricted', 'ispag-crm'), '<p>' . esc_html__('This page is reserved to ISPAG sales.', 'ispag-crm') . '</p>'); }
-        if ($id <= 0) self::search_page();
         self::page($id);
-    }
-
-    /** /appel/ : recherche par nom, société, e-mail ou numéro (pour le raccourci iPhone : bouton Action → ouvre cette page, clavier prêt). */
-    private static function search_page() {
-        global $wpdb;
-        $q = trim(sanitize_text_field(wp_unslash($_GET['q'] ?? '')));
-        $e = 'esc_html';
-        ob_start();
-        echo '<div class="card"><h1>' . $e(__('Who is calling?', 'ispag-crm')) . '</h1>'
-           . '<form method="get"><input type="search" name="q" value="' . esc_attr($q) . '" placeholder="' . esc_attr__('Name, company or number', 'ispag-crm') . '" autofocus autocomplete="off" '
-           . 'style="width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:1.05rem;margin:8px 0"><button class="btn" type="submit">' . $e(__('Search', 'ispag-crm')) . '</button></form></div>';
-        if ($q !== '') {
-            $digits = preg_replace('/\D+/', '', $q);
-            $ids = [];
-            // nom, e-mail
-            foreach (get_users(['search' => '*' . $q . '*', 'search_columns' => ['display_name', 'user_email', 'user_login'], 'fields' => 'ID', 'number' => 20]) as $uid) $ids[(int) $uid] = true;
-            // numéro de téléphone (chiffres, sans espaces)
-            if (strlen($digits) >= 4) {
-                $key = ISPAG_Crm_Contact_Constants::META_LEAD_PHONE;
-                $um = $wpdb->usermeta;
-                foreach ((array) $wpdb->get_col($wpdb->prepare("SELECT user_id FROM {$um} WHERE meta_key = %s AND REPLACE(REPLACE(REPLACE(REPLACE(meta_value, ' ', ''), '+', ''), '-', ''), '.', '') LIKE %s LIMIT 20", $key, '%' . $wpdb->esc_like(substr($digits, -9)) . '%')) as $uid) $ids[(int) $uid] = true;
-            }
-            // société
-            if (strlen($q) >= 2) {
-                $cids = (array) $wpdb->get_col($wpdb->prepare("SELECT id FROM {$wpdb->prefix}ispag_companies WHERE company_name LIKE %s LIMIT 10", '%' . $wpdb->esc_like($q) . '%'));
-                if ($cids && class_exists('ISPAG_Crm_Contact_Constants')) {
-                    $ph = implode(',', array_fill(0, count($cids), '%d'));
-                    foreach ((array) $wpdb->get_col($wpdb->prepare("SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value IN ($ph) LIMIT 20", array_merge([ISPAG_Crm_Contact_Constants::META_COMPANY_ID], $cids))) as $uid) $ids[(int) $uid] = true;
-                }
-            }
-            echo '<div class="card"><h2>' . $e(__('Results', 'ispag-crm')) . '</h2>';
-            if (!$ids) echo '<p class="mut">' . $e(__('No contact found.', 'ispag-crm')) . '</p>';
-            $repo = new ISPAG_Crm_Contacts_Repository();
-            foreach (array_slice(array_keys($ids), 0, 15) as $uid) {
-                $c = $repo->get_contact_by_id($uid);
-                if (!$c) continue;
-                echo '<div class="row"><div><a href="' . esc_url(self::url($uid)) . '"><strong>' . $e($c->display_name ?? '') . '</strong></a><div class="mut">' . $e(trim(($c->company_name ?? '') . (!empty($c->phone) ? ' · ' . $c->phone : ''))) . '</div></div></div>';
-            }
-            echo '</div>';
-        }
-        self::shell(__('Who is calling?', 'ispag-crm'), (string) ob_get_clean());
     }
 
     // ------------------------------------------------------------------ données
