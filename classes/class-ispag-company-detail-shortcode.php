@@ -931,7 +931,7 @@ class ISPAG_Company_Detail_Shortcode {
                             data-name="NumTel" 
                             data-value="<?php echo esc_attr( $company_phone ); ?>"
                         >
-                            <?php echo $company_phone; ?>
+                            <?php echo esc_html( ispag_format_phone( $company_phone ) ); ?>
                             <span class="edit-icon">✏️</span>
                         </dd>
                         
@@ -1201,7 +1201,7 @@ class ISPAG_Company_Detail_Shortcode {
                                 </span>
                             </div>
                             <p style="margin: 5px 0 0;"><?php _e( 'Last contact', 'ispag-crm' ); ?>: <?php echo $contact->last_contact_date_display; ?></p>
-                            <p style="margin: 5px 0 0;"><?php _e( 'Phone number', 'ispag-crm' ); ?>: <?php echo $contact->billing_phone; ?></p>
+                            <p style="margin: 5px 0 0;"><?php _e( 'Phone number', 'ispag-crm' ); ?>: <?php echo esc_html( ispag_format_phone( $contact->billing_phone ) ); ?></p>
                             <p style="margin: 5px 0 0;"><?php _e( 'Email', 'ispag-crm' ); ?>: <?php echo $contact->email; ?></p>
                                 
                             </div>
