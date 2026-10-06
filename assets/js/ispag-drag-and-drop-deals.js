@@ -125,16 +125,17 @@ jQuery(document).ready(function($) {
             stage_key: $zone.data('stage-key'),
             offset: loaded
         })).done(function(r) {
-            if (!r || !r.success) { $btn.prop('disabled', false).removeClass('is-loading'); toast('Error', 'error'); return; }
+            if (!r || !r.success) { $btn.prop('disabled', false).removeClass('is-loading'); toast((r && r.data && r.data.message) || 'Error', 'error'); return; }
             $btn.before(r.data.html).data('loaded', r.data.loaded);
             if (r.data.remaining > 0) {
                 $btn.prop('disabled', false).removeClass('is-loading').text($btn.text().replace(/\(\d+\)/, '(' + r.data.remaining + ')'));
             } else {
                 $btn.remove();
             }
-        }).fail(function() {
+        }).fail(function(xhr) {
             $btn.prop('disabled', false).removeClass('is-loading');
-            toast('Network error', 'error');
+            const m = xhr && xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message;
+            toast(m || ('Network error' + (xhr && xhr.status ? ' (' + xhr.status + ')' : '')), 'error');
         });
     });
 });

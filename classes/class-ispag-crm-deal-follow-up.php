@@ -74,10 +74,13 @@ class ISPAG_Crm_Deal_Follow_Up {
         $today  = strtotime(wp_date('Y-m-d') . ' 00:00:00');
 
         ISPAG_Crm_Decision_Date::ensure_column();
+        // « Ouverte » = même règle que le Kanban : statut 0, ou statut 1 avec database_status 11 ; l'étape réelle est dans la table de liaison
+        $link = ISPAG_Crm_Deal_Constants::TABLE_DEALS_STAGES;
         $rows = $wpdb->get_results("
             SELECT d.* FROM {$deals} d
-            LEFT JOIN {$stages} s ON s.stage_key = d.current_stage_key
-            WHERE d.project_db_status = " . (int) ISPAG_Crm_Deal_Constants::STATUS_OPEN . "
+            LEFT JOIN {$link} l ON l.deal_group_ref = d.deal_group_ref
+            LEFT JOIN {$stages} s ON s.stage_key = COALESCE(l.current_stage_key, d.current_stage_key) COLLATE utf8mb4_unicode_ci
+            WHERE (d.project_db_status = " . (int) ISPAG_Crm_Deal_Constants::STATUS_OPEN . " OR (d.project_db_status = 1 AND d.database_status = 11))
               AND d.deal_owner > 0 AND d.associated_contact_ids <> ''
               AND (s.id IS NULL OR (s.is_closed = 0 AND s.probability < 100))
             ORDER BY d.id DESC");
@@ -86,7 +89,7 @@ class ISPAG_Crm_Deal_Follow_Up {
             $sum['seen']++;
             if ($created >= self::MAX_PER_RUN) { $sum['cap_reached']++; continue; }
             $ref = (string) $deal->deal_group_ref;
-            if ($ref === '') continue;
+            if ($ref === '') { $sum['no_ref'] = ($sum['no_ref'] ?? 0) + 1; continue; }
 
             // Une tâche de relance déjà ouverte pour cette offre ? alors rien à faire
             $open = $wpdb->get_var($wpdb->prepare(
