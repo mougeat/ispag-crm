@@ -21,8 +21,22 @@ class ISPAG_Crm_Deal_Follow_Up {
     public function __construct() {
         add_action(self::CRON_HOOK, [$this, 'run']);
         add_action('init', function () {
-            if (!wp_next_scheduled(self::CRON_HOOK)) wp_schedule_event(time() + 600, 'daily', self::CRON_HOOK);
+            self::schedule_at_hour(self::CRON_HOOK, 6, 0);
         }, 25);
+    }
+
+    /** Planifie un passage quotidien à heure fixe (heure du site) ; recale une planification existante à une autre heure. */
+    public static function schedule_at_hour(string $hook, int $hour, int $minute): void {
+        $next = wp_next_scheduled($hook);
+        $tz   = wp_timezone();
+        if ($next) {
+            $d = (new DateTimeImmutable('@' . $next))->setTimezone($tz);
+            if ((int) $d->format('G') === $hour && (int) $d->format('i') === $minute) return;
+            wp_unschedule_event($next, $hook);
+        }
+        $t = (new DateTimeImmutable('now', $tz))->setTime($hour, $minute);
+        if ($t->getTimestamp() <= time() + 60) $t = $t->modify('+1 day');
+        wp_schedule_event($t->getTimestamp(), 'daily', $hook);
     }
 
     public static function settings(): array {
