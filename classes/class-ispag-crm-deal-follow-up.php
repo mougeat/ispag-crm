@@ -21,7 +21,7 @@ class ISPAG_Crm_Deal_Follow_Up {
     public function __construct() {
         add_action(self::CRON_HOOK, [$this, 'run']);
         add_action('init', function () {
-            self::schedule_at_hour(self::CRON_HOOK, 6, 0);
+            self::schedule_at_hour(self::CRON_HOOK, 4, 30);
         }, 25);
     }
 

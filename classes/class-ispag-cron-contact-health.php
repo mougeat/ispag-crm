@@ -21,7 +21,7 @@ class ISPAG_Cron_Contact_Health {
         // On s'assure que le cron est bien enregistré
         add_action( 'init', function () {
             if ( class_exists( 'ISPAG_Crm_Deal_Follow_Up' ) ) {
-                ISPAG_Crm_Deal_Follow_Up::schedule_at_hour( self::CRON_ACTION, 6, 15 );
+                ISPAG_Crm_Deal_Follow_Up::schedule_at_hour( self::CRON_ACTION, 4, 45 );
             } elseif ( ! wp_next_scheduled( self::CRON_ACTION ) ) {
                 wp_schedule_event( time(), 'daily', self::CRON_ACTION );
             }
