@@ -67,9 +67,10 @@ class ISPAG_Crm_Call_Brief {
             'SELECT * FROM ' . ISPAG_Crm_Deal_Constants::TABLE_NAME . " WHERE (project_db_status = 0 OR (project_db_status = 1 AND database_status = 11)) AND FIND_IN_SET(%d, REPLACE(associated_contact_ids, ' ', '')) > 0 ORDER BY closing_date ASC", $cid));
         foreach ((array) $rows as $d) {
             $eff = ISPAG_Crm_Decision_Date::effective($d);
+            $skey = (string) $wpdb->get_var($wpdb->prepare('SELECT current_stage_key FROM ' . ISPAG_Crm_Deal_Constants::TABLE_DEALS_STAGES . ' WHERE deal_group_ref = %s', (string) $d->deal_group_ref));
             $deals[] = [
                 'ref' => (string) $d->deal_group_ref, 'name' => wp_strip_all_tags(html_entity_decode((string) $d->project_name, ENT_QUOTES, 'UTF-8')),
-                'amount' => (float) $d->total_excl_vat, 'stage' => $stages[$d->current_stage_key] ?? (string) $d->current_stage_key,
+                'amount' => (float) $d->total_excl_vat, 'stage' => $stages[$skey] ?? $skey,
                 'decision' => $eff['date'] ? strtotime($eff['date']) : 0, 'src' => $eff['source'],
             ];
             if ($eff['date'] && strtotime($eff['date']) < $today) $alerts[] = sprintf(__('Offer "%s": expected decision date is past (%s).', 'ispag-crm'), end($deals)['name'], self::day(strtotime($eff['date'])));
