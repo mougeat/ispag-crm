@@ -88,7 +88,7 @@ class ISPAG_Crm_Deal_Follow_Up {
         $today  = strtotime(wp_date('Y-m-d') . ' 00:00:00');
 
         ISPAG_Crm_Decision_Date::ensure_column();
-        // Offre à relancer = encore ouverte (statut 0), jamais gagnée / perdue / déjà commandée ; l'étape réelle est dans la table de liaison
+        // Offre à relancer = étape du Kanban ouverte : ni closed_won, ni closed_lost, ni open_won (en accomplissement), statut 0 ; l'étape réelle est dans la table de liaison
         $link = ISPAG_Crm_Deal_Constants::TABLE_DEALS_STAGES;
         $rows = $wpdb->get_results("
             SELECT d.* FROM {$deals} d
@@ -97,7 +97,7 @@ class ISPAG_Crm_Deal_Follow_Up {
             WHERE d.project_db_status = " . (int) ISPAG_Crm_Deal_Constants::STATUS_OPEN . "
               AND (d.process_type IS NULL OR d.process_type <> 'Commande')
               AND d.deal_owner > 0 AND d.associated_contact_ids <> ''
-              AND (s.id IS NULL OR (s.is_closed = 0 AND s.probability < 100))
+              AND (s.id IS NULL OR (s.is_closed = 0 AND s.probability < 100 AND s.stage_key NOT IN ('closed_won', 'closed_lost', 'open_won')))
             ORDER BY d.id DESC");
         if ($rows === null || $wpdb->last_error) { $sum['error'] = 'SQL : ' . $wpdb->last_error; return; }
         // Nettoyage : les tâches automatiques encore ouvertes d'une offre qui n'est plus à relancer (gagnée, perdue, commandée, clôturée) sont supprimées
