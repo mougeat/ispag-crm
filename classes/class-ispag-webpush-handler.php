@@ -333,6 +333,7 @@ class ISPAG_WebPush_Handler {
         }
 
         $sent = 0;
+        $report = [];   // résultat par appareil (service de push, code HTTP) : lu par l'application mobile pour expliquer une notification non reçue
         foreach ($subs as $sub) {
             $body = self::encrypt($payload, $sub->p256dh, $sub->auth);
             $auth = self::vapid_authorization($sub->endpoint, $keys);
@@ -353,11 +354,14 @@ class ISPAG_WebPush_Handler {
                 ],
             ]);
 
+            $host = (string) wp_parse_url($sub->endpoint, PHP_URL_HOST);
             if (is_wp_error($response)) {
                 self::log_event('Erreur réseau', ['subscription_id' => $sub->id, 'error' => $response->get_error_message()]);
+                $report[] = ['host' => $host, 'http' => 0, 'error' => $response->get_error_message()];
                 continue;
             }
             $code = (int) wp_remote_retrieve_response_code($response);
+            $report[] = ['host' => $host, 'http' => $code, 'error' => ($code >= 200 && $code < 300) ? '' : mb_substr(wp_strip_all_tags((string) wp_remote_retrieve_body($response)), 0, 160)];
             if ($code >= 200 && $code < 300) {
                 $sent++;
                 $wpdb->update(self::table(), ['last_used_at' => current_time('mysql')], ['id' => $sub->id]);
@@ -370,6 +374,7 @@ class ISPAG_WebPush_Handler {
             }
         }
 
+        set_transient('ispag_push_last_' . $user_id, $report, 10 * MINUTE_IN_SECONDS);
         return $sent;
     }
 
