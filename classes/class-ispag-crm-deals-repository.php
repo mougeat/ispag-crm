@@ -688,7 +688,18 @@ class ISPAG_Crm_Deals_Repository {
      * AJAX : charge la suite des cartes d'une colonne (bouton « Voir plus »).
      */
     public function ajax_kanban_load_more() {
-        check_ajax_referer( 'ispag_crm_nonce', 'nonce' );
+        // Lecture seule : connexion + droit d'accès aux fiches (le jeton global `ispag_ajax.nonce` peut être remplacé par un autre plugin sur la page)
+        if ( ! is_user_logged_in() || ! ( current_user_can( 'manage_order' ) || current_user_can( 'view_company' ) || current_user_can( 'view_contact' ) ) ) {
+            wp_send_json_error( [ 'message' => 'Not authorized' ], 403 );
+        }
+        try {
+            $this->kanban_load_more_response();
+        } catch ( Throwable $e ) {
+            wp_send_json_error( [ 'message' => $e->getMessage() ], 500 );
+        }
+    }
+
+    private function kanban_load_more_response() {
 
         $stage_key = sanitize_text_field( $_POST['stage_key'] ?? '' );
         $offset    = absint( $_POST['offset'] ?? 0 );

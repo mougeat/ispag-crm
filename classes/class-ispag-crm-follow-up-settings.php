@@ -17,6 +17,7 @@ class ISPAG_Crm_Follow_Up_Settings {
     public function __construct() {
         add_action('admin_menu', [$this, 'menu'], 30);   // après le menu « ISPAG Settings » du plugin Project Manager
         add_action('admin_post_ispag_crm_follow_up_save', [$this, 'save']);
+        add_action('admin_post_ispag_crm_follow_up_run', [$this, 'run_now']);
     }
 
     /** @return array<string,int> */
@@ -143,6 +144,18 @@ class ISPAG_Crm_Follow_Up_Settings {
                         <td><input type="number" min="1" max="365" id="fu_repeat" name="fu_repeat" value="<?php echo (int) $fu['repeat']; ?>" style="width:90px"> <?php esc_html_e('days (also used once the decision date is past)', 'ispag-crm'); ?></td></tr>
                 </table>
 
+                <?php $lr = ISPAG_Crm_Deal_Follow_Up::last_run(); $next = wp_next_scheduled(ISPAG_Crm_Deal_Follow_Up::CRON_HOOK); ?>
+                <h3><?php esc_html_e('Last run', 'ispag-crm'); ?></h3>
+                <p>
+                <?php if (empty($lr['time'])): esc_html_e('The automatic follow-up has not run yet.', 'ispag-crm'); else: ?>
+                    <?php echo esc_html(sprintf(__('%1$s — offers examined: %2$d, tasks created: %3$d, already have an open follow-up task: %4$d, no contact: %5$d, contact set to "No follow-up": %6$d, owner not found: %7$d, over the daily limit: %8$d.', 'ispag-crm'),
+                        wp_date('d.m.Y H:i', (int) $lr['time']), (int) $lr['seen'], (int) $lr['created'], (int) $lr['has_open_task'], (int) $lr['no_contact'], (int) $lr['no_follow_up_role'], (int) $lr['no_owner_user'], (int) $lr['cap_reached'])); ?>
+                    <?php if (!empty($lr['error'])): ?><br><strong style="color:#b32d2e"><?php echo esc_html(sprintf(__('Error: %s', 'ispag-crm'), $lr['error'])); ?></strong><?php endif; ?>
+                <?php endif; ?>
+                <br><span class="description"><?php echo esc_html($next ? sprintf(__('Next scheduled run: %s', 'ispag-crm'), wp_date('d.m.Y H:i', $next)) : __('No run is scheduled.', 'ispag-crm')); ?>
+                <?php if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON) echo ' ' . esc_html__('(WordPress cron is disabled on this site: a server task must call it.)', 'ispag-crm'); ?></span></p>
+                <p><a class="button" href="<?php echo esc_url(wp_nonce_url(admin_url('admin-post.php?action=ispag_crm_follow_up_run'), 'ispag_crm_follow_up_run')); ?>"><?php esc_html_e('Run the follow-up now', 'ispag-crm'); ?></a></p>
+
                 <h2><?php esc_html_e('By contact role', 'ispag-crm'); ?></h2>
                 <p><?php esc_html_e('Overrides the delay above for all contacts with this role. Leave empty to use the priority delay; tick "No follow-up" for roles that do not order (the contact is never flagged). The three right-hand columns set the rhythm of the automatic offer follow-up for this role; empty = the general setting above.', 'ispag-crm'); ?></p>
                 <?php $this->override_table('roles', $this->role_options(), self::overrides(self::OPT_ROLES)); ?>
@@ -215,6 +228,14 @@ class ISPAG_Crm_Follow_Up_Settings {
             if ($d > 0) $out[$key] = min(1000, $d);
         }
         return $out;
+    }
+
+    public function run_now() {
+        if (!current_user_can('manage_options')) wp_die(esc_html__('Access denied', 'ispag-crm'));
+        check_admin_referer('ispag_crm_follow_up_run');
+        (new ISPAG_Crm_Deal_Follow_Up())->run();
+        wp_safe_redirect(add_query_arg('saved', 1, wp_get_referer() ?: admin_url('admin.php?page=ispag-crm-follow-up')));
+        exit;
     }
 
     public function save() {

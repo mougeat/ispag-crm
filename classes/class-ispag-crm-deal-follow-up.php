@@ -21,8 +21,22 @@ class ISPAG_Crm_Deal_Follow_Up {
     public function __construct() {
         add_action(self::CRON_HOOK, [$this, 'run']);
         add_action('init', function () {
-            if (!wp_next_scheduled(self::CRON_HOOK)) wp_schedule_event(time() + 600, 'daily', self::CRON_HOOK);
+            self::schedule_at_hour(self::CRON_HOOK, 4, 30);
         }, 25);
+    }
+
+    /** Planifie un passage quotidien à heure fixe (heure du site) ; recale une planification existante à une autre heure. */
+    public static function schedule_at_hour(string $hook, int $hour, int $minute): void {
+        $next = wp_next_scheduled($hook);
+        $tz   = wp_timezone();
+        if ($next) {
+            $d = (new DateTimeImmutable('@' . $next))->setTimezone($tz);
+            if ((int) $d->format('G') === $hour && (int) $d->format('i') === $minute) return;
+            wp_unschedule_event($next, $hook);
+        }
+        $t = (new DateTimeImmutable('now', $tz))->setTime($hour, $minute);
+        if ($t->getTimestamp() <= time() + 60) $t = $t->modify('+1 day');
+        wp_schedule_event($t->getTimestamp(), 'daily', $hook);
     }
 
     public static function settings(): array {
@@ -53,9 +67,20 @@ class ISPAG_Crm_Deal_Follow_Up {
         return max($due, $today_ts);
     }
 
+    const OPT_LAST = 'ispag_crm_deal_follow_up_last';
+
+    /** Dernier passage : date + compteurs par motif (affiché dans Réglages → Relances CRM). */
+    public static function last_run(): array { return (array) get_option(self::OPT_LAST, []); }
+
     public function run() {
         $cfg = self::settings();
-        if (!$cfg['enabled']) return;
+        $sum = ['time' => time(), 'enabled' => (int) $cfg['enabled'], 'seen' => 0, 'has_open_task' => 0, 'no_contact' => 0, 'no_follow_up_role' => 0, 'no_owner_user' => 0, 'insert_failed' => 0, 'created' => 0, 'cap_reached' => 0, 'error' => ''];
+        if (!$cfg['enabled']) { update_option(self::OPT_LAST, $sum, false); return; }
+        try { $this->run_inner($cfg, $sum); } catch (Throwable $e) { $sum['error'] = $e->getMessage(); }
+        update_option(self::OPT_LAST, $sum, false);
+    }
+
+    private function run_inner(array $cfg, array &$sum) {
         global $wpdb;
         $deals  = ISPAG_Crm_Deal_Constants::TABLE_NAME;
         $stages = ISPAG_Crm_Deal_Constants::TABLE_DEAL_STAGES;
@@ -63,32 +88,36 @@ class ISPAG_Crm_Deal_Follow_Up {
         $today  = strtotime(wp_date('Y-m-d') . ' 00:00:00');
 
         ISPAG_Crm_Decision_Date::ensure_column();
+        // « Ouverte » = même règle que le Kanban : statut 0, ou statut 1 avec database_status 11 ; l'étape réelle est dans la table de liaison
+        $link = ISPAG_Crm_Deal_Constants::TABLE_DEALS_STAGES;
         $rows = $wpdb->get_results("
             SELECT d.* FROM {$deals} d
-            LEFT JOIN {$stages} s ON s.stage_key = d.current_stage_key
-            WHERE d.project_db_status = " . (int) ISPAG_Crm_Deal_Constants::STATUS_OPEN . "
+            LEFT JOIN {$link} l ON l.deal_group_ref = d.deal_group_ref
+            LEFT JOIN {$stages} s ON s.stage_key = COALESCE(l.current_stage_key, d.current_stage_key) COLLATE utf8mb4_unicode_ci
+            WHERE (d.project_db_status = " . (int) ISPAG_Crm_Deal_Constants::STATUS_OPEN . " OR (d.project_db_status = 1 AND d.database_status = 11))
               AND d.deal_owner > 0 AND d.associated_contact_ids <> ''
               AND (s.id IS NULL OR (s.is_closed = 0 AND s.probability < 100))
             ORDER BY d.id DESC");
         $created = 0;
         foreach ((array) $rows as $deal) {
-            if ($created >= self::MAX_PER_RUN) break;
+            $sum['seen']++;
+            if ($created >= self::MAX_PER_RUN) { $sum['cap_reached']++; continue; }
             $ref = (string) $deal->deal_group_ref;
-            if ($ref === '') continue;
+            if ($ref === '') { $sum['no_ref'] = ($sum['no_ref'] ?? 0) + 1; continue; }
 
             // Une tâche de relance déjà ouverte pour cette offre ? alors rien à faire
             $open = $wpdb->get_var($wpdb->prepare(
                 "SELECT COUNT(*) FROM {$notes} WHERE is_task = 1 AND is_completed = 0 AND deal_id = %s AND content LIKE %s",
                 $ref, '%' . $wpdb->esc_like(self::MARKER) . '%'
             ));
-            if ($open) continue;
+            if ($open) { $sum['has_open_task']++; continue; }
 
             // Contact principal (le premier) ; rôle / type d'entreprise « sans relance » : on ignore l'offre
             $contact_id = (int) trim((string) strtok((string) $deal->associated_contact_ids, ','));
-            if (!$contact_id) continue;
+            if (!$contact_id) { $sum['no_contact']++; continue; }
             $role  = ISPAG_Crm_Follow_Up_Settings::contact_role($contact_id);
             $ctype = ISPAG_Crm_Follow_Up_Settings::company_type((int) $deal->associated_company_id);
-            if (ISPAG_Crm_Follow_Up_Settings::days_for_contact('', $role, $ctype) === 0) continue;
+            if (ISPAG_Crm_Follow_Up_Settings::days_for_contact('', $role, $ctype) === 0) { $sum['no_follow_up_role']++; continue; }
 
             $decision = ISPAG_Crm_Decision_Date::effective($deal);
             $last = (string) $wpdb->get_var($wpdb->prepare(
@@ -102,7 +131,7 @@ class ISPAG_Crm_Deal_Follow_Up {
             if ($due_ts === null) continue;
 
             $user = get_userdata((int) $deal->deal_owner);
-            if (!$user) continue;
+            if (!$user) { $sum['no_owner_user']++; continue; }
             $contact = get_userdata($contact_id);
             $cname   = $contact ? $contact->display_name : '#' . $contact_id;
             $due_day = wp_date('Y-m-d', $due_ts);
@@ -122,7 +151,7 @@ class ISPAG_Crm_Deal_Follow_Up {
                 'reminder_offset' => 'none',
                 'created_at'    => current_time('mysql'),
             ]);
-            if ($ok) $created++;
+            if ($ok) { $created++; $sum['created']++; } else { $sum['insert_failed']++; $sum['error'] = $wpdb->last_error ?: $sum['error']; }
         }
     }
 }
