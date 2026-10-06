@@ -775,71 +775,71 @@ msgstr "Aucun contact trouvé."
 msgid "View"
 msgstr "Voir"
 
-#: classes/class-ispag-crm-call-brief.php:108
+#: classes/class-ispag-crm-call-brief.php:109
 msgid "Task overdue: %1$s (%2$s)."
 msgstr "Tâche en retard : %1$s (%2$s)."
 
-#: classes/class-ispag-crm-call-brief.php:130
+#: classes/class-ispag-crm-call-brief.php:131
 msgid "Write a few words first."
 msgstr "Écrivez d'abord quelques mots."
 
-#: classes/class-ispag-crm-call-brief.php:177
+#: classes/class-ispag-crm-call-brief.php:178
 msgid "Contact not found"
 msgstr "Contact introuvable"
 
-#: classes/class-ispag-crm-call-brief.php:191
+#: classes/class-ispag-crm-call-brief.php:192
 msgid "Last contact: %s"
 msgstr "Dernier contact : %s"
 
-#: classes/class-ispag-crm-call-brief.php:195
+#: classes/class-ispag-crm-call-brief.php:196
 msgid "Open in the CRM"
 msgstr "Ouvrir dans le CRM"
 
-#: classes/class-ispag-crm-call-brief.php:198
+#: classes/class-ispag-crm-call-brief.php:199
 msgid "To keep in mind"
 msgstr "À garder en tête"
 
-#: classes/class-ispag-crm-call-brief.php:203
+#: classes/class-ispag-crm-call-brief.php:204
 msgid "Open offers"
 msgstr "Offres en cours"
 
-#: classes/class-ispag-crm-call-brief.php:205
+#: classes/class-ispag-crm-call-brief.php:206
 msgid "(approx.)"
 msgstr "(approx.)"
 
-#: classes/class-ispag-crm-call-brief.php:205
+#: classes/class-ispag-crm-call-brief.php:206
 msgid "decision"
 msgstr "décision"
 
-#: classes/class-ispag-crm-call-brief.php:210
+#: classes/class-ispag-crm-call-brief.php:211
 msgid "Projects: deliveries to come"
 msgstr "Projets : livraisons à venir"
 
-#: classes/class-ispag-crm-call-brief.php:220
+#: classes/class-ispag-crm-call-brief.php:221
 msgid "Next tasks"
 msgstr "Prochaines tâches"
 
-#: classes/class-ispag-crm-call-brief.php:225
+#: classes/class-ispag-crm-call-brief.php:226
 msgid "Latest actions"
 msgstr "Dernières actions"
 
-#: classes/class-ispag-crm-call-brief.php:229
+#: classes/class-ispag-crm-call-brief.php:230
 msgid "No action recorded yet."
 msgstr "Aucune action enregistrée."
 
-#: classes/class-ispag-crm-call-brief.php:234
+#: classes/class-ispag-crm-call-brief.php:235
 msgid "Record an action"
 msgstr "Consigner une action"
 
-#: classes/class-ispag-crm-call-brief.php:239
+#: classes/class-ispag-crm-call-brief.php:240
 msgid "What was said, what to do…"
 msgstr "Ce qui a été dit, ce qu'il faut faire…"
 
-#: classes/class-ispag-crm-call-brief.php:241
+#: classes/class-ispag-crm-call-brief.php:242
 msgid "Not linked to an offer"
 msgstr "Non liée à une offre"
 
-#: classes/class-ispag-crm-call-brief.php:254
+#: classes/class-ispag-crm-call-brief.php:255
 msgid "Before the call — %s"
 msgstr "Avant l'appel — %s"
 
@@ -851,15 +851,15 @@ msgstr "Accès restreint"
 msgid "This page is reserved to ISPAG sales."
 msgstr "Cette page est réservée aux commerciaux ISPAG."
 
-#: classes/class-ispag-crm-call-brief.php:75
+#: classes/class-ispag-crm-call-brief.php:76
 msgid "Offer \"%s\": expected decision date is past (%s)."
 msgstr "Offre « %s » : la date de décision attendue est dépassée (%s)."
 
-#: classes/class-ispag-crm-call-brief.php:92
+#: classes/class-ispag-crm-call-brief.php:93
 msgid "Late delivery — %1$s (%2$s): was due %3$s."
 msgstr "Livraison en retard — %1$s (%2$s) : prévue le %3$s."
 
-#: classes/class-ispag-crm-call-brief.php:97
+#: classes/class-ispag-crm-call-brief.php:98
 msgid "Supplier late — %1$s (%2$s): confirmed date has passed."
 msgstr "Fournisseur en retard — %1$s (%2$s) : la date confirmée est dépassée."
 
@@ -1155,11 +1155,11 @@ msgstr "Aucune"
 msgid "Status Inconnu"
 msgstr "Statut inconnu"
 
-#: classes/class-ispag-crm-deals-repository.php:1387
+#: classes/class-ispag-crm-deals-repository.php:1398
 msgid "Bulk update of contact date"
 msgstr "Mise à jour groupée de la date de contact"
 
-#: classes/class-ispag-crm-deals-repository.php:1389
+#: classes/class-ispag-crm-deals-repository.php:1400
 msgid "Last contact date manually modified to %s for project %s."
 msgstr "Date du dernier contact modifiée manuellement au %s pour le projet %s."
 
@@ -1170,6 +1170,98 @@ msgstr "date de clôture"
 #: classes/class-ispag-crm-decision-date.php:83
 msgid "offer date + 30 days"
 msgstr "date de l'offre + 30 jours"
+
+#: classes/class-ispag-crm-delete-entity.php:113
+msgid "Still linked to other records."
+msgstr "Encore lié à d'autres enregistrements."
+
+#: classes/class-ispag-crm-delete-entity.php:121
+msgid "The contact could not be deleted."
+msgstr "Le contact n'a pas pu être supprimé."
+
+#: classes/class-ispag-crm-delete-entity.php:128
+msgid "The company could not be deleted."
+msgstr "L'entreprise n'a pas pu être supprimée."
+
+#: classes/class-ispag-crm-delete-entity.php:31
+msgid "Delete this contact?"
+msgstr "Supprimer ce contact ?"
+
+#: classes/class-ispag-crm-delete-entity.php:32
+msgid "Delete this company?"
+msgstr "Supprimer cette entreprise ?"
+
+#: classes/class-ispag-crm-delete-entity.php:33
+msgid "The following will be deleted with it:"
+msgstr "Seront supprimés avec :"
+
+#: classes/class-ispag-crm-delete-entity.php:34
+msgid "This cannot be undone."
+msgstr "Cette action est irréversible."
+
+#: classes/class-ispag-crm-delete-entity.php:35
+msgid "Deletion is not possible while it is still linked to:"
+msgstr "Suppression impossible tant que la fiche est liée à :"
+
+#: classes/class-ispag-crm-delete-entity.php:36
+msgid "Detach or reassign these first, then try again."
+msgstr "Détachez ou réattribuez-les d'abord, puis réessayez."
+
+#: classes/class-ispag-crm-delete-entity.php:37
+msgid "Delete permanently"
+msgstr "Supprimer définitivement"
+
+#: classes/class-ispag-crm-delete-entity.php:40
+msgid "Loading…"
+msgstr "Chargement…"
+
+#: classes/class-ispag-crm-delete-entity.php:41
+msgid "An error occurred."
+msgstr "Une erreur est survenue."
+
+#: classes/class-ispag-crm-delete-entity.php:42
+msgid "Deleted."
+msgstr "Supprimé."
+
+#: classes/class-ispag-crm-delete-entity.php:48
+msgid "Administrators only."
+msgstr "Réservé aux administrateurs."
+
+#: classes/class-ispag-crm-delete-entity.php:49
+msgid "Session expired, reload the page."
+msgstr "Session expirée, rechargez la page."
+
+#: classes/class-ispag-crm-delete-entity.php:73
+msgid "your own account"
+msgstr "votre propre compte"
+
+#: classes/class-ispag-crm-delete-entity.php:74
+msgid "an administrator account"
+msgstr "un compte administrateur"
+
+#: classes/class-ispag-crm-delete-entity.php:76
+msgid "%d offer / deal"
+msgid_plural "%d offers / deals"
+msgstr[0] "%d offre / affaire"
+msgstr[1] "%d offres / affaires"
+
+#: classes/class-ispag-crm-delete-entity.php:80
+msgid "%d project"
+msgid_plural "%d projects"
+msgstr[0] "%d projet"
+msgstr[1] "%d projets"
+
+#: classes/class-ispag-crm-delete-entity.php:83
+msgid "%d note / task"
+msgid_plural "%d notes / tasks"
+msgstr[0] "%d note / tâche"
+msgstr[1] "%d notes / tâches"
+
+#: classes/class-ispag-crm-delete-entity.php:95
+msgid "%d purchase order"
+msgid_plural "%d purchase orders"
+msgstr[0] "%d commande d'achat"
+msgstr[1] "%d commandes d'achat"
 
 #: classes/class-ispag-crm-discount-manager.php:204
 msgid "Missing company ID or field name."
@@ -3454,51 +3546,51 @@ msgstr "Pièces jointes"
 msgid "Invalid parameters."
 msgstr "Paramètres invalides."
 
-#: ispag-crm.php:446
+#: ispag-crm.php:447
 msgid "Please select an action."
 msgstr "Veuillez sélectionner une action."
 
-#: ispag-crm.php:447
+#: ispag-crm.php:448
 msgid "Please select at least one contact."
 msgstr "Veuillez sélectionner au moins un contact."
 
-#: ispag-crm.php:448
+#: ispag-crm.php:449
 msgid "Are you sure you want to delete the selected contacts?"
 msgstr "Voulez-vous vraiment supprimer les contacts sélectionnés ?"
 
-#: ispag-crm.php:449
+#: ispag-crm.php:450
 msgid "A - High"
 msgstr "A - Haute"
 
-#: ispag-crm.php:450
+#: ispag-crm.php:451
 msgid "B - Medium"
 msgstr "B - Moyenne"
 
-#: ispag-crm.php:451
+#: ispag-crm.php:452
 msgid "C - Low"
 msgstr "C - Basse"
 
-#: ispag-crm.php:452
+#: ispag-crm.php:453
 msgid "Company ID"
 msgstr "ID de l'entreprise"
 
-#: ispag-crm.php:453
+#: ispag-crm.php:454
 msgid "-- Select owner --"
 msgstr "-- Sélectionner un responsable --"
 
-#: ispag-crm.php:454
+#: ispag-crm.php:455
 msgid "Preparing..."
 msgstr "Préparation..."
 
-#: ispag-crm.php:455
+#: ispag-crm.php:456
 msgid "Prepare meeting"
 msgstr "Préparer la réunion"
 
-#: ispag-crm.php:470
+#: ispag-crm.php:471
 msgid "Your ISPAG account has been suspended."
 msgstr "Votre compte ISPAG a été suspendu."
 
-#: ispag-crm.php:596
+#: ispag-crm.php:597
 msgid "Unauthorized access."
 msgstr "Accès non autorisé."
 
