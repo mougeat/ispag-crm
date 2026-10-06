@@ -92,7 +92,7 @@ class ISPAG_Crm_Deal_Follow_Up {
         $link = ISPAG_Crm_Deal_Constants::TABLE_DEALS_STAGES;
         $rows = $wpdb->get_results("
             SELECT d.* FROM {$deals} d
-            LEFT JOIN {$link} l ON l.deal_group_ref = COALESCE(NULLIF(d.deal_group_ref, ''), SUBSTRING_INDEX(d.offer_number, '.', 1))
+            LEFT JOIN {$link} l ON l.deal_group_ref = COALESCE(NULLIF(d.deal_group_ref, ''), SUBSTRING_INDEX(d.offer_num, '.', 1))
             LEFT JOIN {$stages} s ON s.stage_key = l.current_stage_key COLLATE utf8mb4_unicode_ci
             WHERE (d.project_db_status = " . (int) ISPAG_Crm_Deal_Constants::STATUS_OPEN . " OR (d.project_db_status = 1 AND d.database_status = 11))
               AND d.deal_owner > 0 AND d.associated_contact_ids <> ''
@@ -102,7 +102,7 @@ class ISPAG_Crm_Deal_Follow_Up {
         $created = 0;
         $done_refs = [];
         foreach ((array) $rows as $deal) {
-            $ref = (string) ($deal->deal_group_ref !== '' ? $deal->deal_group_ref : strtok((string) $deal->offer_number, '.'));
+            $ref = (string) ($deal->deal_group_ref !== '' ? $deal->deal_group_ref : strtok((string) $deal->offer_num, '.'));
             if (isset($done_refs[$ref])) continue;
             $done_refs[$ref] = true;
             $sum['seen']++;
