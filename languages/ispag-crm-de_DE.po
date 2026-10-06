@@ -775,93 +775,109 @@ msgstr "Keine Kontakte gefunden."
 msgid "View"
 msgstr "Ansehen"
 
-#: classes/class-ispag-crm-call-brief.php:108
-msgid "Task overdue: %1$s (%2$s)."
-msgstr "Aufgabe überfällig: %1$s (%2$s)."
-
-#: classes/class-ispag-crm-call-brief.php:130
-msgid "Write a few words first."
-msgstr "Schreiben Sie zuerst ein paar Worte."
-
-#: classes/class-ispag-crm-call-brief.php:177
-msgid "Contact not found"
-msgstr "Kontakt nicht gefunden"
-
-#: classes/class-ispag-crm-call-brief.php:191
-msgid "Last contact: %s"
-msgstr "Letzter Kontakt: %s"
-
-#: classes/class-ispag-crm-call-brief.php:195
-msgid "Open in the CRM"
-msgstr "Im CRM öffnen"
-
-#: classes/class-ispag-crm-call-brief.php:198
-msgid "To keep in mind"
-msgstr "Zu beachten"
-
-#: classes/class-ispag-crm-call-brief.php:203
-msgid "Open offers"
-msgstr "Offene Offerten"
-
-#: classes/class-ispag-crm-call-brief.php:205
-msgid "(approx.)"
-msgstr "(ca.)"
-
-#: classes/class-ispag-crm-call-brief.php:205
-msgid "decision"
-msgstr "Entscheid"
-
-#: classes/class-ispag-crm-call-brief.php:210
-msgid "Projects: deliveries to come"
-msgstr "Projekte: bevorstehende Lieferungen"
-
-#: classes/class-ispag-crm-call-brief.php:220
-msgid "Next tasks"
-msgstr "Nächste Aufgaben"
-
-#: classes/class-ispag-crm-call-brief.php:225
-msgid "Latest actions"
-msgstr "Letzte Aktionen"
-
-#: classes/class-ispag-crm-call-brief.php:229
-msgid "No action recorded yet."
-msgstr "Noch keine Aktion erfasst."
-
-#: classes/class-ispag-crm-call-brief.php:234
-msgid "Record an action"
-msgstr "Aktion erfassen"
-
-#: classes/class-ispag-crm-call-brief.php:239
-msgid "What was said, what to do…"
-msgstr "Was gesagt wurde, was zu tun ist…"
-
-#: classes/class-ispag-crm-call-brief.php:241
-msgid "Not linked to an offer"
-msgstr "Keiner Offerte zugeordnet"
-
-#: classes/class-ispag-crm-call-brief.php:254
-msgid "Before the call — %s"
-msgstr "Vor dem Anruf — %s"
-
-#: classes/class-ispag-crm-call-brief.php:44
-msgid "Restricted"
-msgstr "Zugriff beschränkt"
-
-#: classes/class-ispag-crm-call-brief.php:44
-msgid "This page is reserved to ISPAG sales."
-msgstr "Diese Seite ist den ISPAG-Verkäufern vorbehalten."
-
-#: classes/class-ispag-crm-call-brief.php:75
+#: classes/class-ispag-crm-call-brief.php:118
 msgid "Offer \"%s\": expected decision date is past (%s)."
 msgstr "Offerte «%s»: das erwartete Entscheidungsdatum ist überschritten (%s)."
 
-#: classes/class-ispag-crm-call-brief.php:92
+#: classes/class-ispag-crm-call-brief.php:135
 msgid "Late delivery — %1$s (%2$s): was due %3$s."
 msgstr "Verspätete Lieferung — %1$s (%2$s): fällig am %3$s."
 
-#: classes/class-ispag-crm-call-brief.php:97
+#: classes/class-ispag-crm-call-brief.php:140
 msgid "Supplier late — %1$s (%2$s): confirmed date has passed."
 msgstr "Lieferant im Verzug — %1$s (%2$s): das bestätigte Datum ist überschritten."
+
+#: classes/class-ispag-crm-call-brief.php:151
+msgid "Task overdue: %1$s (%2$s)."
+msgstr "Aufgabe überfällig: %1$s (%2$s)."
+
+#: classes/class-ispag-crm-call-brief.php:173
+msgid "Write a few words first."
+msgstr "Schreiben Sie zuerst ein paar Worte."
+
+#: classes/class-ispag-crm-call-brief.php:220
+msgid "Contact not found"
+msgstr "Kontakt nicht gefunden"
+
+#: classes/class-ispag-crm-call-brief.php:234
+msgid "Last contact: %s"
+msgstr "Letzter Kontakt: %s"
+
+#: classes/class-ispag-crm-call-brief.php:238
+msgid "Open in the CRM"
+msgstr "Im CRM öffnen"
+
+#: classes/class-ispag-crm-call-brief.php:241
+msgid "To keep in mind"
+msgstr "Zu beachten"
+
+#: classes/class-ispag-crm-call-brief.php:246
+msgid "Open offers"
+msgstr "Offene Offerten"
+
+#: classes/class-ispag-crm-call-brief.php:248
+msgid "(approx.)"
+msgstr "(ca.)"
+
+#: classes/class-ispag-crm-call-brief.php:248
+msgid "decision"
+msgstr "Entscheid"
+
+#: classes/class-ispag-crm-call-brief.php:253
+msgid "Projects: deliveries to come"
+msgstr "Projekte: bevorstehende Lieferungen"
+
+#: classes/class-ispag-crm-call-brief.php:263
+msgid "Next tasks"
+msgstr "Nächste Aufgaben"
+
+#: classes/class-ispag-crm-call-brief.php:268
+msgid "Latest actions"
+msgstr "Letzte Aktionen"
+
+#: classes/class-ispag-crm-call-brief.php:272
+msgid "No action recorded yet."
+msgstr "Noch keine Aktion erfasst."
+
+#: classes/class-ispag-crm-call-brief.php:277
+msgid "Record an action"
+msgstr "Aktion erfassen"
+
+#: classes/class-ispag-crm-call-brief.php:282
+msgid "What was said, what to do…"
+msgstr "Was gesagt wurde, was zu tun ist…"
+
+#: classes/class-ispag-crm-call-brief.php:284
+msgid "Not linked to an offer"
+msgstr "Keiner Offerte zugeordnet"
+
+#: classes/class-ispag-crm-call-brief.php:297
+msgid "Before the call — %s"
+msgstr "Vor dem Anruf — %s"
+
+#: classes/class-ispag-crm-call-brief.php:45
+msgid "Restricted"
+msgstr "Zugriff beschränkt"
+
+#: classes/class-ispag-crm-call-brief.php:45
+msgid "This page is reserved to ISPAG sales."
+msgstr "Diese Seite ist den ISPAG-Verkäufern vorbehalten."
+
+#: classes/class-ispag-crm-call-brief.php:56
+msgid "Who is calling?"
+msgstr "Wer ruft an?"
+
+#: classes/class-ispag-crm-call-brief.php:57
+msgid "Name, company or number"
+msgstr "Name, Firma oder Nummer"
+
+#: classes/class-ispag-crm-call-brief.php:78
+msgid "Results"
+msgstr "Ergebnisse"
+
+#: classes/class-ispag-crm-call-brief.php:79
+msgid "No contact found."
+msgstr "Kein Kontakt gefunden."
 
 #: classes/class-ispag-crm-carddav-server.php:406
 msgid "iPhone contacts (CardDAV)"
@@ -3317,10 +3333,6 @@ msgstr "Netzwerkfehler beim Verknüpfen."
 #: includes/js-strings.php:50
 msgid "No attachment found."
 msgstr "Kein Anhang gefunden."
-
-#: includes/js-strings.php:51
-msgid "No contact found."
-msgstr "Kein Kontakt gefunden."
 
 #: includes/js-strings.php:52
 msgid "Please select a sequence."
