@@ -150,6 +150,7 @@ class ISPAG_Crm_Follow_Up_Settings {
                 <?php if (empty($lr['time'])): esc_html_e('The automatic follow-up has not run yet.', 'ispag-crm'); else: ?>
                     <?php echo esc_html(sprintf(__('%1$s — offers examined: %2$d, tasks created: %3$d, already have an open follow-up task: %4$d, no contact: %5$d, contact set to "No follow-up": %6$d, owner not found: %7$d, over the daily limit: %8$d.', 'ispag-crm'),
                         wp_date('d.m.Y H:i', (int) $lr['time']), (int) $lr['seen'], (int) $lr['created'], (int) $lr['has_open_task'], (int) $lr['no_contact'], (int) $lr['no_follow_up_role'], (int) $lr['no_owner_user'], (int) $lr['cap_reached'])); ?>
+                    <?php if (!empty($lr['removed'])): ?><br><?php echo esc_html(sprintf(__('Follow-up tasks removed because the offer is won, lost or no longer open: %d.', 'ispag-crm'), (int) $lr['removed'])); ?><?php endif; ?>
                     <?php if (!empty($lr['error'])): ?><br><strong style="color:#b32d2e"><?php echo esc_html(sprintf(__('Error: %s', 'ispag-crm'), $lr['error'])); ?></strong><?php endif; ?>
                 <?php endif; ?>
                 <br><span class="description"><?php echo esc_html($next ? sprintf(__('Next scheduled run: %s', 'ispag-crm'), wp_date('d.m.Y H:i', $next)) : __('No run is scheduled.', 'ispag-crm')); ?>

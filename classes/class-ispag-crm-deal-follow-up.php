@@ -88,17 +88,25 @@ class ISPAG_Crm_Deal_Follow_Up {
         $today  = strtotime(wp_date('Y-m-d') . ' 00:00:00');
 
         ISPAG_Crm_Decision_Date::ensure_column();
-        // « Ouverte » = même règle que le Kanban : statut 0, ou statut 1 avec database_status 11 ; l'étape réelle est dans la table de liaison
+        // Offre à relancer = étape du Kanban ouverte : ni closed_won, ni closed_lost, ni open_won (en accomplissement), statut 0 ; l'étape réelle est dans la table de liaison
         $link = ISPAG_Crm_Deal_Constants::TABLE_DEALS_STAGES;
         $rows = $wpdb->get_results("
             SELECT d.* FROM {$deals} d
             LEFT JOIN {$link} l ON l.deal_group_ref COLLATE utf8mb4_unicode_ci = (COALESCE(NULLIF(d.deal_group_ref, ''), SUBSTRING_INDEX(d.offer_num, '.', 1)) COLLATE utf8mb4_unicode_ci)
             LEFT JOIN {$stages} s ON s.stage_key COLLATE utf8mb4_unicode_ci = (l.current_stage_key COLLATE utf8mb4_unicode_ci)
-            WHERE (d.project_db_status = " . (int) ISPAG_Crm_Deal_Constants::STATUS_OPEN . " OR (d.project_db_status = 1 AND d.database_status = 11))
+            WHERE d.project_db_status = " . (int) ISPAG_Crm_Deal_Constants::STATUS_OPEN . "
+              AND (d.process_type IS NULL OR d.process_type <> 'Commande')
               AND d.deal_owner > 0 AND d.associated_contact_ids <> ''
-              AND (s.id IS NULL OR (s.is_closed = 0 AND s.probability < 100))
+              AND (s.id IS NULL OR (s.is_closed = 0 AND s.probability < 100 AND s.stage_key NOT IN ('closed_won', 'closed_lost', 'open_won')))
             ORDER BY d.id DESC");
         if ($rows === null || $wpdb->last_error) { $sum['error'] = 'SQL : ' . $wpdb->last_error; return; }
+        // Nettoyage : les tâches automatiques encore ouvertes d'une offre qui n'est plus à relancer (gagnée, perdue, commandée, clôturée) sont supprimées
+        $keep = [];
+        foreach ($rows as $r) $keep[] = (string) ($r->deal_group_ref !== '' ? $r->deal_group_ref : strtok((string) $r->offer_num, '.'));
+        $sum['removed'] = 0;
+        foreach ((array) $wpdb->get_results($wpdb->prepare("SELECT id, deal_id FROM {$notes} WHERE is_task = 1 AND is_completed = 0 AND content LIKE %s", '%' . $wpdb->esc_like(self::MARKER) . '%')) as $t) {
+            if (!in_array((string) $t->deal_id, $keep, true)) { $wpdb->delete($notes, ['id' => (int) $t->id]); $sum['removed']++; }
+        }
         $created = 0;
         $done_refs = [];
         foreach ((array) $rows as $deal) {

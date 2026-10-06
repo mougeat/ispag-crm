@@ -1087,67 +1087,67 @@ msgstr "Anmeldeformular demnächst verfügbar..."
 msgid "Link Selected Contacts"
 msgstr "Ausgewählte Kontakte verknüpfen"
 
-#: classes/class-ispag-crm-contacts-repository.php:1506
+#: classes/class-ispag-crm-contacts-repository.php:1507
 msgid "Missing contact ID."
 msgstr "Kontakt-ID fehlt."
 
-#: classes/class-ispag-crm-contacts-repository.php:1511
+#: classes/class-ispag-crm-contacts-repository.php:1512
 msgid "User not found."
 msgstr "Benutzer nicht gefunden."
 
-#: classes/class-ispag-crm-contacts-repository.php:1600
+#: classes/class-ispag-crm-contacts-repository.php:1601
 msgid "Meeting Preparation"
 msgstr "Besprechungsvorbereitung"
 
-#: classes/class-ispag-crm-contacts-repository.php:1605
+#: classes/class-ispag-crm-contacts-repository.php:1606
 msgid "Objectives"
 msgstr "Ziele"
 
-#: classes/class-ispag-crm-contacts-repository.php:1606
+#: classes/class-ispag-crm-contacts-repository.php:1607
 msgid "Key Questions"
 msgstr "Schlüsselfragen"
 
-#: classes/class-ispag-crm-contacts-repository.php:1607
+#: classes/class-ispag-crm-contacts-repository.php:1608
 msgid "Attention Points"
 msgstr "Beachtenswerte Punkte"
 
-#: classes/class-ispag-crm-contacts-repository.php:1608
+#: classes/class-ispag-crm-contacts-repository.php:1609
 msgid "Agenda"
 msgstr "Traktanden"
 
-#: classes/class-ispag-crm-contacts-repository.php:1609
+#: classes/class-ispag-crm-contacts-repository.php:1610
 msgid "Opening Hook"
 msgstr "Einstieg"
 
-#: classes/class-ispag-crm-contacts-repository.php:1626
+#: classes/class-ispag-crm-contacts-repository.php:1627
 msgid "Meeting prep — %s"
 msgstr "Besprechungsvorbereitung — %s"
 
-#: classes/class-ispag-crm-contacts-repository.php:1909
+#: classes/class-ispag-crm-contacts-repository.php:1935
 msgid "undefined"
 msgstr "nicht definiert"
 
-#: classes/class-ispag-crm-contacts-repository.php:1921
+#: classes/class-ispag-crm-contacts-repository.php:1947
 msgid "👤 New contact assigned"
 msgstr "👤 Neuer Kontakt zugewiesen"
 
-#: classes/class-ispag-crm-contacts-repository.php:1924
+#: classes/class-ispag-crm-contacts-repository.php:1950
 msgid "You have been assigned as the department owner for contact %1$s (%2$s)."
 msgstr "Sie wurden als Abteilungsverantwortlicher für den Kontakt %1$s bestimmt (%2$s)."
 
-#: classes/class-ispag-crm-contacts-repository.php:427
+#: classes/class-ispag-crm-contacts-repository.php:428
 msgid "High"
 msgstr "Hoch"
 
-#: classes/class-ispag-crm-contacts-repository.php:428
+#: classes/class-ispag-crm-contacts-repository.php:429
 msgid "Medium"
 msgstr "Mittel"
 
-#: classes/class-ispag-crm-contacts-repository.php:429
+#: classes/class-ispag-crm-contacts-repository.php:430
 msgid "Low"
 msgstr "Tief"
 
-#: classes/class-ispag-crm-contacts-repository.php:440
+#: classes/class-ispag-crm-contacts-repository.php:441
 msgid "None"
 msgstr "Keine"
 
@@ -1364,62 +1364,66 @@ msgid "%1$s — offers examined: %2$d, tasks created: %3$d, already have an open
 msgstr "%1$s — geprüfte Offerten: %2$d, erstellte Aufgaben: %3$d, haben bereits eine offene Nachfass-Aufgabe: %4$d, ohne Kontakt: %5$d, Kontakt auf «Kein Nachfassen»: %6$d, Verantwortlicher nicht gefunden: %7$d, über dem Tageslimit: %8$d."
 
 #: classes/class-ispag-crm-follow-up-settings.php:153
+msgid "Follow-up tasks removed because the offer is won, lost or no longer open: %d."
+msgstr "Nachfass-Aufgaben entfernt, weil das Angebot gewonnen, verloren oder nicht mehr offen ist: %d."
+
+#: classes/class-ispag-crm-follow-up-settings.php:154
 msgid "Error: %s"
 msgstr "Fehler: %s"
 
-#: classes/class-ispag-crm-follow-up-settings.php:155
+#: classes/class-ispag-crm-follow-up-settings.php:156
 msgid "Next scheduled run: %s"
 msgstr "Nächster geplanter Durchlauf: %s"
 
-#: classes/class-ispag-crm-follow-up-settings.php:155
+#: classes/class-ispag-crm-follow-up-settings.php:156
 msgid "No run is scheduled."
 msgstr "Es ist kein Durchlauf geplant."
 
-#: classes/class-ispag-crm-follow-up-settings.php:156
+#: classes/class-ispag-crm-follow-up-settings.php:157
 msgid "(WordPress cron is disabled on this site: a server task must call it.)"
 msgstr "(WordPress-Cron ist auf dieser Website deaktiviert: ein Serveraufgabe muss ihn aufrufen.)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:157
+#: classes/class-ispag-crm-follow-up-settings.php:158
 msgid "Run the follow-up now"
 msgstr "Nachfassen jetzt ausführen"
 
-#: classes/class-ispag-crm-follow-up-settings.php:159
+#: classes/class-ispag-crm-follow-up-settings.php:160
 msgid "By contact role"
 msgstr "Nach Rolle des Kontakts"
 
-#: classes/class-ispag-crm-follow-up-settings.php:160
+#: classes/class-ispag-crm-follow-up-settings.php:161
 msgid "Overrides the delay above for all contacts with this role. Leave empty to use the priority delay; tick \"No follow-up\" for roles that do not order (the contact is never flagged). The three right-hand columns set the rhythm of the automatic offer follow-up for this role; empty = the general setting above."
 msgstr "Ersetzt die obige Frist für alle Kontakte dieser Rolle. Leer lassen für die Frist der Priorität; «Kein Nachfassen» ankreuzen für Rollen, die nicht bestellen (der Kontakt wird nie markiert). Die drei rechten Spalten legen den Rhythmus des automatischen Nachfassens von Offerten für diese Rolle fest; leer = allgemeine Einstellung oben."
 
-#: classes/class-ispag-crm-follow-up-settings.php:162
+#: classes/class-ispag-crm-follow-up-settings.php:163
 msgid "By company type"
 msgstr "Nach Unternehmenstyp"
 
-#: classes/class-ispag-crm-follow-up-settings.php:163
+#: classes/class-ispag-crm-follow-up-settings.php:164
 msgid "Used when the role has no delay of its own."
 msgstr "Wird verwendet, wenn die Rolle keine eigene Frist hat."
 
-#: classes/class-ispag-crm-follow-up-settings.php:192
+#: classes/class-ispag-crm-follow-up-settings.php:193
 msgid "Contact role / company type"
 msgstr "Rolle des Kontakts / Unternehmenstyp"
 
-#: classes/class-ispag-crm-follow-up-settings.php:192
+#: classes/class-ispag-crm-follow-up-settings.php:193
 msgid "Delay without contact"
 msgstr "Frist ohne Kontakt"
 
-#: classes/class-ispag-crm-follow-up-settings.php:193
+#: classes/class-ispag-crm-follow-up-settings.php:194
 msgid "Not before (days after offer)"
 msgstr "Nicht vor (Tage nach Offerte)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:193
+#: classes/class-ispag-crm-follow-up-settings.php:194
 msgid "Offers: days before decision"
 msgstr "Offerten: Tage vor Entscheid"
 
-#: classes/class-ispag-crm-follow-up-settings.php:193
+#: classes/class-ispag-crm-follow-up-settings.php:194
 msgid "Repeat every (days)"
 msgstr "Wiederholen alle (Tage)"
 
-#: classes/class-ispag-crm-follow-up-settings.php:199
+#: classes/class-ispag-crm-follow-up-settings.php:200
 msgid "No follow-up"
 msgstr "Kein Nachfassen"
 
