@@ -2200,8 +2200,8 @@ msgid "Item modified by someone else"
 msgstr "Article modifié par une autre personne"
 
 #: classes/class-ispag-notifications-manager.php:221
-msgid "Notification sent to the project manager when another person creates, modifies or deletes an item of the project."
-msgstr "Notification envoyée au chef de projet lorsqu'une autre personne crée, modifie ou supprime un article du projet."
+msgid "Notification sent to the project manager when a person outside ISPAG (customer, engineer) creates, modifies or deletes items of the project. Changes made within 15 minutes are grouped into one message."
+msgstr "Notification envoyée au chef de projet lorsqu'une personne extérieure à ISPAG (client, ingénieur) crée, modifie ou supprime des articles du projet. Les modifications faites en 15 minutes sont regroupées en un seul message."
 
 #: classes/class-ispag-notifications-manager.php:228
 msgid "Site information completed"
