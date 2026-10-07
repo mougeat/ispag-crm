@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  *
  * Les champs propres aux fournisseurs sont stockés dans wor9711_ispag_companies_meta (mêmes clés que le plugin achats,
  * voir ISPAG_Achat_Supplier_Repository::SUPPLIER_META_KEYS). L'onglet n'apparaît que pour les entreprises marquées fournisseur.
- * Droit requis pour voir et modifier : edit_supplier_order.
+ * Droits : voir l'onglet = edit_supplier_order ou manage_suppliers ; modifier l'onglet et marquer une entreprise comme fournisseur = manage_suppliers.
  */
 class ISPAG_Crm_Supplier_Tab {
 
@@ -56,10 +56,17 @@ class ISPAG_Crm_Supplier_Tab {
 
     public function __construct() {
         add_action('wp_ajax_ispag_crm_save_supplier_field', [$this, 'ajax_save_field']);
+        add_action('wp_ajax_ispag_crm_set_supplier', [$this, 'ajax_set_supplier']);
     }
 
+    /** Voir l'onglet Fournisseur. */
     public static function can_access() {
-        return current_user_can('edit_supplier_order');
+        return current_user_can('edit_supplier_order') || self::can_manage();
+    }
+
+    /** Marquer une entreprise comme fournisseur et modifier son onglet Fournisseur. */
+    public static function can_manage() {
+        return current_user_can('manage_suppliers');
     }
 
     private static function meta_table() {
@@ -85,6 +92,47 @@ class ISPAG_Crm_Supplier_Tab {
 
     // ------------------------------------------------------------------ Affichage
 
+    /**
+     * Interrupteur « Fournisseur » de la fiche entreprise : modifiable avec le droit manage_suppliers, sinon simple indication si l'entreprise est fournisseur.
+     * À l'enregistrement la page est rechargée (l'onglet Fournisseur apparaît ou disparaît).
+     */
+    public static function supplier_switch($company) {
+        $is = self::is_supplier($company);
+        if (!self::can_manage()) {
+            return $is ? '<p class="ispag-supplier-flag"><span class="dashicons dashicons-yes-alt"></span> ' . esc_html__('Supplier', 'ispag-crm') . '</p>' : '';
+        }
+        $nonce = wp_create_nonce(self::NONCE);
+        ob_start();
+        ?>
+        <p class="ispag-supplier-flag">
+            <label style="cursor:pointer;">
+                <input type="checkbox" id="ispag-supplier-switch" data-company="<?php echo (int) $company->Id; ?>" data-nonce="<?php echo esc_attr($nonce); ?>" <?php checked($is); ?>>
+                <?php esc_html_e('This company is a supplier', 'ispag-crm'); ?>
+            </label>
+            <span id="ispag-supplier-switch-msg" class="ispag-supplier-msg" aria-live="polite"></span>
+        </p>
+        <script>
+        (function () {
+            var box = document.getElementById('ispag-supplier-switch');
+            if (!box) return;
+            box.addEventListener('change', function () {
+                var msg = document.getElementById('ispag-supplier-switch-msg');
+                var body = new URLSearchParams({ action: 'ispag_crm_set_supplier', nonce: box.dataset.nonce, company_id: box.dataset.company, value: box.checked ? '1' : '0' });
+                box.disabled = true;
+                fetch('<?php echo esc_js(admin_url('admin-ajax.php')); ?>', { method: 'POST', credentials: 'same-origin', body: body })
+                    .then(function (r) { return r.json(); })
+                    .then(function (res) {
+                        if (!res.success) throw new Error((res.data && res.data.message) || 'Error');
+                        window.location.reload();
+                    })
+                    .catch(function (err) { box.disabled = false; box.checked = !box.checked; msg.textContent = err.message; msg.classList.add('is-error'); });
+            });
+        })();
+        </script>
+        <?php
+        return ob_get_clean();
+    }
+
     /** Bouton d'onglet (à placer dans .ispag-tabs-navigation) ; vide si l'entreprise n'est pas fournisseur. */
     public static function tab_button($company) {
         if (!self::is_supplier($company) || !self::can_access()) {
@@ -108,12 +156,14 @@ class ISPAG_Crm_Supplier_Tab {
         $articles = class_exists('ISPAG_Standard_Article_Service') ? ISPAG_Standard_Article_Service::articles_of_supplier($company_id) : null;
         $types    = class_exists('ISPAG_Standard_Article_Service') ? ISPAG_Standard_Article_Service::type_names() : [];
         $nonce    = wp_create_nonce(self::NONCE);
+        $ro       = !self::can_manage();   // sans manage_suppliers : consultation seule
 
         ob_start();
         ?>
         <div id="ispag-tab-supplier" class="ispag-tab-pane" data-supplier-company="<?php echo $company_id; ?>" data-nonce="<?php echo esc_attr($nonce); ?>">
             <div class="ispag-card">
                 <h5><?php esc_html_e('Purchasing information', 'ispag-crm'); ?> <span class="ispag-supplier-msg" aria-live="polite"></span></h5>
+                <?php if ($ro): ?><p class="description"><?php esc_html_e('Read only: you need the right to manage suppliers to edit this tab.', 'ispag-crm'); ?></p><?php endif; ?>
                 <div class="ispag-supplier-grid">
                     <?php foreach (self::fields() as $key => $def): ?>
                         <?php if ($def[2] === 'language'):
@@ -121,7 +171,7 @@ class ISPAG_Crm_Supplier_Tab {
                             $choices  = self::language_choices();
                             if ($lang_now !== '' && !isset($choices[$lang_now])) $choices[$lang_now] = $lang_now; // valeur ancienne non reconnue : conservée ?>
                         <label><span><?php echo esc_html($def[1]); ?></span>
-                            <select class="ispag-supplier-field" data-field="<?php echo esc_attr($key); ?>">
+                            <select class="ispag-supplier-field" <?php disabled($ro); ?> data-field="<?php echo esc_attr($key); ?>">
                                 <option value="">— <?php echo esc_html(sprintf(__('Default (%s)', 'ispag-crm'), $choices['fr_FR'] ?? 'Français')); ?></option>
                                 <?php foreach ($choices as $code => $label): ?>
                                     <option value="<?php echo esc_attr($code); ?>" <?php selected($lang_now, $code); ?>><?php echo esc_html($label); ?></option>
@@ -131,7 +181,7 @@ class ISPAG_Crm_Supplier_Tab {
                         <?php continue; endif; ?>
                         <label><span><?php echo esc_html($def[1]); ?></span>
                             <input type="<?php echo esc_attr($def[2]); ?>" <?php echo $def[2] === 'number' ? 'min="0" step="1"' : ''; ?>
-                                   class="ispag-supplier-field" data-field="<?php echo esc_attr($key); ?>"
+                                   class="ispag-supplier-field" <?php disabled($ro); ?> data-field="<?php echo esc_attr($key); ?>"
                                    value="<?php echo esc_attr(self::get_meta($company_id, $def[0])); ?>"></label>
                     <?php endforeach; ?>
                 </div>
@@ -146,7 +196,7 @@ class ISPAG_Crm_Supplier_Tab {
                     <?php foreach (self::contact_roles() as $key => $def):
                         $current = (int) self::get_meta($company_id, $def[0]); ?>
                         <label><span><?php echo esc_html($def[1]); ?></span>
-                            <select class="ispag-supplier-field" data-field="<?php echo esc_attr($key); ?>">
+                            <select class="ispag-supplier-field" <?php disabled($ro); ?> data-field="<?php echo esc_attr($key); ?>">
                                 <option value="0">—</option>
                                 <?php foreach ($users as $u): ?>
                                     <option value="<?php echo (int) $u->ID; ?>" <?php selected($current, (int) $u->ID); ?>><?php echo esc_html($u->display_name . ' (' . $u->user_email . ')'); ?></option>
@@ -234,7 +284,7 @@ class ISPAG_Crm_Supplier_Tab {
         if (!check_ajax_referer(self::NONCE, 'nonce', false)) {
             wp_send_json_error(['message' => __('Security check failed. Please reload the page.', 'ispag-crm')], 403);
         }
-        if (!self::can_access()) {
+        if (!self::can_manage()) {
             wp_send_json_error(['message' => __('Unauthorized', 'ispag-crm')], 403);
         }
         global $wpdb;
@@ -270,5 +320,27 @@ class ISPAG_Crm_Supplier_Tab {
         }
 
         self::set_meta($company_id, $meta_key, $value) ? wp_send_json_success(['value' => $value]) : wp_send_json_error(['message' => __('Database update failed or no changes made.', 'ispag-crm')]);
+    }
+
+    /** Marque ou démarque une entreprise comme fournisseur (droit manage_suppliers). */
+    public function ajax_set_supplier() {
+        if (!check_ajax_referer(self::NONCE, 'nonce', false)) {
+            wp_send_json_error(['message' => __('Security check failed. Please reload the page.', 'ispag-crm')], 403);
+        }
+        if (!self::can_manage()) {
+            wp_send_json_error(['message' => __('Unauthorized', 'ispag-crm')], 403);
+        }
+        global $wpdb;
+        $company_id = absint($_POST['company_id'] ?? 0);
+        $value      = !empty($_POST['value']) && $_POST['value'] !== '0' ? 1 : 0;
+        $table      = ISPAG_Crm_Company_Constants::TABLE_NAME;
+        $current    = $company_id ? $wpdb->get_var($wpdb->prepare("SELECT isSupplier FROM {$table} WHERE Id = %d", $company_id)) : null;
+        if ($current === null) {
+            wp_send_json_error(['message' => __('Company not found.', 'ispag-crm')]);
+        }
+        if ((int) $current !== $value && $wpdb->update($table, ['isSupplier' => $value], ['Id' => $company_id], ['%d'], ['%d']) === false) {
+            wp_send_json_error(['message' => __('Database update failed or no changes made.', 'ispag-crm')]);
+        }
+        wp_send_json_success(['isSupplier' => $value]);
     }
 }

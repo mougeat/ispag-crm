@@ -753,6 +753,11 @@ class ISPAG_Crm_Company_Repository {
             wp_send_json_error( array( 'message' => __( 'Missing ID or field name.', 'ispag-crm' ) ) );
         }
 
+        // Le drapeau « fournisseur » ne se change qu'avec le droit manage_suppliers
+        if ( $field_name === 'isSupplier' && ! current_user_can( 'manage_suppliers' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Unauthorized', 'ispag-crm' ) ), 403 );
+        }
+
         $updated_successfully = false;
         $db_value_to_return = $new_value; 
  
