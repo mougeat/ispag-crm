@@ -900,6 +900,8 @@ class ISPAG_Company_Detail_Shortcode {
                     </div>
 
                 </div>
+
+                <?php echo ISPAG_Crm_Supplier_Tab::supplier_switch( $company ); ?>
                 
                 <div class="ispag-actions-bar">
                     <button class="ispag-action-btn" data-action="note" data-company-id="<?php echo $company_id; ?>" title="<?php esc_attr_e( 'Add Note', 'ispag-crm' ); ?>">
@@ -1020,6 +1022,7 @@ class ISPAG_Company_Detail_Shortcode {
                     <button class="ispag-tab-btn" data-tab="intelligence">
                         <?php esc_html_e( 'Intelligence', 'ispag-crm' ); ?>
                     </button>
+                    <?php echo ISPAG_Crm_Supplier_Tab::tab_button( $company ); ?>
                 </div>
                 
                 <div class="ispag-tabs-content">
@@ -1151,6 +1154,8 @@ class ISPAG_Company_Detail_Shortcode {
                         <?php endif; ?>
                     </div>
                     
+                    <?php echo ISPAG_Crm_Supplier_Tab::tab_pane( $company ); ?>
+
                     <div id="ispag-tab-intelligence" class="ispag-tab-pane">
                         <div 
                             id="gemini-ai-summary-<?php echo absint($company_id); ?>" 

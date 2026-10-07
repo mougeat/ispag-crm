@@ -293,83 +293,83 @@ msgstr "Ungültiger Dokumenttyp."
 msgid "Failed to create the media."
 msgstr "Das Medium konnte nicht erstellt werden."
 
-#: classes/class-ispag-company-detail-shortcode.php:1012
+#: classes/class-ispag-company-detail-shortcode.php:1014
 msgid "About"
 msgstr "Über"
 
-#: classes/class-ispag-company-detail-shortcode.php:1015
+#: classes/class-ispag-company-detail-shortcode.php:1017
 msgid "Activities"
 msgstr "Aktivitäten"
 
-#: classes/class-ispag-company-detail-shortcode.php:1021
+#: classes/class-ispag-company-detail-shortcode.php:1023
 msgid "Intelligence"
 msgstr "Intelligence"
 
-#: classes/class-ispag-company-detail-shortcode.php:1030
+#: classes/class-ispag-company-detail-shortcode.php:1033
 msgid "Company Profile"
 msgstr "Unternehmensprofil"
 
-#: classes/class-ispag-company-detail-shortcode.php:1043
+#: classes/class-ispag-company-detail-shortcode.php:1046
 msgid "Click to edit"
 msgstr "Zum Bearbeiten klicken"
 
-#: classes/class-ispag-company-detail-shortcode.php:1049
+#: classes/class-ispag-company-detail-shortcode.php:1052
 msgid "Street adress"
 msgstr "Strassenadresse"
 
-#: classes/class-ispag-company-detail-shortcode.php:1063
+#: classes/class-ispag-company-detail-shortcode.php:1066
 msgid "Postal code"
 msgstr "Postleitzahl"
 
-#: classes/class-ispag-company-detail-shortcode.php:1077
+#: classes/class-ispag-company-detail-shortcode.php:1080
 msgid "State/Region"
 msgstr "Kanton / Region"
 
-#: classes/class-ispag-company-detail-shortcode.php:1091
+#: classes/class-ispag-company-detail-shortcode.php:1094
 msgid "Country/Region"
 msgstr "Land / Region"
 
-#: classes/class-ispag-company-detail-shortcode.php:1105
+#: classes/class-ispag-company-detail-shortcode.php:1108
 msgid "Industry"
 msgstr "Branche"
 
-#: classes/class-ispag-company-detail-shortcode.php:1130
+#: classes/class-ispag-company-detail-shortcode.php:1133
 msgid "Transaction information"
 msgstr "Deal-Informationen"
 
-#: classes/class-ispag-company-detail-shortcode.php:1136
+#: classes/class-ispag-company-detail-shortcode.php:1139
 msgid "Amount"
 msgstr "Betrag"
 
-#: classes/class-ispag-company-detail-shortcode.php:1137
+#: classes/class-ispag-company-detail-shortcode.php:1140
 msgid "Closing date"
 msgstr "Abschlussdatum"
 
-#: classes/class-ispag-company-detail-shortcode.php:1138
+#: classes/class-ispag-company-detail-shortcode.php:1141
 msgid "Transaction phase"
 msgstr "Deal-Phase"
 
-#: classes/class-ispag-company-detail-shortcode.php:1147
+#: classes/class-ispag-company-detail-shortcode.php:1150
 msgid "Show all transactions"
 msgstr "Alle Deals anzeigen"
 
-#: classes/class-ispag-company-detail-shortcode.php:1150
+#: classes/class-ispag-company-detail-shortcode.php:1153
 msgid "No recent transactions."
 msgstr "Keine aktuellen Deals."
 
-#: classes/class-ispag-company-detail-shortcode.php:1162
+#: classes/class-ispag-company-detail-shortcode.php:1167
 msgid "Loading AI summary..."
 msgstr "KI-Zusammenfassung wird geladen..."
 
-#: classes/class-ispag-company-detail-shortcode.php:1197
+#: classes/class-ispag-company-detail-shortcode.php:1202
 msgid "Remove association"
 msgstr "Zuordnung entfernen"
 
-#: classes/class-ispag-company-detail-shortcode.php:1211
+#: classes/class-ispag-company-detail-shortcode.php:1216
 msgid "View all associated Contacts"
 msgstr "Alle zugeordneten Kontakte anzeigen"
 
-#: classes/class-ispag-company-detail-shortcode.php:1214
+#: classes/class-ispag-company-detail-shortcode.php:1219
 msgid "No contacts associated with this company."
 msgstr "Diesem Unternehmen sind keine Kontakte zugeordnet."
 
@@ -393,55 +393,55 @@ msgstr "Formular zur Kontakterstellung..."
 msgid "Company ID is missing."
 msgstr "Die Unternehmens-ID fehlt."
 
-#: classes/class-ispag-company-detail-shortcode.php:905
+#: classes/class-ispag-company-detail-shortcode.php:907
 msgid "Add Note"
 msgstr "Notiz hinzufügen"
 
-#: classes/class-ispag-company-detail-shortcode.php:909
+#: classes/class-ispag-company-detail-shortcode.php:911
 msgid "Log a call"
 msgstr "Anruf erfassen"
 
-#: classes/class-ispag-company-detail-shortcode.php:913
+#: classes/class-ispag-company-detail-shortcode.php:915
 msgid "Create Task"
 msgstr "Aufgabe erstellen"
 
-#: classes/class-ispag-company-detail-shortcode.php:917
+#: classes/class-ispag-company-detail-shortcode.php:919
 msgid "Create New Contact"
 msgstr "Neuen Kontakt erstellen"
 
-#: classes/class-ispag-company-detail-shortcode.php:924
+#: classes/class-ispag-company-detail-shortcode.php:926
 msgid "Key information"
 msgstr "Wichtige Informationen"
 
-#: classes/class-ispag-company-detail-shortcode.php:927
+#: classes/class-ispag-company-detail-shortcode.php:929
 msgid "Phone number"
 msgstr "Telefonnummer"
 
-#: classes/class-ispag-company-detail-shortcode.php:938
+#: classes/class-ispag-company-detail-shortcode.php:940
 msgid "Address"
 msgstr "Adresse"
 
-#: classes/class-ispag-company-detail-shortcode.php:949
+#: classes/class-ispag-company-detail-shortcode.php:951
 msgid "City"
 msgstr "Ort"
 
-#: classes/class-ispag-company-detail-shortcode.php:960
+#: classes/class-ispag-company-detail-shortcode.php:962
 msgid "Company Owner"
 msgstr "Verantwortlicher für das Unternehmen"
 
-#: classes/class-ispag-company-detail-shortcode.php:972
+#: classes/class-ispag-company-detail-shortcode.php:974
 msgid "Last contacted"
 msgstr "Letzter Kontakt"
 
-#: classes/class-ispag-company-detail-shortcode.php:981
+#: classes/class-ispag-company-detail-shortcode.php:983
 msgid "Company Status"
 msgstr "Unternehmensstatus"
 
-#: classes/class-ispag-company-detail-shortcode.php:983
+#: classes/class-ispag-company-detail-shortcode.php:985
 msgid "Company Type"
 msgstr "Unternehmenstyp"
 
-#: classes/class-ispag-company-detail-shortcode.php:995
+#: classes/class-ispag-company-detail-shortcode.php:997
 msgid "Client Tier"
 msgstr "Kundenstufe"
 
@@ -987,47 +987,47 @@ msgstr "Speichern"
 msgid "Association successfully updated."
 msgstr "Zuordnung erfolgreich aktualisiert."
 
-#: classes/class-ispag-crm-company-repository.php:1002
+#: classes/class-ispag-crm-company-repository.php:1007
 msgid "Unknown user"
 msgstr "Unbekannter Benutzer"
 
-#: classes/class-ispag-crm-company-repository.php:1005
+#: classes/class-ispag-crm-company-repository.php:1010
 msgid "Not assigned"
 msgstr "Nicht zugewiesen"
 
-#: classes/class-ispag-crm-company-repository.php:1012
+#: classes/class-ispag-crm-company-repository.php:1017
 msgid "Not defined"
 msgstr "Nicht definiert"
 
-#: classes/class-ispag-crm-company-repository.php:1028
+#: classes/class-ispag-crm-company-repository.php:1033
 msgid "No data to export"
 msgstr "Keine Daten zum Exportieren"
 
-#: classes/class-ispag-crm-company-repository.php:1056
+#: classes/class-ispag-crm-company-repository.php:1061
 msgid "Project"
 msgstr "Projekt"
 
-#: classes/class-ispag-crm-company-repository.php:1057
+#: classes/class-ispag-crm-company-repository.php:1062
 msgid "Offer number"
 msgstr "Offertnummer"
 
-#: classes/class-ispag-crm-company-repository.php:1059
+#: classes/class-ispag-crm-company-repository.php:1064
 msgid "Contact"
 msgstr "Kontakt"
 
-#: classes/class-ispag-crm-company-repository.php:1060
+#: classes/class-ispag-crm-company-repository.php:1065
 msgid "Amount (CHF)"
 msgstr "Betrag (CHF)"
 
-#: classes/class-ispag-crm-company-repository.php:1061
+#: classes/class-ispag-crm-company-repository.php:1066
 msgid "Stage"
 msgstr "Phase"
 
-#: classes/class-ispag-crm-company-repository.php:1062
+#: classes/class-ispag-crm-company-repository.php:1067
 msgid "Create  date"
 msgstr "Erstellungsdatum"
 
-#: classes/class-ispag-crm-company-repository.php:1063
+#: classes/class-ispag-crm-company-repository.php:1068
 msgid "Close date"
 msgstr "Abschlussdatum"
 
@@ -1055,19 +1055,23 @@ msgstr "Von der KI empfohlene Aktionen"
 msgid "Missing ID or field name."
 msgstr "ID oder Feldname fehlt."
 
-#: classes/class-ispag-crm-company-repository.php:813
+#: classes/class-ispag-crm-company-repository.php:758
+msgid "Unauthorized"
+msgstr "Nicht autorisiert"
+
+#: classes/class-ispag-crm-company-repository.php:818
 msgid "🏢 New company assigned"
 msgstr "🏢 Neues Unternehmen zugewiesen"
 
-#: classes/class-ispag-crm-company-repository.php:816
+#: classes/class-ispag-crm-company-repository.php:821
 msgid "You have been assigned as the department owner for the company %1$s (Department: %2$s)."
 msgstr "Sie wurden als Abteilungsverantwortlicher für das Unternehmen %1$s bestimmt (Abteilung: %2$s)."
 
-#: classes/class-ispag-crm-company-repository.php:932
+#: classes/class-ispag-crm-company-repository.php:937
 msgid "You are not allowed to edit companies."
 msgstr "Sie sind nicht berechtigt, Unternehmen zu bearbeiten."
 
-#: classes/class-ispag-crm-company-repository.php:963
+#: classes/class-ispag-crm-company-repository.php:968
 msgid "Database update failed or no changes made."
 msgstr "Die Datenbankaktualisierung ist fehlgeschlagen oder es wurden keine Änderungen vorgenommen."
 
@@ -1451,79 +1455,87 @@ msgstr "Ingenieur"
 msgid "AI processing failed."
 msgstr "KI-Verarbeitung fehlgeschlagen."
 
-#: classes/class-ispag-crm-supplier-tab.php:116
+#: classes/class-ispag-crm-supplier-tab.php:102
+msgid "Supplier"
+msgstr "Lieferant"
+
+#: classes/class-ispag-crm-supplier-tab.php:110
+msgid "This company is a supplier"
+msgstr "Dieses Unternehmen ist ein Lieferant"
+
+#: classes/class-ispag-crm-supplier-tab.php:165
 msgid "Purchasing information"
 msgstr "Einkaufsinformationen"
 
-#: classes/class-ispag-crm-supplier-tab.php:125
+#: classes/class-ispag-crm-supplier-tab.php:166
+msgid "Read only: you need the right to manage suppliers to edit this tab."
+msgstr "Nur Lesen: Zum Bearbeiten dieses Tabs ist das Recht zur Lieferantenverwaltung nötig."
+
+#: classes/class-ispag-crm-supplier-tab.php:175
 msgid "Default (%s)"
 msgstr "Standard (%s)"
 
-#: classes/class-ispag-crm-supplier-tab.php:130
+#: classes/class-ispag-crm-supplier-tab.php:180
 msgid "Language of the e-mails sent to this supplier (order, quotation…)."
 msgstr "Sprache der E-Mails an diesen Lieferanten (Bestellung, Anfrage…)."
-
-#: classes/class-ispag-crm-supplier-tab.php:143
-msgid "No contact is linked to this company yet."
-msgstr "Diesem Unternehmen ist noch kein Kontakt zugeordnet."
-
-#: classes/class-ispag-crm-supplier-tab.php:160
-msgid "Articles supplied"
-msgstr "Gelieferte Artikel"
-
-#: classes/class-ispag-crm-supplier-tab.php:162
-msgid "The article catalogue is not available (Project Manager plugin inactive)."
-msgstr "Der Artikelkatalog ist nicht verfügbar (Plugin Project Manager inaktiv)."
-
-#: classes/class-ispag-crm-supplier-tab.php:164
-msgid "No article is linked to this supplier yet. Add it from an article (Purchasing tab)."
-msgstr "Diesem Lieferanten ist noch kein Artikel zugeordnet. Fügen Sie ihn über einen Artikel hinzu (Registerkarte Einkauf)."
-
-#: classes/class-ispag-crm-supplier-tab.php:169
-msgid "Article"
-msgstr "Artikel"
-
-#: classes/class-ispag-crm-supplier-tab.php:170
-msgid "Supplier reference"
-msgstr "Lieferantenreferenz"
-
-#: classes/class-ispag-crm-supplier-tab.php:171
-msgid "Purchase price"
-msgstr "Einkaufspreis"
-
-#: classes/class-ispag-crm-supplier-tab.php:172
-msgid "Discount"
-msgstr "Rabatt"
 
 #: classes/class-ispag-crm-supplier-tab.php:19
 msgid "Currency"
 msgstr "Währung"
 
+#: classes/class-ispag-crm-supplier-tab.php:193
+msgid "No contact is linked to this company yet."
+msgstr "Diesem Unternehmen ist noch kein Kontakt zugeordnet."
+
 #: classes/class-ispag-crm-supplier-tab.php:20
 msgid "VAT number"
 msgstr "MwSt.-Nr."
 
-#: classes/class-ispag-crm-supplier-tab.php:216
-msgid "Saved"
-msgstr "Gespeichert"
+#: classes/class-ispag-crm-supplier-tab.php:210
+msgid "Articles supplied"
+msgstr "Gelieferte Artikel"
+
+#: classes/class-ispag-crm-supplier-tab.php:212
+msgid "The article catalogue is not available (Project Manager plugin inactive)."
+msgstr "Der Artikelkatalog ist nicht verfügbar (Plugin Project Manager inaktiv)."
+
+#: classes/class-ispag-crm-supplier-tab.php:214
+msgid "No article is linked to this supplier yet. Add it from an article (Purchasing tab)."
+msgstr "Diesem Lieferanten ist noch kein Artikel zugeordnet. Fügen Sie ihn über einen Artikel hinzu (Registerkarte Einkauf)."
+
+#: classes/class-ispag-crm-supplier-tab.php:219
+msgid "Article"
+msgstr "Artikel"
 
 #: classes/class-ispag-crm-supplier-tab.php:22
 msgid "Delivery time (days)"
 msgstr "Lieferzeit (Tage)"
 
+#: classes/class-ispag-crm-supplier-tab.php:220
+msgid "Supplier reference"
+msgstr "Lieferantenreferenz"
+
+#: classes/class-ispag-crm-supplier-tab.php:221
+msgid "Purchase price"
+msgstr "Einkaufspreis"
+
+#: classes/class-ispag-crm-supplier-tab.php:222
+msgid "Discount"
+msgstr "Rabatt"
+
 #: classes/class-ispag-crm-supplier-tab.php:23
 msgid "Transport time (days)"
 msgstr "Transportzeit (Tage)"
 
-#: classes/class-ispag-crm-supplier-tab.php:238
-msgid "Unauthorized"
-msgstr "Nicht autorisiert"
+#: classes/class-ispag-crm-supplier-tab.php:266
+msgid "Saved"
+msgstr "Gespeichert"
 
-#: classes/class-ispag-crm-supplier-tab.php:264
+#: classes/class-ispag-crm-supplier-tab.php:314
 msgid "This contact does not belong to this company."
 msgstr "Dieser Kontakt gehört nicht zu diesem Unternehmen."
 
-#: classes/class-ispag-crm-supplier-tab.php:269
+#: classes/class-ispag-crm-supplier-tab.php:319
 msgid "Invalid data"
 msgstr "Ungültige Daten"
 
@@ -1542,10 +1554,6 @@ msgstr "Kontakt Rechnungsstellung"
 #: classes/class-ispag-crm-supplier-tab.php:53
 msgid "Delivery contact"
 msgstr "Kontakt Lieferung"
-
-#: classes/class-ispag-crm-supplier-tab.php:93
-msgid "Supplier"
-msgstr "Lieferant"
 
 #: classes/class-ispag-deals-constants.php:130
 msgid "Price Too High"
@@ -2047,6 +2055,10 @@ msgstr "In ISPAG öffnen"
 msgid "Notification not found."
 msgstr "Benachrichtigung nicht gefunden."
 
+#: classes/class-ispag-notifications-manager.php:119
+msgid "Stock"
+msgstr "Lager"
+
 #: classes/class-ispag-notifications-manager.php:120
 msgid "Data import / export"
 msgstr "Datenimport / -export"
@@ -2214,6 +2226,14 @@ msgstr "Bestellung vom Lieferanten bestätigt"
 #: classes/class-ispag-notifications-manager.php:256
 msgid "Notification sent to the person in charge of a purchase order when the supplier confirms it online (QR code of the purchase order)."
 msgstr "Benachrichtigung an die verantwortliche Person einer Bestellung, wenn der Lieferant sie online bestätigt (QR-Code der Bestellung)."
+
+#: classes/class-ispag-notifications-manager.php:263
+msgid "Stock movements to process"
+msgstr "Zu bearbeitende Lagerbewegungen"
+
+#: classes/class-ispag-notifications-manager.php:264
+msgid "Daily reminder (5:30) while stock receipts or deliveries are waiting for confirmation on the Stock page."
+msgstr "Tägliche Erinnerung (5:30 Uhr), solange Wareneingänge oder Lieferungen auf der Lagerseite auf Bestätigung warten."
 
 #: classes/class-ispag-notifications-manager.php:271
 msgid "Purchase tracking"
