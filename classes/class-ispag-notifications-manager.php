@@ -267,6 +267,22 @@ class ISPAG_Notifications_Manager
                 'default_channels' => ['crm', 'push', 'mail'],
                 'retain_during_disconnection' => false, // ⬅️ Ignorer : le rappel revient le lendemain
             ],
+            'supplier_payment_due' => [
+                'label' => __('Supplier payment expected', 'ispag-crm'),
+                'description' => __('Daily reminder while a payment that a supplier requires before delivery was requested for today or earlier and has not arrived.', 'ispag-crm'),
+                'group' => 'purchase',
+                'capability' => 'manage_supplier_payments',
+                'default_channels' => ['crm', 'push', 'mail'],
+                'retain_during_disconnection' => false, // ⬅️ Ignorer : le rappel revient le lendemain
+            ],
+            'supplier_payment_received' => [
+                'label' => __('Supplier payment received', 'ispag-crm'),
+                'description' => __('Notification sent to the person in charge of a purchase order when the payment required by the supplier has arrived: the goods can leave the next day.', 'ispag-crm'),
+                'group' => 'purchase',
+                'capability' => 'edit_supplier_order',
+                'default_channels' => ['crm', 'push', 'mail'],
+                'retain_during_disconnection' => true, // ⬅️ À retenir
+            ],
             'purchase_followup' => [
                 'label' => __('Purchase tracking', 'ispag-crm'),
                 'description' => __('Notification sent for purchase follow-ups.', 'ispag-crm'),
