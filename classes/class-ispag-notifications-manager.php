@@ -218,7 +218,7 @@ class ISPAG_Notifications_Manager
             ],
             'article_changed_by_other' => [
                 'label' => __('Item modified by someone else', 'ispag-crm'),
-                'description' => __('Notification sent to the project manager when another person creates, modifies or deletes an item of the project.', 'ispag-crm'),
+                'description' => __('Notification sent to the project manager when a person outside ISPAG (customer, engineer) creates, modifies or deletes items of the project. Changes made within 15 minutes are grouped into one message.', 'ispag-crm'),
                 'group' => 'deal',
                 'capability' => 'manage_order',
                 'default_channels' => ['crm', 'push', 'mail'],
