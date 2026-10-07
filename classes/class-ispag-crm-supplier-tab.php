@@ -21,6 +21,7 @@ class ISPAG_Crm_Supplier_Tab {
             'lang'           => ['ispag_supplier_lang',          __('Language', 'ispag-crm'),                'language'],
             'delivery_days'  => ['ispag_supplier_delivery_days', __('Delivery time (days)', 'ispag-crm'),    'number'],
             'transport_time' => ['ispag_supplier_transport_time', __('Transport time (days)', 'ispag-crm'),  'number'],
+            'prepay'         => ['ispag_supplier_prepay',        __('Payment before delivery', 'ispag-crm'), 'checkbox'],
         ];
     }
 
@@ -179,6 +180,11 @@ class ISPAG_Crm_Supplier_Tab {
                             </select>
                             <small class="description" style="display:block;color:#6b7480;"><?php esc_html_e('Language of the e-mails sent to this supplier (order, quotation…).', 'ispag-crm'); ?></small></label>
                         <?php continue; endif; ?>
+                        <?php if ($def[2] === 'checkbox'): ?>
+                        <label style="flex-direction:row;align-items:center;gap:.5rem;"><input type="checkbox" class="ispag-supplier-field" <?php disabled($ro); ?> data-field="<?php echo esc_attr($key); ?>" <?php checked(self::get_meta($company_id, $def[0]) === '1'); ?>>
+                            <span><?php echo esc_html($def[1]); ?></span>
+                            <small class="description" style="color:#6b7480;"><?php esc_html_e('This supplier must be paid before it delivers: its orders get a payment follow-up.', 'ispag-crm'); ?></small></label>
+                        <?php continue; endif; ?>
                         <label><span><?php echo esc_html($def[1]); ?></span>
                             <input type="<?php echo esc_attr($def[2]); ?>" <?php echo $def[2] === 'number' ? 'min="0" step="1"' : ''; ?>
                                    class="ispag-supplier-field" <?php disabled($ro); ?> data-field="<?php echo esc_attr($key); ?>"
@@ -257,7 +263,7 @@ class ISPAG_Crm_Supplier_Tab {
                 if (!f) return;
                 var msg = pane.querySelector('.ispag-supplier-msg');
                 var body = new URLSearchParams({ action: 'ispag_crm_save_supplier_field', nonce: pane.dataset.nonce,
-                    company_id: pane.dataset.supplierCompany, field: f.dataset.field, value: f.value });
+                    company_id: pane.dataset.supplierCompany, field: f.dataset.field, value: f.type === 'checkbox' ? (f.checked ? '1' : '') : f.value });
                 f.classList.remove('is-saved', 'is-error');
                 fetch('<?php echo esc_js(admin_url('admin-ajax.php')); ?>', { method: 'POST', credentials: 'same-origin', body: body })
                     .then(function (r) { return r.json(); })
@@ -301,7 +307,7 @@ class ISPAG_Crm_Supplier_Tab {
         $roles  = self::contact_roles();
         if (isset($fields[$field])) {
             $meta_key = $fields[$field][0];
-            $value    = $fields[$field][2] === 'number' ? (string) absint($raw) : sanitize_text_field($raw);
+            $value    = $fields[$field][2] === 'number' ? (string) absint($raw) : ($fields[$field][2] === 'checkbox' ? ($raw === '1' ? '1' : '') : sanitize_text_field($raw));
             if ($fields[$field][2] === 'language') { $value = self::normalize_language($value); }
             if ($value === '0') { $value = ''; }
         } elseif (isset($roles[$field])) {
