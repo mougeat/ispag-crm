@@ -32,6 +32,17 @@ class ISPAG_Management_Briefing {
 
     public function rest_briefing($req) {
         $ref = (string) ($req->get_param('ref') ?: wp_date('Y-m-d'));
-        return rest_ensure_response(ISPAG_Deal_Kpis::weekly_summary($ref));
+        $data = ISPAG_Deal_Kpis::weekly_summary($ref);
+        // Agenda de l'iPhone (synchronisé par un Raccourci) : 7 jours à partir de la date de référence
+        $to = date('Y-m-d', strtotime($ref . ' +6 days'));
+        $ag = ISPAG_Agenda_Sync::events($ref, $to);
+        $age_h = !empty($ag['synced_at']) ? (time() - strtotime($ag['synced_at'])) / 3600 : null;
+        $data['agenda'] = [
+            'from'      => $ref, 'to' => $to,
+            'synced_at' => $ag['synced_at'],
+            'stale'     => $age_h === null || $age_h > 48,
+            'events'    => $ag['events'],
+        ];
+        return rest_ensure_response($data);
     }
 }
