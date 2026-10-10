@@ -108,6 +108,29 @@ class ISPAG_Deal_Kpis {
         return ['threshold_days' => (int) $days, 'count' => count($rows), 'amount' => round($total, 2), 'items' => $items];
     }
 
+    /** Toutes les offres ouvertes (une par dossier), avec leur entreprise : base des propositions de visites. */
+    public static function open_offers_list($today) {
+        global $wpdb;
+        $companies = $wpdb->prefix . 'ispag_companies';
+        $sql = "SELECT g.id, g.associated_company_id AS company_id, g.project_name, g.amount, g.stage, c.company_name, u.display_name AS owner,
+                       DATEDIFF(%s, DATE(COALESCE(g.last_updated, g.offer_date))) AS idle_days
+                  FROM (" . self::groups_sql() . ") g
+                  LEFT JOIN {$companies} c ON c.Id = g.associated_company_id
+                  LEFT JOIN {$wpdb->users} u ON u.ID = g.deal_owner
+                 WHERE g.offer_date IS NOT NULL
+                   AND (g.stage IS NULL OR g.stage NOT IN (" . self::in_list(array_merge(self::WON_STAGES, self::LOST_STAGES)) . "))
+                 ORDER BY g.amount DESC";
+        $out = [];
+        foreach ((array) $wpdb->get_results($wpdb->prepare($sql, $today)) as $r) {
+            $out[] = [
+                'id' => (int) $r->id, 'company_id' => (int) $r->company_id, 'company' => (string) ($r->company_name ?: ''), 'project' => (string) $r->project_name,
+                'amount' => round((float) $r->amount, 2), 'stage' => (string) ($r->stage ?: ''), 'idle_days' => $r->idle_days === null ? null : (int) $r->idle_days,
+                'owner' => (string) ($r->owner ?: ''), 'link' => trailingslashit(home_url('/deal/' . (int) $r->id . '/')),
+            ];
+        }
+        return $out;
+    }
+
     /** Offres ouvertes : nombre et montant HT. */
     public static function pipeline() {
         global $wpdb;

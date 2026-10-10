@@ -282,6 +282,7 @@ function ispag_run_crm_manager() {
         'ISPAG_Cron_Weekly_Deal_Report',
         'ISPAG_Management_Briefing',
         'ISPAG_Agenda_Sync',
+        'ISPAG_Week_Plan',
         'ISPAG_Cron_Contact_Health',
         'ISPAG_Crm_Follow_Up_Settings',
         'ISPAG_Crm_Decision_Date',
