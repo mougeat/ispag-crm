@@ -639,6 +639,21 @@ class ISPAG_Crm_Deals_Repository {
         }
         $stages_map = $this->_load_stages_batch( array_unique( array_filter( $group_refs ) ) );
 
+        // Une seule carte par offre (deal_group_ref) : la version la plus récente ; les autres versions sont comptées mais pas affichées
+        $latest = [];
+        foreach ( $raw_deals as $raw ) {
+            $ref = (string) $raw->_group_ref;
+            if ( $ref === '' ) { $latest[ '#' . $raw->id ] = $raw; $raw->_versions = 1; continue; }
+            if ( ! isset( $latest[ $ref ] ) ) { $raw->_versions = 1; $latest[ $ref ] = $raw; continue; }
+            $kept = $latest[ $ref ];
+            $newer = strcmp( (string) $raw->date_creation, (string) $kept->date_creation ) > 0
+                || ( (string) $raw->date_creation === (string) $kept->date_creation && (int) $raw->id > (int) $kept->id );
+            $versions = (int) $kept->_versions + 1;
+            if ( $newer ) { $latest[ $ref ] = $raw; $kept = $raw; }
+            $kept->_versions = $versions;
+        }
+        $raw_deals = array_values( $latest );
+
         $grouped = [];
         foreach ( $raw_deals as $raw ) {
             $stage     = $stages_map[ $raw->_group_ref ] ?? null;

@@ -62,7 +62,8 @@ class ISPAG_Crm_Project_Associations {
         if ($type === 'company') {
             $taken = self::id_list($project->AssociatedCompanyID);
             $table = $wpdb->prefix . 'ispag_companies';
-            $where = $term !== '' ? $wpdb->prepare('WHERE company_name LIKE %s', '%' . $wpdb->esc_like($term) . '%') : '';
+            // Seules les entreprises actives peuvent être associées à un projet
+            $where = 'WHERE is_active = 1' . ($term !== '' ? $wpdb->prepare(' AND company_name LIKE %s', '%' . $wpdb->esc_like($term) . '%') : '');
             foreach ((array) $wpdb->get_results("SELECT Id, company_name, city FROM $table $where ORDER BY company_name ASC LIMIT 30") as $c) {
                 if (in_array((int) $c->Id, $taken, true)) continue;
                 $out[] = ['id' => (int) $c->Id, 'name' => (string) $c->company_name, 'sub' => (string) $c->city];
@@ -96,8 +97,8 @@ class ISPAG_Crm_Project_Associations {
         if (!$id) wp_send_json_error(['message' => 'Missing id.']);
 
         if ($type === 'company') {
-            $exists = $wpdb->get_var($wpdb->prepare("SELECT Id FROM {$wpdb->prefix}ispag_companies WHERE Id = %d", $id));
-            if (!$exists) wp_send_json_error(['message' => 'Company not found.']);
+            $exists = $wpdb->get_var($wpdb->prepare("SELECT Id FROM {$wpdb->prefix}ispag_companies WHERE Id = %d AND is_active = 1", $id));
+            if (!$exists) wp_send_json_error(['message' => 'Company not found or inactive.']);
             $value = $this->company_is_single() ? (string) $id : implode(',', array_unique(array_merge(self::id_list($project->AssociatedCompanyID), [$id])));
             $wpdb->update($this->table(), ['AssociatedCompanyID' => $value], ['id' => $project->id]);
         } elseif ($type === 'contact') {
