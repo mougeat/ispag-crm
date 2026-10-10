@@ -39,6 +39,8 @@ class ISPAG_Cron_Contact_Health {
      */
     public function run_health_checks() {
         self::log("--- DEBUT RUN HEALTH CHECKS ---");
+        // Pas de tâche créée le week-end
+        if (class_exists('ISPAG_Crm_Deal_Follow_Up') && !ISPAG_Crm_Deal_Follow_Up::is_workday()) { self::log("--- WEEK-END : RIEN CREE ---"); return; }
         
         // 1. Relance des contacts dont le délai de visite/appel est dépassé
         $this->process_contact_reminders();
@@ -179,7 +181,7 @@ class ISPAG_Cron_Contact_Health {
                         'content'      => "ISPAG health alert: no real contact detected since **{$display_last}**. {$days}-day limit exceeded.",
                         'is_task'      => 1,
                         'is_completed' => 0,
-                        'due_date'     => date('Y-m-d H:i:s', strtotime('+3 days')),
+                        'due_date'     => (class_exists('ISPAG_Crm_Deal_Follow_Up') ? wp_date('Y-m-d', ISPAG_Crm_Deal_Follow_Up::next_workday_ts(strtotime(wp_date('Y-m-d') . ' 00:00:00 +3 days'))) : date('Y-m-d', strtotime('+3 days'))) . ' 17:00:00',
                         'created_at'   => current_time('mysql')
                     ));
 

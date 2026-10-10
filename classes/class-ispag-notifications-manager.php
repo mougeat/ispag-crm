@@ -510,6 +510,43 @@ class ISPAG_Notifications_Manager
      * POINT D'ENTRÉE PRINCIPAL : Dispatch une notification selon les préférences et les canaux
      * Garantit qu'une seule notification est envoyée par destinataire, même si plusieurs canaux sont activés.
      */
+    /**
+     * Règles des destinataires :
+     *  - l'administrateur (ID 1) n'est plus mis en copie de tout : il est retiré dès qu'il y a d'autres destinataires
+     *    (réglage « ispag_notifications_admin_copy » pour le remettre) ; seul, il reste destinataire (alertes techniques) ;
+     *  - quand un client (personne extérieure à ISPAG) est notifié à propos d'un projet, le chef de projet est mis en copie.
+     * Le projet vient de $extra_data['deal_id'], ou d'un lien « project-detail/<id> ».
+     *
+     * @return int[]
+     */
+    public static function apply_recipient_rules($user_ids, $type, $url = '', $entity_id = null, array $extra_data = [])
+    {
+        $ids = array_values(array_unique(array_filter(array_map('intval', (array) $user_ids))));
+        if (!$ids) return $ids;
+
+        $deal_id = (int) ($extra_data['deal_id'] ?? 0);
+        if (!$deal_id && preg_match('#project-detail/(\d+)#', $url, $m)) $deal_id = (int) $m[1];
+
+        if ($deal_id && class_exists('ISPAG_Project_Phase_Resolver')) {
+            $external = false;
+            foreach ($ids as $uid) {
+                $internal = class_exists('ISPAG_Change_Notifier') ? ISPAG_Change_Notifier::is_ispag_member($uid) : user_can($uid, 'manage_order');
+                if (!$internal) { $external = true; break; }
+            }
+            if ($external) {
+                $purchase = ISPAG_Project_Phase_Resolver::get_purchase($deal_id);
+                $pm = $purchase ? ISPAG_Project_Phase_Resolver::get_project_manager_id($purchase) : null;
+                if ($pm && !in_array($pm, $ids, true)) $ids[] = (int) $pm;
+            }
+        }
+
+        if (count($ids) > 1 && !get_option('ispag_notifications_admin_copy', 0)) {
+            $without = array_values(array_diff($ids, [1]));
+            if ($without) $ids = $without;
+        }
+        return apply_filters('ispag_notification_recipients', $ids, $type, $deal_id, $extra_data);
+    }
+
         public static function send($user_ids, $type, $title, $content, $url = '', $entity_id = null, $extra_data = [])
     {
         global $wpdb;
@@ -534,6 +571,8 @@ class ISPAG_Notifications_Manager
             $logger->log('notifications_manager', 'ERROR: Invalid notification type - ' . $type, $current_user_id);
             return false;
         }
+
+        $user_ids = self::apply_recipient_rules($user_ids, $type, (string) $url, $entity_id, (array) $extra_data);
 
         $config = $types[$type];
         $sent_notifications = [];

@@ -70,12 +70,25 @@ class ISPAG_Crm_Deal_Follow_Up {
     const OPT_LAST = 'ispag_crm_deal_follow_up_last';
 
     /** Dernier passage : date + compteurs par motif (affiché dans Réglages → Relances CRM). */
+    /** Jour ouvré (lundi-vendredi) : un samedi ou un dimanche est reporté au lundi suivant. $ts : timestamp d'un jour à 00:00. */
+    public static function next_workday_ts(int $ts): int {
+        $dow = (int) wp_date('N', $ts);                // 1 = lundi … 7 = dimanche
+        if ($dow >= 6) $ts += (8 - $dow) * DAY_IN_SECONDS;
+        return $ts;
+    }
+
+    public static function is_workday(?int $ts = null): bool {
+        return (int) wp_date('N', $ts ?? time()) <= 5;
+    }
+
     public static function last_run(): array { return (array) get_option(self::OPT_LAST, []); }
 
     public function run() {
         $cfg = self::settings();
         $sum = ['time' => time(), 'enabled' => (int) $cfg['enabled'], 'seen' => 0, 'has_open_task' => 0, 'no_contact' => 0, 'no_follow_up_role' => 0, 'no_owner_user' => 0, 'insert_failed' => 0, 'created' => 0, 'cap_reached' => 0, 'error' => ''];
         if (!$cfg['enabled']) { update_option(self::OPT_LAST, $sum, false); return; }
+        // Les tâches de suivi ne sont créées qu'en semaine
+        if (!self::is_workday()) { $sum['skipped_weekend'] = 1; update_option(self::OPT_LAST, $sum, false); return; }
         try { $this->run_inner($cfg, $sum); } catch (Throwable $e) { $sum['error'] = $e->getMessage(); }
         update_option(self::OPT_LAST, $sum, false);
     }
@@ -146,6 +159,7 @@ class ISPAG_Crm_Deal_Follow_Up {
             if (!$user) { $sum['no_owner_user']++; continue; }
             $contact = get_userdata($contact_id);
             $cname   = $contact ? $contact->display_name : '#' . $contact_id;
+            $due_ts  = self::next_workday_ts((int) $due_ts);   // jamais un week-end
             $due_day = wp_date('Y-m-d', $due_ts);
             $when    = $decision['date'] ? sprintf('décision attendue le %s', wp_date('d.m.Y', strtotime($decision['date']))) : 'pas de date de décision';
             $ok = $wpdb->insert($notes, [
