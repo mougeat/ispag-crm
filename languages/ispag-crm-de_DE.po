@@ -1159,11 +1159,11 @@ msgstr "Keine"
 msgid "Status Inconnu"
 msgstr "Unbekannter Status"
 
-#: classes/class-ispag-crm-deals-repository.php:1398
+#: classes/class-ispag-crm-deals-repository.php:1433
 msgid "Bulk update of contact date"
 msgstr "Sammelaktualisierung des Kontaktdatums"
 
-#: classes/class-ispag-crm-deals-repository.php:1400
+#: classes/class-ispag-crm-deals-repository.php:1435
 msgid "Last contact date manually modified to %s for project %s."
 msgstr "Datum des letzten Kontakts manuell auf %s geändert für das Projekt %s."
 
@@ -2051,11 +2051,11 @@ msgstr "Teilnehmer"
 msgid "Schedule"
 msgstr "Zeitplan"
 
-#: classes/class-ispag-notifications-manager.php:1075
+#: classes/class-ispag-notifications-manager.php:1114
 msgid "Hello %s,"
 msgstr "Guten Tag %s,"
 
-#: classes/class-ispag-notifications-manager.php:1079
+#: classes/class-ispag-notifications-manager.php:1118
 msgid "Open in ISPAG"
 msgstr "In ISPAG öffnen"
 
@@ -2067,69 +2067,69 @@ msgstr "Lager"
 msgid "Data import / export"
 msgstr "Datenimport / -export"
 
-#: classes/class-ispag-notifications-manager.php:1202
-msgid "Notification not found."
-msgstr "Benachrichtigung nicht gefunden."
-
 #: classes/class-ispag-notifications-manager.php:122
 msgid "Form submission"
 msgstr "Formularübermittlung"
-
-#: classes/class-ispag-notifications-manager.php:1221
-msgid "Notification marked as read."
-msgstr "Benachrichtigung als gelesen markiert."
-
-#: classes/class-ispag-notifications-manager.php:1222
-msgid "Notification marked as unread."
-msgstr "Benachrichtigung als ungelesen markiert."
 
 #: classes/class-ispag-notifications-manager.php:123
 msgid "Invoice"
 msgstr "Rechnung"
 
+#: classes/class-ispag-notifications-manager.php:1241
+msgid "Notification not found."
+msgstr "Benachrichtigung nicht gefunden."
+
 #: classes/class-ispag-notifications-manager.php:125
 msgid "Automations and workflow"
 msgstr "Automatisierungen und Workflow"
 
-#: classes/class-ispag-notifications-manager.php:1264
+#: classes/class-ispag-notifications-manager.php:1260
+msgid "Notification marked as read."
+msgstr "Benachrichtigung als gelesen markiert."
+
+#: classes/class-ispag-notifications-manager.php:1261
+msgid "Notification marked as unread."
+msgstr "Benachrichtigung als ungelesen markiert."
+
+#: classes/class-ispag-notifications-manager.php:1303
 msgid "Error while changing the status."
 msgstr "Fehler beim Ändern des Status."
 
-#: classes/class-ispag-notifications-manager.php:1268
+#: classes/class-ispag-notifications-manager.php:1307
 msgid "Notification moved to the Trash."
 msgstr "Benachrichtigung in den Papierkorb verschoben."
 
-#: classes/class-ispag-notifications-manager.php:1269
+#: classes/class-ispag-notifications-manager.php:1308
 msgid "Notification restored."
 msgstr "Benachrichtigung wiederhergestellt."
 
-#: classes/class-ispag-notifications-manager.php:1304
+#: classes/class-ispag-notifications-manager.php:1343
 msgid "ISPAG notification preferences"
 msgstr "ISPAG-Benachrichtigungseinstellungen"
 
-#: classes/class-ispag-notifications-manager.php:1364
+#: classes/class-ispag-notifications-manager.php:1403
 msgid "Weekend notifications"
 msgstr "Wochenend-Benachrichtigungen"
 
-#: classes/class-ispag-notifications-manager.php:1373
+#: classes/class-ispag-notifications-manager.php:1412
 msgid "If left unchecked, notifications will be delayed until Monday."
 msgstr "Ist das Kontrollkästchen deaktiviert, werden Benachrichtigungen bis Montag verzögert."
-
-#: classes/class-ispag-notifications-manager.php:1388
-msgid "From :"
-msgstr "Von:"
-
-#: classes/class-ispag-notifications-manager.php:1394
-msgid "To :"
-msgstr "Bis:"
 
 #: classes/class-ispag-notifications-manager.php:142
 msgid "Contact assigned to you"
 msgstr "Ihnen zugewiesener Kontakt"
 
+#: classes/class-ispag-notifications-manager.php:1427
+msgid "From :"
+msgstr "Von:"
+
 #: classes/class-ispag-notifications-manager.php:143
 msgid "Notification sent when a contact is assigned to you."
 msgstr "Benachrichtigung, wenn Ihnen ein Kontakt zugewiesen wird."
+
+#: classes/class-ispag-notifications-manager.php:1433
+msgid "To :"
+msgstr "Bis:"
 
 #: classes/class-ispag-notifications-manager.php:150
 msgid "Contact lead status"
@@ -2544,6 +2544,14 @@ msgid "Total invoices"
 msgstr "Rechnungen total"
 
 #: classes/class-ispag-revenue-stats.php:114
+msgid "%1$d won, %2$d lost"
+msgstr "%1$d gewonnen, %2$d verloren"
+
+#: classes/class-ispag-revenue-stats.php:115
+msgid "Conversion rate"
+msgstr "Umwandlungsquote"
+
+#: classes/class-ispag-revenue-stats.php:120
 msgid "Weighted Pipeline"
 msgstr "Gewichtete Pipeline"
 
@@ -3594,51 +3602,51 @@ msgstr "Anhänge"
 msgid "Invalid parameters."
 msgstr "Ungültige Parameter."
 
-#: ispag-crm.php:448
+#: ispag-crm.php:449
 msgid "Please select an action."
 msgstr "Bitte wählen Sie eine Aktion aus."
 
-#: ispag-crm.php:449
+#: ispag-crm.php:450
 msgid "Please select at least one contact."
 msgstr "Bitte wählen Sie mindestens einen Kontakt aus."
 
-#: ispag-crm.php:450
+#: ispag-crm.php:451
 msgid "Are you sure you want to delete the selected contacts?"
 msgstr "Möchten Sie die ausgewählten Kontakte wirklich löschen?"
 
-#: ispag-crm.php:451
+#: ispag-crm.php:452
 msgid "A - High"
 msgstr "A - Hoch"
 
-#: ispag-crm.php:452
+#: ispag-crm.php:453
 msgid "B - Medium"
 msgstr "B - Mittel"
 
-#: ispag-crm.php:453
+#: ispag-crm.php:454
 msgid "C - Low"
 msgstr "C - Tief"
 
-#: ispag-crm.php:454
+#: ispag-crm.php:455
 msgid "Company ID"
 msgstr "Unternehmens-ID"
 
-#: ispag-crm.php:455
+#: ispag-crm.php:456
 msgid "-- Select owner --"
 msgstr "-- Verantwortlichen auswählen --"
 
-#: ispag-crm.php:456
+#: ispag-crm.php:457
 msgid "Preparing..."
 msgstr "Vorbereitung..."
 
-#: ispag-crm.php:457
+#: ispag-crm.php:458
 msgid "Prepare meeting"
 msgstr "Besprechung vorbereiten"
 
-#: ispag-crm.php:472
+#: ispag-crm.php:473
 msgid "Your ISPAG account has been suspended."
 msgstr "Ihr ISPAG-Konto wurde gesperrt."
 
-#: ispag-crm.php:598
+#: ispag-crm.php:599
 msgid "Unauthorized access."
 msgstr "Nicht autorisierter Zugriff."
 

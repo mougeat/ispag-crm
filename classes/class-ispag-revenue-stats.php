@@ -110,6 +110,12 @@ class ISPAG_Revenue_Stats {
                 <span class="ispag-stat-value"><?php echo intval($stats->invoice_count); ?></span>
             </div>
 
+            <?php $conv = ISPAG_Deal_Kpis::conversion_for($id, $type); ?>
+            <div class="ispag-stat-card" title="<?php echo esc_attr(sprintf(__('%1$d won, %2$d lost', 'ispag-crm'), $conv['won'], $conv['lost'])); ?>">
+                <span class="ispag-stat-label"><?php _e( 'Conversion rate', 'ispag-crm' ); ?></span>
+                <span class="ispag-stat-value"><?php echo $conv['rate'] === null ? '–' : esc_html(number_format($conv['rate'], 0)) . ' <small>%</small>'; ?></span>
+            </div>
+
             <div class="ispag-stat-card highlight">
                 <span class="ispag-stat-label"><?php _e( 'Weighted Pipeline', 'ispag-crm' ); ?></span>
                 <span class="ispag-stat-value">
