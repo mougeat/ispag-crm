@@ -347,9 +347,10 @@ class ISPAG_Crm_Deals_Repository {
 
     //     return $grouped;
     // }
-    public function get_all_deals_grouped_by_stage( $filters = [] ) {
+    /** Filtres par défaut de la liste des deals. */
+    private function _list_filters( $filters ) {
         $current_user_id = ! current_user_can( 'administrator' ) ? get_current_user_id() : 'all';
-        $defaults = [
+        return array_merge([
             'status'       => 'open',
             'owner'        => ($current_user_id > 0) ? $current_user_id : 'all',
             'closing_date' => 'all',
@@ -357,10 +358,12 @@ class ISPAG_Crm_Deals_Repository {
             'search'       => '',
             'limit'        => 4000,
             'offset'       => 0,
-        ];
-        $filters = array_merge($defaults, $filters);
+            'flat'         => false,
+        ], (array) $filters);
+    }
 
-        // ── 1. Construction du WHERE ──────────────────────────────────────────
+    /** WHERE de la liste des deals (partagé entre la liste et son comptage). @return array [sql, params] */
+    private function _list_where( array $filters ) {
         $where_conditions = [];
         $params           = [];
 
@@ -409,6 +412,22 @@ class ISPAG_Crm_Deals_Repository {
 
         $where_sql = !empty($where_conditions) ? 'WHERE ' . implode(' AND ', $where_conditions) : '';
 
+        return [ $where_sql, $params ];
+    }
+
+    /** Nombre total de deals correspondant aux filtres (pour la pagination du tableau). */
+    public function count_deals( $filters = [] ) {
+        $filters = $this->_list_filters($filters);
+        [ $where_sql, $params ] = $this->_list_where($filters);
+        $company_table = $this->wpdb->prefix . 'ispag_companies';
+        $sql = "SELECT COUNT(*) FROM {$this->table_name} AS T LEFT JOIN {$company_table} AS C ON C.Id = T.associated_company_id {$where_sql}";
+        return (int) $this->wpdb->get_var($params ? $this->wpdb->prepare($sql, $params) : $sql);
+    }
+
+    public function get_all_deals_grouped_by_stage( $filters = [] ) {
+        $filters = $this->_list_filters($filters);
+        [ $where_sql, $params ] = $this->_list_where($filters);
+
         // ── 2. Requête principale ─────────────────────────────────────────────
         $company_table = $this->wpdb->prefix . 'ispag_companies';
 
@@ -422,7 +441,7 @@ class ISPAG_Crm_Deals_Repository {
             FROM {$this->table_name} AS T
             LEFT JOIN {$company_table} AS C ON C.Id = T.associated_company_id
             {$where_sql}
-            ORDER BY T.closing_date DESC
+            ORDER BY T.closing_date DESC, T.id DESC
             LIMIT %d OFFSET %d
         ";
 
@@ -483,6 +502,7 @@ class ISPAG_Crm_Deals_Repository {
             $deal_model->associated_company_initials = $company_visual['initials'];
 
             // Groupement
+            if (!empty($filters['flat'])) { $grouped[] = $deal_model; continue; } // ordre SQL conservé (tableau paginé)
             $key = !empty($deal_model->stage_key) ? $deal_model->stage_key : 'submission_received';
             $grouped[$key][] = $deal_model;
         }
