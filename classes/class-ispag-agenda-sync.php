@@ -10,7 +10,7 @@ defined('ABSPATH') || exit;
  * (dates au format ISO 8601, « titre » en dernier : il peut contenir des « | »).
  *
  * Chaque envoi REMPLACE la liste précédente. Seuls ces champs sont gardés : jamais de notes, de participants ni de pièces jointes.
- * Le jeton est généré par le site (jamais dans le code) ; page de réglage : Réglages → ISPAG Agenda iPhone.
+ * Le jeton est généré par le site (jamais dans le code) ; page de réglage : ISPAG Settings → ISPAG Agenda iPhone (à défaut : Réglages).
  */
 class ISPAG_Agenda_Sync {
 
@@ -21,7 +21,7 @@ class ISPAG_Agenda_Sync {
 
     public function __construct() {
         add_action('rest_api_init', [$this, 'register_routes']);
-        add_action('admin_menu', [$this, 'menu']);
+        add_action('admin_menu', [$this, 'menu'], 30);   // après le menu « ISPAG Settings » du plugin Project Manager
         add_action('admin_post_ispag_agenda_token_reset', [$this, 'reset_token']);
     }
 
@@ -41,7 +41,7 @@ class ISPAG_Agenda_Sync {
         check_admin_referer('ispag_agenda_token_reset');
         delete_option(self::OPT_TOKEN);
         self::token();
-        wp_safe_redirect(add_query_arg(['page' => 'ispag-agenda-sync', 'reset' => 1], admin_url('options-general.php')));
+        wp_safe_redirect(add_query_arg('reset', 1, self::page_url()));
         exit;
     }
 
@@ -65,7 +65,11 @@ class ISPAG_Agenda_Sync {
 
     public function rest_sync($req) {
         $events = self::parse((string) $req->get_body(), wp_date('Y-m-d'));
-        update_option(self::OPT, ['synced_at' => wp_date('Y-m-d H:i'), 'events' => $events], false);
+        $body = (string) $req->get_body();
+        update_option(self::OPT, [
+            'synced_at' => wp_date('Y-m-d H:i'), 'events' => $events,
+            'received'  => ['bytes' => strlen($body), 'first_line' => mb_substr(sanitize_text_field(strtok($body, "\r\n") ?: ''), 0, 200)],
+        ], false);
         return rest_ensure_response(['ok' => true, 'count' => count($events), 'synced_at' => wp_date('Y-m-d H:i')]);
     }
 
@@ -78,9 +82,15 @@ class ISPAG_Agenda_Sync {
         $from = new DateTimeImmutable($today . ' 00:00:00', $tz);
         $to   = $from->modify('+' . self::WINDOW_DAYS . ' days');
         $out  = [];
-        foreach (preg_split('/\r\n|\r|\n/', $body) as $line) {
-            $line = trim($line);
-            if ($line === '') continue;
+        // Un lieu ou un titre peut contenir des retours à la ligne : toute ligne qui ne commence pas par une date (AAAA-MM-JJ) prolonge la précédente.
+        $lines = [];
+        foreach (preg_split('/\r\n|\r|\n/', $body) as $raw) {
+            $raw = trim($raw);
+            if ($raw === '') continue;
+            if (preg_match('/^\d{4}-\d{2}-\d{2}/', $raw) || !$lines) $lines[] = $raw;
+            else $lines[count($lines) - 1] .= ' ' . $raw;
+        }
+        foreach ($lines as $line) {
             $p = explode('|', $line, 6);
             if (count($p) < 6) continue;
             try {
@@ -118,7 +128,16 @@ class ISPAG_Agenda_Sync {
     // ── Page de réglage ──────────────────────────────────────────────────────
 
     public function menu() {
-        add_options_page('ISPAG Agenda iPhone', 'ISPAG Agenda iPhone', 'manage_options', 'ispag-agenda-sync', [$this, 'render_page']);
+        if (!empty($GLOBALS['admin_page_hooks']['ispag-settings'])) {
+            add_submenu_page('ispag-settings', 'ISPAG Agenda iPhone', 'ISPAG Agenda iPhone', 'manage_options', 'ispag-agenda-sync', [$this, 'render_page']);
+        } else {
+            add_options_page('ISPAG Agenda iPhone', 'ISPAG Agenda iPhone', 'manage_options', 'ispag-agenda-sync', [$this, 'render_page']);
+        }
+    }
+
+    /** Adresse de la page, selon l'endroit où le menu a été rangé. */
+    public static function page_url() {
+        return class_exists('ISPAG_Settings') ? admin_url('admin.php?page=ispag-agenda-sync') : admin_url('options-general.php?page=ispag-agenda-sync');
     }
 
     public function render_page() {
@@ -140,16 +159,37 @@ class ISPAG_Agenda_Sync {
                 <?php wp_nonce_field('ispag_agenda_token_reset'); ?>
                 <?php submit_button('Générer un nouveau jeton', 'secondary', 'submit', false, ['onclick' => "return confirm('L\'ancien jeton ne fonctionnera plus. Continuer ?');"]); ?>
             </form>
-            <h2>Raccourci iPhone</h2>
+            <?php $rc = $d['received'] ?? null; $ev = array_slice((array) ($d['events'] ?? []), 0, 8); ?>
+            <?php if ($rc): ?>
+                <h2>Ce que le site a compris au dernier envoi</h2>
+                <p>Reçu : <?php echo (int) $rc['bytes']; ?> caractères — <?php echo count((array) ($d['events'] ?? [])); ?> événement(s) reconnu(s) sur les 21 prochains jours.
+                <?php if (!$ev): ?><br><strong>Aucun événement reconnu.</strong> Première ligne reçue : <code><?php echo esc_html($rc['first_line'] ?: '(vide)'); ?></code><br>Elle doit ressembler à : <code>2026-10-13T09:00:00+02:00|2026-10-13T10:00:00+02:00|Non|Travail|Bulle|Rendez-vous client</code><?php endif; ?></p>
+                <?php if ($ev): ?><ul style="list-style:disc;margin-left:20px"><?php foreach ($ev as $e): ?><li><?php echo esc_html($e['start'] . ' → ' . substr($e['end'], 11) . ' · ' . $e['calendar'] . ' · ' . $e['title'] . ($e['location'] ? ' (' . $e['location'] . ')' : '')); ?></li><?php endforeach; ?></ul><?php endif; ?>
+            <?php endif; ?>
+
+            <h2>Créer le Raccourci sur l'iPhone, pas à pas</h2>
+            <p>Le principe : le Raccourci lit votre agenda, fabrique <strong>une ligne de texte par rendez-vous</strong> et envoie le tout au site. Chaque ligne a toujours la même forme, avec six morceaux séparés par une barre verticale <code>|</code> :</p>
+            <p><code>début | fin | toute la journée | calendrier | lieu | titre</code></p>
+            <p>Exemple : <code>2026-10-13T09:00:00+02:00|2026-10-13T10:00:00+02:00|Non|Travail|Bulle|Rendez-vous client</code></p>
+            <p>Vous avez déjà l'action <strong>Rechercher des événements du calendrier</strong>. Voici la suite, action par action (ajoutez-les avec le bouton « + » en bas ; cherchez le nom dans la barre de recherche) :</p>
             <ol>
-                <li>Application <strong>Raccourcis</strong> → nouveau raccourci « Agenda vers ISPAG ».</li>
-                <li><strong>Rechercher des événements du calendrier</strong> : « Date de début » est « dans les prochains » <strong>14 jours</strong> ; trier par date de début. Choisissez les calendriers à envoyer (Outlook, personnel…).</li>
-                <li><strong>Répéter avec chaque</strong> événement : action <strong>Texte</strong> contenant, séparés par <code>|</code> : début (format ISO 8601) | fin (ISO 8601) | Toute la journée | Calendrier | Lieu | Titre. Puis <strong>Ajouter à la variable</strong> « Lignes ».</li>
-                <li>Après la boucle : <strong>Combiner le texte</strong> « Lignes » avec un <em>retour à la ligne</em>.</li>
-                <li><strong>Obtenir le contenu de l'URL</strong> : méthode <strong>POST</strong>, l'adresse ci-dessus, en-tête <code>X-ISPAG-Token</code> = le jeton, corps de la requête = <strong>Fichier</strong> (le texte combiné).</li>
-                <li>Onglet <strong>Automatisation</strong> → Heure de la journée (par exemple chaque jour à 5 h) → exécuter ce raccourci → <strong>Exécuter immédiatement</strong>.</li>
+                <li><strong>Répéter avec chacun</strong> — choisissez comme entrée « Événements du calendrier » (le résultat de l'action précédente). Tout ce qui suit, jusqu'à « Fin de la répétition », se place <em>à l'intérieur</em> de cette boucle (en retrait).</li>
+                <li>Dans la boucle : <strong>Formater la date</strong> → touchez « Date » et choisissez <em>Élément du répéteur</em> puis la propriété <strong>Date de début</strong> ; format de la date : <strong>ISO 8601</strong>.</li>
+                <li>Juste après : <strong>Définir la variable</strong> → nom <code>Debut</code> (valeur : « Date formatée »).</li>
+                <li>Encore une fois <strong>Formater la date</strong> avec la <strong>Date de fin</strong> (ISO 8601), puis <strong>Définir la variable</strong> nommée <code>Fin</code>.</li>
+                <li>Ensuite l'action <strong>Texte</strong> (la zone blanche à remplir). Composez-y la ligne avec les variables, <strong>dans cet ordre, séparées par la barre <code>|</code></strong> (touche « | » du clavier : maintenez « / » ou passez par 123 puis #+=) :
+                    <br>① variable <code>Debut</code> &nbsp;|&nbsp; ② variable <code>Fin</code> &nbsp;|&nbsp; ③ <em>Élément du répéteur</em> → propriété <strong>Toute la journée</strong> &nbsp;|&nbsp; ④ <em>Élément du répéteur</em> → <strong>Calendrier</strong> &nbsp;|&nbsp; ⑤ <em>Élément du répéteur</em> → <strong>Lieu</strong> &nbsp;|&nbsp; ⑥ <em>Élément du répéteur</em> → <strong>Titre</strong>.
+                    <br><em>Pour insérer une variable</em> : touchez dans la zone Texte, une barre de variables apparaît au-dessus du clavier ; touchez « Élément du répéteur » (ou « Debut » / « Fin » via « Variables »), puis, pour une propriété, touchez à nouveau la pastille bleue dans le texte et choisissez la propriété dans la liste.</li>
+                <li>Après la boucle (ligne « Fin de la répétition »), ajoutez <strong>Combiner le texte</strong> : entrée = <em>Résultats de la répétition</em>, séparateur = <strong>Nouvelle ligne</strong>.</li>
+                <li>Ajoutez <strong>Obtenir le contenu de l'URL</strong> : <ul style="list-style:disc;margin-left:20px">
+                    <li>URL : l'adresse ci-dessus ;</li>
+                    <li>touchez « Afficher plus » → Méthode : <strong>POST</strong> ;</li>
+                    <li>En-têtes → « Ajouter un nouvel en-tête » : clé <code>X-ISPAG-Token</code>, valeur = le jeton ci-dessus (touchez le champ jeton, tout sélectionner, copier, coller) ;</li>
+                    <li>Corps de la requête : <strong>Fichier</strong>, puis choisissez <em>Texte combiné</em>.</li></ul></li>
+                <li>Appuyez sur ▶ pour tester : cette page doit alors afficher « Ce que le site a compris au dernier envoi » avec vos rendez-vous. Si elle affiche « Aucun événement reconnu », la première ligne reçue vous montre ce qui cloche.</li>
+                <li>Pour l'envoi automatique chaque jour : onglet <strong>Automatisation</strong> → « Heure de la journée » (par exemple 5 h, tous les jours) → « Exécuter le raccourci » → ce raccourci → <strong>Exécuter immédiatement</strong>.</li>
             </ol>
-            <p class="description">Seuls l'heure, le calendrier, le lieu et le titre sont envoyés : jamais les notes, les participants ni les pièces jointes.</p>
+            <p class="description">Seuls l'heure, le calendrier, le lieu et le titre sont envoyés : jamais les notes, les participants ni les pièces jointes. Un lieu ou un titre sur plusieurs lignes est accepté.</p>
         </div>
         <?php
     }

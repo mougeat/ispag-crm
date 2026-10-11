@@ -3,7 +3,7 @@ defined('ABSPATH') || exit;
 
 /**
  * « Ma semaine » : cantons visités le mardi et le jeudi, et personne dont les tâches du CRM alimentent le point du lundi.
- * Valeurs par défaut récurrentes + remplacement possible pour une semaine précise. Page : Réglages → ISPAG Ma semaine.
+ * Valeurs par défaut récurrentes + remplacement possible pour une semaine précise. Page : ISPAG Settings → ISPAG Ma semaine (à défaut : Réglages).
  */
 class ISPAG_Week_Plan {
 
@@ -12,7 +12,7 @@ class ISPAG_Week_Plan {
     const SLUG     = 'ispag-week-plan';
 
     public function __construct() {
-        add_action('admin_menu', [$this, 'menu']);
+        add_action('admin_menu', [$this, 'menu'], 30);   // après le menu « ISPAG Settings » du plugin Project Manager
         add_action('admin_post_ispag_week_plan_save', [$this, 'handle_save']);
     }
 
@@ -54,12 +54,21 @@ class ISPAG_Week_Plan {
         foreach (array_keys($o['weeks']) as $m) if ($m < $limit) unset($o['weeks'][$m]);
         $o['todo_user'] = (int) ($_POST['todo_user'] ?? 0);
         update_option(self::OPT, $o, false);
-        wp_safe_redirect(add_query_arg(['page' => self::SLUG, 'saved' => 1], admin_url('options-general.php')));
+        wp_safe_redirect(add_query_arg('saved', 1, self::page_url()));
         exit;
     }
 
     public function menu() {
-        add_options_page('ISPAG Ma semaine', 'ISPAG Ma semaine', 'manage_options', self::SLUG, [$this, 'render_page']);
+        if (!empty($GLOBALS['admin_page_hooks']['ispag-settings'])) {
+            add_submenu_page('ispag-settings', 'ISPAG Ma semaine', 'ISPAG Ma semaine', 'manage_options', self::SLUG, [$this, 'render_page']);
+        } else {
+            add_options_page('ISPAG Ma semaine', 'ISPAG Ma semaine', 'manage_options', self::SLUG, [$this, 'render_page']);
+        }
+    }
+
+    /** Adresse de la page, selon l'endroit où le menu a été rangé. */
+    public static function page_url() {
+        return class_exists('ISPAG_Settings') ? admin_url('admin.php?page=' . self::SLUG) : admin_url('options-general.php?page=' . self::SLUG);
     }
 
     private function chips($name, $selected) {

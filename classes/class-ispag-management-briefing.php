@@ -66,7 +66,11 @@ class ISPAG_Management_Briefing {
 
     public function rest_briefing($req) {
         $ref = (string) ($req->get_param('ref') ?: wp_date('Y-m-d'));
-        $data = ISPAG_Deal_Kpis::weekly_summary($ref);
+        // Offres à suivre et visites : celles du département de l'utilisateur connecté (méta du profil) ; sans département, tout le monde.
+        $dept = sanitize_key((string) get_user_meta(get_current_user_id(), ISPAG_Crm_Contact_Constants::USER_DEPARTMENT, true));
+        $data = ISPAG_Deal_Kpis::weekly_summary($ref, $dept);
+        $labels = ISPAG_Crm_Contact_Constants::departments();
+        $data['department'] = $dept === '' ? null : ['key' => $dept, 'label' => $labels[$dept] ?? $dept];
         // Agenda de l'iPhone (synchronisé par un Raccourci) : 7 jours à partir de la date de référence
         $to = date('Y-m-d', strtotime($ref . ' +6 days'));
         $ag = ISPAG_Agenda_Sync::events($ref, $to);
@@ -77,7 +81,7 @@ class ISPAG_Management_Briefing {
             'stale'     => $age_h === null || $age_h > 48,
             'events'    => $ag['events'],
         ];
-        $data['week_plan'] = self::week_plan($ref);
+        $data['week_plan'] = self::week_plan($ref, $dept);
         $data['todo']      = self::todo();
         return rest_ensure_response($data);
     }
@@ -86,10 +90,10 @@ class ISPAG_Management_Briefing {
      * Mardi et jeudi de la semaine : cantons choisis dans « Ma semaine » et, pour chaque jour, les offres ouvertes des entreprises de ces cantons
      * (les plus importantes d'abord, 12 au plus) dans un ordre de visite suggéré (plus proche voisin, distances à vol d'oiseau).
      */
-    private static function week_plan($ref) {
+    private static function week_plan($ref, $dept = '') {
         $monday = date('Y-m-d', strtotime('monday this week', strtotime($ref)));
         $days   = ISPAG_Week_Plan::resolve($monday);
-        $offers = ISPAG_Deal_Kpis::open_offers_list($ref);
+        $offers = ISPAG_Deal_Kpis::open_offers_list($ref, $dept);
         $locs   = ISPAG_Swiss_Geo::companies(array_column($offers, 'company_id'));
         $unknown = 0;
         foreach ($offers as $o) if (empty($locs[$o['company_id']]['canton'])) $unknown++;
