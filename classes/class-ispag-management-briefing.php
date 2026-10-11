@@ -18,12 +18,46 @@ class ISPAG_Management_Briefing {
     }
 
     public function register_routes() {
+        $this->register_send_route();
         register_rest_route('ispag/v1', '/management-briefing', [
             'methods'             => 'GET',
             'callback'            => [$this, 'rest_briefing'],
             'permission_callback' => [$this, 'can_read'],
             'args'                => ['ref' => ['required' => false, 'validate_callback' => function ($v) { return (bool) preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $v); }]],
         ]);
+    }
+
+    public function register_send_route() {
+        register_rest_route('ispag/v1', '/management-briefing/digest', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'rest_send'],
+            'permission_callback' => [$this, 'can_read'],
+        ]);
+    }
+
+    const SEND_LIMIT = 15;   // envois par jour, compteur propre au point du lundi (indépendant des autres routines)
+
+    /**
+     * Envoi du point du lundi par le site (wp_mail), à l'adresse réglée côté site : option ispag_briefing_to, sinon celle des
+     * propositions LinkedIn (ispag_pub_digest_to), sinon l'adresse de l'administrateur. L'appelant ne choisit jamais le destinataire.
+     * Corps : texte (champ « body ») et, facultatif, version mise en page (champ « html », nettoyée).
+     */
+    public function rest_send($req) {
+        $to = sanitize_email((string) get_option('ispag_briefing_to', get_option('ispag_pub_digest_to', get_option('admin_email'))));
+        if (!is_email($to)) return new WP_Error('no_recipient', 'No valid recipient.', ['status' => 500]);
+        $count = (int) get_transient('ispag_briefing_digest_count');
+        if ($count >= self::SEND_LIMIT) return new WP_Error('rate_limited', 'Too many briefing e-mails today.', ['status' => 429]);
+        $subject = mb_substr(sanitize_text_field((string) $req->get_param('subject')), 0, 150);
+        $text    = mb_substr(wp_strip_all_tags((string) $req->get_param('body')), 0, 30000);
+        $html    = (string) $req->get_param('html');
+        if ($subject === '' || ($text === '' && $html === '')) return new WP_Error('empty', 'Subject and body are required.', ['status' => 400]);
+        if ($html !== '') {
+            $ok = wp_mail($to, $subject, wp_kses_post(mb_substr($html, 0, 120000)), ['Content-Type: text/html; charset=UTF-8']);
+        } else {
+            $ok = wp_mail($to, $subject, $text, ['Content-Type: text/plain; charset=UTF-8']);
+        }
+        if ($ok) set_transient('ispag_briefing_digest_count', $count + 1, DAY_IN_SECONDS);   // un envoi qui échoue ne consomme pas la limite
+        return rest_ensure_response(['sent' => (bool) $ok, 'remaining_today' => max(0, self::SEND_LIMIT - $count - ($ok ? 1 : 0))]);
     }
 
     public function can_read() {
