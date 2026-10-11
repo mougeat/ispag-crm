@@ -64,8 +64,10 @@ class ISPAG_Agenda_Sync {
     }
 
     public function rest_sync($req) {
-        $events = self::parse((string) $req->get_body(), wp_date('Y-m-d'));
-        $body = (string) $req->get_body();
+        // Texte brut dans le corps, ou (Raccourci en mode « Formulaire ») champ « texte » ; JSON {"texte": "..."} accepté aussi
+        $body = (string) $req->get_param('texte');
+        if ($body === '') $body = (string) $req->get_body();
+        $events = self::parse($body, wp_date('Y-m-d'));
         update_option(self::OPT, [
             'synced_at' => wp_date('Y-m-d H:i'), 'events' => $events,
             'received'  => ['bytes' => strlen($body), 'first_line' => mb_substr(sanitize_text_field(strtok($body, "\r\n") ?: ''), 0, 200)],
