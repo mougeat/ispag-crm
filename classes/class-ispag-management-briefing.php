@@ -18,12 +18,46 @@ class ISPAG_Management_Briefing {
     }
 
     public function register_routes() {
+        $this->register_send_route();
         register_rest_route('ispag/v1', '/management-briefing', [
             'methods'             => 'GET',
             'callback'            => [$this, 'rest_briefing'],
             'permission_callback' => [$this, 'can_read'],
             'args'                => ['ref' => ['required' => false, 'validate_callback' => function ($v) { return (bool) preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $v); }]],
         ]);
+    }
+
+    public function register_send_route() {
+        register_rest_route('ispag/v1', '/management-briefing/digest', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'rest_send'],
+            'permission_callback' => [$this, 'can_read'],
+        ]);
+    }
+
+    const SEND_LIMIT = 15;   // envois par jour, compteur propre au point du lundi (indépendant des autres routines)
+
+    /**
+     * Envoi du point du lundi par le site (wp_mail), à l'adresse réglée côté site : option ispag_briefing_to, sinon celle des
+     * propositions LinkedIn (ispag_pub_digest_to), sinon l'adresse de l'administrateur. L'appelant ne choisit jamais le destinataire.
+     * Corps : texte (champ « body ») et, facultatif, version mise en page (champ « html », nettoyée).
+     */
+    public function rest_send($req) {
+        $to = sanitize_email((string) get_option('ispag_briefing_to', get_option('ispag_pub_digest_to', get_option('admin_email'))));
+        if (!is_email($to)) return new WP_Error('no_recipient', 'No valid recipient.', ['status' => 500]);
+        $count = (int) get_transient('ispag_briefing_digest_count');
+        if ($count >= self::SEND_LIMIT) return new WP_Error('rate_limited', 'Too many briefing e-mails today.', ['status' => 429]);
+        $subject = mb_substr(sanitize_text_field((string) $req->get_param('subject')), 0, 150);
+        $text    = mb_substr(wp_strip_all_tags((string) $req->get_param('body')), 0, 30000);
+        $html    = (string) $req->get_param('html');
+        if ($subject === '' || ($text === '' && $html === '')) return new WP_Error('empty', 'Subject and body are required.', ['status' => 400]);
+        if ($html !== '') {
+            $ok = wp_mail($to, $subject, wp_kses_post(mb_substr($html, 0, 120000)), ['Content-Type: text/html; charset=UTF-8']);
+        } else {
+            $ok = wp_mail($to, $subject, $text, ['Content-Type: text/plain; charset=UTF-8']);
+        }
+        if ($ok) set_transient('ispag_briefing_digest_count', $count + 1, DAY_IN_SECONDS);   // un envoi qui échoue ne consomme pas la limite
+        return rest_ensure_response(['sent' => (bool) $ok, 'remaining_today' => max(0, self::SEND_LIMIT - $count - ($ok ? 1 : 0))]);
     }
 
     public function can_read() {
@@ -70,14 +104,64 @@ class ISPAG_Management_Briefing {
                     if ($l && in_array($l['canton'], $d['cantons'], true)) $cand[] = $o + ['city' => $l['city'], 'plz' => $l['plz'], 'canton' => $l['canton'], 'lat' => $l['lat'], 'lon' => $l['lon']];
                 }
                 $total = count($cand);
-                $cand = ISPAG_Swiss_Geo::route(array_slice($cand, 0, 12));
-                foreach ($cand as &$c) unset($c['lat'], $c['lon']);
+                $by = [];
+                foreach ($cand as $o) {
+                    $cid = $o['company_id'];
+                    if (!isset($by[$cid])) $by[$cid] = ['company_id' => $cid, 'company' => $o['company'], 'city' => $o['city'], 'plz' => $o['plz'], 'canton' => $o['canton'], 'lat' => $o['lat'], 'lon' => $o['lon'], 'total_amount' => 0, 'deals' => []];
+                    $by[$cid]['total_amount'] += $o['amount'];
+                    $by[$cid]['deals'][] = ['project' => $o['project'], 'amount' => $o['amount'], 'stage' => $o['stage'], 'idle_days' => $o['idle_days'], 'owner' => $o['owner'], 'link' => $o['link'], 'group_id' => $o['id']];
+                }
+                $companies = array_values($by);
+                usort($companies, function ($a, $b) { return $b['total_amount'] <=> $a['total_amount']; });
+                $row['companies_in_cantons'] = count($companies);
+                $companies = ISPAG_Swiss_Geo::route(array_slice($companies, 0, 8));
+                foreach ($companies as &$c) {
+                    unset($c['lat'], $c['lon']);
+                    $c['total_amount'] = round($c['total_amount'], 2);
+                    $c['contacts'] = self::contacts_to_see($c['company_id'], array_column($c['deals'], 'group_id'));
+                    foreach ($c['deals'] as &$dd) unset($dd['group_id']);
+                    unset($dd);
+                }
                 unset($c);
-                $row['visits'] = $cand; $row['offers_in_cantons'] = $total;
+                $row['visits'] = $companies; $row['offers_in_cantons'] = $total;
             }
             $out[] = $row;
         }
         return ['monday' => $monday, 'days' => $out, 'offers_without_location' => $unknown];
+    }
+
+
+    /** Personnes à voir pour une entreprise : contacts rattachés aux offres ouvertes (à défaut, contacts de l'entreprise), chefs de projet en premier. */
+    private static function contacts_to_see($company_id, array $deal_ids) {
+        global $wpdb;
+        $l = ISPAG_Crm_Deal_Constants::TABLE_NAME;
+        $ids = [];
+        if ($deal_ids) {
+            $in = implode(',', array_map('intval', $deal_ids));
+            // Tous les contacts de toutes les lignes (offre, commande…) des dossiers concernés.
+            $lists = $wpdb->get_col("SELECT x.associated_contact_ids FROM {$l} x WHERE x.deal_group_ref IN (SELECT deal_group_ref FROM {$l} WHERE id IN ({$in})) AND x.associated_contact_ids <> ''");
+            foreach ((array) $lists as $csv) foreach (explode(',', (string) $csv) as $i) if ((int) $i > 0) $ids[(int) $i] = true;
+        }
+        $from_deals = !empty($ids);
+        if (!$ids) {
+            $found = $wpdb->get_col($wpdb->prepare("SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = %s LIMIT 30", ISPAG_Crm_Contact_Constants::META_COMPANY_ID, (string) $company_id));
+            foreach ((array) $found as $i) $ids[(int) $i] = true;
+        }
+        $out = [];
+        foreach (array_keys($ids) as $uid) {
+            $u = get_userdata($uid);
+            if (!$u) continue;
+            $fn = trim((string) get_user_meta($uid, ISPAG_Crm_Contact_Constants::META_LEAD_FUNCTION, true));
+            $out[] = [
+                'name'     => trim($u->first_name . ' ' . $u->last_name) ?: $u->display_name,
+                'function' => $fn,
+                'project_manager' => (bool) preg_match('/chef\s+de\s+(projet|chantier)|responsable\s+de\s+projet|conducteur\s+de\s+travaux|projektleiter|bauleiter|project\s+manager|\bCDP\b/iu', $fn),
+                'phone'    => (string) get_user_meta($uid, ISPAG_Crm_Contact_Constants::META_LEAD_PHONE, true),
+                'on_offer' => $from_deals,
+            ];
+        }
+        usort($out, function ($a, $b) { return [$b['project_manager'], $a['name']] <=> [$a['project_manager'], $b['name']]; });
+        return array_slice($out, 0, 5);
     }
 
     /** Tâches ouvertes du CRM de la personne choisie dans « Ma semaine » (échues et à venir, 40 au plus). */
