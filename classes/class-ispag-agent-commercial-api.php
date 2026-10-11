@@ -14,7 +14,11 @@ class Ispag_Agent_Commercial_API {
         register_rest_route('ispag/v1', '/planning', [
             'methods'             => 'GET',
             'callback'            => [$this, 'get_planning_data'],
-            'permission_callback' => '__return_true', 
+            // Plus de lecture anonyme : administrateur connecté (cookie + nonce ou mot de passe d'application) ou filtre explicite.
+            // Le pont Mistral n'est pas concerné : il appelle get_planning_data() directement, sans passer par cette route.
+            'permission_callback' => function () {
+                return current_user_can('manage_options') || (bool) apply_filters('ispag_planning_route_public', false);
+            },
         ]);
     }
 
