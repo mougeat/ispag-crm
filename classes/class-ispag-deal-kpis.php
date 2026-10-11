@@ -36,6 +36,14 @@ class ISPAG_Deal_Kpis {
                 LEFT JOIN {$s} s ON (s.deal_group_ref COLLATE utf8mb4_unicode_ci) = (l.deal_group_ref COLLATE utf8mb4_unicode_ci)";
     }
 
+    /** Filtre « mon département » : le responsable du dossier appartient au département donné (méta du profil). Vide = pas de filtre. */
+    public static function department_sql($dept, $alias = 'g') {
+        global $wpdb;
+        $dept = sanitize_key((string) $dept);
+        if ($dept === '') return '';
+        return " AND EXISTS (SELECT 1 FROM {$wpdb->usermeta} um WHERE um.user_id = {$alias}.deal_owner AND um.meta_key = '" . esc_sql(ISPAG_Crm_Contact_Constants::USER_DEPARTMENT) . "' AND um.meta_value = '" . esc_sql($dept) . "')";
+    }
+
     private static function in_list(array $keys) {
         return "'" . implode("','", array_map('esc_sql', $keys)) . "'";
     }
@@ -74,7 +82,7 @@ class ISPAG_Deal_Kpis {
      * Offres ouvertes sans mouvement depuis plus de $days jours (dernière mise à jour d'étape, sinon date de l'offre).
      * @return array{count:int, amount:float, items:array}
      */
-    public static function follow_up($today, $days = self::FOLLOW_UP_DAYS, $limit = 25) {
+    public static function follow_up($today, $days = self::FOLLOW_UP_DAYS, $limit = 25, $dept = '') {
         global $wpdb;
         $companies = $wpdb->prefix . 'ispag_companies';
         $sql = "SELECT g.id, g.project_name, g.amount, g.stage, g.offer_date, g.last_updated, c.company_name, u.display_name AS owner,
@@ -85,7 +93,7 @@ class ISPAG_Deal_Kpis {
                  WHERE g.offer_date IS NOT NULL
                    AND (g.stage IS NULL OR g.stage NOT IN (" . self::in_list(array_merge(self::WON_STAGES, self::LOST_STAGES)) . "))
                    AND COALESCE(g.last_updated, g.offer_date) IS NOT NULL
-                   AND DATEDIFF(%s, DATE(COALESCE(g.last_updated, g.offer_date))) >= %d
+                   AND DATEDIFF(%s, DATE(COALESCE(g.last_updated, g.offer_date))) >= %d" . self::department_sql($dept) . "
                  ORDER BY g.amount DESC";
         $rows = (array) $wpdb->get_results($wpdb->prepare($sql, $today, $today, (int) $days));
         $items = [];
@@ -109,7 +117,7 @@ class ISPAG_Deal_Kpis {
     }
 
     /** Toutes les offres ouvertes (une par dossier), avec leur entreprise : base des propositions de visites. */
-    public static function open_offers_list($today) {
+    public static function open_offers_list($today, $dept = '') {
         global $wpdb;
         $companies = $wpdb->prefix . 'ispag_companies';
         $sql = "SELECT g.id, g.associated_company_id AS company_id, g.project_name, g.amount, g.stage, c.company_name, u.display_name AS owner,
@@ -118,7 +126,7 @@ class ISPAG_Deal_Kpis {
                   LEFT JOIN {$companies} c ON c.Id = g.associated_company_id
                   LEFT JOIN {$wpdb->users} u ON u.ID = g.deal_owner
                  WHERE g.offer_date IS NOT NULL
-                   AND (g.stage IS NULL OR g.stage NOT IN (" . self::in_list(array_merge(self::WON_STAGES, self::LOST_STAGES)) . "))
+                   AND (g.stage IS NULL OR g.stage NOT IN (" . self::in_list(array_merge(self::WON_STAGES, self::LOST_STAGES)) . "))" . self::department_sql($dept) . "
                  ORDER BY g.amount DESC";
         $out = [];
         foreach ((array) $wpdb->get_results($wpdb->prepare($sql, $today)) as $r) {
@@ -152,7 +160,7 @@ class ISPAG_Deal_Kpis {
     }
 
     /** Synthèse hebdomadaire pour le point du lundi. $ref = date du jour (Y-m-d). La semaine analysée est la dernière semaine complète (lundi → dimanche). */
-    public static function weekly_summary($ref) {
+    public static function weekly_summary($ref, $dept = '') {
         $t = strtotime($ref);
         $monday_this = strtotime('monday this week', $t);
         $w_from = date('Y-m-d', strtotime('-7 days', $monday_this));
@@ -184,7 +192,7 @@ class ISPAG_Deal_Kpis {
                 'last_12_months' => self::conversion($r_from, $w_to),
             ],
             'open_offers' => self::pipeline(),
-            'follow_up'   => self::follow_up(date('Y-m-d', $t)),
+            'follow_up'   => self::follow_up(date('Y-m-d', $t), self::FOLLOW_UP_DAYS, 25, $dept),
         ];
     }
 }
