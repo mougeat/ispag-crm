@@ -104,14 +104,64 @@ class ISPAG_Management_Briefing {
                     if ($l && in_array($l['canton'], $d['cantons'], true)) $cand[] = $o + ['city' => $l['city'], 'plz' => $l['plz'], 'canton' => $l['canton'], 'lat' => $l['lat'], 'lon' => $l['lon']];
                 }
                 $total = count($cand);
-                $cand = ISPAG_Swiss_Geo::route(array_slice($cand, 0, 12));
-                foreach ($cand as &$c) unset($c['lat'], $c['lon']);
+                $by = [];
+                foreach ($cand as $o) {
+                    $cid = $o['company_id'];
+                    if (!isset($by[$cid])) $by[$cid] = ['company_id' => $cid, 'company' => $o['company'], 'city' => $o['city'], 'plz' => $o['plz'], 'canton' => $o['canton'], 'lat' => $o['lat'], 'lon' => $o['lon'], 'total_amount' => 0, 'deals' => []];
+                    $by[$cid]['total_amount'] += $o['amount'];
+                    $by[$cid]['deals'][] = ['project' => $o['project'], 'amount' => $o['amount'], 'stage' => $o['stage'], 'idle_days' => $o['idle_days'], 'owner' => $o['owner'], 'link' => $o['link'], 'group_id' => $o['id']];
+                }
+                $companies = array_values($by);
+                usort($companies, function ($a, $b) { return $b['total_amount'] <=> $a['total_amount']; });
+                $row['companies_in_cantons'] = count($companies);
+                $companies = ISPAG_Swiss_Geo::route(array_slice($companies, 0, 8));
+                foreach ($companies as &$c) {
+                    unset($c['lat'], $c['lon']);
+                    $c['total_amount'] = round($c['total_amount'], 2);
+                    $c['contacts'] = self::contacts_to_see($c['company_id'], array_column($c['deals'], 'group_id'));
+                    foreach ($c['deals'] as &$dd) unset($dd['group_id']);
+                    unset($dd);
+                }
                 unset($c);
-                $row['visits'] = $cand; $row['offers_in_cantons'] = $total;
+                $row['visits'] = $companies; $row['offers_in_cantons'] = $total;
             }
             $out[] = $row;
         }
         return ['monday' => $monday, 'days' => $out, 'offers_without_location' => $unknown];
+    }
+
+
+    /** Personnes à voir pour une entreprise : contacts rattachés aux offres ouvertes (à défaut, contacts de l'entreprise), chefs de projet en premier. */
+    private static function contacts_to_see($company_id, array $deal_ids) {
+        global $wpdb;
+        $l = ISPAG_Crm_Deal_Constants::TABLE_NAME;
+        $ids = [];
+        if ($deal_ids) {
+            $in = implode(',', array_map('intval', $deal_ids));
+            // Tous les contacts de toutes les lignes (offre, commande…) des dossiers concernés.
+            $lists = $wpdb->get_col("SELECT x.associated_contact_ids FROM {$l} x WHERE x.deal_group_ref IN (SELECT deal_group_ref FROM {$l} WHERE id IN ({$in})) AND x.associated_contact_ids <> ''");
+            foreach ((array) $lists as $csv) foreach (explode(',', (string) $csv) as $i) if ((int) $i > 0) $ids[(int) $i] = true;
+        }
+        $from_deals = !empty($ids);
+        if (!$ids) {
+            $found = $wpdb->get_col($wpdb->prepare("SELECT user_id FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = %s LIMIT 30", ISPAG_Crm_Contact_Constants::META_COMPANY_ID, (string) $company_id));
+            foreach ((array) $found as $i) $ids[(int) $i] = true;
+        }
+        $out = [];
+        foreach (array_keys($ids) as $uid) {
+            $u = get_userdata($uid);
+            if (!$u) continue;
+            $fn = trim((string) get_user_meta($uid, ISPAG_Crm_Contact_Constants::META_LEAD_FUNCTION, true));
+            $out[] = [
+                'name'     => trim($u->first_name . ' ' . $u->last_name) ?: $u->display_name,
+                'function' => $fn,
+                'project_manager' => (bool) preg_match('/chef\s+de\s+(projet|chantier)|responsable\s+de\s+projet|conducteur\s+de\s+travaux|projektleiter|bauleiter|project\s+manager|\bCDP\b/iu', $fn),
+                'phone'    => (string) get_user_meta($uid, ISPAG_Crm_Contact_Constants::META_LEAD_PHONE, true),
+                'on_offer' => $from_deals,
+            ];
+        }
+        usort($out, function ($a, $b) { return [$b['project_manager'], $a['name']] <=> [$a['project_manager'], $b['name']]; });
+        return array_slice($out, 0, 5);
     }
 
     /** Tâches ouvertes du CRM de la personne choisie dans « Ma semaine » (échues et à venir, 40 au plus). */
